@@ -1,5 +1,6 @@
 import { Router, Request, Response, RequestHandler } from 'express';
 import { AuthController } from '../controllers/authController';
+// @governance-tracked — API definitions added: POST /api/auth/register
 
 /**
  * Auth routes configuration.

@@ -1,0 +1,27 @@
+{
+  "endpoint": "/api/signatures/:documentId",
+  "method": "GET",
+  "taskId": "8f7955e9-3755-446d-af1c-0aeb7d7e0d21",
+  "requiresAuth": true,
+  "priority": 21,
+  "dependsOn": ["POST /api/auth/register", "POST /api/documents", "POST /api/signatures"],
+  "captureResponse": {},
+  "testCases": [
+    {
+      "name": "Get signature status for document",
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
+      },
+      "pathParams": {
+        "documentId": "{{cache:documents.create.response.data.document.id}}"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "signatures": []
+        }
+      }
+    }
+  ]
+}

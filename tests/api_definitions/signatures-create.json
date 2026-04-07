@@ -1,0 +1,36 @@
+{
+  "endpoint": "/api/signatures",
+  "method": "POST",
+  "taskId": "2bee76ea-823d-4c9b-b6ed-312b00dc487e",
+  "requiresAuth": true,
+  "priority": 20,
+  "dependsOn": ["POST /api/auth/register", "POST /api/documents"],
+  "captureResponse": {
+    "signatures.create.response.data.signature.id": "data.signature.id"
+  },
+  "testCases": [
+    {
+      "name": "Create a signature request",
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}",
+        "Content-Type": "application/json"
+      },
+      "payload": {
+        "document_id": "{{cache:documents.create.response.data.document.id}}",
+        "signer_email": "{{dynamic:email}}"
+      },
+      "expectedStatus": 201,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "signature": {
+            "id": "string",
+            "document_id": "string",
+            "signer_email": "string",
+            "status": "string"
+          }
+        }
+      }
+    }
+  ]
+}

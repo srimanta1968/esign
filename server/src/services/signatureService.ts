@@ -53,6 +53,26 @@ export class SignatureService {
       throw new Error(`Failed to retrieve signatures: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
+  /**
+   * Sign a signature request — update status to 'signed'.
+   */
+  static async sign(signatureId: string, userSignatureId: string): Promise<SignatureResponse | null> {
+    try {
+      const signature = await DataService.queryOne<Signature>(
+        'UPDATE signatures SET status = $1, updated_at = NOW() WHERE id = $2 RETURNING id, document_id, signer_email, status',
+        ['signed', signatureId]
+      );
+
+      return signature ? {
+        id: signature.id,
+        document_id: signature.document_id,
+        signer_email: signature.signer_email,
+        status: signature.status,
+      } : null;
+    } catch (error: unknown) {
+      throw new Error(`Failed to sign document: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
 }
 
 export default SignatureService;

@@ -79,7 +79,7 @@ function DashboardPage() {
           </div>
           <div className="bg-white rounded-xl p-6 shadow-sm">
             <h3 className="text-gray-500 text-sm font-medium">Completed</h3>
-            <p className="text-3xl font-bold text-gray-900 mt-1">{signatures.filter((s: SignatureRequest) => s.status === 'completed').length}</p>
+            <p className="text-3xl font-bold text-gray-900 mt-1">{signatures.filter((s: SignatureRequest) => s.status === 'signed').length}</p>
           </div>
         </div>
 
@@ -101,11 +101,14 @@ function DashboardPage() {
               <div className="divide-y divide-gray-100">
                 {documents.map((doc: Document) => (
                   <div key={doc.id} className="p-4 flex items-center justify-between hover:bg-gray-50">
-                    <div>
+                    <Link to={`/documents/${doc.id}`} className="flex-1">
                       <p className="font-medium text-gray-900">{doc.file_path}</p>
                       <p className="text-sm text-gray-500">Uploaded {new Date(doc.uploaded_at).toLocaleDateString()}</p>
+                    </Link>
+                    <div className="flex gap-3">
+                      <Link to={`/documents/${doc.id}`} className="text-gray-500 text-sm font-medium hover:text-gray-700">View Details</Link>
+                      <Link to={`/signatures/request/${doc.id}`} className="text-indigo-600 text-sm font-medium hover:text-indigo-700">Request Signature</Link>
                     </div>
-                    <Link to={`/signatures/request/${doc.id}`} className="text-indigo-600 text-sm font-medium hover:text-indigo-700">Request Signature</Link>
                   </div>
                 ))}
               </div>

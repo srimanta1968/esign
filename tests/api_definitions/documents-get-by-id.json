@@ -1,0 +1,32 @@
+{
+  "endpoint": "/api/documents/:id",
+  "method": "GET",
+  "taskId": "8c371718-3a8e-4a35-be90-adce095f36c6",
+  "requiresAuth": true,
+  "priority": 12,
+  "dependsOn": ["POST /api/auth/register", "POST /api/documents"],
+  "captureResponse": {},
+  "testCases": [
+    {
+      "name": "Get document by ID",
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
+      },
+      "pathParams": {
+        "id": "{{cache:documents.create.response.data.document.id}}"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "document": {
+            "id": "string",
+            "user_id": "string",
+            "file_path": "string",
+            "uploaded_at": "string"
+          }
+        }
+      }
+    }
+  ]
+}

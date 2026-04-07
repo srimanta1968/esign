@@ -53,6 +53,46 @@ export class DocumentService {
       throw new Error(`Failed to retrieve documents: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
+  /**
+   * Get a single document by ID, scoped to user.
+   */
+  static async getById(documentId: string, userId: string): Promise<DocumentResponse | null> {
+    try {
+      const document = await DataService.queryOne<Document>(
+        'SELECT id, user_id, file_path, uploaded_at FROM documents WHERE id = $1 AND user_id = $2',
+        [documentId, userId]
+      );
+
+      if (!document) {
+        return null;
+      }
+
+      return {
+        id: document.id,
+        user_id: document.user_id,
+        file_path: document.file_path,
+        uploaded_at: document.uploaded_at.toISOString(),
+      };
+    } catch (error: unknown) {
+      throw new Error(`Failed to retrieve document: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  /**
+   * Delete a document by ID, scoped to user.
+   */
+  static async deleteById(documentId: string, userId: string): Promise<boolean> {
+    try {
+      const result = await DataService.query(
+        'DELETE FROM documents WHERE id = $1 AND user_id = $2',
+        [documentId, userId]
+      );
+
+      return result.rowCount !== null && result.rowCount > 0;
+    } catch (error: unknown) {
+      throw new Error(`Failed to delete document: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
 }
 
 export default DocumentService;

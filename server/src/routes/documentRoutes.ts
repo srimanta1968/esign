@@ -1,7 +1,7 @@
 import { Router, Response, RequestHandler } from 'express';
 import { DocumentController } from '../controllers/documentController';
 import { authenticateToken, AuthenticatedRequest } from '../middleware/auth';
-// @governance-tracked — API definitions added: POST /api/documents, GET /api/documents
+// @governance-tracked — API definitions added: POST /api/documents, GET /api/documents, GET /api/documents/:id, DELETE /api/documents/:id
 
 /**
  * Document routes configuration.
@@ -11,6 +11,8 @@ import { authenticateToken, AuthenticatedRequest } from '../middleware/auth';
 interface DocumentRouter {
   upload: RequestHandler;
   getAll: RequestHandler;
+  getById: RequestHandler;
+  deleteById: RequestHandler;
 }
 
 const documentHandlers: DocumentRouter = {
@@ -20,11 +22,19 @@ const documentHandlers: DocumentRouter = {
   getAll: (req: AuthenticatedRequest, res: Response): void => {
     DocumentController.getAll(req, res);
   },
+  getById: (req: AuthenticatedRequest, res: Response): void => {
+    DocumentController.getById(req, res);
+  },
+  deleteById: (req: AuthenticatedRequest, res: Response): void => {
+    DocumentController.deleteById(req, res);
+  },
 };
 
 const router: Router = Router();
 
 router.post('/', authenticateToken as RequestHandler, documentHandlers.upload);
 router.get('/', authenticateToken as RequestHandler, documentHandlers.getAll);
+router.get('/:id', authenticateToken as RequestHandler, documentHandlers.getById);
+router.delete('/:id', authenticateToken as RequestHandler, documentHandlers.deleteById);
 
 export default router;

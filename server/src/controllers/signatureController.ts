@@ -69,6 +69,41 @@ export class SignatureController {
       res.status(500).json({ success: false, error: 'Internal server error' });
     }
   }
+  /**
+   * Handle signing a document (applying signature).
+   * PATCH /api/signatures/:id/sign
+   */
+  static async sign(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      if (!req.userId) {
+        res.status(401).json({ success: false, error: 'User not authenticated' });
+        return;
+      }
+
+      const signatureId: string = req.params.id;
+      const { user_signature_id }: { user_signature_id?: string } = req.body;
+
+      if (!signatureId) {
+        res.status(400).json({ success: false, error: 'Signature ID is required' });
+        return;
+      }
+
+      const signature = await SignatureService.sign(signatureId, user_signature_id || '');
+
+      if (!signature) {
+        res.status(404).json({ success: false, error: 'Signature request not found' });
+        return;
+      }
+
+      res.status(200).json({
+        success: true,
+        data: { signature },
+      });
+    } catch (error: any) {
+      console.error('Signing error:', error);
+      res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+  }
 }
 
 export default SignatureController;

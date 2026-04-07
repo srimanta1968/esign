@@ -1,7 +1,7 @@
 import { Router, Response, RequestHandler } from 'express';
 import { SignatureController } from '../controllers/signatureController';
 import { authenticateToken, AuthenticatedRequest } from '../middleware/auth';
-// @governance-tracked — API definitions added: POST /api/signatures, GET /api/signatures/:documentId
+// @governance-tracked — API definitions added: POST /api/signatures, GET /api/signatures/:documentId, PATCH /api/signatures/:id/sign
 
 /**
  * Signature routes configuration.
@@ -11,6 +11,7 @@ import { authenticateToken, AuthenticatedRequest } from '../middleware/auth';
 interface SignatureRouter {
   create: RequestHandler;
   getByDocument: RequestHandler;
+  sign: RequestHandler;
 }
 
 const signatureHandlers: SignatureRouter = {
@@ -20,11 +21,15 @@ const signatureHandlers: SignatureRouter = {
   getByDocument: (req: AuthenticatedRequest, res: Response): void => {
     SignatureController.getByDocument(req, res);
   },
+  sign: (req: AuthenticatedRequest, res: Response): void => {
+    SignatureController.sign(req, res);
+  },
 };
 
 const router: Router = Router();
 
 router.post('/', authenticateToken as RequestHandler, signatureHandlers.create);
+router.patch('/:id/sign', authenticateToken as RequestHandler, signatureHandlers.sign);
 router.get('/:documentId', authenticateToken as RequestHandler, signatureHandlers.getByDocument);
 
 export default router;

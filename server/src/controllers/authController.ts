@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { AuthService } from '../services/authService';
-import { RegisterRequest } from '../types/user';
+import { RegisterRequest, LoginRequest } from '../types/user';
 
 /**
  * AuthController handles HTTP requests for authentication endpoints.
@@ -46,6 +46,44 @@ export class AuthController {
       }
 
       console.error('Registration error:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Internal server error',
+      });
+    }
+  }
+  /**
+   * Handle user login.
+   * POST /api/auth/login
+   */
+  static async login(req: Request, res: Response): Promise<void> {
+    try {
+      const { email, password }: LoginRequest = req.body;
+
+      if (!email || !password) {
+        res.status(400).json({
+          success: false,
+          error: 'Email and password are required',
+        });
+        return;
+      }
+
+      const result = await AuthService.login(email, password);
+
+      res.status(200).json({
+        success: true,
+        data: result,
+      });
+    } catch (error: any) {
+      if (error.message === 'Invalid credentials') {
+        res.status(401).json({
+          success: false,
+          error: error.message,
+        });
+        return;
+      }
+
+      console.error('Login error:', error);
       res.status(500).json({
         success: false,
         error: 'Internal server error',

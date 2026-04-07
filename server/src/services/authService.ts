@@ -54,6 +54,47 @@ export class AuthService {
       throw new Error(`Registration failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
+  /**
+   * Authenticate a user with email and password.
+   */
+  static async login(email: string, password: string): Promise<{ token: string; user: UserResponse }> {
+    try {
+      const user = await DataService.queryOne<User>(
+        'SELECT id, email, password_hash, created_at FROM users WHERE email = $1',
+        [email]
+      );
+
+      if (!user) {
+        throw new Error('Invalid credentials');
+      }
+
+      const isValidPassword: boolean = await bcrypt.compare(password, user.password_hash);
+
+      if (!isValidPassword) {
+        throw new Error('Invalid credentials');
+      }
+
+      const token: string = jwt.sign(
+        { userId: user.id, email: user.email },
+        config.jwt.secret,
+        { expiresIn: config.jwt.expiresIn }
+      );
+
+      return {
+        token,
+        user: {
+          id: user.id,
+          email: user.email,
+          created_at: user.created_at,
+        },
+      };
+    } catch (error: unknown) {
+      if (error instanceof Error && error.message === 'Invalid credentials') {
+        throw error;
+      }
+      throw new Error(`Login failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
 }
 
 export default AuthService;

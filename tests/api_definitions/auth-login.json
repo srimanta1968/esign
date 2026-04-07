@@ -1,18 +1,17 @@
 {
-  "endpoint": "/api/auth/register",
+  "endpoint": "/api/auth/login",
   "method": "POST",
-  "taskId": "44dfef58-e7ca-4d89-81df-50b207d35dbb",
+  "taskId": "9927c6cb-2af2-438a-b9cd-f7f35ff9e6a2",
   "requiresAuth": false,
-  "priority": 1,
-  "dependsOn": [],
+  "priority": 2,
+  "dependsOn": ["POST /api/auth/register"],
   "captureResponse": {
-    "auth.register.response.data.token": "data.token",
-    "auth.register.response.data.user.id": "data.user.id",
-    "auth.register.response.data.user.email": "data.user.email"
+    "auth.login.response.data.token": "data.token",
+    "auth.login.response.data.user.id": "data.user.id"
   },
   "testCases": [
     {
-      "name": "Register a new user",
+      "name": "Login with valid credentials",
       "headers": {
         "Content-Type": "application/json"
       },
@@ -20,7 +19,7 @@
         "email": "{{dynamic:email}}",
         "password": "{{dynamic:password}}"
       },
-      "expectedStatus": 201,
+      "expectedStatus": 200,
       "expectedResponse": {
         "success": true,
         "data": {

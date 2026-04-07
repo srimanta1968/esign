@@ -1,0 +1,27 @@
+{
+  "30229b2b-ea03-42c5-9b18-3ce752826417": {
+    "projectId": "30229b2b-ea03-42c5-9b18-3ce752826417",
+    "projectName": "edocs",
+    "projectPath": "/c/Users/srima/edocs",
+    "workspacePath": "/c/Users/srima/edocs",
+    "containerPath": "/projects/additional1",
+    "databaseName": "edocs_db",
+    "databaseType": "postgresql",
+    "databaseConfig": {
+      "enabled": true,
+      "type": "postgresql",
+      "host": "host.docker.internal",
+      "port": 5432,
+      "database": "edocs_db",
+      "username": "postgres",
+      "password": "postgres"
+    },
+    "apiKey": "KiVUjFTN61ZF0EDQ9oVe7FK7DZbU/YTOgirF3E+kPmf5JepaxGrGkFPrkb+ntu4YZ+AU94WipDA7HV/MctRjEyOXtqwzHJcRF02FFfdOn2WrV3c4lSiclPmgMDa5ZHGM+Rc0pJ1oPzkmji+mAwi3gqKd+t/NJVAvM/t8bNDP6rGm4nZK6q5BpiJd4+d+qIymQX/GZ+7mr3MYrdFiNA==",
+    "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+    "registeredAt": "2026-04-07T21:47:09.465021Z",
+    "lastSeen": "2026-04-07T21:47:09.465027Z",
+    "status": "active",
+    "isOwner": false,
+    "schemaSyncEnabled": true
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "projectId": "30229b2b-ea03-42c5-9b18-3ce752826417",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "poolIndex": 1,
+  "encryptedPlatformApiKey": "KiVUjFTN61ZF0EDQ9oVe7FK7DZbU/YTOgirF3E+kPmf5JepaxGrGkFPrkb+ntu4YZ+AU94WipDA7HV/MctRjEyOXtqwzHJcRF02FFfdOn2WrV3c4lSiclPmgMDa5ZHGM+Rc0pJ1oPzkmji+mAwi3gqKd+t/NJVAvM/t8bNDP6rGm4nZK6q5BpiJd4+d+qIymQX/GZ+7mr3MYrdFiNA==",
+  "encryptedLLMConfig": "y5BVxwzlmQa0ks6g8NB7E8CI6CrxMRaVH9fH9rKZrdKkKWRezG25rM98Ge+LlzhxDR2tpvPUaXllXminWXKgrloH7JidnBfVZtdQR/U+g1trVEmI3rFb0szs44KkT9Qr0Or+SY6dF+8n6IuRjVM4dXLlumzdq9xs12AaocG1MCYzWtl/BfmhqYVQ/+cnjLwObbnXsq/sZ7CGeyfk2QDcnpdew00hOsXKglSGNmuD6NMuu48rZianEhCj+Dp6oFrHg+0cz/QW1fhN3SZ1XIdAhJJbSJTVYdfkLhSjlnFkCUSNa73ClGhN8lnNQIM6lkFCSQPMbPk5GqDbcbM/+IXQvVBGK/DK7eRNSR3WDJWWnWX9Dx/Wx2o4mgWtsYFhqAJX4vqzO7pQJzmnJJZqBt6biPF2EwGfKZGdCaD5dvD8JGAFvEmSsPc7pISr4ZPPsUh7giWawH81ms+AdocVQotwlNUmnQ1h1uyXd0DUJrk029FwAX+QLMIrxHwG37NuJyqQcsweIITFM65GnXwvwZl1Cw1VCuTt2TATgq40Hf+Sl4tOX/Fdb3zp",
+  "configVersion": "1.0.0",
+  "expiresAt": "2026-05-07T21:30:36.307Z",
+  "databaseConfig": {
+    "enabled": true,
+    "type": "postgresql",
+    "host": "host.docker.internal",
+    "port": 5432,
+    "database": "edocs_db",
+    "username": "postgres",
+    "password": "postgres"
+  },
+  "enforceCustomStandards": true
+}

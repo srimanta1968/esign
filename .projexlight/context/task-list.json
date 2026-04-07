@@ -1,0 +1,120 @@
+{
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "sprintName": "Quick Prototype Sprint",
+  "totalTasks": 16,
+  "tasks": [
+    {
+      "taskId": "44dfef58-e7ca-4d89-81df-50b207d35dbb",
+      "taskNumber": 1,
+      "title": "Create user registration endpoint",
+      "status": "not_started",
+      "taskType": "backend"
+    },
+    {
+      "taskId": "9927c6cb-2af2-438a-b9cd-f7f35ff9e6a2",
+      "taskNumber": 2,
+      "title": "Implement user login functionality",
+      "status": "not_started",
+      "taskType": "backend"
+    },
+    {
+      "taskId": "ad4ab56b-fb79-4d6e-9ab7-e598befdf828",
+      "taskNumber": 3,
+      "title": "Implement document upload API",
+      "status": "not_started",
+      "taskType": "backend"
+    },
+    {
+      "taskId": "8c371718-3a8e-4a35-be90-adce095f36c6",
+      "taskNumber": 4,
+      "title": "Set up document retrieval functionality",
+      "status": "not_started",
+      "taskType": "backend"
+    },
+    {
+      "taskId": "2bee76ea-823d-4c9b-b6ed-312b00dc487e",
+      "taskNumber": 5,
+      "title": "Create signature request API",
+      "status": "not_started",
+      "taskType": "backend"
+    },
+    {
+      "taskId": "8f7955e9-3755-446d-af1c-0aeb7d7e0d21",
+      "taskNumber": 6,
+      "title": "Set up signature status tracking",
+      "status": "not_started",
+      "taskType": "backend"
+    },
+    {
+      "taskId": "f2e996a5-6c35-4899-8965-d5fd4afad095",
+      "taskNumber": 7,
+      "title": "Create signature capture endpoint",
+      "status": "not_started",
+      "taskType": "backend"
+    },
+    {
+      "taskId": "0b78d714-656f-4111-b136-e7f1312bebe1",
+      "taskNumber": 8,
+      "title": "Set up signature retrieval API",
+      "status": "not_started",
+      "taskType": "backend"
+    },
+    {
+      "taskId": "154a8b21-4783-4533-b867-d8254a13da4a",
+      "taskNumber": 9,
+      "title": "Design user registration form",
+      "status": "not_started",
+      "taskType": "frontend"
+    },
+    {
+      "taskId": "a1284ec6-1fee-44d2-b05b-b30d3afb48c8",
+      "taskNumber": 10,
+      "title": "Create login form component",
+      "status": "not_started",
+      "taskType": "frontend"
+    },
+    {
+      "taskId": "c63c3b04-0bde-4bc5-b208-1493361a9d55",
+      "taskNumber": 11,
+      "title": "Create document upload UI",
+      "status": "not_started",
+      "taskType": "frontend"
+    },
+    {
+      "taskId": "fd3131fb-98ec-4ea3-a3f4-33320c97cbdb",
+      "taskNumber": 12,
+      "title": "Display uploaded documents in UI",
+      "status": "not_started",
+      "taskType": "frontend"
+    },
+    {
+      "taskId": "70b1e696-10b1-4144-a008-f8e4b4ca5d2d",
+      "taskNumber": 13,
+      "title": "Implement signature request UI",
+      "status": "not_started",
+      "taskType": "frontend"
+    },
+    {
+      "taskId": "9fbdfa0a-ce68-4b2e-87d1-91ac18ed01d8",
+      "taskNumber": 14,
+      "title": "Display signature status in UI",
+      "status": "not_started",
+      "taskType": "frontend"
+    },
+    {
+      "taskId": "cde5dca5-336e-4334-8b25-e9bd431ac356",
+      "taskNumber": 15,
+      "title": "Implement signature capture UI",
+      "status": "not_started",
+      "taskType": "frontend"
+    },
+    {
+      "taskId": "15898dcc-d720-44d8-82b1-554edd96c9a5",
+      "taskNumber": 16,
+      "title": "Display user signatures in UI",
+      "status": "not_started",
+      "taskType": "frontend"
+    }
+  ],
+  "note": "Detailed instructions are delivered via MCP API. Call projexlight_get_instruction with taskId."
+}

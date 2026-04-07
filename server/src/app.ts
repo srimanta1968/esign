@@ -6,6 +6,7 @@ import { config } from './config/env';
 import authRoutes from './routes/authRoutes';
 import documentRoutes from './routes/documentRoutes';
 import signatureRoutes from './routes/signatureRoutes';
+import userSignatureRoutes from './routes/userSignatureRoutes';
 
 const app: Application = express();
 
@@ -28,6 +29,7 @@ app.get('/health', (_req: Request, res: Response) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/signatures', signatureRoutes);
+app.use('/api/user-signatures', userSignatureRoutes);
 
 // Error handling
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {

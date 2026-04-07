@@ -49,6 +49,38 @@ export class DocumentController {
       });
     }
   }
+  /**
+   * Handle document retrieval for authenticated user.
+   * GET /api/documents
+   */
+  static async getAll(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const userId: string | undefined = req.userId;
+
+      if (!userId) {
+        res.status(401).json({
+          success: false,
+          error: 'User not authenticated',
+        });
+        return;
+      }
+
+      const documents = await DocumentService.getByUserId(userId);
+
+      res.status(200).json({
+        success: true,
+        data: {
+          documents,
+        },
+      });
+    } catch (error: any) {
+      console.error('Document retrieval error:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Internal server error',
+      });
+    }
+  }
 }
 
 export default DocumentController;

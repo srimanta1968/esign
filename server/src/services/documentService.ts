@@ -33,6 +33,26 @@ export class DocumentService {
       throw new Error(`Document upload failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
+  /**
+   * Get all documents for a user.
+   */
+  static async getByUserId(userId: string): Promise<DocumentResponse[]> {
+    try {
+      const documents = await DataService.queryAll<Document>(
+        'SELECT id, user_id, file_path, uploaded_at FROM documents WHERE user_id = $1 ORDER BY uploaded_at DESC',
+        [userId]
+      );
+
+      return documents.map((doc: Document): DocumentResponse => ({
+        id: doc.id,
+        user_id: doc.user_id,
+        file_path: doc.file_path,
+        uploaded_at: doc.uploaded_at.toISOString(),
+      }));
+    } catch (error: unknown) {
+      throw new Error(`Failed to retrieve documents: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
 }
 
 export default DocumentService;

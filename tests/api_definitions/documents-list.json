@@ -1,0 +1,24 @@
+{
+  "endpoint": "/api/documents",
+  "method": "GET",
+  "taskId": "8c371718-3a8e-4a35-be90-adce095f36c6",
+  "requiresAuth": true,
+  "priority": 11,
+  "dependsOn": ["POST /api/auth/register", "POST /api/documents"],
+  "captureResponse": {},
+  "testCases": [
+    {
+      "name": "Get user documents",
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "documents": []
+        }
+      }
+    }
+  ]
+}

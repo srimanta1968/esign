@@ -6,6 +6,7 @@ interface Document {
   id: string;
   user_id: string;
   file_path: string;
+  original_name: string;
   uploaded_at: string;
 }
 
@@ -93,7 +94,7 @@ function DashboardPage() {
               {documents.map((doc: Document) => (
                 <div key={doc.id} className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
                   <Link to={`/documents/${doc.id}`} className="flex-1 min-w-0">
-                    <p className="font-medium text-gray-900 truncate">{doc.file_path}</p>
+                    <p className="font-medium text-gray-900 truncate">{doc.original_name || doc.file_path}</p>
                     <p className="text-sm text-gray-500">Uploaded {new Date(doc.uploaded_at).toLocaleDateString()}</p>
                   </Link>
                   <div className="flex gap-3 ml-4 shrink-0">

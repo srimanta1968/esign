@@ -6,6 +6,7 @@ interface Document {
   id: string;
   user_id: string;
   file_path: string;
+  original_name: string;
   uploaded_at: string;
 }
 
@@ -83,7 +84,7 @@ function DocumentDetailPage() {
       <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
         <div className="flex items-start justify-between mb-4">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">{document.file_path}</h2>
+            <h2 className="text-2xl font-bold text-gray-900">{document.original_name || document.file_path}</h2>
             <p className="text-gray-500 mt-1">Uploaded {new Date(document.uploaded_at).toLocaleDateString()}</p>
             <p className="text-gray-400 text-sm mt-1">ID: {document.id}</p>
           </div>

@@ -23,17 +23,18 @@ export class DocumentController {
         return;
       }
 
-      const { file_path, original_name }: UploadDocumentRequest = req.body;
+      const file: Express.Multer.File | undefined = req.file;
 
-      if (!file_path) {
+      if (!file) {
         res.status(400).json({
           success: false,
-          error: 'file_path is required',
+          error: 'File is required',
         });
         return;
       }
 
-      const document = await DocumentService.upload(userId, file_path);
+      const filePath: string = `/uploads/${file.filename}`;
+      const document = await DocumentService.upload(userId, filePath, file.originalname);
 
       res.status(201).json({
         success: true,
@@ -45,7 +46,7 @@ export class DocumentController {
       console.error('Document upload error:', error);
       res.status(500).json({
         success: false,
-        error: 'Internal server error',
+        error: error.message || 'Internal server error',
       });
     }
   }

@@ -6,14 +6,28 @@ import { Document, DocumentResponse } from '../types/document';
  */
 export class DocumentService {
   /**
+   * Ensure the original_name column exists (safe migration).
+   */
+  static async ensureSchema(): Promise<void> {
+    try {
+      await DataService.query(
+        `ALTER TABLE documents ADD COLUMN IF NOT EXISTS original_name VARCHAR(255) DEFAULT ''`
+      );
+    } catch {
+      // Column might already exist, ignore
+    }
+  }
+
+  /**
    * Upload a new document record.
    */
-  static async upload(userId: string, filePath: string): Promise<DocumentResponse> {
+  static async upload(userId: string, filePath: string, originalName: string = ''): Promise<DocumentResponse> {
     try {
+      await DocumentService.ensureSchema();
       const now: Date = new Date();
       const document = await DataService.queryOne<Document>(
-        'INSERT INTO documents (user_id, file_path, uploaded_at) VALUES ($1, $2, $3) RETURNING id, user_id, file_path, uploaded_at',
-        [userId, filePath, now]
+        'INSERT INTO documents (user_id, file_path, original_name, uploaded_at) VALUES ($1, $2, $3, $4) RETURNING id, user_id, file_path, original_name, uploaded_at',
+        [userId, filePath, originalName, now]
       );
 
       if (!document) {
@@ -24,6 +38,7 @@ export class DocumentService {
         id: document.id,
         user_id: document.user_id,
         file_path: document.file_path,
+        original_name: document.original_name || '',
         uploaded_at: document.uploaded_at.toISOString(),
       };
     } catch (error: unknown) {
@@ -33,13 +48,14 @@ export class DocumentService {
       throw new Error(`Document upload failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
+
   /**
    * Get all documents for a user.
    */
   static async getByUserId(userId: string): Promise<DocumentResponse[]> {
     try {
       const documents = await DataService.queryAll<Document>(
-        'SELECT id, user_id, file_path, uploaded_at FROM documents WHERE user_id = $1 ORDER BY uploaded_at DESC',
+        'SELECT id, user_id, file_path, COALESCE(original_name, file_path) as original_name, uploaded_at FROM documents WHERE user_id = $1 ORDER BY uploaded_at DESC',
         [userId]
       );
 
@@ -47,19 +63,21 @@ export class DocumentService {
         id: doc.id,
         user_id: doc.user_id,
         file_path: doc.file_path,
+        original_name: doc.original_name || doc.file_path,
         uploaded_at: doc.uploaded_at.toISOString(),
       }));
     } catch (error: unknown) {
       throw new Error(`Failed to retrieve documents: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
+
   /**
    * Get a single document by ID, scoped to user.
    */
   static async getById(documentId: string, userId: string): Promise<DocumentResponse | null> {
     try {
       const document = await DataService.queryOne<Document>(
-        'SELECT id, user_id, file_path, uploaded_at FROM documents WHERE id = $1 AND user_id = $2',
+        'SELECT id, user_id, file_path, COALESCE(original_name, file_path) as original_name, uploaded_at FROM documents WHERE id = $1 AND user_id = $2',
         [documentId, userId]
       );
 
@@ -71,6 +89,7 @@ export class DocumentService {
         id: document.id,
         user_id: document.user_id,
         file_path: document.file_path,
+        original_name: document.original_name || document.file_path,
         uploaded_at: document.uploaded_at.toISOString(),
       };
     } catch (error: unknown) {

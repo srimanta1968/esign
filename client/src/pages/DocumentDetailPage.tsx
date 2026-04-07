@@ -71,77 +71,69 @@ function DocumentDetailPage() {
   };
 
   if (loading) {
-    return <div className="min-h-screen bg-gray-50 flex items-center justify-center"><p className="text-gray-500">Loading...</p></div>;
+    return <div className="flex items-center justify-center py-20"><p className="text-gray-500">Loading...</p></div>;
   }
 
   if (!document) {
-    return <div className="min-h-screen bg-gray-50 flex items-center justify-center"><p className="text-gray-500">Document not found</p></div>;
+    return <div className="flex items-center justify-center py-20"><p className="text-gray-500">Document not found</p></div>;
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <Link to="/dashboard" className="text-2xl font-bold text-indigo-600">eDocSign</Link>
-        </div>
-      </header>
-
-      <main className="max-w-3xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-          <div className="flex items-start justify-between mb-4">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">{document.file_path}</h2>
-              <p className="text-gray-500 mt-1">Uploaded {new Date(document.uploaded_at).toLocaleDateString()}</p>
-              <p className="text-gray-400 text-sm mt-1">ID: {document.id}</p>
-            </div>
-            <div className="flex gap-2">
-              <Link to={`/signatures/request/${document.id}`} className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">
-                Request Signature
-              </Link>
-              <button
-                onClick={handleDelete}
-                disabled={deleting}
-                className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors disabled:opacity-50"
-              >
-                {deleting ? 'Deleting...' : 'Delete'}
-              </button>
-            </div>
+    <div className="max-w-3xl mx-auto px-4 py-8">
+      <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">{document.file_path}</h2>
+            <p className="text-gray-500 mt-1">Uploaded {new Date(document.uploaded_at).toLocaleDateString()}</p>
+            <p className="text-gray-400 text-sm mt-1">ID: {document.id}</p>
+          </div>
+          <div className="flex gap-2">
+            <Link to={`/signatures/request/${document.id}`} className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">
+              Request Signature
+            </Link>
+            <button
+              onClick={handleDelete}
+              disabled={deleting}
+              className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors disabled:opacity-50"
+            >
+              {deleting ? 'Deleting...' : 'Delete'}
+            </button>
           </div>
         </div>
+      </div>
 
-        <div className="bg-white rounded-xl shadow-sm">
-          <div className="p-6 border-b border-gray-100">
-            <h3 className="text-lg font-semibold text-gray-900">Signature Requests</h3>
-          </div>
-          {signatures.length === 0 ? (
-            <div className="p-6 text-center text-gray-500">No signature requests yet.</div>
-          ) : (
-            <div className="divide-y divide-gray-100">
-              {signatures.map((sig: SignatureRequest) => (
-                <div key={sig.id} className="p-4 flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-gray-900">{sig.signer_email}</p>
-                    <p className="text-sm text-gray-500">ID: {sig.id.slice(0, 8)}...</p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${statusColor(sig.status)}`}>
-                      {sig.status}
-                    </span>
-                    {sig.status === 'pending' && (
-                      <Link
-                        to={`/sign/${sig.id}`}
-                        className="text-indigo-600 text-sm font-medium hover:text-indigo-700"
-                      >
-                        Sign Now
-                      </Link>
-                    )}
-                  </div>
+      <div className="bg-white rounded-xl shadow-sm">
+        <div className="p-6 border-b border-gray-100">
+          <h3 className="text-lg font-semibold text-gray-900">Signature Requests</h3>
+        </div>
+        {signatures.length === 0 ? (
+          <div className="p-6 text-center text-gray-500">No signature requests yet.</div>
+        ) : (
+          <div className="divide-y divide-gray-100">
+            {signatures.map((sig: SignatureRequest) => (
+              <div key={sig.id} className="p-4 flex items-center justify-between">
+                <div>
+                  <p className="font-medium text-gray-900">{sig.signer_email}</p>
+                  <p className="text-sm text-gray-500">ID: {sig.id.slice(0, 8)}...</p>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </main>
+                <div className="flex items-center gap-3">
+                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${statusColor(sig.status)}`}>
+                    {sig.status}
+                  </span>
+                  {sig.status === 'pending' && (
+                    <Link
+                      to={`/sign/${sig.id}`}
+                      className="text-indigo-600 text-sm font-medium hover:text-indigo-700"
+                    >
+                      Sign Now
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

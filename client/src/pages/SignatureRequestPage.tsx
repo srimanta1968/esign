@@ -33,41 +33,33 @@ function SignatureRequestPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <Link to="/dashboard" className="text-2xl font-bold text-indigo-600">eDocSign</Link>
+    <div className="max-w-2xl mx-auto px-4 py-8">
+      <h2 className="text-2xl font-bold text-gray-900 mb-6">Request Signature</h2>
+
+      {error && <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg mb-6 text-sm">{error}</div>}
+      {success && <div className="bg-green-50 text-green-600 px-4 py-3 rounded-lg mb-6 text-sm">{success}</div>}
+
+      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm p-6 space-y-4">
+        <div>
+          <label htmlFor="signerEmail" className="block text-sm font-medium text-gray-700 mb-1">Signer Email</label>
+          <input
+            id="signerEmail"
+            type="email"
+            value={signerEmail}
+            onChange={(e) => setSignerEmail(e.target.value)}
+            required
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+            placeholder="signer@example.com"
+          />
         </div>
-      </header>
 
-      <main className="max-w-2xl mx-auto px-4 py-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Request Signature</h2>
-
-        {error && <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg mb-6 text-sm">{error}</div>}
-        {success && <div className="bg-green-50 text-green-600 px-4 py-3 rounded-lg mb-6 text-sm">{success}</div>}
-
-        <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm p-6 space-y-4">
-          <div>
-            <label htmlFor="signerEmail" className="block text-sm font-medium text-gray-700 mb-1">Signer Email</label>
-            <input
-              id="signerEmail"
-              type="email"
-              value={signerEmail}
-              onChange={(e) => setSignerEmail(e.target.value)}
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
-              placeholder="signer@example.com"
-            />
-          </div>
-
-          <div className="flex gap-4">
-            <button type="submit" disabled={loading} className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50">
-              {loading ? 'Sending...' : 'Send Request'}
-            </button>
-            <Link to="/dashboard" className="px-6 py-2 text-gray-600 hover:text-gray-800 font-medium">Cancel</Link>
-          </div>
-        </form>
-      </main>
+        <div className="flex gap-4">
+          <button type="submit" disabled={loading} className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50">
+            {loading ? 'Sending...' : 'Send Request'}
+          </button>
+          <Link to="/dashboard" className="px-6 py-2 text-gray-600 hover:text-gray-800 font-medium">Cancel</Link>
+        </div>
+      </form>
     </div>
   );
 }

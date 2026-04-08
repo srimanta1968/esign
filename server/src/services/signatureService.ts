@@ -1,5 +1,6 @@
 import { DataService } from './DataService';
 import { Signature, SignatureResponse } from '../types/signature';
+import { NotificationService } from './notificationService';
 
 /**
  * SignatureService handles signature request database operations.
@@ -17,6 +18,20 @@ export class SignatureService {
 
       if (!signature) {
         throw new Error('Failed to create signature request');
+      }
+
+      // Notify the document owner that a signature request was sent
+      const document = await DataService.queryOne<{ user_id: string }>(
+        'SELECT user_id FROM documents WHERE id = $1',
+        [documentId]
+      );
+
+      if (document) {
+        await NotificationService.create(
+          document.user_id,
+          'signature_requested',
+          `Signature request sent to ${signerEmail}`
+        );
       }
 
       return {
@@ -63,12 +78,28 @@ export class SignatureService {
         ['signed', signatureId]
       );
 
-      return signature ? {
+      if (!signature) return null;
+
+      // Notify the document owner that the document was signed
+      const document = await DataService.queryOne<{ user_id: string }>(
+        'SELECT user_id FROM documents WHERE id = $1',
+        [signature.document_id]
+      );
+
+      if (document) {
+        await NotificationService.create(
+          document.user_id,
+          'signature_completed',
+          `Your document has been signed by ${signature.signer_email}`
+        );
+      }
+
+      return {
         id: signature.id,
         document_id: signature.document_id,
         signer_email: signature.signer_email,
         status: signature.status,
-      } : null;
+      };
     } catch (error: unknown) {
       throw new Error(`Failed to sign document: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }

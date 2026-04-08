@@ -1,6 +1,7 @@
-import { ReactNode } from 'react';
+import { ReactNode, useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { ApiService } from '../../services/api';
 
 interface LayoutProps {
   children: ReactNode;
@@ -10,6 +11,31 @@ function Layout({ children }: LayoutProps) {
   const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [unreadCount, setUnreadCount] = useState<number>(0);
+  const [showNotifications, setShowNotifications] = useState<boolean>(false);
+  const [notifications, setNotifications] = useState<Array<{ id: string; message: string; type: string; is_read: boolean; created_at: string }>>([]);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const fetchNotifications = async (): Promise<void> => {
+      try {
+        const response = await ApiService.get<{ notifications: Array<{ id: string; message: string; type: string; is_read: boolean; created_at: string }> }>('/notifications');
+        if (response.success && response.data) {
+          setNotifications(response.data.notifications);
+          setUnreadCount(response.data.notifications.filter((n) => !n.is_read).length);
+        }
+      } catch { /* ignore */ }
+    };
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 15000);
+    return () => clearInterval(interval);
+  }, [isAuthenticated, location.pathname]);
+
+  const handleMarkRead = async (): Promise<void> => {
+    await ApiService.request('/notifications/read', { method: 'PATCH' });
+    setUnreadCount(0);
+    setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })));
+  };
 
   const handleLogout = (): void => {
     logout();
@@ -39,6 +65,34 @@ function Layout({ children }: LayoutProps) {
                 <Link to="/signatures" className={isActive('/signatures')}>My Signatures</Link>
               </nav>
               <div className="flex items-center gap-3 pl-4 border-l border-gray-200">
+                <div className="relative">
+                  <button
+                    onClick={() => { setShowNotifications(!showNotifications); if (!showNotifications && unreadCount > 0) handleMarkRead(); }}
+                    className="relative text-gray-500 hover:text-gray-700"
+                  >
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                    {unreadCount > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">{unreadCount}</span>
+                    )}
+                  </button>
+                  {showNotifications && (
+                    <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-96 overflow-y-auto">
+                      <div className="p-3 border-b border-gray-100 font-semibold text-sm text-gray-900">Notifications</div>
+                      {notifications.length === 0 ? (
+                        <div className="p-4 text-center text-gray-500 text-sm">No notifications</div>
+                      ) : (
+                        notifications.slice(0, 10).map((n) => (
+                          <div key={n.id} className={`p-3 border-b border-gray-50 text-sm ${n.is_read ? 'text-gray-500' : 'text-gray-900 bg-blue-50'}`}>
+                            <p>{n.message}</p>
+                            <p className="text-xs text-gray-400 mt-1">{new Date(n.created_at).toLocaleString()}</p>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  )}
+                </div>
                 <span className="text-gray-500 text-sm hidden sm:inline">{user?.email}</span>
                 <button
                   onClick={handleLogout}

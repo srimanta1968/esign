@@ -37,6 +37,14 @@ export class AuthController {
         data: result,
       });
     } catch (error: any) {
+      if (error.message === 'Invalid email format') {
+        res.status(400).json({
+          success: false,
+          error: 'Please provide a valid email address',
+        });
+        return;
+      }
+
       if (error.message === 'Email already registered') {
         res.status(409).json({
           success: false,

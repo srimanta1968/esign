@@ -13,6 +13,11 @@ export class AuthService {
    */
   static async register(email: string, password: string): Promise<{ token: string; user: UserResponse }> {
     try {
+      const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        throw new Error('Invalid email format');
+      }
+
       const existingUser = await DataService.queryOne<User>(
         'SELECT id FROM users WHERE email = $1',
         [email]

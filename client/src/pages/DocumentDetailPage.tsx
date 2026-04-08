@@ -89,6 +89,26 @@ function DocumentDetailPage() {
             <p className="text-gray-400 text-sm mt-1">ID: {document.id}</p>
           </div>
           <div className="flex gap-2">
+            <a
+              href={`/api/documents/${document.id}/download`}
+              className="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-700 transition-colors"
+              onClick={(e) => {
+                e.preventDefault();
+                const token = localStorage.getItem('token');
+                fetch(`/api/documents/${document.id}/download`, {
+                  headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+                }).then(res => res.blob()).then(blob => {
+                  const url = window.URL.createObjectURL(blob);
+                  const a = window.document.createElement('a');
+                  a.href = url;
+                  a.download = document.original_name || 'document';
+                  a.click();
+                  window.URL.revokeObjectURL(url);
+                });
+              }}
+            >
+              Download
+            </a>
             <Link to={`/signatures/request/${document.id}`} className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">
               Request Signature
             </Link>

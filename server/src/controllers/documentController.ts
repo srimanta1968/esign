@@ -1,4 +1,5 @@
 import { Response } from 'express';
+import path from 'path';
 import { DocumentService } from '../services/documentService';
 import { AuthenticatedRequest } from '../middleware/auth';
 import { UploadDocumentRequest } from '../types/document';
@@ -133,6 +134,42 @@ export class DocumentController {
       res.status(200).json({ success: true, message: 'Document deleted' });
     } catch (error: any) {
       console.error('Document deletion error:', error);
+      res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+  }
+
+  /**
+   * Handle document download.
+   * GET /api/documents/:id/download
+   */
+  static async download(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      if (!req.userId) {
+        res.status(401).json({ success: false, error: 'User not authenticated' });
+        return;
+      }
+
+      const documentId: string = req.params.id;
+      const document = await DocumentService.getById(documentId, req.userId);
+
+      if (!document) {
+        res.status(404).json({ success: false, error: 'Document not found' });
+        return;
+      }
+
+      const filePath: string = path.resolve(__dirname, '../..', document.file_path.replace(/^\//, ''));
+      const downloadName: string = document.original_name || path.basename(document.file_path);
+
+      res.download(filePath, downloadName, (err) => {
+        if (err) {
+          console.error('Download error:', err);
+          if (!res.headersSent) {
+            res.status(404).json({ success: false, error: 'File not found on disk' });
+          }
+        }
+      });
+    } catch (error: any) {
+      console.error('Document download error:', error);
       res.status(500).json({ success: false, error: 'Internal server error' });
     }
   }

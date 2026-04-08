@@ -36,17 +36,18 @@ let PROJECT_PATH = '';
 function getProjectPath() {
   if (PROJECT_PATH) return PROJECT_PATH;
 
-  // Get current working directory
-  let cwd = process.cwd();
+  // Use bridge's parent directory (project root) instead of process.cwd()
+  // __dirname = mcp-server/, parent = project root — reliable regardless of CWD
+  let projectDir = path.dirname(__dirname);
 
   // Convert Windows path to Unix format (C:\Users\name -> /c/Users/name)
-  cwd = cwd.replace(/\\/g, '/');
-  if (cwd.length >= 2 && cwd[1] === ':') {
-    const drive = cwd[0].toLowerCase();
-    cwd = '/' + drive + cwd.slice(2);
+  projectDir = projectDir.replace(/\\/g, '/');
+  if (projectDir.length >= 2 && projectDir[1] === ':') {
+    const drive = projectDir[0].toLowerCase();
+    projectDir = '/' + drive + projectDir.slice(2);
   }
 
-  PROJECT_PATH = cwd;
+  PROJECT_PATH = projectDir;
   if (DEBUG) {
     console.error(`[MCP Bridge] Detected project path: ${PROJECT_PATH}`);
   }
@@ -54,8 +55,19 @@ function getProjectPath() {
 }
 
 // Try to load credentials from config file (NOT the API URL - that's always localhost)
+// Search order: __dirname-relative paths first (reliable regardless of CWD),
+// then process.cwd()-relative paths as fallback.
 function loadCredentialsFromConfig() {
+  // __dirname = mcp-server/ directory where this bridge lives
+  // Parent of __dirname = project root
+  const bridgeDir = __dirname;
+  const projectRoot = path.dirname(bridgeDir);
   const configPaths = [
+    // Primary: relative to bridge location (works regardless of CWD)
+    path.join(projectRoot, '.projexlight', 'config.json'),
+    path.join(bridgeDir, 'config.json'),
+    path.join(bridgeDir, 'mcp-config.json'),
+    // Fallback: relative to CWD (legacy support)
     path.join(process.cwd(), '.projexlight', 'config.json'),
     path.join(process.cwd(), 'mcp-server', 'config.json'),
   ];
@@ -66,8 +78,10 @@ function loadCredentialsFromConfig() {
         const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
 
         // Load session token if not set via environment
-        if (config.sessionToken && !SESSION_TOKEN) {
-          SESSION_TOKEN = config.sessionToken;
+        // Check both .projexlight/config.json format (sessionToken)
+        // and mcp-config.json format (encryptedPlatformApiKey)
+        if (!SESSION_TOKEN) {
+          SESSION_TOKEN = config.sessionToken || config.encryptedPlatformApiKey || '';
         }
 
         // Load project ID if not set via environment

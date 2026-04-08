@@ -1,0 +1,43 @@
+{
+  "endpoint": "/api/compliance/alerts/config",
+  "method": "POST",
+  "taskId": "c1e21f09-7fe1-4a27-957d-c228d9905808",
+  "requiresAuth": true,
+  "priority": 11,
+  "dependsOn": ["POST /api/auth/register"],
+  "testCases": [
+    {
+      "name": "Create alert rule (admin only)",
+      "headers": {
+        "Authorization": "Bearer {{captured:auth.register.response.data.token}}"
+      },
+      "body": {
+        "rule_type": "unauthorized_access",
+        "threshold": 5,
+        "enabled": true
+      },
+      "expectedStatus": 201,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "id": "string",
+          "rule_type": "unauthorized_access",
+          "threshold": 5,
+          "enabled": true
+        }
+      }
+    },
+    {
+      "name": "Reject missing fields",
+      "headers": {
+        "Authorization": "Bearer {{captured:auth.register.response.data.token}}"
+      },
+      "body": {},
+      "expectedStatus": 400,
+      "expectedResponse": {
+        "success": false,
+        "error": "string"
+      }
+    }
+  ]
+}

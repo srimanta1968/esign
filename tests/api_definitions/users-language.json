@@ -1,0 +1,42 @@
+{
+  "endpoint": "/api/users/language",
+  "method": "PUT",
+  "taskId": "a9068772-e635-4386-bea3-f141a08245bd",
+  "requiresAuth": true,
+  "priority": 30,
+  "dependsOn": ["POST /api/auth/register"],
+  "testCases": [
+    {
+      "name": "Update user language preference",
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}",
+        "Content-Type": "application/json"
+      },
+      "payload": {
+        "language_preference": "es"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "language_preference": "es"
+        }
+      }
+    },
+    {
+      "name": "Fail with invalid language code",
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}",
+        "Content-Type": "application/json"
+      },
+      "payload": {
+        "language_preference": "invalid_lang"
+      },
+      "expectedStatus": 400,
+      "expectedResponse": {
+        "success": false,
+        "error": "string"
+      }
+    }
+  ]
+}

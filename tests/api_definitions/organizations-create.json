@@ -1,0 +1,49 @@
+{
+  "endpoint": "/api/organizations",
+  "method": "POST",
+  "taskId": "949ffcb1-b35b-4cc6-b5d4-8aa0b03ddfba",
+  "requiresAuth": true,
+  "priority": 10,
+  "dependsOn": ["POST /api/auth/register"],
+  "captureResponse": {
+    "organizations.create.response.data.id": "data.id",
+    "organizations.create.response.data.slug": "data.slug"
+  },
+  "testCases": [
+    {
+      "name": "Create a new organization",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer {{captured:auth.register.response.data.token}}"
+      },
+      "payload": {
+        "name": "Test Organization"
+      },
+      "expectedStatus": 201,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "id": "string",
+          "name": "Test Organization",
+          "slug": "test-organization",
+          "created_at": "string"
+        }
+      }
+    },
+    {
+      "name": "Reject duplicate organization name",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer {{captured:auth.register.response.data.token}}"
+      },
+      "payload": {
+        "name": "Test Organization"
+      },
+      "expectedStatus": 409,
+      "expectedResponse": {
+        "success": false,
+        "error": "Organization with this name already exists"
+      }
+    }
+  ]
+}

@@ -4,6 +4,8 @@ import { ApiService } from '../services/api';
 interface User {
   id: string;
   email: string;
+  name?: string;
+  role?: string;
 }
 
 interface AuthContextType {
@@ -11,8 +13,10 @@ interface AuthContextType {
   token: string | null;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-  register: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  register: (name: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
+  setUser: (user: User | null) => void;
+  setToken: (token: string | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -25,8 +29,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (token) {
       try {
         const payload: string = atob(token.split('.')[1]);
-        const decoded: { userId: string; email: string } = JSON.parse(payload);
-        setUser({ id: decoded.userId, email: decoded.email });
+        const decoded: { userId: string; email: string; name?: string; role?: string } = JSON.parse(payload);
+        setUser({ id: decoded.userId, email: decoded.email, name: decoded.name, role: decoded.role });
       } catch {
         ApiService.clearToken();
         setToken(null);
@@ -34,8 +38,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [token]);
 
-  const register = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
-    const response = await ApiService.post<{ token: string; user: User }>('/auth/register', { email, password });
+  const register = async (name: string, email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+    const response = await ApiService.post<{ token: string; user: User }>('/auth/register', { name, email, password });
 
     if (response.success && response.data) {
       ApiService.setToken(response.data.token);
@@ -67,7 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, isAuthenticated: !!token, login, register, logout }}>
+    <AuthContext.Provider value={{ user, token, isAuthenticated: !!token, login, register, logout, setUser, setToken }}>
       {children}
     </AuthContext.Provider>
   );

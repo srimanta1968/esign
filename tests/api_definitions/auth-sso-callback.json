@@ -1,0 +1,39 @@
+{
+  "endpoint": "/api/auth/sso/callback",
+  "method": "GET",
+  "taskId": "68784f2e-0044-4bf7-bdf2-f6ff912dc6ff",
+  "requiresAuth": false,
+  "priority": 6,
+  "dependsOn": ["GET /api/auth/sso/:provider"],
+  "testCases": [
+    {
+      "name": "Handle OAuth callback with authorization code",
+      "queryParams": {
+        "code": "test-auth-code",
+        "state": "google"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "token": "string",
+          "user": {
+            "id": "string",
+            "email": "string",
+            "name": "string",
+            "role": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "Reject callback without authorization code",
+      "queryParams": {},
+      "expectedStatus": 400,
+      "expectedResponse": {
+        "success": false,
+        "error": "Authorization code is required"
+      }
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "endpoint": "/api/*",
+  "method": "ALL",
+  "taskId": "5af22c05-7c1e-47d0-a187-48c9c4ef3553",
+  "requiresAuth": false,
+  "priority": 10,
+  "dependsOn": [],
+  "description": "Audit middleware automatically logs ALL API requests with userId, action, IP, user agent, and sanitized body",
+  "testCases": [
+    {
+      "name": "Audit middleware logs requests automatically",
+      "description": "Any API request should be logged in audit_logs table",
+      "endpoint": "/api/auth/register",
+      "method": "POST",
+      "body": {
+        "email": "audit-test@example.com",
+        "password": "TestPass123!"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true
+      },
+      "sideEffects": {
+        "audit_logs": {
+          "action": "POST /api/auth/register",
+          "resource_type": "auth",
+          "metadata_contains": {
+            "body.password": "[REDACTED]"
+          }
+        }
+      }
+    }
+  ]
+}

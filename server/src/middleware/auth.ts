@@ -5,6 +5,7 @@ import { config } from '../config/env';
 export interface AuthenticatedRequest extends Request {
   userId?: string;
   userEmail?: string;
+  userRole?: string;
 }
 
 /**
@@ -23,9 +24,10 @@ export function authenticateToken(req: AuthenticatedRequest, res: Response, next
   }
 
   try {
-    const decoded = jwt.verify(token, config.jwt.secret) as { userId: string; email: string };
+    const decoded = jwt.verify(token, config.jwt.secret) as { userId: string; email: string; role?: string };
     req.userId = decoded.userId;
     req.userEmail = decoded.email;
+    req.userRole = decoded.role || 'user';
     next();
   } catch {
     res.status(403).json({

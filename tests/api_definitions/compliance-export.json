@@ -1,0 +1,35 @@
+{
+  "endpoint": "/api/compliance/export",
+  "method": "GET",
+  "taskId": "c1e21f09-7fe1-4a27-957d-c228d9905808",
+  "requiresAuth": true,
+  "priority": 11,
+  "dependsOn": ["POST /api/auth/register"],
+  "testCases": [
+    {
+      "name": "Export audit logs as CSV (admin only)",
+      "headers": {
+        "Authorization": "Bearer {{captured:auth.register.response.data.token}}"
+      },
+      "queryParams": {
+        "dateFrom": "2024-01-01T00:00:00Z",
+        "dateTo": "2030-12-31T23:59:59Z"
+      },
+      "expectedStatus": 200,
+      "expectedHeaders": {
+        "content-type": "text/csv"
+      }
+    },
+    {
+      "name": "Reject missing date params",
+      "headers": {
+        "Authorization": "Bearer {{captured:auth.register.response.data.token}}"
+      },
+      "expectedStatus": 400,
+      "expectedResponse": {
+        "success": false,
+        "error": "string"
+      }
+    }
+  ]
+}

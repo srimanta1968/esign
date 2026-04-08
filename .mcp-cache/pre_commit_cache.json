@@ -1,0 +1,739 @@
+{
+  "last_scan": "2026-04-08T00:01:01.381925Z",
+  "scanned_files": {
+    ".claude/config/claude-config.json": {
+      "hash": "d33c45ad1f213afa7a78b2aa618a9c1d3dda636f61f438561218ff9a54be734f",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T21:55:38.606199Z",
+      "linesOfCode": 30
+    },
+    ".claude/settings.local.json": {
+      "hash": "2c9295c64507339bb9033707e852f09f7ceb1282af53cbc510972325f4335696",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T21:55:38.628056Z",
+      "linesOfCode": 17
+    },
+    "claude_desktop_config.json": {
+      "hash": "4ff5429dacabe7573b8ff137ac1fafd895f13399a52c1fe08cc79447fad2554e",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T21:55:38.697765Z",
+      "linesOfCode": 14
+    },
+    "client/package.json": {
+      "hash": "0c6b24e8cd40cf7154db4c284d15594cf3a4f7016876c11685fe201fd1759e15",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T22:47:39.583334Z",
+      "linesOfCode": 29
+    },
+    "client/postcss.config.js": {
+      "hash": "e32657baf631d7c5f4dc67b4b2ee0ec8e7d5b3c41860e09cddce7c0377cd80bc",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T21:55:38.752718Z",
+      "linesOfCode": 6
+    },
+    "client/src/App.tsx": {
+      "hash": "e5f6dbd01f48ae6cc9ec8be0dd2eb4c9e65cc773f7276fe5cb4add88e735351d",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T22:47:39.607027Z",
+      "linesOfCode": 34
+    },
+    "client/src/main.tsx": {
+      "hash": "9253237bf46cc3e63e8f41eeb1dcede2a0620730105f643849ef31a2d2bb113b",
+      "compliance": 95,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-05",
+          "description": "Missing TypeScript types/interfaces",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "client/src/main.tsx"
+        }
+      ],
+      "timestamp": "2026-04-07T21:55:39.219372Z",
+      "linesOfCode": 9
+    },
+    "client/src/pages/HomePage.tsx": {
+      "hash": "eb8eec894f9e5cf2f42b430858f1444ba93bca8ead0bd668b8ad8e20d74060c3",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T22:47:41.163163Z",
+      "linesOfCode": 132
+    },
+    "client/tailwind.config.js": {
+      "hash": "1ae3e29dd593695fd4d539dc9032ab0e2abe769716ed07e9a734deba7fd2e9d2",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T21:55:39.934226Z",
+      "linesOfCode": 11
+    },
+    "client/tsconfig.json": {
+      "hash": "63a85d1d826a750adf97d8b069f1331cf3c978afc7573d0a15a36929f2fa09b1",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T21:55:39.976031Z",
+      "linesOfCode": 26
+    },
+    "client/vite.config.ts": {
+      "hash": "825bba7f68f5cfa0b48d71b97bea4f5c662868cfb3916e5e4db7323837bc0671",
+      "compliance": 95,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-05",
+          "description": "Missing TypeScript types/interfaces",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "client/vite.config.ts"
+        }
+      ],
+      "timestamp": "2026-04-07T21:55:39.994502Z",
+      "linesOfCode": 14
+    },
+    "mcp-server/mcp-bridge.js": {
+      "hash": "b4ce66fe456e06a4ba5122bf5edb7c132dc288d145ac3264c9df6bc9705c1539",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T21:55:40.100780Z",
+      "linesOfCode": 1305
+    },
+    "mcp-server/mcp-config.json": {
+      "hash": "a6251c3a82e30cef1eec24f6720221de0cee960ede0b7f3fd3eb15fafe1fabf4",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T21:55:40.122590Z",
+      "linesOfCode": 19
+    },
+    "mcp-server/templates/test-config.json": {
+      "hash": "c0f49357d57e2a54073b73b12fe9169e0d182bc771cba820a19128a83b2ac196",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T21:55:40.184585Z",
+      "linesOfCode": 166
+    },
+    "server/package.json": {
+      "hash": "954cfb470be37b70178a370e42b3747f78148d604b826095a16df2291bf86eb9",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T23:02:29.260311Z",
+      "linesOfCode": 36
+    },
+    "server/src/app.ts": {
+      "hash": "feb70a2c8c2f785338d599acbe2f2b54f78bcff11a3728533a211ca5578374e9",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-08T00:00:50.453184Z",
+      "linesOfCode": 38
+    },
+    "server/src/config/database.ts": {
+      "hash": "644b3f6711886fe65e6a70372ddaa4d52fd0f0ee38cd365a0d4cc0c43c88c59d",
+      "compliance": 95,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-05",
+          "description": "Missing TypeScript types/interfaces",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/config/database.ts"
+        }
+      ],
+      "timestamp": "2026-04-07T21:55:40.263686Z",
+      "linesOfCode": 13
+    },
+    "server/src/config/env.ts": {
+      "hash": "2d40ef34e1c17c57e8f4065c669dd70381186d498fe519e4df228b0e06aa0aa0",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T22:47:43.625269Z",
+      "linesOfCode": 67
+    },
+    "server/src/controllers/authController.ts": {
+      "hash": "71b4ff6d94912443f81f0e143c0f9188daad5dc294946857f416fd55db5d7cb8",
+      "compliance": 85,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-02",
+          "description": "API JSON definition not found - create it first",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/controllers/authController.ts"
+        }
+      ],
+      "timestamp": "2026-04-08T00:00:50.603489Z",
+      "linesOfCode": 91
+    },
+    "server/src/middleware/auth.ts": {
+      "hash": "9cca868ebb46472f35b29e44dc95a5ba14172fec2d795c7fdadbd30b9f7de944",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T21:55:40.373055Z",
+      "linesOfCode": 32
+    },
+    "server/src/routes/authRoutes.ts": {
+      "hash": "017b37295fac39591c9388beb368f8f55c9225a809529bd3b9d5fc8877dee236",
+      "compliance": 85,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-02",
+          "description": "API JSON definition not found - create it first",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/routes/authRoutes.ts"
+        }
+      ],
+      "timestamp": "2026-04-07T21:59:08.370693Z",
+      "linesOfCode": 22
+    },
+    "server/src/services/DataService.ts": {
+      "hash": "dd50fbe51cf2dc2963f472c844058eeb1737a3de18922f291b5d1d762d493a2c",
+      "compliance": 75,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-11",
+          "description": "Direct database access - use DataService/ORM instead",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/services/DataService.ts"
+        }
+      ],
+      "timestamp": "2026-04-07T21:55:40.782152Z",
+      "linesOfCode": 67
+    },
+    "server/src/services/authService.ts": {
+      "hash": "1cfd38d9fce8cf3786c683e889bdef10123a2f809c6af530b599b172dee1724c",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-08T00:00:54.849794Z",
+      "linesOfCode": 91
+    },
+    "server/src/types/user.ts": {
+      "hash": "9d12075fd47278a5fd69ec69184672ad849d3aa77d377953d01cace452709ad4",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T21:59:09.133409Z",
+      "linesOfCode": 27
+    },
+    "server/tsconfig.json": {
+      "hash": "82d914bd90b38071fee09cc7db97080d40112fd86c0a7def34c8ce56ace02f74",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T22:47:43.645527Z",
+      "linesOfCode": 30
+    },
+    "tests/api_definitions/auth-register.json": {
+      "hash": "6a62f3959aa3702394b757cdfbd8ff0813296bfc860bac95d6a3d25e672fe42a",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T21:59:09.171910Z",
+      "linesOfCode": 36
+    },
+    "tests/config/test-config.json": {
+      "hash": "f4f05308c984b4a2b00c8d85afe70ff2ca228d5895fabad32ee805ae24b52216",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T21:55:40.933038Z",
+      "linesOfCode": 186
+    },
+    "tests/api_definitions/auth-login.json": {
+      "hash": "fa3559c3a2c446c2376cd629f232f668c6736ec788e1003d775c03fe1c5cc213",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T21:59:09.153216Z",
+      "linesOfCode": 35
+    },
+    "server/src/controllers/documentController.ts": {
+      "hash": "ca5ef0558056f4fb70744a126b5f19f6359171d1059ca6a7364fd419a1c21269",
+      "compliance": 85,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-02",
+          "description": "API JSON definition not found - create it first",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/controllers/documentController.ts"
+        }
+      ],
+      "timestamp": "2026-04-08T00:00:50.747968Z",
+      "linesOfCode": 156
+    },
+    "server/src/routes/documentRoutes.ts": {
+      "hash": "aeaf7da9173c54b0c479e9205d9bca6f72b9b5c264c404d86a22659f99c1a5f7",
+      "compliance": 85,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-02",
+          "description": "API JSON definition not found - create it first",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/routes/documentRoutes.ts"
+        }
+      ],
+      "timestamp": "2026-04-08T00:00:50.892499Z",
+      "linesOfCode": 39
+    },
+    "server/src/services/documentService.ts": {
+      "hash": "a105f4b02894d1dc4d25915e7398e2862ac3aea8609fd5cd8f138d6cf006408f",
+      "compliance": 75,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-11",
+          "description": "Direct database access - use DataService/ORM instead",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/services/documentService.ts"
+        }
+      ],
+      "timestamp": "2026-04-07T23:02:30.863422Z",
+      "linesOfCode": 104
+    },
+    "server/src/types/document.ts": {
+      "hash": "45f525909f6137e2bd4dbdf4225b83d9e8a271f082b416d90b65233384bdf1a2",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T23:02:30.883563Z",
+      "linesOfCode": 20
+    },
+    "tests/api_definitions/documents-upload.json": {
+      "hash": "6df281670cb38547bce312fdafbdf876c677feb724469d986ab2549599f91bfa",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T22:00:29.508009Z",
+      "linesOfCode": 36
+    },
+    "tests/api_definitions/documents-list.json": {
+      "hash": "1fcc6af828e48cd5aa5b15c7c5ce65781a990c6895c7aaad28b211f07bda6884",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T22:01:54.013349Z",
+      "linesOfCode": 24
+    },
+    "server/src/controllers/signatureController.ts": {
+      "hash": "f910b604a95c9d4fc9f2bef222bf08d56dc5a50124391629987d9e540ae6e10c",
+      "compliance": 85,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-02",
+          "description": "API JSON definition not found - create it first",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/controllers/signatureController.ts"
+        }
+      ],
+      "timestamp": "2026-04-07T22:20:50.632582Z",
+      "linesOfCode": 93
+    },
+    "server/src/routes/signatureRoutes.ts": {
+      "hash": "9760751fb210e64219d700fb46e548240e9845b12012b8bcacfcc659c230930b",
+      "compliance": 85,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-02",
+          "description": "API JSON definition not found - create it first",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/routes/signatureRoutes.ts"
+        }
+      ],
+      "timestamp": "2026-04-07T22:20:52.039352Z",
+      "linesOfCode": 28
+    },
+    "server/src/services/signatureService.ts": {
+      "hash": "49fab00e9afa2584fbedafdd64632c6daaaea4e20d2b1c0d8f4192a4b76e9714",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-08T00:00:55.031616Z",
+      "linesOfCode": 95
+    },
+    "server/src/types/signature.ts": {
+      "hash": "75340ae5ac937bb8f33efd9cc8d1e3aa61acbb02a11ff50829bc8e2b34e3aa65",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T22:03:07.819882Z",
+      "linesOfCode": 18
+    },
+    "tests/api_definitions/signatures-create.json": {
+      "hash": "bb2ef57302e960aa13eeeea97862f6ee0749d5c80042690c36681e76687bc9bc",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T22:03:07.842144Z",
+      "linesOfCode": 36
+    },
+    "tests/api_definitions/signatures-status.json": {
+      "hash": "65ae2e5998266db2159ec94fd3c307c53396a8082b1427300eb1a6acef24b946",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T22:03:34.880640Z",
+      "linesOfCode": 27
+    },
+    "server/src/controllers/userSignatureController.ts": {
+      "hash": "60c7a6ac57c9a96f24993ae5078530e50d7374e4a1ccfe161f2c8cbedca5768d",
+      "compliance": 85,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-02",
+          "description": "API JSON definition not found - create it first",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/controllers/userSignatureController.ts"
+        }
+      ],
+      "timestamp": "2026-04-07T22:05:45.143091Z",
+      "linesOfCode": 58
+    },
+    "server/src/routes/userSignatureRoutes.ts": {
+      "hash": "e634c41c20752def44b055da1fc8d2b7f750e83d27bd730b8f65bf72b29b21ff",
+      "compliance": 85,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-02",
+          "description": "API JSON definition not found - create it first",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/routes/userSignatureRoutes.ts"
+        }
+      ],
+      "timestamp": "2026-04-07T22:05:45.172371Z",
+      "linesOfCode": 23
+    },
+    "server/src/services/userSignatureService.ts": {
+      "hash": "807fa56f188304faf69de17b02b63f98874febd2a2de6898f95ef8107ce4ec13",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T22:05:45.889673Z",
+      "linesOfCode": 50
+    },
+    "server/src/types/userSignature.ts": {
+      "hash": "b3f5e97653cc7e86c2d6578c15ebf6fc5810658b00c6f486311d5e23c333c249",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T22:05:45.911938Z",
+      "linesOfCode": 15
+    },
+    "tests/api_definitions/user-signatures-create.json": {
+      "hash": "d5c624a569a5d923e8d7d0c4bcf6fb4d472746107c361ee50815057d84e82d70",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T22:05:45.928878Z",
+      "linesOfCode": 34
+    },
+    "tests/api_definitions/user-signatures-list.json": {
+      "hash": "2b2deceb3956f8866516c145e65ebcf9a703fbbf05e0af9cb4d7e1633328d712",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T22:06:13.191785Z",
+      "linesOfCode": 24
+    },
+    "client/src/context/AuthContext.tsx": {
+      "hash": "a78589248da731749dead6b57b238ff5e8e5d25dba029ade48742b39704c1685",
+      "compliance": 97,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-07",
+          "description": "Missing JSDoc comments for exported functions",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "client/src/context/AuthContext.tsx"
+        }
+      ],
+      "timestamp": "2026-04-07T22:08:36.087281Z",
+      "linesOfCode": 68
+    },
+    "client/src/pages/DashboardPage.tsx": {
+      "hash": "14e52b796f04381729762beda45da422ddd0e2e62be0cce0da8f1cdd65c0f3c8",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T23:02:27.732532Z",
+      "linesOfCode": 103
+    },
+    "client/src/pages/LoginPage.tsx": {
+      "hash": "9ce24b68e934993de382599871aa66b94867ff82d72a7e1d5fdae571f4c6b2b2",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T22:47:41.516438Z",
+      "linesOfCode": 62
+    },
+    "client/src/pages/RegisterPage.tsx": {
+      "hash": "bb260aadf1bd15f996b1c1e591c0e2949edc843ae03a7ecf8dd916e7ed860632",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T22:47:41.878883Z",
+      "linesOfCode": 77
+    },
+    "client/src/pages/SignatureRequestPage.tsx": {
+      "hash": "3a3e914553b87c8dc03a8de31c87a2170a8534f89aad7c3213b1f573506dd97a",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T22:47:42.562148Z",
+      "linesOfCode": 59
+    },
+    "client/src/pages/SignaturesPage.tsx": {
+      "hash": "adfefac4bf978650faef6e3532273d066827f276c0e88489cedc7786588d2af2",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T22:47:42.917781Z",
+      "linesOfCode": 88
+    },
+    "client/src/pages/UploadPage.tsx": {
+      "hash": "18d7bc965f7727eea69e2eccc42c721717c5a12c6c20dfb0a78c55fa2dbb649a",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T23:02:28.871349Z",
+      "linesOfCode": 149
+    },
+    "client/src/services/api.ts": {
+      "hash": "3679db2048981381951d41dbbcb37754b4f630255f11961c61f3dbfb30269225",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T22:08:38.509191Z",
+      "linesOfCode": 58
+    },
+    "client/src/pages/DocumentDetailPage.tsx": {
+      "hash": "b814901fc2ac58d3955c3bcf6609342b2a89fa24617358dd79d3a38dbd206305",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-08T00:00:49.939379Z",
+      "linesOfCode": 148
+    },
+    "client/src/pages/SignDocumentPage.tsx": {
+      "hash": "5d01bf96bf7c37c2734fef4477947794272a285c17f35611e1f4092480ec0d2d",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T22:47:42.222114Z",
+      "linesOfCode": 181
+    },
+    "tests/api_definitions/documents-delete.json": {
+      "hash": "ca45f0705e53868b70b51f6314e0767c3b63f0cb619a28219e9716350910947d",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T22:20:53.090028Z",
+      "linesOfCode": 24
+    },
+    "tests/api_definitions/documents-get-by-id.json": {
+      "hash": "9676c612b38cca0ca4568d0dfa791dba037e44a28573680790cb4467e6487214",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T22:20:53.115714Z",
+      "linesOfCode": 32
+    },
+    "tests/api_definitions/signatures-sign.json": {
+      "hash": "48bbb3f912db3d754d600fa92e56ea624a1d4180086ac990b98758f683636f11",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T22:20:53.142577Z",
+      "linesOfCode": 34
+    },
+    "client/src/components/common/Layout.tsx": {
+      "hash": "9d044e28c3df813ff851b9157f55d77c22ac31f3212330fd4b0960a9af398ba6",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-08T00:00:49.111570Z",
+      "linesOfCode": 162
+    },
+    "server/src/middleware/upload.ts": {
+      "hash": "b92506f30917f79dd7fcc8022ab1c4e5a631a2fa482ee12ebc9ecc35925f2722",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-07T23:02:29.403931Z",
+      "linesOfCode": 30
+    },
+    "server/src/controllers/notificationController.ts": {
+      "hash": "20d785201cbd4eaa1631556bf1758e69598ce5783c7e20550fcaf9703fec11d0",
+      "compliance": 85,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-02",
+          "description": "API JSON definition not found - create it first",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/controllers/notificationController.ts"
+        }
+      ],
+      "timestamp": "2026-04-08T00:00:50.816705Z",
+      "linesOfCode": 46
+    },
+    "server/src/routes/notificationRoutes.ts": {
+      "hash": "23ba628eb3860ad4d26a5b2c4981fe7309fe65605ba99ee2dbf6544654e7cb97",
+      "compliance": 85,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-02",
+          "description": "API JSON definition not found - create it first",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/routes/notificationRoutes.ts"
+        }
+      ],
+      "timestamp": "2026-04-08T00:00:53.845548Z",
+      "linesOfCode": 19
+    },
+    "server/src/services/notificationService.ts": {
+      "hash": "3751ca604e62b501f13b36adb24e448c8423b706eaeebca138ab8b4f5799d2ed",
+      "compliance": 75,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-11",
+          "description": "Direct database access - use DataService/ORM instead",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/services/notificationService.ts"
+        }
+      ],
+      "timestamp": "2026-04-08T00:00:54.939333Z",
+      "linesOfCode": 86
+    },
+    "server/src/types/notification.ts": {
+      "hash": "1c487d2e17a072e5b1832b43392100b51fd0dfff4ea02a04380c11a0e90f856a",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-08T00:00:55.099497Z",
+      "linesOfCode": 16
+    }
+  },
+  "registered_apis": {
+    "POST:/register": {
+      "filePath": "server/src/routes/authRoutes.ts",
+      "timestamp": "2026-04-07T21:59:10.587983Z"
+    },
+    "POST:/login": {
+      "filePath": "server/src/routes/authRoutes.ts",
+      "timestamp": "2026-04-07T21:59:10.587986Z"
+    },
+    "POST:/": {
+      "filePath": "server/src/routes/documentRoutes.ts",
+      "timestamp": "2026-04-07T23:02:35.895684Z"
+    },
+    "GET:/": {
+      "filePath": "server/src/routes/notificationRoutes.ts",
+      "timestamp": "2026-04-08T00:01:01.381956Z"
+    },
+    "GET:/:documentId": {
+      "filePath": "server/src/routes/signatureRoutes.ts",
+      "timestamp": "2026-04-07T22:20:57.959353Z"
+    },
+    "GET:/:id": {
+      "filePath": "server/src/routes/documentRoutes.ts",
+      "timestamp": "2026-04-07T23:02:35.895692Z"
+    },
+    "DELETE:/:id": {
+      "filePath": "server/src/routes/documentRoutes.ts",
+      "timestamp": "2026-04-07T23:02:35.895694Z"
+    },
+    "PATCH:/:id/sign": {
+      "filePath": "server/src/routes/signatureRoutes.ts",
+      "timestamp": "2026-04-07T22:20:57.959351Z"
+    },
+    "POST:/api/documents/": {
+      "filePath": "server/src/routes/documentRoutes.ts",
+      "timestamp": "2026-04-08T00:01:01.381940Z"
+    },
+    "GET:/api/documents/": {
+      "filePath": "server/src/routes/documentRoutes.ts",
+      "timestamp": "2026-04-08T00:01:01.381944Z"
+    },
+    "GET:/api/documents/:id/download": {
+      "filePath": "server/src/routes/documentRoutes.ts",
+      "timestamp": "2026-04-08T00:01:01.381946Z"
+    },
+    "GET:/api/documents/:id": {
+      "filePath": "server/src/routes/documentRoutes.ts",
+      "timestamp": "2026-04-08T00:01:01.381950Z"
+    },
+    "DELETE:/api/documents/:id": {
+      "filePath": "server/src/routes/documentRoutes.ts",
+      "timestamp": "2026-04-08T00:01:01.381953Z"
+    },
+    "PATCH:/read": {
+      "filePath": "server/src/routes/notificationRoutes.ts",
+      "timestamp": "2026-04-08T00:01:01.381958Z"
+    }
+  }
+}

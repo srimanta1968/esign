@@ -1,0 +1,30 @@
+{
+  "endpoint": "/api/workflows/:id/reminders",
+  "method": "PUT",
+  "taskId": "81723ecd-acd9-443c-b3e3-351a0410e1c3",
+  "requiresAuth": true,
+  "priority": 37,
+  "dependsOn": ["POST /api/workflows"],
+  "testCases": [
+    {
+      "name": "Configure reminder intervals for workflow recipients",
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}",
+        "Content-Type": "application/json"
+      },
+      "urlParams": {
+        "id": "{{cache:workflows.create.response.data.workflow.id}}"
+      },
+      "payload": {
+        "reminder_interval_hours": 24
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "reminders": "array"
+        }
+      }
+    }
+  ]
+}

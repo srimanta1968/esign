@@ -1,0 +1,25 @@
+{
+  "timestamp": "2026-04-07T22:08:42.292916Z",
+  "summary": {
+    "totalViolations": 1,
+    "critical": 0,
+    "major": 0,
+    "minor": 1,
+    "filesAffected": 1,
+    "filesScanned": 9,
+    "avgCompliance": 99.67
+  },
+  "violationsByFile": {
+    "client/src/context/AuthContext.tsx": [
+      {
+        "line": 0,
+        "severity": "minor",
+        "rule": "SC-07",
+        "message": "",
+        "codeSnippet": "",
+        "suggestedFix": ""
+      }
+    ]
+  },
+  "llmFixPrompt": "\nPlease fix the following 1 coding standard violation(s) in my codebase:\n\n\n\ud83d\udcc1 File: client/src/context/AuthContext.tsx\n   - Line 0: SC-07 - \n\nPlease:\n1. Open each file and navigate to the specified line numbers\n2. Apply the suggested fixes or refactor the code to comply with the coding standards\n3. Ensure the fixes don't break existing functionality\n4. Run tests after making changes\n"
+}

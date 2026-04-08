@@ -1,0 +1,61 @@
+{
+  "taskId": "84fee3fb-6aa2-42d7-a147-b149fa3d3622",
+  "endpoint": "GET /api/notifications/stream",
+  "description": "Server-Sent Events (SSE) endpoint for real-time in-app notifications with heartbeat",
+  "auth": "Bearer JWT",
+  "request": {
+    "method": "GET",
+    "path": "/api/notifications/stream",
+    "headers": {
+      "Authorization": "Bearer <jwt_token>",
+      "Accept": "text/event-stream"
+    }
+  },
+  "response": {
+    "success": {
+      "status": 200,
+      "headers": {
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive"
+      },
+      "events": {
+        "connected": {
+          "event": "connected",
+          "data": {
+            "userId": "uuid",
+            "connectedAt": "ISO 8601 timestamp"
+          }
+        },
+        "notification": {
+          "event": "notification",
+          "data": {
+            "id": "uuid",
+            "user_id": "uuid",
+            "type": "string",
+            "message": "string",
+            "is_read": false,
+            "action_url": "string | null",
+            "created_at": "ISO 8601 timestamp"
+          }
+        },
+        "heartbeat": {
+          "comment": ":heartbeat (every 30 seconds)"
+        }
+      }
+    },
+    "error_401": {
+      "status": 401,
+      "body": {
+        "success": false,
+        "error": "Access token required"
+      }
+    }
+  },
+  "features": {
+    "connection_tracking": "Tracks which users are connected via SSE",
+    "push_to_user": "notificationService.pushToUser(userId, notification) broadcasts to specific user",
+    "heartbeat": "Sends :heartbeat comment every 30 seconds to keep connection alive",
+    "auto_cleanup": "Dead connections are cleaned up on heartbeat and send failures"
+  }
+}

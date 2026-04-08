@@ -1,0 +1,81 @@
+{
+  "endpoint": "/api/audit-logs",
+  "method": "GET",
+  "taskId": "a77999c6-ce51-4e46-ac6f-69c26b51d3ec",
+  "requiresAuth": true,
+  "priority": 10,
+  "dependsOn": ["POST /api/auth/register"],
+  "testCases": [
+    {
+      "name": "Search audit logs (admin only)",
+      "headers": {
+        "Authorization": "Bearer {{captured:auth.register.response.data.token}}"
+      },
+      "queryParams": {
+        "page": "1",
+        "limit": "50"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "items": "array",
+          "total": "number",
+          "page": "number",
+          "totalPages": "number"
+        }
+      }
+    },
+    {
+      "name": "Search audit logs with date filter",
+      "headers": {
+        "Authorization": "Bearer {{captured:auth.register.response.data.token}}"
+      },
+      "queryParams": {
+        "dateFrom": "2024-01-01T00:00:00Z",
+        "dateTo": "2030-12-31T23:59:59Z",
+        "page": "1",
+        "limit": "10"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "items": "array",
+          "total": "number",
+          "page": "number",
+          "totalPages": "number"
+        }
+      }
+    },
+    {
+      "name": "Search audit logs with action filter",
+      "headers": {
+        "Authorization": "Bearer {{captured:auth.register.response.data.token}}"
+      },
+      "queryParams": {
+        "action": "GET",
+        "page": "1",
+        "limit": "50"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "items": "array",
+          "total": "number",
+          "page": "number",
+          "totalPages": "number"
+        }
+      }
+    },
+    {
+      "name": "Reject unauthenticated access",
+      "expectedStatus": 401,
+      "expectedResponse": {
+        "success": false,
+        "error": "string"
+      }
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "endpoint": "/api/compliance/esign-metadata/:signatureId",
+  "method": "GET",
+  "taskId": "a9068772-e635-4386-bea3-f141a08245bd",
+  "requiresAuth": true,
+  "priority": 33,
+  "dependsOn": ["POST /api/signatures"],
+  "testCases": [
+    {
+      "name": "Get ESIGN/UETA compliance data for a signature",
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
+      },
+      "urlParams": {
+        "signatureId": "{{cache:signatures.create.response.data.signature.id}}"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "complianceMetadata": {
+            "id": "string",
+            "signature_id": "string",
+            "signer_ip": "string",
+            "user_agent": "string",
+            "consent_given": "boolean",
+            "consent_timestamp": "string",
+            "esign_compliant": "boolean"
+          }
+        }
+      }
+    },
+    {
+      "name": "Return 404 for signature without compliance metadata",
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
+      },
+      "urlParams": {
+        "signatureId": "00000000-0000-0000-0000-000000000000"
+      },
+      "expectedStatus": 404,
+      "expectedResponse": {
+        "success": false,
+        "error": "string"
+      }
+    }
+  ]
+}

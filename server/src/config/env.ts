@@ -23,6 +23,15 @@ interface RateLimitConfig {
   maxRequests: number;
 }
 
+interface S3Config {
+  region: string;
+  accessKeyId: string;
+  secretAccessKey: string;
+  bucket: string;
+  prefix: string;
+  enabled: boolean;
+}
+
 interface AppConfig {
   nodeEnv: string;
   port: number;
@@ -35,6 +44,8 @@ interface AppConfig {
   logFormat: string;
   rateLimit: RateLimitConfig;
   bodyLimit: string;
+  s3: S3Config;
+  frontendUrl: string;
 }
 
 export const config: AppConfig = {
@@ -81,4 +92,17 @@ export const config: AppConfig = {
 
   // Body parser
   bodyLimit: process.env.BODY_PARSER_LIMIT || '10mb',
+
+  // AWS S3
+  s3: {
+    region: process.env.S3_REGION || process.env.AWS_REGION || 'us-east-1',
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
+    bucket: process.env.S3_BUCKET || '',
+    prefix: process.env.S3_PREFIX || 'edocs',
+    enabled: !!(process.env.S3_BUCKET && process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY),
+  },
+
+  // Frontend URL (for signing email links)
+  frontendUrl: process.env.FRONTEND_URL || 'http://localhost:5173',
 };

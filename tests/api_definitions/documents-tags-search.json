@@ -1,0 +1,182 @@
+{
+  "endpoints": [
+    {
+      "endpoint": "/api/documents/:id/tags",
+      "method": "POST",
+      "taskId": "12c1c8f0-ce8b-4116-9d4b-7ee1242db211",
+      "requiresAuth": true,
+      "priority": 11,
+      "dependsOn": ["POST /api/documents"],
+      "description": "Add tags to a document",
+      "testCases": [
+        {
+          "name": "Add tags to document",
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.register.response.data.token}}",
+            "Content-Type": "application/json"
+          },
+          "payload": {
+            "tags": ["contract", "legal", "2024"]
+          },
+          "expectedStatus": 201,
+          "expectedResponse": {
+            "success": true,
+            "data": {
+              "tags": "array"
+            }
+          }
+        },
+        {
+          "name": "Reject empty tags array",
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.register.response.data.token}}",
+            "Content-Type": "application/json"
+          },
+          "payload": {
+            "tags": []
+          },
+          "expectedStatus": 400,
+          "expectedResponse": {
+            "success": false,
+            "error": "string"
+          }
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/documents/:id/tags",
+      "method": "GET",
+      "taskId": "12c1c8f0-ce8b-4116-9d4b-7ee1242db211",
+      "requiresAuth": true,
+      "priority": 11,
+      "dependsOn": ["POST /api/documents/:id/tags"],
+      "description": "Get all tags for a document",
+      "testCases": [
+        {
+          "name": "Get document tags",
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
+          },
+          "expectedStatus": 200,
+          "expectedResponse": {
+            "success": true,
+            "data": {
+              "tags": "array"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/documents/:id/tags/:tag",
+      "method": "DELETE",
+      "taskId": "12c1c8f0-ce8b-4116-9d4b-7ee1242db211",
+      "requiresAuth": true,
+      "priority": 11,
+      "dependsOn": ["POST /api/documents/:id/tags"],
+      "description": "Remove a tag from a document",
+      "testCases": [
+        {
+          "name": "Remove tag from document",
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
+          },
+          "expectedStatus": 200,
+          "expectedResponse": {
+            "success": true,
+            "data": {
+              "message": "string"
+            }
+          }
+        },
+        {
+          "name": "Remove non-existent tag returns 404",
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
+          },
+          "expectedStatus": 404,
+          "expectedResponse": {
+            "success": false,
+            "error": "string"
+          }
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/documents/search",
+      "method": "GET",
+      "taskId": "12c1c8f0-ce8b-4116-9d4b-7ee1242db211",
+      "requiresAuth": true,
+      "priority": 11,
+      "dependsOn": ["POST /api/documents"],
+      "description": "Search documents by query, tags, type with sorting. Response time <2s.",
+      "testCases": [
+        {
+          "name": "Search by text query",
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
+          },
+          "queryParams": {
+            "q": "contract"
+          },
+          "expectedStatus": 200,
+          "expectedResponse": {
+            "success": true,
+            "data": {
+              "documents": "array"
+            }
+          }
+        },
+        {
+          "name": "Search by tags",
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
+          },
+          "queryParams": {
+            "tags": "legal,contract"
+          },
+          "expectedStatus": 200,
+          "expectedResponse": {
+            "success": true,
+            "data": {
+              "documents": "array"
+            }
+          }
+        },
+        {
+          "name": "Search by file type",
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
+          },
+          "queryParams": {
+            "type": "pdf"
+          },
+          "expectedStatus": 200,
+          "expectedResponse": {
+            "success": true,
+            "data": {
+              "documents": "array"
+            }
+          }
+        },
+        {
+          "name": "Search with sorting",
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
+          },
+          "queryParams": {
+            "q": "doc",
+            "sort": "name_asc"
+          },
+          "expectedStatus": 200,
+          "expectedResponse": {
+            "success": true,
+            "data": {
+              "documents": "array"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

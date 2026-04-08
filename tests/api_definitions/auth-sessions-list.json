@@ -1,0 +1,21 @@
+{
+  "endpoint": "/api/auth/sessions",
+  "method": "GET",
+  "taskId": "75c9b422-947c-4a41-b3d4-087cff1f0285",
+  "requiresAuth": true,
+  "priority": 13,
+  "dependsOn": ["POST /api/auth/refresh-token"],
+  "testCases": [
+    {
+      "name": "List active sessions for authenticated user",
+      "headers": {
+        "Authorization": "Bearer {{captured:auth.refreshToken.response.data.token}}"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": "array"
+      }
+    }
+  ]
+}

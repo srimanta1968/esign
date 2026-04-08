@@ -4,11 +4,20 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import path from 'path';
 import { config } from './config/env';
+import { MigrationService } from './services/migrationService';
 import authRoutes from './routes/authRoutes';
 import documentRoutes from './routes/documentRoutes';
 import signatureRoutes from './routes/signatureRoutes';
 import userSignatureRoutes from './routes/userSignatureRoutes';
 import notificationRoutes from './routes/notificationRoutes';
+import userRoutes from './routes/userRoutes';
+import organizationRoutes from './routes/organizationRoutes';
+import workflowRoutes from './routes/workflowRoutes';
+import auditRoutes from './routes/auditRoutes';
+import complianceRoutes from './routes/complianceRoutes';
+import analyticsRoutes from './routes/analyticsRoutes';
+import signingRoutes from './routes/signingRoutes';
+import { auditMiddleware } from './middleware/auditMiddleware';
 
 const app: Application = express();
 
@@ -30,12 +39,22 @@ app.get('/health', (_req: Request, res: Response) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// Audit middleware - logs all API requests (placed before routes, after body parsing)
+app.use(auditMiddleware);
+
 // API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/signatures', signatureRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/user-signatures', userSignatureRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/organizations', organizationRoutes);
+app.use('/api/workflows', workflowRoutes);
+app.use('/api/audit-logs', auditRoutes);
+app.use('/api/compliance', complianceRoutes);
+app.use('/api/analytics', analyticsRoutes);
+app.use('/api/sign', signingRoutes);
 
 // Error handling
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
@@ -45,8 +64,16 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 
 const PORT: number = config.port || 3000;
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// Run migrations on startup then start server
+MigrationService.runMigrations().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}).catch((err) => {
+  console.error('Migration failed, starting server anyway:', err);
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
 });
 
 export default app;

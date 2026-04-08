@@ -20,6 +20,9 @@ export const upload: multer.Multer = multer({
       'application/pdf',
       'application/msword',
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'application/vnd.ms-excel',
+      'text/plain',
       'image/png',
       'image/jpeg',
     ];
@@ -27,7 +30,7 @@ export const upload: multer.Multer = multer({
     if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error('Invalid file type. Allowed: PDF, DOC, DOCX, PNG, JPEG'));
+      cb(new Error('Invalid file type. Allowed: PDF, DOC, DOCX, XLSX, XLS, TXT, PNG, JPEG'));
     }
   },
 });

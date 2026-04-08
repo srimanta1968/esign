@@ -7,7 +7,15 @@
       "mcp__projexlight__projexlight_init_session",
       "mcp__projexlight__projexlight_self_check",
       "mcp__projexlight__projexlight_get_instruction",
-      "mcp__projexlight__projexlight_validate"
+      "mcp__projexlight__projexlight_validate",
+      "mcp__projexlight__projexlight_complete_task",
+      "Bash(wc:*)",
+      "mcp__projexlight__projexlight_get_features_by_epic",
+      "mcp__projexlight__projexlight_get_epic",
+      "Bash(npm list:*)",
+      "Bash(npx tsc:*)",
+      "mcp__projexlight__projexlight_submit_feature_validation",
+      "Bash(npm install:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

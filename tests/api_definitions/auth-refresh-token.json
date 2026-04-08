@@ -1,0 +1,44 @@
+{
+  "endpoint": "/api/auth/refresh-token",
+  "method": "POST",
+  "taskId": "75c9b422-947c-4a41-b3d4-087cff1f0285",
+  "requiresAuth": false,
+  "priority": 12,
+  "dependsOn": ["POST /api/auth/login"],
+  "captureResponse": {
+    "auth.refreshToken.response.data.token": "data.token",
+    "auth.refreshToken.response.data.session.id": "data.session.id"
+  },
+  "testCases": [
+    {
+      "name": "Refresh JWT token",
+      "headers": {
+        "Authorization": "Bearer {{captured:auth.login.response.data.token}}"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "token": "string",
+          "session": {
+            "id": "string",
+            "user_id": "string",
+            "ip_address": "string",
+            "user_agent": "string",
+            "expires_at": "string",
+            "created_at": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "Reject refresh without token",
+      "headers": {},
+      "expectedStatus": 400,
+      "expectedResponse": {
+        "success": false,
+        "error": "Current token is required"
+      }
+    }
+  ]
+}

@@ -1,24 +1,27 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ApiService } from '../services/api';
+import SignaturePadComponent from '../components/SignaturePadComponent';
+import FeedbackModal from '../components/FeedbackModal';
 
 interface UserSignature {
   id: string;
   user_id: string;
   signature_type: string;
+  signature_data?: string;
 }
 
 function SignDocumentPage() {
   const { signatureId } = useParams<{ signatureId: string }>();
   const navigate = useNavigate();
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [isDrawing, setIsDrawing] = useState<boolean>(false);
   const [savedSignatures, setSavedSignatures] = useState<UserSignature[]>([]);
   const [selectedSignatureId, setSelectedSignatureId] = useState<string>('');
   const [mode, setMode] = useState<'draw' | 'saved'>('draw');
   const [signing, setSigning] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<string>('');
+  const [drawnDataUrl, setDrawnDataUrl] = useState<string>('');
+  const [showFeedback, setShowFeedback] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchSavedSignatures = async (): Promise<void> => {
@@ -35,58 +38,8 @@ function SignDocumentPage() {
     fetchSavedSignatures();
   }, []);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx: CanvasRenderingContext2D | null = canvas.getContext('2d');
-    if (!ctx) return;
-
-    canvas.width = canvas.offsetWidth;
-    canvas.height = 200;
-    ctx.strokeStyle = '#1e3a5f';
-    ctx.lineWidth = 2;
-    ctx.lineCap = 'round';
-  }, []);
-
-  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>): void => {
-    setIsDrawing(true);
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx: CanvasRenderingContext2D | null = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const rect: DOMRect = canvas.getBoundingClientRect();
-    const clientX: number = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    const clientY: number = 'touches' in e ? e.touches[0].clientY : e.clientY;
-    ctx.beginPath();
-    ctx.moveTo(clientX - rect.left, clientY - rect.top);
-  };
-
-  const draw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>): void => {
-    if (!isDrawing) return;
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx: CanvasRenderingContext2D | null = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const rect: DOMRect = canvas.getBoundingClientRect();
-    const clientX: number = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    const clientY: number = 'touches' in e ? e.touches[0].clientY : e.clientY;
-    ctx.lineTo(clientX - rect.left, clientY - rect.top);
-    ctx.stroke();
-  };
-
-  const stopDrawing = (): void => {
-    setIsDrawing(false);
-  };
-
-  const clearCanvas = (): void => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx: CanvasRenderingContext2D | null = canvas.getContext('2d');
-    if (!ctx) return;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const handleDrawnSignature = (dataUrl: string): void => {
+    setDrawnDataUrl(dataUrl);
   };
 
   const handleSign = async (): Promise<void> => {
@@ -95,14 +48,29 @@ function SignDocumentPage() {
     setSigning(true);
 
     try {
+      const body: Record<string, any> = {};
+      if (mode === 'saved' && selectedSignatureId) {
+        body.user_signature_id = selectedSignatureId;
+      } else if (mode === 'draw' && drawnDataUrl) {
+        body.signature_data = drawnDataUrl;
+      }
+
       const response = await ApiService.request(`/signatures/${signatureId}/sign`, {
         method: 'PATCH',
-        body: JSON.stringify({ user_signature_id: selectedSignatureId || null }),
+        body: JSON.stringify(body),
       });
 
       if (response.success) {
         setSuccess('Document signed successfully!');
-        setTimeout(() => navigate('/dashboard'), 1500);
+        // Track analytics event
+        ApiService.post('/analytics/signature-event', {
+          event_type: 'document_signed',
+          signature_id: signatureId,
+        }).catch(() => {});
+        setShowFeedback(true);
+        setTimeout(() => {
+          if (!showFeedback) navigate('/dashboard');
+        }, 3000);
       } else {
         setError(response.error || 'Failed to sign document');
       }
@@ -138,29 +106,20 @@ function SignDocumentPage() {
 
         {mode === 'draw' ? (
           <div>
-            <p className="text-sm text-gray-600 mb-2">Draw your signature below (mouse, touch, or stylus):</p>
-            <canvas
-              ref={canvasRef}
-              className="w-full border-2 border-dashed border-gray-300 rounded-lg cursor-crosshair bg-white"
-              style={{ touchAction: 'none' }}
-              onMouseDown={startDrawing}
-              onMouseMove={draw}
-              onMouseUp={stopDrawing}
-              onMouseLeave={stopDrawing}
-              onTouchStart={startDrawing}
-              onTouchMove={draw}
-              onTouchEnd={stopDrawing}
-            />
-            <button onClick={clearCanvas} className="mt-2 text-sm text-gray-500 hover:text-gray-700">
-              Clear
-            </button>
+            <p className="text-sm text-gray-600 mb-3">Draw your signature below (mouse, touch, or stylus):</p>
+            <SignaturePadComponent onSave={handleDrawnSignature} height={200} />
+            {drawnDataUrl && (
+              <div className="mt-4 p-3 bg-green-50 rounded-lg">
+                <p className="text-sm text-green-700 font-medium">Signature captured. Click "Apply Signature" to proceed.</p>
+              </div>
+            )}
           </div>
         ) : (
           <div>
             {savedSignatures.length === 0 ? (
               <div className="text-center py-8">
                 <p className="text-gray-500 mb-4">No saved signatures found.</p>
-                <Link to="/signatures" className="text-indigo-600 font-medium hover:text-indigo-700">Create a signature first</Link>
+                <Link to="/signatures/create" className="text-indigo-600 font-medium hover:text-indigo-700">Create a signature first</Link>
               </div>
             ) : (
               <div className="space-y-2">
@@ -177,7 +136,12 @@ function SignDocumentPage() {
                       onChange={() => setSelectedSignatureId(sig.id)}
                       className="mr-3"
                     />
-                    <span className="font-medium text-gray-900">{sig.signature_type}</span>
+                    <div className="flex items-center gap-3">
+                      {sig.signature_data && (
+                        <img src={sig.signature_data} alt="Signature" className="h-8 object-contain" />
+                      )}
+                      <span className="font-medium text-gray-900 capitalize">{sig.signature_type}</span>
+                    </div>
                   </label>
                 ))}
               </div>
@@ -186,16 +150,33 @@ function SignDocumentPage() {
         )}
       </div>
 
-      <div className="flex gap-4">
+      <div className="flex gap-4 items-center">
         <button
           onClick={handleSign}
-          disabled={signing}
+          disabled={signing || (mode === 'draw' && !drawnDataUrl) || (mode === 'saved' && !selectedSignatureId)}
           className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50"
         >
           {signing ? 'Signing...' : 'Apply Signature'}
         </button>
+        <Link
+          to={`/sign/${signatureId}/confirm`}
+          className="text-indigo-600 hover:text-indigo-700 font-medium text-sm"
+        >
+          Review Before Signing
+        </Link>
         <Link to="/dashboard" className="px-6 py-2 text-gray-600 hover:text-gray-800 font-medium">Cancel</Link>
       </div>
+
+      {/* Feedback modal after signing */}
+      {showFeedback && signatureId && (
+        <FeedbackModal
+          signatureId={signatureId}
+          onClose={() => {
+            setShowFeedback(false);
+            navigate('/dashboard');
+          }}
+        />
+      )}
     </div>
   );
 }

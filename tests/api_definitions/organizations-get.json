@@ -1,0 +1,43 @@
+{
+  "endpoint": "/api/organizations/:id",
+  "method": "GET",
+  "taskId": "949ffcb1-b35b-4cc6-b5d4-8aa0b03ddfba",
+  "requiresAuth": true,
+  "priority": 11,
+  "dependsOn": ["POST /api/organizations"],
+  "testCases": [
+    {
+      "name": "Get organization by ID",
+      "headers": {
+        "Authorization": "Bearer {{captured:auth.register.response.data.token}}"
+      },
+      "urlParams": {
+        "id": "{{captured:organizations.create.response.data.id}}"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "id": "string",
+          "name": "string",
+          "slug": "string",
+          "created_at": "string"
+        }
+      }
+    },
+    {
+      "name": "Return 404 for non-existing organization",
+      "headers": {
+        "Authorization": "Bearer {{captured:auth.register.response.data.token}}"
+      },
+      "urlParams": {
+        "id": "00000000-0000-0000-0000-000000000000"
+      },
+      "expectedStatus": 404,
+      "expectedResponse": {
+        "success": false,
+        "error": "Organization not found"
+      }
+    }
+  ]
+}

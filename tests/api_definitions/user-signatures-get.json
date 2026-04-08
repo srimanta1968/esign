@@ -1,0 +1,44 @@
+{
+  "endpoint": "/api/user-signatures/:id",
+  "method": "GET",
+  "taskId": "935f9534-4faf-403d-879b-eca24e5ea85b",
+  "requiresAuth": true,
+  "priority": 31,
+  "dependsOn": ["POST /api/user-signatures"],
+  "testCases": [
+    {
+      "name": "Get a single signature by ID with type info",
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
+      },
+      "urlParams": {
+        "id": "{{cache:userSignatures.createTyped.response.data.userSignature.id}}"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "userSignature": {
+            "id": "string",
+            "user_id": "string",
+            "signature_type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "Return 404 for non-existent signature",
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
+      },
+      "urlParams": {
+        "id": "00000000-0000-0000-0000-000000000000"
+      },
+      "expectedStatus": 404,
+      "expectedResponse": {
+        "success": false,
+        "error": "string"
+      }
+    }
+  ]
+}

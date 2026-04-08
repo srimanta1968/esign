@@ -1,0 +1,80 @@
+{
+  "endpoint": "/api/signatures/:id/confirm",
+  "method": "POST",
+  "taskId": "771def97-a286-4df4-a340-8068549bdf5b",
+  "requiresAuth": true,
+  "priority": 32,
+  "dependsOn": ["POST /api/signatures"],
+  "testCases": [
+    {
+      "name": "Confirm a signature application",
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}",
+        "Content-Type": "application/json"
+      },
+      "urlParams": {
+        "id": "{{cache:signatures.create.response.data.signature.id}}"
+      },
+      "payload": {
+        "confirmation_status": "confirmed"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "signature": {
+            "id": "string",
+            "document_id": "string",
+            "signer_email": "string",
+            "status": "string",
+            "confirmation_status": "confirmed"
+          },
+          "email": {
+            "sent": "boolean"
+          }
+        }
+      }
+    },
+    {
+      "name": "Reject a signature application",
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}",
+        "Content-Type": "application/json"
+      },
+      "urlParams": {
+        "id": "{{cache:signatures.create.response.data.signature.id}}"
+      },
+      "payload": {
+        "confirmation_status": "rejected"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "signature": {
+            "id": "string",
+            "confirmation_status": "rejected"
+          }
+        }
+      }
+    },
+    {
+      "name": "Fail with invalid confirmation_status",
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}",
+        "Content-Type": "application/json"
+      },
+      "urlParams": {
+        "id": "{{cache:signatures.create.response.data.signature.id}}"
+      },
+      "payload": {
+        "confirmation_status": "invalid_status"
+      },
+      "expectedStatus": 400,
+      "expectedResponse": {
+        "success": false,
+        "error": "string"
+      }
+    }
+  ]
+}

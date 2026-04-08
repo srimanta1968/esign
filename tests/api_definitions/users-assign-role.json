@@ -1,0 +1,51 @@
+{
+  "endpoint": "/api/users/:id/role",
+  "method": "PUT",
+  "taskId": "b7c9c4a1-ea4a-4051-9dd9-de881cfef3bf",
+  "requiresAuth": true,
+  "priority": 9,
+  "dependsOn": ["POST /api/auth/register", "GET /api/users"],
+  "testCases": [
+    {
+      "name": "Assign role to a user (admin only)",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer {{captured:auth.register.response.data.token}}"
+      },
+      "urlParams": {
+        "id": "{{captured:auth.register.response.data.user.id}}"
+      },
+      "payload": {
+        "role": "admin"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "id": "string",
+          "email": "string",
+          "name": "string",
+          "role": "admin"
+        }
+      }
+    },
+    {
+      "name": "Reject invalid role",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer {{captured:auth.register.response.data.token}}"
+      },
+      "urlParams": {
+        "id": "{{captured:auth.register.response.data.user.id}}"
+      },
+      "payload": {
+        "role": "superadmin"
+      },
+      "expectedStatus": 400,
+      "expectedResponse": {
+        "success": false,
+        "error": "Invalid role"
+      }
+    }
+  ]
+}

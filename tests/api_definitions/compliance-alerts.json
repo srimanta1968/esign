@@ -1,0 +1,21 @@
+{
+  "endpoint": "/api/compliance/alerts",
+  "method": "GET",
+  "taskId": "c1e21f09-7fe1-4a27-957d-c228d9905808",
+  "requiresAuth": true,
+  "priority": 11,
+  "dependsOn": ["POST /api/auth/register"],
+  "testCases": [
+    {
+      "name": "Get triggered alerts (admin only)",
+      "headers": {
+        "Authorization": "Bearer {{captured:auth.register.response.data.token}}"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": "array"
+      }
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "endpoint": "/api/auth/sso/:provider",
+  "method": "GET",
+  "taskId": "68784f2e-0044-4bf7-bdf2-f6ff912dc6ff",
+  "requiresAuth": false,
+  "priority": 5,
+  "dependsOn": [],
+  "testCases": [
+    {
+      "name": "Get Google SSO redirect URL",
+      "urlParams": {
+        "provider": "google"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "authUrl": "string",
+          "provider": "google"
+        }
+      }
+    },
+    {
+      "name": "Reject unsupported SSO provider",
+      "urlParams": {
+        "provider": "unsupported"
+      },
+      "expectedStatus": 400,
+      "expectedResponse": {
+        "success": false,
+        "error": "string"
+      }
+    }
+  ]
+}

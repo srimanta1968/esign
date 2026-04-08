@@ -1,0 +1,175 @@
+{
+  "endpoints": [
+    {
+      "endpoint": "/api/documents/templates",
+      "method": "POST",
+      "taskId": "1e189b39-0162-4d9a-8f29-a80ee2686b52",
+      "requiresAuth": true,
+      "priority": 11,
+      "dependsOn": ["POST /api/auth/register"],
+      "description": "Create a document template",
+      "testCases": [
+        {
+          "name": "Create template from file_path",
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.register.response.data.token}}",
+            "Content-Type": "application/json"
+          },
+          "payload": {
+            "name": "{{dynamic:text}}",
+            "description": "{{dynamic:text}}",
+            "file_path": "/uploads/template.pdf"
+          },
+          "expectedStatus": 201,
+          "expectedResponse": {
+            "success": true,
+            "data": {
+              "template": {
+                "id": "string",
+                "user_id": "string",
+                "name": "string",
+                "description": "string",
+                "file_path": "string",
+                "created_at": "string",
+                "updated_at": "string"
+              }
+            }
+          }
+        },
+        {
+          "name": "Create template from existing document",
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.register.response.data.token}}",
+            "Content-Type": "application/json"
+          },
+          "payload": {
+            "name": "{{dynamic:text}}",
+            "description": "{{dynamic:text}}",
+            "document_id": "{{cache:documents.create.response.data.document.id}}"
+          },
+          "expectedStatus": 201,
+          "expectedResponse": {
+            "success": true,
+            "data": {
+              "template": {
+                "id": "string",
+                "user_id": "string",
+                "name": "string",
+                "description": "string",
+                "file_path": "string",
+                "created_at": "string",
+                "updated_at": "string"
+              }
+            }
+          }
+        },
+        {
+          "name": "Reject template without name",
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.register.response.data.token}}",
+            "Content-Type": "application/json"
+          },
+          "payload": {
+            "description": "No name provided"
+          },
+          "expectedStatus": 400,
+          "expectedResponse": {
+            "success": false,
+            "error": "string"
+          }
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/documents/templates",
+      "method": "GET",
+      "taskId": "1e189b39-0162-4d9a-8f29-a80ee2686b52",
+      "requiresAuth": true,
+      "priority": 11,
+      "dependsOn": ["POST /api/auth/register"],
+      "description": "List all templates for the user",
+      "testCases": [
+        {
+          "name": "List templates",
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
+          },
+          "expectedStatus": 200,
+          "expectedResponse": {
+            "success": true,
+            "data": {
+              "templates": "array"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/documents/templates/:id",
+      "method": "GET",
+      "taskId": "1e189b39-0162-4d9a-8f29-a80ee2686b52",
+      "requiresAuth": true,
+      "priority": 11,
+      "dependsOn": ["POST /api/documents/templates"],
+      "description": "Get a single template by ID",
+      "testCases": [
+        {
+          "name": "Get template by ID",
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
+          },
+          "expectedStatus": 200,
+          "expectedResponse": {
+            "success": true,
+            "data": {
+              "template": {
+                "id": "string",
+                "user_id": "string",
+                "name": "string",
+                "description": "string",
+                "file_path": "string",
+                "created_at": "string",
+                "updated_at": "string"
+              }
+            }
+          }
+        },
+        {
+          "name": "Get non-existent template returns 404",
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
+          },
+          "expectedStatus": 404,
+          "expectedResponse": {
+            "success": false,
+            "error": "string"
+          }
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/documents/templates/:id",
+      "method": "DELETE",
+      "taskId": "1e189b39-0162-4d9a-8f29-a80ee2686b52",
+      "requiresAuth": true,
+      "priority": 11,
+      "dependsOn": ["POST /api/documents/templates"],
+      "description": "Delete a template",
+      "testCases": [
+        {
+          "name": "Delete template",
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
+          },
+          "expectedStatus": 200,
+          "expectedResponse": {
+            "success": true,
+            "data": {
+              "message": "string"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

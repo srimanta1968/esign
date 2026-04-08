@@ -34,8 +34,17 @@ export class DocumentController {
         return;
       }
 
+      // Validate MIME type server-side
+      if (!DocumentService.validateMimeType(file.mimetype)) {
+        res.status(400).json({
+          success: false,
+          error: 'Invalid file type. Allowed: PDF, DOC, DOCX, XLSX, XLS, TXT, PNG, JPEG',
+        });
+        return;
+      }
+
       const filePath: string = `/uploads/${file.filename}`;
-      const document = await DocumentService.upload(userId, filePath, file.originalname);
+      const document = await DocumentService.upload(userId, filePath, file.originalname, file.mimetype, file.size);
 
       res.status(201).json({
         success: true,

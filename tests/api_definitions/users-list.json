@@ -1,0 +1,21 @@
+{
+  "endpoint": "/api/users",
+  "method": "GET",
+  "taskId": "b7c9c4a1-ea4a-4051-9dd9-de881cfef3bf",
+  "requiresAuth": true,
+  "priority": 8,
+  "dependsOn": ["POST /api/auth/register"],
+  "testCases": [
+    {
+      "name": "List all users (admin only)",
+      "headers": {
+        "Authorization": "Bearer {{captured:auth.register.response.data.token}}"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": "array"
+      }
+    }
+  ]
+}

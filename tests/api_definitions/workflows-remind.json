@@ -1,0 +1,26 @@
+{
+  "endpoint": "/api/workflows/:id/remind",
+  "method": "POST",
+  "taskId": "81723ecd-acd9-443c-b3e3-351a0410e1c3",
+  "requiresAuth": true,
+  "priority": 36,
+  "dependsOn": ["POST /api/workflows/:id/start"],
+  "testCases": [
+    {
+      "name": "Send reminder to pending signers",
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
+      },
+      "urlParams": {
+        "id": "{{cache:workflows.create.response.data.workflow.id}}"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "reminded": "array"
+        }
+      }
+    }
+  ]
+}

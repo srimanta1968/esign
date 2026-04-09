@@ -85,7 +85,7 @@ echo -e "  Building server..."
 npm run build 2>&1 | tail -3
 cd "$APP_DIR/client" && npm install
 echo -e "  Building client..."
-npm run build 2>&1 | tail -5
+npx vite build 2>&1 | tail -5
 echo -e "${GREEN}  Dependencies installed and apps built${NC}"
 
 # ── Step 5: Environment & Database ──────────────────────────────

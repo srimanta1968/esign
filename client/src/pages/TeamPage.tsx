@@ -33,11 +33,6 @@ interface Team {
 
 type ViewState = 'loading' | 'no-team' | 'has-team';
 
-const PLAN_OPTIONS = [
-  { value: 'team', label: 'Team', price: '$8.99/user/mo' },
-  { value: 'scale', label: 'Scale', price: '$59/mo' },
-];
-
 const PLAN_BADGE_STYLES: Record<string, string> = {
   team: 'bg-blue-100 text-blue-700',
   scale: 'bg-purple-100 text-purple-700',
@@ -59,7 +54,6 @@ function TeamPage() {
 
   // Create team form
   const [teamName, setTeamName] = useState<string>('');
-  const [selectedPlan, setSelectedPlan] = useState<string>('team');
   const [creating, setCreating] = useState<boolean>(false);
 
   // Invite form

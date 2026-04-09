@@ -39,7 +39,15 @@ const userSignatureHandlers: UserSignatureRouter = {
 
 const router: Router = Router();
 
-router.post('/', authenticateToken as RequestHandler, signatureUpload.single('signature_image'), userSignatureHandlers.create);
+// Only use multer for multipart/form-data uploads; JSON requests pass through directly
+const conditionalUpload: RequestHandler = (req, res, next) => {
+  if (req.is('multipart/form-data')) {
+    signatureUpload.single('signature_image')(req, res, next);
+  } else {
+    next();
+  }
+};
+router.post('/', authenticateToken as RequestHandler, conditionalUpload, userSignatureHandlers.create);
 router.get('/', authenticateToken as RequestHandler, userSignatureHandlers.getAll);
 router.get('/:id', authenticateToken as RequestHandler, userSignatureHandlers.getById);
 router.put('/:id', authenticateToken as RequestHandler, (req: AuthenticatedRequest, res: Response): void => {

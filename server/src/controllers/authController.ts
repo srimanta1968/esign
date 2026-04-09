@@ -1,6 +1,9 @@
 import { Request, Response } from 'express';
+import crypto from 'crypto';
 import { AuthService } from '../services/authService';
 import { SessionService } from '../services/sessionService';
+import { EmailService } from '../services/emailService';
+import { DataService } from '../services/DataService';
 import { RegisterRequest, LoginRequest, ForgotPasswordRequest, ResetPasswordRequest } from '../types/user';
 import { AuthenticatedRequest } from '../middleware/auth';
 import { config } from '../config/env';
@@ -27,9 +30,16 @@ export class AuthController {
 
       const result = await AuthService.register(email, password, name || '', role || 'user');
 
+      // Send verification code
+      try {
+        await AuthController.sendVerificationCode(result.user.id, email);
+      } catch (err) {
+        console.error('Failed to send verification email:', err);
+      }
+
       res.status(201).json({
         success: true,
-        data: result,
+        data: { ...result, emailVerified: false },
       });
     } catch (error: any) {
       if (error.message === 'Invalid email format') {
@@ -61,6 +71,132 @@ export class AuthController {
         success: false,
         error: 'Internal server error',
       });
+    }
+  }
+
+  /**
+   * Generate and send a 6-digit verification code to the user's email.
+   */
+  private static async sendVerificationCode(userId: string, email: string): Promise<void> {
+    const code = crypto.randomInt(100000, 999999).toString();
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+
+    // Invalidate old codes
+    await DataService.query(
+      'UPDATE email_verification_codes SET used = true WHERE user_id = $1 AND used = false',
+      [userId]
+    );
+
+    await DataService.query(
+      'INSERT INTO email_verification_codes (user_id, code, expires_at) VALUES ($1, $2, $3)',
+      [userId, code, expiresAt.toISOString()]
+    );
+
+    await EmailService.send(email, 'Verify your eDocSign account', `
+      <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
+        <h2 style="color: #1e293b; margin-bottom: 8px;">Verify your email</h2>
+        <p style="color: #64748b; margin-bottom: 24px;">Enter this code to activate your eDocSign account:</p>
+        <div style="background: #f1f5f9; border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 24px;">
+          <span style="font-size: 36px; font-weight: bold; letter-spacing: 8px; color: #4f46e5;">${code}</span>
+        </div>
+        <p style="color: #94a3b8; font-size: 13px;">This code expires in 15 minutes. If you didn't create an account, you can ignore this email.</p>
+      </div>
+    `);
+  }
+
+  /**
+   * Verify email with 6-digit code.
+   * POST /api/auth/verify-email
+   */
+  static async verifyEmail(req: Request, res: Response): Promise<void> {
+    try {
+      const { email, code } = req.body;
+
+      if (!email || !code) {
+        res.status(400).json({ success: false, error: 'Email and verification code are required' });
+        return;
+      }
+
+      const user = await DataService.queryOne<{ id: string; email_verified: boolean }>(
+        'SELECT id, email_verified FROM users WHERE email = $1',
+        [email]
+      );
+
+      if (!user) {
+        res.status(404).json({ success: false, error: 'User not found' });
+        return;
+      }
+
+      if (user.email_verified) {
+        res.status(200).json({ success: true, data: { message: 'Email already verified' } });
+        return;
+      }
+
+      const record = await DataService.queryOne<{ id: string; code: string; expires_at: string }>(
+        'SELECT id, code, expires_at FROM email_verification_codes WHERE user_id = $1 AND used = false ORDER BY created_at DESC LIMIT 1',
+        [user.id]
+      );
+
+      if (!record) {
+        res.status(400).json({ success: false, error: 'No verification code found. Please request a new one.' });
+        return;
+      }
+
+      if (new Date(record.expires_at) < new Date()) {
+        res.status(400).json({ success: false, error: 'Verification code has expired. Please request a new one.' });
+        return;
+      }
+
+      if (record.code !== code) {
+        res.status(400).json({ success: false, error: 'Invalid verification code' });
+        return;
+      }
+
+      // Mark code as used and verify user
+      await DataService.query('UPDATE email_verification_codes SET used = true WHERE id = $1', [record.id]);
+      await DataService.query('UPDATE users SET email_verified = true WHERE id = $1', [user.id]);
+
+      res.status(200).json({ success: true, data: { message: 'Email verified successfully' } });
+    } catch (error: any) {
+      console.error('Email verification error:', error);
+      res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+  }
+
+  /**
+   * Resend verification code.
+   * POST /api/auth/resend-verification
+   */
+  static async resendVerification(req: Request, res: Response): Promise<void> {
+    try {
+      const { email } = req.body;
+
+      if (!email) {
+        res.status(400).json({ success: false, error: 'Email is required' });
+        return;
+      }
+
+      const user = await DataService.queryOne<{ id: string; email_verified: boolean }>(
+        'SELECT id, email_verified FROM users WHERE email = $1',
+        [email]
+      );
+
+      if (!user) {
+        // Don't reveal if user exists
+        res.status(200).json({ success: true, data: { message: 'If an account exists, a verification code has been sent.' } });
+        return;
+      }
+
+      if (user.email_verified) {
+        res.status(200).json({ success: true, data: { message: 'Email already verified' } });
+        return;
+      }
+
+      await AuthController.sendVerificationCode(user.id, email);
+      res.status(200).json({ success: true, data: { message: 'Verification code sent' } });
+    } catch (error: any) {
+      console.error('Resend verification error:', error);
+      res.status(500).json({ success: false, error: 'Internal server error' });
     }
   }
 

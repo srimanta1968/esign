@@ -56,6 +56,10 @@ const router: Router = Router();
 router.post('/register', authHandlers.register);
 router.post('/login', authHandlers.login);
 
+// Email verification routes
+router.post('/verify-email', (req: Request, res: Response): void => { AuthController.verifyEmail(req, res); });
+router.post('/resend-verification', (req: Request, res: Response): void => { AuthController.resendVerification(req, res); });
+
 // Password reset routes (Task 2)
 router.post('/forgot-password', authHandlers.forgotPassword);
 router.post('/reset-password', authHandlers.resetPassword);

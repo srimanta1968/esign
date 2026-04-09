@@ -160,6 +160,17 @@ export class MigrationService {
       )
     `);
 
+    await this.run('email_verification_codes', `
+      CREATE TABLE IF NOT EXISTS email_verification_codes (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        code VARCHAR(6) NOT NULL,
+        expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+        used BOOLEAN DEFAULT false,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     // PHASE 2 — Add columns to base tables (safe if they exist)
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -172,6 +183,7 @@ export class MigrationService {
       ['users', 'language_preference', "VARCHAR(10) DEFAULT 'en'"],
       ['users', 'plan', "VARCHAR(20) DEFAULT 'free'"],
       ['users', 'team_id', 'UUID DEFAULT NULL'],
+      ['users', 'email_verified', 'BOOLEAN DEFAULT false'],
       // documents
       ['documents', 'original_name', "VARCHAR(255) DEFAULT ''"],
       ['documents', 'title', "VARCHAR(255) DEFAULT ''"],

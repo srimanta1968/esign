@@ -100,6 +100,10 @@ export class AuthController {
           <span style="font-size: 36px; font-weight: bold; letter-spacing: 8px; color: #4f46e5;">${code}</span>
         </div>
         <p style="color: #94a3b8; font-size: 13px;">This code expires in 15 minutes. If you didn't create an account, you can ignore this email.</p>
+        <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e2e8f0; text-align: center;">
+          <p style="color: #94a3b8; font-size: 12px; margin: 0;">Need help? <a href="mailto:support@projexlight.com" style="color: #4f46e5;">support@projexlight.com</a></p>
+          <p style="color: #94a3b8; font-size: 11px; margin: 8px 0 0 0;">Powered by <a href="https://projexlight.com" style="color: #4f46e5; text-decoration: none;">projexlight.com</a></p>
+        </div>
       </div>
     `);
   }

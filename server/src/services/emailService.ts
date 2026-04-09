@@ -24,6 +24,18 @@ const DEFAULT_FROM = {
   name: 'eDocSign',
 };
 
+const REPLY_TO = {
+  email: 'support@projexlight.com',
+  name: 'eDocSign Support',
+};
+
+const EMAIL_FOOTER = `
+  <div style="margin-top: 32px; padding-top: 16px; border-top: 1px solid #e2e8f0; text-align: center;">
+    <p style="color: #94a3b8; font-size: 12px; margin: 0;">Need help? Contact us at <a href="mailto:support@projexlight.com" style="color: #4f46e5;">support@projexlight.com</a></p>
+    <p style="color: #94a3b8; font-size: 11px; margin: 8px 0 0 0;">Powered by <a href="https://projexlight.com" style="color: #4f46e5; text-decoration: none;">projexlight.com</a></p>
+  </div>
+`;
+
 export class EmailService {
   private static transporter: any = null;
 
@@ -37,7 +49,7 @@ export class EmailService {
         const [response] = await sgMail.send({
           to,
           from: DEFAULT_FROM,
-          replyTo: DEFAULT_FROM,
+          replyTo: REPLY_TO,
           subject,
           html: body,
           headers: {
@@ -163,7 +175,7 @@ export class EmailService {
         <p>Document ID: ${documentInfo.documentId}</p>
         <p>Status: ${statusLabel}</p>
         <hr />
-        <p style="color: #888; font-size: 12px;">This is an automated notification from eDocs.</p>
+        ${EMAIL_FOOTER}
       </div>
     `;
 
@@ -238,6 +250,10 @@ export class EmailService {
               <p style="color: #9ca3af; font-size: 12px; line-height: 1.5; margin: 0;">
                 This is an automated notification from eDocSign. The signing certificate contains a SHA-256 hash
                 of the original document and a full audit trail of all signing activity.
+              </p>
+              <p style="color: #9ca3af; font-size: 11px; margin: 12px 0 0 0;">
+                Need help? <a href="mailto:support@projexlight.com" style="color: #4f46e5;">support@projexlight.com</a>
+                &nbsp;&bull;&nbsp; Powered by <a href="https://projexlight.com" style="color: #4f46e5; text-decoration: none;">projexlight.com</a>
               </p>
             </td>
           </tr>

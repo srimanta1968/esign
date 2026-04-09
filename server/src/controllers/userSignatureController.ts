@@ -57,58 +57,55 @@ export class UserSignatureController {
         if (!signature_data) {
           res.status(400).json({
             success: false,
-            error: 'signature_data (text) is required for typed signatures',
-          });
-          return;
-        }
-        if (!font_family) {
-          res.status(400).json({
-            success: false,
-            error: 'font_family is required for typed signatures',
+            error: 'signature_data is required for typed signatures',
           });
           return;
         }
         userSignature = await UserSignatureService.createTyped(
           req.userId,
           signature_data,
-          font_family
+          font_family || 'default'
         );
       } else if (signature_type === 'uploaded') {
-        // File should be provided via multer middleware
+        // Accept either a multer file upload or a base64 data URL in signature_data
         const file = (req as any).file;
-        if (!file) {
+        if (file) {
+          // Validate file type
+          const allowedMimes = ['image/png', 'image/jpeg'];
+          if (!allowedMimes.includes(file.mimetype)) {
+            res.status(400).json({
+              success: false,
+              error: 'Invalid file type. Only PNG and JPEG are allowed for signature uploads',
+            });
+            return;
+          }
+          // Validate file size (2MB max)
+          if (file.size > 2 * 1024 * 1024) {
+            res.status(400).json({
+              success: false,
+              error: 'File too large. Maximum size is 2MB',
+            });
+            return;
+          }
+          userSignature = await UserSignatureService.createUploaded(
+            req.userId,
+            file.path,
+            file.originalname
+          );
+        } else if (signature_data) {
+          // Base64 data URL from frontend (file already read client-side)
+          userSignature = await UserSignatureService.createDrawn(
+            req.userId,
+            signature_data,
+            'uploaded'
+          );
+        } else {
           res.status(400).json({
             success: false,
-            error: 'Image file is required for uploaded signatures (PNG/JPEG, max 2MB)',
+            error: 'Either an image file or signature_data (base64) is required for uploaded signatures',
           });
           return;
         }
-
-        // Validate file type
-        const allowedMimes = ['image/png', 'image/jpeg'];
-        if (!allowedMimes.includes(file.mimetype)) {
-          res.status(400).json({
-            success: false,
-            error: 'Invalid file type. Only PNG and JPEG are allowed for signature uploads',
-          });
-          return;
-        }
-
-        // Validate file size (2MB max)
-        const maxSize = 2 * 1024 * 1024;
-        if (file.size > maxSize) {
-          res.status(400).json({
-            success: false,
-            error: 'File too large. Maximum size is 2MB',
-          });
-          return;
-        }
-
-        userSignature = await UserSignatureService.createUploaded(
-          req.userId,
-          file.path,
-          file.originalname
-        );
       }
 
       res.status(201).json({

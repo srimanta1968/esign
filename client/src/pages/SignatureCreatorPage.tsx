@@ -90,7 +90,7 @@ function SignatureCreatorPage() {
       return;
     }
     const dataUrl = generateTypedDataUrl();
-    await saveSignature('typed', dataUrl);
+    await saveSignature('typed', dataUrl, selectedFont);
   };
 
   const handleUploadSave = async (): Promise<void> => {
@@ -101,15 +101,17 @@ function SignatureCreatorPage() {
     await saveSignature('uploaded', uploadPreview);
   };
 
-  const saveSignature = async (type: string, dataUrl: string): Promise<void> => {
+  const saveSignature = async (type: string, dataUrl: string, fontFamily?: string): Promise<void> => {
     setError('');
     setSuccess('');
     setSaving(true);
     try {
-      const response = await ApiService.post('/user-signatures', {
+      const body: Record<string, string> = {
         signature_type: type,
         signature_data: dataUrl,
-      });
+      };
+      if (fontFamily) body.font_family = fontFamily;
+      const response = await ApiService.post('/user-signatures', body);
       if (response.success) {
         setSuccess('Signature saved successfully!');
         setTimeout(() => navigate('/signatures'), 1500);

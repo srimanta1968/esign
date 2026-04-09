@@ -43,9 +43,16 @@ export class StorageService {
       console.warn(`S3 upload failed for ${s3Key}, falling back to local storage: ${result.error}`);
     }
 
-    // Local storage: ensure the file is in the expected location
-    const localRelativePath = StorageService.getLocalRelativePath(localPath);
-    return { success: true, path: localRelativePath, isS3: false };
+    // Local storage: copy file into uploads directory if not already there
+    if (!fs.existsSync(StorageService.uploadsDir)) {
+      fs.mkdirSync(StorageService.uploadsDir, { recursive: true });
+    }
+    const filename = path.basename(localPath);
+    const destPath = path.resolve(StorageService.uploadsDir, filename);
+    if (path.resolve(localPath) !== destPath) {
+      fs.copyFileSync(localPath, destPath);
+    }
+    return { success: true, path: filename, isS3: false };
   }
 
   /**

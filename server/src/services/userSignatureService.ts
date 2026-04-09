@@ -1,18 +1,6 @@
 import fs from 'fs';
-import path from 'path';
 import { DataService } from './DataService';
 import { UserSignature, UserSignatureResponse } from '../types/userSignature';
-
-const SIGNATURES_DIR = path.resolve(__dirname, '../../uploads/signatures');
-
-/**
- * Ensure signatures upload directory exists.
- */
-function ensureSignaturesDir(): void {
-  if (!fs.existsSync(SIGNATURES_DIR)) {
-    fs.mkdirSync(SIGNATURES_DIR, { recursive: true });
-  }
-}
 
 /**
  * UserSignatureService handles user signature database operations.
@@ -29,23 +17,12 @@ export class UserSignatureService {
     inputMethod?: string
   ): Promise<UserSignatureResponse> {
     try {
-      ensureSignaturesDir();
-
-      // Save base64 data to file on disk
-      const filename = `drawn-${userId}-${Date.now()}.png`;
-      const filePath = path.join(SIGNATURES_DIR, filename);
-
-      // Strip data URI prefix if present
-      const base64Data = signatureData.replace(/^data:image\/(png|svg\+xml);base64,/, '');
-      fs.writeFileSync(filePath, Buffer.from(base64Data, 'base64'));
-
-      const relativePath = `uploads/signatures/${filename}`;
-
+      // Store base64 signature data directly in DB — no local file needed
       const userSignature = await DataService.queryOne<UserSignature>(
-        `INSERT INTO user_signatures (user_id, signature_type, signature_data, signature_image_path)
-         VALUES ($1, $2, $3, $4)
+        `INSERT INTO user_signatures (user_id, signature_type, signature_data)
+         VALUES ($1, $2, $3)
          RETURNING id, user_id, signature_type, signature_data, signature_image_path, font_family`,
-        [userId, 'drawn', signatureData, relativePath]
+        [userId, 'drawn', signatureData]
       );
 
       if (!userSignature) {
@@ -111,25 +88,20 @@ export class UserSignatureService {
     originalName: string
   ): Promise<UserSignatureResponse> {
     try {
-      ensureSignaturesDir();
+      // Read uploaded file as base64 data URL, then delete temp file
+      const fileBuffer = fs.readFileSync(filePath);
+      const ext = originalName.split('.').pop()?.toLowerCase() || 'png';
+      const mimeType = ext === 'jpeg' || ext === 'jpg' ? 'image/jpeg' : 'image/png';
+      const signatureData = `data:${mimeType};base64,${fileBuffer.toString('base64')}`;
 
-      // Move file to signatures directory
-      const ext = path.extname(originalName);
-      const filename = `uploaded-${userId}-${Date.now()}${ext}`;
-      const destPath = path.join(SIGNATURES_DIR, filename);
-      fs.copyFileSync(filePath, destPath);
       // Remove temp file
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-      }
-
-      const relativePath = `uploads/signatures/${filename}`;
+      fs.unlink(filePath, () => {});
 
       const userSignature = await DataService.queryOne<UserSignature>(
-        `INSERT INTO user_signatures (user_id, signature_type, signature_image_path)
+        `INSERT INTO user_signatures (user_id, signature_type, signature_data)
          VALUES ($1, $2, $3)
          RETURNING id, user_id, signature_type, signature_data, signature_image_path, font_family`,
-        [userId, 'uploaded', relativePath]
+        [userId, 'uploaded', signatureData]
       );
 
       if (!userSignature) {
@@ -140,7 +112,7 @@ export class UserSignatureService {
         id: userSignature.id,
         user_id: userSignature.user_id,
         signature_type: userSignature.signature_type,
-        signature_image_path: userSignature.signature_image_path,
+        signature_data: userSignature.signature_data,
       };
     } catch (error: unknown) {
       if (error instanceof Error && error.message === 'Failed to create uploaded signature') {
@@ -222,6 +194,51 @@ export class UserSignatureService {
       }));
     } catch (error: unknown) {
       throw new Error(`Failed to retrieve signatures: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+  /**
+   * Update a drawn signature's data.
+   */
+  static async updateDrawn(
+    signatureId: string,
+    userId: string,
+    signatureData: string
+  ): Promise<UserSignatureResponse | null> {
+    try {
+      const userSignature = await DataService.queryOne<UserSignature>(
+        `UPDATE user_signatures SET signature_data = $1, updated_at = NOW()
+         WHERE id = $2 AND user_id = $3
+         RETURNING id, user_id, signature_type, signature_data, signature_image_path, font_family`,
+        [signatureData, signatureId, userId]
+      );
+
+      if (!userSignature) return null;
+
+      return {
+        id: userSignature.id,
+        user_id: userSignature.user_id,
+        signature_type: userSignature.signature_type,
+        signature_data: userSignature.signature_data,
+        signature_image_path: userSignature.signature_image_path,
+        font_family: userSignature.font_family,
+      };
+    } catch (error: unknown) {
+      throw new Error(`Signature update failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  /**
+   * Delete a user signature by ID, scoped to user.
+   */
+  static async deleteById(signatureId: string, userId: string): Promise<boolean> {
+    try {
+      const result = await DataService.query(
+        'DELETE FROM user_signatures WHERE id = $1 AND user_id = $2',
+        [signatureId, userId]
+      );
+      return result.rowCount !== null && result.rowCount > 0;
+    } catch (error: unknown) {
+      throw new Error(`Signature deletion failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 }

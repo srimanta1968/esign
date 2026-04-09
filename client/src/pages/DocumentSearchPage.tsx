@@ -458,7 +458,7 @@ function DocumentSearchPage() {
                     </div>
                     <div className="flex gap-2 shrink-0">
                       <Link to={`/documents/${doc.id}`} className="text-gray-500 text-sm font-medium hover:text-gray-700">Details</Link>
-                      <Link to={`/signatures/request/${doc.id}`} className="text-indigo-600 text-sm font-medium hover:text-indigo-700">Sign</Link>
+                      <Link to={`/workflows/create?documentId=${doc.id}`} className="text-indigo-600 text-sm font-medium hover:text-indigo-700">Sign</Link>
                     </div>
                   </div>
                 </div>

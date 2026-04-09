@@ -42,7 +42,7 @@ const LANGUAGES = [
 ];
 
 function Layout({ children }: LayoutProps) {
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user, logout, loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [unreadCount, setUnreadCount] = useState<number>(0);
@@ -52,8 +52,16 @@ function Layout({ children }: LayoutProps) {
   const [showUserMenu, setShowUserMenu] = useState<boolean>(false);
   const [pulseNew, setPulseNew] = useState<boolean>(false);
   const [selectedLanguage, setSelectedLanguage] = useState<string>(localStorage.getItem('language') || 'en');
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState<boolean>(false);
   const eventSourceRef = useRef<EventSource | null>(null);
   const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Listen for plan-limit-reached events from ApiService
+  useEffect(() => {
+    const handler = () => setShowUpgradePrompt(true);
+    window.addEventListener('plan-limit-reached', handler);
+    return () => window.removeEventListener('plan-limit-reached', handler);
+  }, []);
 
   const handleLanguageChange = async (langCode: string): Promise<void> => {
     setSelectedLanguage(langCode);
@@ -89,7 +97,8 @@ function Layout({ children }: LayoutProps) {
       eventSourceRef.current.close();
     }
 
-    const url = `/api/notifications/stream?token=${encodeURIComponent(token)}`;
+    const apiBase = import.meta.env.VITE_API_URL || '';
+    const url = `${apiBase}/api/notifications/stream?token=${encodeURIComponent(token)}`;
     const es = new EventSource(url);
     eventSourceRef.current = es;
 
@@ -221,7 +230,7 @@ function Layout({ children }: LayoutProps) {
             <span className="text-xl font-bold text-indigo-600">eDocSign</span>
           </Link>
 
-          {isAuthenticated ? (
+          {loading ? null : isAuthenticated ? (
             <div className="flex items-center gap-6">
               <nav className="hidden md:flex items-center gap-5 text-sm">
                 <Link to="/dashboard" className={isActive('/dashboard')}>Dashboard</Link>
@@ -229,7 +238,9 @@ function Layout({ children }: LayoutProps) {
                 <Link to="/documents/search" className={isActive('/documents/search')}>Search</Link>
                 <Link to="/templates" className={isActive('/templates')}>Templates</Link>
                 <Link to="/signatures" className={isActive('/signatures')}>My Signatures</Link>
-                <Link to="/workflows/create" className={isActive('/workflows/create')}>Workflows</Link>
+                <Link to="/workflows" className={isActive('/workflows')}>Workflows</Link>
+                <Link to="/team" className={isActive('/team')}>Team</Link>
+                <Link to="/guide" className={isActive('/guide')}>Guide</Link>
                 {isAdmin && (
                   <>
                     <span className="text-gray-300">|</span>
@@ -333,6 +344,20 @@ function Layout({ children }: LayoutProps) {
                         Profile & Settings
                       </Link>
                       <Link
+                        to="/settings/billing"
+                        onClick={() => setShowUserMenu(false)}
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                      >
+                        Billing
+                      </Link>
+                      <Link
+                        to="/settings/api-keys"
+                        onClick={() => setShowUserMenu(false)}
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                      >
+                        API Keys
+                      </Link>
+                      <Link
                         to="/settings/notifications"
                         onClick={() => setShowUserMenu(false)}
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
@@ -359,6 +384,7 @@ function Layout({ children }: LayoutProps) {
             </div>
           ) : (
             <nav className="flex items-center gap-4">
+              <Link to="/pricing" className="text-gray-600 hover:text-indigo-600 font-medium text-sm transition-colors">Pricing</Link>
               <Link to="/login" className="text-gray-600 hover:text-indigo-600 font-medium text-sm transition-colors">Login</Link>
               <Link to="/register" className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 text-sm font-medium transition-colors">Get Started</Link>
             </nav>
@@ -367,12 +393,54 @@ function Layout({ children }: LayoutProps) {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1">
+      <main className="flex-grow">
         {children}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-gray-400">
+      {/* Upgrade Prompt Modal */}
+      {showUpgradePrompt && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50">
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 p-6 relative">
+            <button
+              onClick={() => setShowUpgradePrompt(false)}
+              className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <div className="text-center">
+              <div className="mx-auto w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.832c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">You've reached your monthly document limit</h3>
+              <p className="text-sm text-gray-500 mb-6">
+                Upgrade your plan to send more documents and unlock additional features.
+              </p>
+              <div className="flex items-center justify-center gap-3">
+                <Link
+                  to="/pricing"
+                  onClick={() => setShowUpgradePrompt(false)}
+                  className="bg-indigo-600 text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition-colors"
+                >
+                  Upgrade Now
+                </Link>
+                <button
+                  onClick={() => setShowUpgradePrompt(false)}
+                  className="bg-white border border-gray-300 text-gray-700 px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-gray-50 transition-colors"
+                >
+                  Dismiss
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Footer - only show on public pages */}
+      {!isAuthenticated && <footer className="bg-gray-900 text-gray-400">
         <div className="max-w-7xl mx-auto px-4 py-12">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
@@ -392,7 +460,7 @@ function Layout({ children }: LayoutProps) {
               <ul className="space-y-2 text-sm">
                 <li><Link to="/#features" className="hover:text-white transition-colors">Features</Link></li>
                 <li><Link to="/register" className="hover:text-white transition-colors">Get Started</Link></li>
-                <li><span className="hover:text-white transition-colors cursor-default">Pricing</span></li>
+                <li><Link to="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
               </ul>
             </div>
 
@@ -424,7 +492,7 @@ function Layout({ children }: LayoutProps) {
             </div>
           </div>
         </div>
-      </footer>
+      </footer>}
     </div>
   );
 }

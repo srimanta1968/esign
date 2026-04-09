@@ -2,7 +2,7 @@ export type WorkflowType = 'parallel' | 'sequential';
 export type WorkflowStatus = 'draft' | 'active' | 'completed' | 'cancelled';
 export type RecipientStatus = 'pending' | 'signed' | 'declined';
 export type SignatureFieldType = 'signature' | 'initials' | 'date' | 'text';
-export type WorkflowAction = 'created' | 'started' | 'signed' | 'declined' | 'completed' | 'reminder_sent' | 'updated' | 'token_generated';
+export type WorkflowAction = 'created' | 'started' | 'signed' | 'declined' | 'completed' | 'cancelled' | 'reminder_sent' | 'updated' | 'token_generated';
 
 export interface SigningWorkflow {
   id: string;
@@ -110,6 +110,7 @@ export interface ConfigureRemindersRequest {
 export interface WorkflowResponse {
   id: string;
   document_id: string;
+  document_name: string;
   creator_id: string;
   workflow_type: WorkflowType;
   status: WorkflowStatus;

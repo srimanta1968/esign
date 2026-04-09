@@ -73,6 +73,21 @@ export class SigningTokenService {
   }
 
   /**
+   * Look up a token without checking used/expired status.
+   * Returns the token with a reason if invalid.
+   */
+  static async lookupToken(token: string): Promise<{ signingToken: SigningToken | null; reason: 'valid' | 'used' | 'expired' | 'not_found' }> {
+    const result = await DataService.queryOne<SigningToken>(
+      'SELECT * FROM signing_tokens WHERE token = $1',
+      [token]
+    );
+    if (!result) return { signingToken: null, reason: 'not_found' };
+    if (result.used) return { signingToken: result, reason: 'used' };
+    if (new Date(result.expires_at) < new Date()) return { signingToken: result, reason: 'expired' };
+    return { signingToken: result, reason: 'valid' };
+  }
+
+  /**
    * Mark a signing token as used after successful signing.
    */
   static async markTokenUsed(tokenId: string): Promise<void> {

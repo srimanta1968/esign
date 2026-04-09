@@ -183,6 +183,64 @@ export class UserSignatureController {
       res.status(500).json({ success: false, error: 'Internal server error' });
     }
   }
+  /**
+   * Handle updating a user signature (re-draw).
+   * PUT /api/user-signatures/:id
+   */
+  static async update(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      if (!req.userId) {
+        res.status(401).json({ success: false, error: 'User not authenticated' });
+        return;
+      }
+
+      const signatureId = req.params.id;
+      const { signature_data } = req.body;
+
+      if (!signature_data) {
+        res.status(400).json({ success: false, error: 'signature_data is required' });
+        return;
+      }
+
+      const userSignature = await UserSignatureService.updateDrawn(signatureId, req.userId, signature_data);
+
+      if (!userSignature) {
+        res.status(404).json({ success: false, error: 'Signature not found' });
+        return;
+      }
+
+      res.status(200).json({ success: true, data: { userSignature } });
+    } catch (error: any) {
+      console.error('Signature update error:', error);
+      res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+  }
+
+  /**
+   * Handle deleting a user signature.
+   * DELETE /api/user-signatures/:id
+   */
+  static async deleteById(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      if (!req.userId) {
+        res.status(401).json({ success: false, error: 'User not authenticated' });
+        return;
+      }
+
+      const signatureId = req.params.id;
+      const deleted = await UserSignatureService.deleteById(signatureId, req.userId);
+
+      if (!deleted) {
+        res.status(404).json({ success: false, error: 'Signature not found' });
+        return;
+      }
+
+      res.status(200).json({ success: true, message: 'Signature deleted' });
+    } catch (error: any) {
+      console.error('Signature deletion error:', error);
+      res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+  }
 }
 
 export default UserSignatureController;

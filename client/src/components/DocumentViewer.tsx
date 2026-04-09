@@ -63,23 +63,50 @@ function DocumentViewer({
     setLoading(true);
     setError('');
 
-    const loadingTask = pdfjsLib.getDocument(pdfUrl);
-    loadingTask.promise.then(
-      (doc) => {
+    let loadingTask: pdfjsLib.PDFDocumentLoadingTask | null = null;
+    let cancelled = false;
+
+    const loadPdf = async () => {
+      try {
+        // For API URLs, fetch with auth header first then pass ArrayBuffer to pdf.js
+        const token = localStorage.getItem('token');
+        const isApiUrl = pdfUrl.startsWith('/api/');
+
+        let source: string | { data: ArrayBuffer };
+        if (isApiUrl && token) {
+          const res = await fetch(pdfUrl, {
+            headers: { 'Authorization': `Bearer ${token}` },
+          });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const data = await res.arrayBuffer();
+          source = { data };
+        } else {
+          source = pdfUrl;
+        }
+
+        if (cancelled) return;
+
+        loadingTask = pdfjsLib.getDocument(source);
+        const doc = await loadingTask.promise;
+        if (cancelled) return;
+
         setPdfDoc(doc);
         setTotalPages(doc.numPages);
         if (onTotalPages) onTotalPages(doc.numPages);
         setLoading(false);
-      },
-      (err) => {
+      } catch (err) {
+        if (cancelled) return;
         console.error('PDF load error:', err);
         setError('Failed to load PDF document');
         setLoading(false);
       }
-    );
+    };
+
+    loadPdf();
 
     return () => {
-      loadingTask.destroy();
+      cancelled = true;
+      if (loadingTask) loadingTask.destroy();
     };
   }, [pdfUrl, onTotalPages]);
 

@@ -3,6 +3,7 @@ import { DocumentController } from '../controllers/documentController';
 import { SigningController } from '../controllers/signingController';
 import { authenticateToken, AuthenticatedRequest } from '../middleware/auth';
 import { upload } from '../middleware/upload';
+import { checkPlanLimit } from '../middleware/planLimits';
 import { DocumentService } from '../services/documentService';
 // @governance-tracked — API definitions added: POST /api/documents, GET /api/documents, GET /api/documents/:id, DELETE /api/documents/:id, GET /api/documents/:id/download
 // @governance-tracked — EP-246 API definitions added: versions, templates, tags, search
@@ -16,7 +17,7 @@ const router: Router = Router();
 
 // ===================== EXISTING ROUTES =====================
 
-router.post('/', authenticateToken as RequestHandler, upload.single('file') as RequestHandler, ((req: AuthenticatedRequest, res: Response): void => {
+router.post('/', authenticateToken as RequestHandler, checkPlanLimit, upload.single('file') as RequestHandler, ((req: AuthenticatedRequest, res: Response): void => {
   DocumentController.upload(req, res);
 }) as RequestHandler);
 
@@ -108,6 +109,34 @@ router.get('/templates/:id', authenticateToken as RequestHandler, (async (req: A
     res.status(200).json({ success: true, data: { template } });
   } catch (error: any) {
     console.error('Template retrieval error:', error);
+    res.status(500).json({ success: false, error: error.message || 'Internal server error' });
+  }
+}) as RequestHandler);
+
+router.post('/templates/:id/use', authenticateToken as RequestHandler, (async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+  try {
+    if (!req.userId) {
+      res.status(401).json({ success: false, error: 'User not authenticated' });
+      return;
+    }
+    const template = await DocumentService.getTemplateById(req.params.id, req.userId);
+    if (!template) {
+      res.status(404).json({ success: false, error: 'Template not found' });
+      return;
+    }
+
+    // Create a new document from the template's file_path
+    const document = await DocumentService.upload(
+      req.userId,
+      template.file_path,
+      template.name,
+      '', // mime_type will be empty, but file_path points to existing S3/local file
+      0
+    );
+
+    res.status(201).json({ success: true, data: { document } });
+  } catch (error: any) {
+    console.error('Template use error:', error);
     res.status(500).json({ success: false, error: error.message || 'Internal server error' });
   }
 }) as RequestHandler);

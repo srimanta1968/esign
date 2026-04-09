@@ -18,9 +18,9 @@ export class WorkflowController {
         return;
       }
 
-      const { document_id, workflow_type, recipients, fields }: CreateWorkflowRequest = req.body;
+      const { document_id, workflow_type, recipients: rawRecipients, signature_fields } = req.body;
 
-      if (!document_id || !workflow_type || !recipients || recipients.length === 0) {
+      if (!document_id || !workflow_type || !rawRecipients || rawRecipients.length === 0) {
         res.status(400).json({
           success: false,
           error: 'document_id, workflow_type, and at least one recipient are required',
@@ -32,6 +32,25 @@ export class WorkflowController {
         res.status(400).json({ success: false, error: 'workflow_type must be parallel or sequential' });
         return;
       }
+
+      // Map client format (email/name/order) to server format (signer_email/signer_name/signing_order)
+      const recipients = rawRecipients.map((r: any) => ({
+        signer_email: r.signer_email || r.email,
+        signer_name: r.signer_name || r.name,
+        signing_order: r.signing_order ?? r.order ?? 1,
+      }));
+
+      // Map client signature_fields to server fields format
+      const fields = signature_fields?.map((f: any) => ({
+        recipient_index: f.recipient_index,
+        field_type: f.field_type || f.type,
+        page: f.page,
+        x: f.x,
+        y: f.y,
+        width: f.width,
+        height: f.height,
+        required: f.required,
+      }));
 
       const actorIp = req.ip || req.socket?.remoteAddress || 'unknown';
       const userAgent = req.headers['user-agent'] || 'unknown';
@@ -48,6 +67,24 @@ export class WorkflowController {
     } catch (error: any) {
       console.error('Create workflow error:', error);
       res.status(500).json({ success: false, error: error.message || 'Internal server error' });
+    }
+  }
+
+  /**
+   * List all workflows for the authenticated user.
+   * GET /api/workflows
+   */
+  static async list(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      if (!req.userId || !req.userEmail) {
+        res.status(401).json({ success: false, error: 'User not authenticated' });
+        return;
+      }
+      const workflows = await WorkflowService.listWorkflows(req.userId, req.userEmail);
+      res.status(200).json({ success: true, data: { workflows } });
+    } catch (error: any) {
+      console.error('List workflows error:', error);
+      res.status(500).json({ success: false, error: 'Internal server error' });
     }
   }
 
@@ -251,6 +288,38 @@ export class WorkflowController {
   }
 
   /**
+   * Cancel an active or draft workflow.
+   * POST /api/workflows/:id/cancel
+   */
+  static async cancel(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      if (!req.userId || !req.userEmail) {
+        res.status(401).json({ success: false, error: 'User not authenticated' });
+        return;
+      }
+
+      const actorIp = req.ip || req.socket?.remoteAddress || 'unknown';
+      const userAgent = req.headers['user-agent'] || 'unknown';
+
+      const workflow = await WorkflowService.cancelWorkflow(
+        req.params.id,
+        req.userId,
+        req.userEmail,
+        actorIp,
+        userAgent
+      );
+
+      res.status(200).json({ success: true, data: { workflow } });
+    } catch (error: any) {
+      console.error('Cancel workflow error:', error);
+      const status = error.message?.includes('not found') ? 404
+        : error.message?.includes('only cancel') ? 409
+        : 500;
+      res.status(status).json({ success: false, error: error.message || 'Internal server error' });
+    }
+  }
+
+  /**
    * Send reminders to pending signers.
    * POST /api/workflows/:id/remind
    */
@@ -263,13 +332,15 @@ export class WorkflowController {
 
       const actorIp = req.ip || req.socket?.remoteAddress || 'unknown';
       const userAgent = req.headers['user-agent'] || 'unknown';
+      const { recipientId } = req.body;
 
       const result = await WorkflowService.sendReminders(
         req.params.id,
         req.userId,
         req.userEmail,
         actorIp,
-        userAgent
+        userAgent,
+        recipientId
       );
 
       res.status(200).json({ success: true, data: result });

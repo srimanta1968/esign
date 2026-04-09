@@ -417,7 +417,99 @@ export class MigrationService {
         CREATE INDEX IF NOT EXISTS idx_signing_certificates_certificate_id ON signing_certificates(certificate_id);
       `);
 
-      console.log('EP-245, EP-246, EP-247, EP-248, EP-249, EP-250, EP-251 & Signing Token migrations completed successfully');
+      // ─── Billing: subscriptions & usage tracking ────────────────────
+      await DataService.query(`
+        CREATE TABLE IF NOT EXISTS subscriptions (
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          stripe_customer_id VARCHAR(255),
+          stripe_subscription_id VARCHAR(255),
+          plan VARCHAR(20) NOT NULL DEFAULT 'free' CHECK (plan IN ('free', 'solo', 'team', 'scale')),
+          status VARCHAR(20) NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'cancelled', 'past_due', 'trialing')),
+          current_period_start TIMESTAMP WITH TIME ZONE,
+          current_period_end TIMESTAMP WITH TIME ZONE,
+          seats INTEGER DEFAULT 1,
+          created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+          updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+          UNIQUE(user_id)
+        )
+      `);
+
+      await DataService.query(`
+        CREATE TABLE IF NOT EXISTS usage_tracking (
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          month_year VARCHAR(7) NOT NULL,
+          documents_sent INTEGER DEFAULT 0,
+          documents_limit INTEGER DEFAULT 3,
+          created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+          updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+          UNIQUE(user_id, month_year)
+        )
+      `);
+
+      await DataService.query(`
+        ALTER TABLE users ADD COLUMN IF NOT EXISTS plan VARCHAR(20) DEFAULT 'free';
+      `);
+
+      // API Keys table
+      await DataService.query(`
+        CREATE TABLE IF NOT EXISTS api_keys (
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          key_hash VARCHAR(255) NOT NULL,
+          key_prefix VARCHAR(12) NOT NULL,
+          label VARCHAR(100) DEFAULT 'Default',
+          last_used_at TIMESTAMP WITH TIME ZONE,
+          created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+          revoked_at TIMESTAMP WITH TIME ZONE,
+          UNIQUE(key_hash)
+        );
+      `);
+
+      // ─── Teams: teams, team_members, team_invites ─────────────────────
+      await DataService.query(`
+        CREATE TABLE IF NOT EXISTS teams (
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          name VARCHAR(255) NOT NULL,
+          owner_id UUID NOT NULL REFERENCES users(id),
+          plan VARCHAR(20) DEFAULT 'team' CHECK (plan IN ('team', 'scale')),
+          stripe_subscription_id VARCHAR(255),
+          document_limit INTEGER DEFAULT 200,
+          created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+          updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+        )
+      `);
+
+      await DataService.query(`
+        CREATE TABLE IF NOT EXISTS team_members (
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          team_id UUID NOT NULL REFERENCES teams(id) ON DELETE CASCADE,
+          user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          role VARCHAR(20) DEFAULT 'member' CHECK (role IN ('owner', 'admin', 'member')),
+          joined_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+          UNIQUE(team_id, user_id)
+        )
+      `);
+
+      await DataService.query(`
+        CREATE TABLE IF NOT EXISTS team_invites (
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          team_id UUID NOT NULL REFERENCES teams(id) ON DELETE CASCADE,
+          email VARCHAR(255) NOT NULL,
+          invited_by UUID NOT NULL REFERENCES users(id),
+          token VARCHAR(255) NOT NULL UNIQUE,
+          status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'accepted', 'expired')),
+          created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+          expires_at TIMESTAMP WITH TIME ZONE DEFAULT (NOW() + INTERVAL '7 days')
+        )
+      `);
+
+      await DataService.query(`
+        ALTER TABLE users ADD COLUMN IF NOT EXISTS team_id UUID REFERENCES teams(id);
+      `);
+
+      console.log('EP-245, EP-246, EP-247, EP-248, EP-249, EP-250, EP-251, Signing Token, Billing & API Keys, Teams migrations completed successfully');
     } catch (error: unknown) {
       console.error('Migration error:', error instanceof Error ? error.message : 'Unknown error');
       // Don't throw - migrations should be idempotent and non-blocking

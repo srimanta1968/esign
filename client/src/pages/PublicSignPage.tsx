@@ -10,26 +10,20 @@ import {
 } from '../types/signatureFields';
 
 interface SigningContext {
-  document_url: string;
-  document_name: string;
-  signer_name: string;
-  signer_email: string;
-  signer_index: number;
-  recipients: { email: string; name: string; order: number }[];
+  workflow: { id: string; status: string; workflow_type: string };
+  document: { id: string; name: string; file_type: string; mime_type: string } | null;
+  recipient: { id: string; email: string; name: string; status: string; signing_order: number };
+  sender: { name: string; email: string } | null;
   fields: {
     id: string;
-    type: FieldType;
+    field_type: FieldType;
     page: number;
     x: number;
     y: number;
     width: number;
     height: number;
-    recipient_index: number;
     required: boolean;
-    value?: string;
-    completed?: boolean;
   }[];
-  workflow_name?: string;
 }
 
 function PublicSignPage() {
@@ -41,6 +35,7 @@ function PublicSignPage() {
   const [activeField, setActiveField] = useState<SignatureField | null>(null);
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [completed, setCompleted] = useState<boolean>(false);
+  const [alreadySigned, setAlreadySigned] = useState<{ name: string; email: string; signed_at: string | null; document_name: string } | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   // Modal input states
@@ -52,21 +47,28 @@ function PublicSignPage() {
       try {
         const res = await fetch(`/api/sign/${token}`);
         const data = await res.json();
-        if (data.success && data.data) {
+        if (data.success && data.data && data.data.already_signed) {
+          setAlreadySigned({
+            name: data.data.recipient?.name || '',
+            email: data.data.recipient?.email || '',
+            signed_at: data.data.recipient?.signed_at || null,
+            document_name: data.data.document?.name || 'Document',
+          });
+        } else if (data.success && data.data) {
           setContext(data.data);
           // Map server fields to our SignatureField type
           const mapped: SignatureField[] = data.data.fields.map((f: any) => ({
             id: f.id,
-            type: f.type as FieldType,
+            type: f.field_type as FieldType,
             page: f.page,
             x: f.x,
             y: f.y,
             width: f.width,
             height: f.height,
-            recipientIndex: f.recipient_index,
+            recipientIndex: 0,
             required: f.required,
-            value: f.value || undefined,
-            completed: f.completed || false,
+            value: undefined,
+            completed: false,
           }));
           setFields(mapped);
         } else {
@@ -126,17 +128,18 @@ function PublicSignPage() {
     setSubmitting(true);
     setError('');
     try {
-      const fieldValues = fields
-        .filter((f) => f.recipientIndex === context?.signer_index && f.completed)
+      const signatures = fields
+        .filter((f) => f.completed)
         .map((f) => ({
-          field_id: f.id,
-          value: f.value,
+          fieldId: f.id,
+          signatureData: f.value || '',
+          signatureType: (f.type === 'signature' || f.type === 'initials') ? 'drawn' : f.type,
         }));
 
       const res = await fetch(`/api/sign/${token}/complete`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fields: fieldValues }),
+        body: JSON.stringify({ signatures }),
       });
       const data = await res.json();
       if (data.success) {
@@ -151,12 +154,11 @@ function PublicSignPage() {
     }
   };
 
-  // Calculate completion
-  const myFields = fields.filter((f) => f.recipientIndex === context?.signer_index);
-  const requiredFields = myFields.filter((f) => f.required);
+  // Calculate completion — all fields belong to the current signer
+  const requiredFields = fields.filter((f) => f.required);
   const completedRequired = requiredFields.filter((f) => f.completed);
   const allRequiredDone = requiredFields.length > 0 && completedRequired.length === requiredFields.length;
-  const completedCount = myFields.filter((f) => f.completed).length;
+  const completedCount = fields.filter((f) => f.completed).length;
 
   const renderOverlay = useCallback((pageNumber: number, dimensions: { width: number; height: number }) => {
     return (
@@ -165,8 +167,8 @@ function PublicSignPage() {
         pageNumber={pageNumber}
         pageDimensions={dimensions}
         mode="sign"
-        recipients={context?.recipients || []}
-        currentSignerIndex={context?.signer_index}
+        recipients={[]}
+        currentSignerIndex={0}
         onFieldClick={handleFieldClick}
       />
     );
@@ -178,6 +180,42 @@ function PublicSignPage() {
         <div className="text-center">
           <div className="w-10 h-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mx-auto mb-4" />
           <p className="text-gray-500">Loading document...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (alreadySigned) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto px-4">
+          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-10 h-10 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Already Signed</h2>
+          <p className="text-gray-600 mb-6">
+            This document has already been signed. No further action is needed.
+          </p>
+          <div className="bg-white rounded-xl shadow-sm p-6 text-left">
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-500">Document</span>
+                <span className="font-medium text-gray-900">{alreadySigned.document_name}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500">Signed by</span>
+                <span className="font-medium text-gray-900">{alreadySigned.name || alreadySigned.email}</span>
+              </div>
+              {alreadySigned.signed_at && (
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Signed on</span>
+                  <span className="font-medium text-gray-900">{new Date(alreadySigned.signed_at).toLocaleString()}</span>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -214,11 +252,11 @@ function PublicSignPage() {
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-gray-500">Document</span>
-                <span className="font-medium text-gray-900">{context?.document_name}</span>
+                <span className="font-medium text-gray-900">{context?.document?.name}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">Signed by</span>
-                <span className="font-medium text-gray-900">{context?.signer_name}</span>
+                <span className="font-medium text-gray-900">{context?.recipient.name || context?.recipient.email}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">Date</span>
@@ -243,7 +281,7 @@ function PublicSignPage() {
             <span className="text-lg font-bold text-indigo-600">eDocSign</span>
           </div>
           <div className="text-sm text-gray-600">
-            Signing as <span className="font-medium text-gray-900">{context?.signer_name}</span>
+            Signing as <span className="font-medium text-gray-900">{context?.recipient.name || context?.recipient.email}</span>
           </div>
         </div>
       </header>
@@ -252,16 +290,16 @@ function PublicSignPage() {
       <div className="bg-white border-b border-gray-200 px-4 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-3">
           <div>
-            <h2 className="text-lg font-semibold text-gray-900">{context?.document_name}</h2>
+            <h2 className="text-lg font-semibold text-gray-900">{context?.document?.name}</h2>
             <p className="text-sm text-gray-500">
-              {completedCount} of {myFields.length} fields completed
+              {completedCount} of {fields.length} fields completed
             </p>
           </div>
           <div className="flex items-center gap-4">
             <div className="w-32 bg-gray-200 rounded-full h-2">
               <div
                 className="bg-indigo-600 h-2 rounded-full transition-all duration-500"
-                style={{ width: `${myFields.length > 0 ? (completedCount / myFields.length) * 100 : 0}%` }}
+                style={{ width: `${fields.length > 0 ? (completedCount / fields.length) * 100 : 0}%` }}
               />
             </div>
             <button
@@ -285,7 +323,7 @@ function PublicSignPage() {
       <div className="flex-1 p-4">
         <div className="max-w-5xl mx-auto">
           <DocumentViewer
-            pdfUrl={context?.document_url || ''}
+            pdfUrl={`/api/sign/${token}/document`}
             currentPage={currentPage}
             onPageChange={setCurrentPage}
             renderOverlay={renderOverlay}

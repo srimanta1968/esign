@@ -189,11 +189,8 @@ function DocumentDetailPage() {
             >
               Versions {versions.length > 0 && `(${versions.length})`}
             </button>
-            <Link to={`/signatures/request/${document.id}`} className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">
+            <Link to={`/workflows/create?documentId=${document.id}`} className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">
               Request Signature
-            </Link>
-            <Link to={`/workflows/create?documentId=${document.id}`} className="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors">
-              Create Workflow
             </Link>
             <button
               onClick={handleDelete}

@@ -1,8 +1,10 @@
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import * as fs from 'fs';
+import * as os from 'os';
 import * as path from 'path';
 import * as crypto from 'crypto';
 import { DataService } from './DataService';
+import { StorageService } from './storageService';
 
 /**
  * CertificateService generates a Signing Certificate PDF
@@ -47,14 +49,13 @@ export class CertificateService {
       throw new Error(`Document ${workflow.document_id} not found`);
     }
 
-    // 3. Compute SHA-256 hash of original document
-    const uploadsDir = path.resolve(__dirname, '../../uploads');
-    const originalPath = path.resolve(uploadsDir, document.file_path);
+    // 3. Compute SHA-256 hash of original document from S3
     let documentHash = 'UNAVAILABLE';
-
-    if (fs.existsSync(originalPath)) {
-      const fileBuffer = fs.readFileSync(originalPath);
+    try {
+      const fileBuffer = await StorageService.getFile(document.file_path);
       documentHash = crypto.createHash('sha256').update(fileBuffer).digest('hex');
+    } catch {
+      console.warn('Could not read original document for hash computation');
     }
 
     // 4. Get all recipients
@@ -312,18 +313,18 @@ export class CertificateService {
       color: rgb(0.6, 0.6, 0.6),
     });
 
-    // 8. Save certificate PDF
-    const certDir = path.resolve(uploadsDir, 'certificates');
-    if (!fs.existsSync(certDir)) {
-      fs.mkdirSync(certDir, { recursive: true });
-    }
-
-    const certFilename = `${workflowId}_certificate.pdf`;
-    const certPath = path.resolve(certDir, certFilename);
+    // 8. Save certificate PDF to temp, then upload to S3
     const certBytes = await pdfDoc.save();
-    fs.writeFileSync(certPath, certBytes);
+    const tempPath = path.join(os.tmpdir(), `${workflowId}_certificate.pdf`);
+    fs.writeFileSync(tempPath, certBytes);
 
-    const relativePath = `certificates/${certFilename}`;
+    const storageResult = await StorageService.store(tempPath, 'certificates', {
+      workflowId,
+    });
+
+    fs.unlink(tempPath, () => {});
+
+    const relativePath = storageResult.path;
 
     // 9. Store certificate_pdf_path in signing_workflows
     await DataService.query(

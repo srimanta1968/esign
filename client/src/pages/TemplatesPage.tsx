@@ -38,7 +38,7 @@ function TemplatesPage() {
     const fetchData = async (): Promise<void> => {
       try {
         const [templatesRes, docsRes] = await Promise.all([
-          ApiService.get<{ templates: Template[] }>('/templates'),
+          ApiService.get<{ templates: Template[] }>('/documents/templates'),
           ApiService.get<{ documents: Document[] }>('/documents'),
         ]);
 
@@ -73,7 +73,7 @@ function TemplatesPage() {
     setError('');
 
     try {
-      const response = await ApiService.post<{ template: Template }>('/templates', {
+      const response = await ApiService.post<{ template: Template }>('/documents/templates', {
         name: formName,
         description: formDescription,
         document_id: formDocumentId,
@@ -119,7 +119,7 @@ function TemplatesPage() {
     setUsingId(templateId);
 
     try {
-      const response = await ApiService.post<{ document: { id: string } }>(`/templates/${templateId}/use`, {});
+      const response = await ApiService.post<{ document: { id: string } }>(`/documents/templates/${templateId}/use`, {});
       if (response.success && response.data) {
         navigate(`/documents/${response.data.document.id}`);
       } else {

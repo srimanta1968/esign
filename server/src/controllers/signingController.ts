@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import path from 'path';
 import { DataService } from '../services/DataService';
+import { StorageService } from '../services/storageService';
 import { SigningTokenService, SigningToken } from '../services/signingTokenService';
 import { WorkflowService } from '../services/workflowService';
 import { NotificationService } from '../services/notificationService';
@@ -31,19 +31,67 @@ export class SigningController {
     try {
       const { token } = req.params;
 
+      // First try valid token
       const signingToken = await SigningTokenService.validateToken(token);
-      if (!signingToken) {
-        res.status(401).json({ success: false, error: 'Invalid, expired, or already used signing token' });
+      if (signingToken) {
+        const context = await SigningController.buildSigningContext(signingToken);
+        if (!context) {
+          res.status(404).json({ success: false, error: 'Workflow or recipient not found' });
+          return;
+        }
+        res.status(200).json({ success: true, data: context });
         return;
       }
 
-      const context = await SigningController.buildSigningContext(signingToken);
-      if (!context) {
-        res.status(404).json({ success: false, error: 'Workflow or recipient not found' });
+      // Token invalid — check why (used/expired/not found) and return status info
+      const lookup = await SigningTokenService.lookupToken(token);
+
+      if (lookup.reason === 'not_found') {
+        res.status(401).json({ success: false, error: 'Invalid signing token' });
         return;
       }
 
-      res.status(200).json({ success: true, data: context });
+      if (lookup.reason === 'expired') {
+        res.status(401).json({ success: false, error: 'This signing link has expired' });
+        return;
+      }
+
+      // Token was used — recipient already signed. Return status info.
+      if (lookup.reason === 'used' && lookup.signingToken) {
+        const recipient = await DataService.queryOne<WorkflowRecipient>(
+          'SELECT * FROM workflow_recipients WHERE id = $1',
+          [lookup.signingToken.recipient_id]
+        );
+        const workflow = await DataService.queryOne<SigningWorkflow>(
+          'SELECT * FROM signing_workflows WHERE id = $1',
+          [lookup.signingToken.workflow_id]
+        );
+        const document = await DataService.queryOne<{ original_name: string }>(
+          'SELECT original_name FROM documents WHERE id = $1',
+          [workflow?.document_id || '']
+        );
+
+        res.status(200).json({
+          success: true,
+          data: {
+            already_signed: true,
+            recipient: {
+              name: recipient?.signer_name || '',
+              email: recipient?.signer_email || '',
+              signed_at: recipient?.signed_at || null,
+            },
+            document: {
+              name: document?.original_name || 'Document',
+            },
+            workflow: {
+              status: workflow?.status || 'unknown',
+            },
+          },
+        });
+        return;
+      }
+
+      res.status(401).json({ success: false, error: 'Invalid, expired, or already used signing token' });
     } catch (error: any) {
       console.error('Get signing context error:', error);
       res.status(500).json({ success: false, error: 'Internal server error' });
@@ -180,37 +228,8 @@ export class SigningController {
         timestamp: new Date().toISOString(),
       });
 
-      // Check if all recipients have signed - auto-complete workflow
-      const allRecipients = await DataService.queryAll<WorkflowRecipient>(
-        'SELECT * FROM workflow_recipients WHERE workflow_id = $1 ORDER BY signing_order ASC',
-        [signingToken.workflow_id]
-      );
-
-      const allSigned = allRecipients.every(r => r.status === 'signed');
-      if (allSigned) {
-        await DataService.query(
-          "UPDATE signing_workflows SET status = 'completed', updated_at = NOW() WHERE id = $1",
-          [signingToken.workflow_id]
-        );
-
-        await WorkflowService.logHistory(signingToken.workflow_id, 'completed', recipient.signer_email, actorIp, {
-          user_agent: userAgent,
-          completed_at: new Date().toISOString(),
-        });
-
-        // Notify creator
-        await NotificationService.create(
-          workflow.creator_id,
-          'workflow_completed',
-          `All recipients have signed the workflow for document ${workflow.document_id}`
-        );
-      } else if (workflow.workflow_type === 'sequential') {
-        // Notify the next pending recipient
-        const nextRecipient = allRecipients.find(r => r.status === 'pending');
-        if (nextRecipient) {
-          await WorkflowService.sendSigningEmail(workflow, nextRecipient);
-        }
-      }
+      // Handle post-sign: completion check, progress notifications, next signer email
+      const { allSigned } = await WorkflowService.handlePostSign(workflow, recipient.signer_email, actorIp, userAgent);
 
       res.status(200).json({
         success: true,
@@ -264,22 +283,18 @@ export class SigningController {
         return;
       }
 
-      const filePath = path.resolve(__dirname, '../..', document.file_path.replace(/^\//, ''));
-      const downloadName = document.original_name || path.basename(document.file_path);
+      const downloadName = document.original_name || 'document';
+      const mimeType = document.mime_type || SigningController.detectMimeType(document.original_name || document.file_path);
 
-      if (document.mime_type) {
-        res.setHeader('Content-Type', document.mime_type);
+      try {
+        const fileBuffer = await StorageService.getFile(document.file_path);
+        res.setHeader('Content-Type', mimeType);
+        res.setHeader('Content-Disposition', `inline; filename="${downloadName}"`);
+        res.send(fileBuffer);
+      } catch (fileErr) {
+        console.error('Document serve error:', fileErr);
+        res.status(404).json({ success: false, error: 'File not found' });
       }
-      res.setHeader('Content-Disposition', `inline; filename="${downloadName}"`);
-
-      res.sendFile(filePath, (err) => {
-        if (err) {
-          console.error('Document serve error:', err);
-          if (!res.headersSent) {
-            res.status(404).json({ success: false, error: 'File not found on disk' });
-          }
-        }
-      });
     } catch (error: any) {
       console.error('Get signing document error:', error);
       res.status(500).json({ success: false, error: 'Internal server error' });
@@ -316,22 +331,18 @@ export class SigningController {
         return;
       }
 
-      const filePath = path.resolve(__dirname, '../..', document.file_path.replace(/^\//, ''));
-      const downloadName = document.original_name || path.basename(document.file_path);
+      const downloadName = document.original_name || 'document';
+      const mimeType = document.mime_type || SigningController.detectMimeType(document.original_name || document.file_path);
 
-      if (document.mime_type) {
-        res.setHeader('Content-Type', document.mime_type);
+      try {
+        const fileBuffer = await StorageService.getFile(document.file_path);
+        res.setHeader('Content-Type', mimeType);
+        res.setHeader('Content-Disposition', `inline; filename="${downloadName}"`);
+        res.send(fileBuffer);
+      } catch (fileErr) {
+        console.error('Document serve error:', fileErr);
+        res.status(404).json({ success: false, error: 'File not found' });
       }
-      res.setHeader('Content-Disposition', `inline; filename="${downloadName}"`);
-
-      res.sendFile(filePath, (err) => {
-        if (err) {
-          console.error('Document serve error:', err);
-          if (!res.headersSent) {
-            res.status(404).json({ success: false, error: 'File not found on disk' });
-          }
-        }
-      });
     } catch (error: any) {
       console.error('Get authenticated document error:', error);
       res.status(500).json({ success: false, error: 'Internal server error' });
@@ -478,35 +489,8 @@ export class SigningController {
         timestamp: new Date().toISOString(),
       });
 
-      // Check auto-complete
-      const allRecipients = await DataService.queryAll<WorkflowRecipient>(
-        'SELECT * FROM workflow_recipients WHERE workflow_id = $1 ORDER BY signing_order ASC',
-        [workflowId]
-      );
-
-      const allSigned = allRecipients.every(r => r.status === 'signed');
-      if (allSigned) {
-        await DataService.query(
-          "UPDATE signing_workflows SET status = 'completed', updated_at = NOW() WHERE id = $1",
-          [workflowId]
-        );
-
-        await WorkflowService.logHistory(workflowId, 'completed', req.userEmail, actorIp, {
-          user_agent: userAgent,
-          completed_at: new Date().toISOString(),
-        });
-
-        await NotificationService.create(
-          workflow.creator_id,
-          'workflow_completed',
-          `All recipients have signed the workflow for document ${workflow.document_id}`
-        );
-      } else if (workflow.workflow_type === 'sequential') {
-        const nextRecipient = allRecipients.find(r => r.status === 'pending');
-        if (nextRecipient) {
-          await WorkflowService.sendSigningEmail(workflow, nextRecipient);
-        }
-      }
+      // Handle post-sign: completion check, progress notifications, next signer email
+      const { allSigned } = await WorkflowService.handlePostSign(workflow, req.userEmail!, actorIp, userAgent);
 
       res.status(200).json({
         success: true,
@@ -520,6 +504,16 @@ export class SigningController {
       console.error('Self-sign error:', error);
       res.status(500).json({ success: false, error: error.message || 'Internal server error' });
     }
+  }
+
+  private static detectMimeType(filename: string): string {
+    const ext = filename.split('.').pop()?.toLowerCase();
+    const map: Record<string, string> = {
+      pdf: 'application/pdf', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg',
+      doc: 'application/msword', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      txt: 'text/plain',
+    };
+    return map[ext || ''] || 'application/octet-stream';
   }
 
   // ─── Private Helpers ──────────────────────────────────────────────

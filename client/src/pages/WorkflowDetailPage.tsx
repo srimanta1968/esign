@@ -55,6 +55,16 @@ interface WorkflowEvent {
   details?: string;
 }
 
+function formatMetadata(metadata: Record<string, any>): string | undefined {
+  const parts: string[] = [];
+  if (metadata.recipient_email) parts.push(`Recipient: ${metadata.recipient_email}`);
+  if (metadata.fields_signed) parts.push(`Fields signed: ${metadata.fields_signed}`);
+  if (metadata.signing_method) parts.push(`Method: ${metadata.signing_method}`);
+  if (metadata.recipient_count) parts.push(`Recipients: ${metadata.recipient_count}`);
+  if (metadata.notified_count) parts.push(`Notified: ${metadata.notified_count}`);
+  return parts.length > 0 ? parts.join(' | ') : undefined;
+}
+
 function WorkflowDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
@@ -70,6 +80,20 @@ function WorkflowDetailPage() {
   const [savingReminders, setSavingReminders] = useState<boolean>(false);
   const [showHistory, setShowHistory] = useState<boolean>(false);
   const [exporting, setExporting] = useState<boolean>(false);
+  const [cancelling, setCancelling] = useState<boolean>(false);
+  const [showCancelConfirm, setShowCancelConfirm] = useState<boolean>(false);
+  const [showSignPrompt, setShowSignPrompt] = useState<boolean>(true);
+
+  // Saved signature state
+  const [savedSignature, setSavedSignature] = useState<string | null>(null);
+  const [savedSignatureChecked, setSavedSignatureChecked] = useState<boolean>(false);
+
+  // Recipient editing state
+  const [editingRecipients, setEditingRecipients] = useState<boolean>(false);
+  const [editRecipients, setEditRecipients] = useState<{ email: string; name: string; order: number }[]>([]);
+  const [newRecEmail, setNewRecEmail] = useState<string>('');
+  const [newRecName, setNewRecName] = useState<string>('');
+  const [savingRecipients, setSavingRecipients] = useState<boolean>(false);
 
   // Self-signing state
   const [showSigningView, setShowSigningView] = useState<boolean>(false);
@@ -82,18 +106,59 @@ function WorkflowDetailPage() {
 
   const fetchWorkflow = useCallback(async (): Promise<void> => {
     try {
-      const response = await ApiService.get<{ workflow: Workflow }>(`/workflows/${id}`);
+      const response = await ApiService.get<{ workflow: any }>(`/workflows/${id}`);
       if (response.success && response.data) {
-        setWorkflow(response.data.workflow);
+        const raw = response.data.workflow;
+
+        // Map server response to client Workflow shape
+        const mapped: Workflow = {
+          id: raw.id,
+          document_id: raw.document_id,
+          document_name: raw.document_name || '',
+          workflow_type: raw.workflow_type,
+          status: raw.status,
+          created_at: raw.created_at,
+          updated_at: raw.updated_at,
+          signers: (raw.signers || raw.recipients || []).map((r: any) => ({
+            id: r.id,
+            email: r.email || r.signer_email,
+            name: r.name || r.signer_name,
+            status: r.status,
+            signed_at: r.signed_at,
+            order: r.order ?? r.signing_order,
+            last_reminder_sent: r.last_reminder_sent,
+            reminder_interval_hours: r.reminder_interval_hours,
+          })),
+          signature_fields: (raw.signature_fields || raw.fields || []).map((f: any, i: number) => {
+            // Find recipient_index from recipient_id
+            const recipients = raw.signers || raw.recipients || [];
+            const recipientIndex = f.recipient_index ?? recipients.findIndex((r: any) => r.id === f.recipient_id);
+            return {
+              id: f.id,
+              type: f.type || f.field_type,
+              page: f.page,
+              x: f.x,
+              y: f.y,
+              width: f.width,
+              height: f.height,
+              recipient_index: recipientIndex >= 0 ? recipientIndex : i,
+              required: f.required !== false,
+              value: f.value || f.signature_data,
+              completed: f.completed || !!f.signed_at,
+            };
+          }),
+        };
+
+        setWorkflow(mapped);
         const intervals: Record<string, number> = {};
-        response.data.workflow.signers.forEach((s) => {
+        mapped.signers.forEach((s) => {
           intervals[s.id] = s.reminder_interval_hours || 24;
         });
         setReminderIntervals(intervals);
 
-        // Map signature fields
-        if (response.data.workflow.signature_fields) {
-          setSignFields(response.data.workflow.signature_fields.map((f) => ({
+        // Map signature fields for signing view
+        if (mapped.signature_fields) {
+          setSignFields(mapped.signature_fields.map((f) => ({
             id: f.id,
             type: f.type as FieldType,
             page: f.page,
@@ -117,9 +182,18 @@ function WorkflowDetailPage() {
 
   const fetchHistory = useCallback(async (): Promise<void> => {
     try {
-      const response = await ApiService.get<{ events: WorkflowEvent[] }>(`/workflows/${id}/history`);
+      const response = await ApiService.get<any>(`/workflows/${id}/history`);
       if (response.success && response.data) {
-        setEvents(response.data.events);
+        const rawEvents = response.data.history || response.data.events || [];
+        const mapped: WorkflowEvent[] = rawEvents.map((e: any) => ({
+          id: e.id,
+          actor: e.actor || e.actor_email || '',
+          action: e.action || '',
+          timestamp: e.timestamp || e.created_at || '',
+          ip_address: e.ip_address || e.actor_ip || '',
+          details: e.details || (e.metadata ? formatMetadata(e.metadata) : undefined),
+        }));
+        setEvents(mapped);
       }
     } catch {
       // silent
@@ -135,14 +209,53 @@ function WorkflowDetailPage() {
   useEffect(() => {
     if (!workflow || workflow.status === 'completed' || workflow.status === 'cancelled') return;
     const interval = setInterval(() => {
-      ApiService.get<{ workflow: Workflow }>(`/workflows/${id}/status`).then((res) => {
+      ApiService.get<any>(`/workflows/${id}/status`).then((res) => {
         if (res.success && res.data) {
-          setWorkflow(res.data.workflow);
+          // Status endpoint returns res.data.status (not res.data.workflow)
+          const statusData = res.data.status || res.data.workflow;
+          if (!statusData) return;
+          setWorkflow((prev) => {
+            if (!prev) return prev;
+            return {
+              ...prev,
+              status: statusData.status || prev.status,
+              signers: prev.signers.map((s) => {
+                const updated = (statusData.recipients || []).find(
+                  (r: any) => r.id === s.id || (r.signer_email || r.email) === s.email
+                );
+                return updated ? { ...s, status: updated.status, signed_at: updated.signed_at } : s;
+              }),
+            };
+          });
         }
       });
     }, 10000);
     return () => clearInterval(interval);
   }, [id, workflow?.status]);
+
+  // Fetch saved signature when entering signing view, and auto-populate fields
+  useEffect(() => {
+    if (!showSigningView || savedSignatureChecked || !workflow) return;
+    setSavedSignatureChecked(true);
+
+    const signerIdx = workflow.signers.findIndex((s) => s.email === user?.email);
+
+    ApiService.get<{ userSignatures: { signature_type: string; signature_data?: string }[] }>('/user-signatures').then((res) => {
+      if (res.success && res.data) {
+        const drawn = res.data.userSignatures.find((s) => s.signature_type === 'drawn' && s.signature_data);
+        if (drawn?.signature_data) {
+          setSavedSignature(drawn.signature_data);
+          // Auto-populate all unfilled signature/initials fields for this signer
+          setSignFields((prev) => prev.map((f) => {
+            if ((f.type === 'signature' || f.type === 'initials') && f.recipientIndex === signerIdx && !f.completed) {
+              return { ...f, value: drawn.signature_data!, completed: true };
+            }
+            return f;
+          }));
+        }
+      }
+    });
+  }, [showSigningView, savedSignatureChecked, workflow, user?.email]);
 
   const handleStart = async (): Promise<void> => {
     setStarting(true);
@@ -163,12 +276,32 @@ function WorkflowDetailPage() {
     }
   };
 
+  const handleCancel = async (): Promise<void> => {
+    setCancelling(true);
+    setError('');
+    setShowCancelConfirm(false);
+    try {
+      const response = await ApiService.post(`/workflows/${id}/cancel`, {});
+      if (response.success) {
+        setSuccess('Workflow cancelled');
+        fetchWorkflow();
+        fetchHistory();
+      } else {
+        setError(response.error || 'Failed to cancel workflow');
+      }
+    } catch {
+      setError('An unexpected error occurred');
+    } finally {
+      setCancelling(false);
+    }
+  };
+
   const handleSendReminder = async (signerId?: string): Promise<void> => {
     setSendingReminder(signerId || 'all');
     setError('');
     try {
       const body: Record<string, any> = {};
-      if (signerId) body.signer_id = signerId;
+      if (signerId) body.recipientId = signerId;
       const response = await ApiService.post(`/workflows/${id}/remind`, body);
       if (response.success) {
         setSuccess('Reminder sent successfully');
@@ -273,23 +406,43 @@ function WorkflowDetailPage() {
     setTextValue('');
   }, [activeField, textValue]);
 
+  const [showSignConfirm, setShowSignConfirm] = useState<boolean>(false);
+
   const handleSelfSign = async () => {
     setSelfSigning(true);
     setError('');
     try {
-      const fieldValues = signFields
+      const signatures = signFields
         .filter((f) => f.recipientIndex === mySignerIndex && f.completed)
         .map((f) => ({
-          field_id: f.id,
-          value: f.value,
+          fieldId: f.id,
+          signatureData: f.value || '',
+          signatureType: (f.type === 'signature' || f.type === 'initials') ? 'drawn' : f.type,
         }));
 
       const response = await ApiService.post(`/workflows/${id}/self-sign`, {
-        fields: fieldValues,
+        signatures,
       });
 
       if (response.success) {
-        setSuccess('Document signed successfully!');
+        // Auto-save signature for future use if user didn't have one
+        if (!savedSignature) {
+          const drawnSig = signatures.find((s) => s.signatureType === 'drawn' && s.signatureData);
+          if (drawnSig) {
+            ApiService.post('/user-signatures', {
+              signature_type: 'drawn',
+              signature_data: drawnSig.signatureData,
+            }).then((saveRes) => {
+              if (saveRes.success) {
+                setSavedSignature(drawnSig.signatureData);
+                setSuccess('Document signed successfully! Your signature has been saved for future use.');
+              }
+            }).catch(() => {});
+          }
+        }
+        if (savedSignature) {
+          setSuccess('Document signed successfully!');
+        }
         setShowSigningView(false);
         fetchWorkflow();
         fetchHistory();
@@ -374,7 +527,7 @@ function WorkflowDetailPage() {
 
   // Self-signing view
   if (showSigningView) {
-    const pdfUrl = `/api/documents/${workflow.document_id}/download`;
+    const pdfUrl = `/api/documents/${workflow.document_id}/file`;
     return (
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-4">
@@ -389,19 +542,67 @@ function WorkflowDetailPage() {
 
         {error && <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg mb-4 text-sm">{error}</div>}
 
+        {/* Auto-populated notice */}
+        {savedSignature && allMyRequiredDone && (
+          <div className="bg-green-50 border border-green-200 rounded-lg px-4 py-3 mb-4 flex items-center gap-3">
+            <svg className="w-5 h-5 text-green-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            <p className="text-sm text-green-800">
+              Your saved signature has been applied to all fields. Click <strong>Complete Signing</strong> to finish, or tap any field to redraw.
+            </p>
+          </div>
+        )}
+
         {/* Progress */}
         <div className="bg-white rounded-lg shadow-sm px-4 py-3 mb-4 flex items-center justify-between">
           <p className="text-sm text-gray-600">
             {myFields.filter((f) => f.completed).length} of {myFields.length} fields completed
           </p>
           <button
-            onClick={handleSelfSign}
+            onClick={() => setShowSignConfirm(true)}
             disabled={!allMyRequiredDone || selfSigning}
             className="bg-indigo-600 text-white px-5 py-2 rounded-lg font-medium text-sm hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {selfSigning ? 'Signing...' : 'Complete Signing'}
           </button>
         </div>
+
+        {/* Sign confirmation dialog */}
+        {showSignConfirm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                  <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900">Confirm Signature</h3>
+              </div>
+              <p className="text-sm text-gray-600 mb-2">
+                You are about to sign <strong>{workflow.document_name || 'this document'}</strong>.
+              </p>
+              <p className="text-sm text-gray-600 mb-6">
+                {myFields.filter(f => f.completed).length} field(s) completed. By signing, you agree to the terms of this document. This action cannot be undone.
+              </p>
+              <div className="flex justify-end gap-3">
+                <button
+                  onClick={() => setShowSignConfirm(false)}
+                  className="px-4 py-2 text-gray-600 hover:text-gray-800 text-sm font-medium"
+                >
+                  Go Back
+                </button>
+                <button
+                  onClick={() => { setShowSignConfirm(false); handleSelfSign(); }}
+                  className="bg-green-600 text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-green-700 transition-colors"
+                >
+                  Confirm & Sign
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         <DocumentViewer
           pdfUrl={pdfUrl}
@@ -432,8 +633,33 @@ function WorkflowDetailPage() {
 
                 {activeField.type === 'signature' && (
                   <div>
-                    <p className="text-sm text-gray-600 mb-3">Draw your signature below:</p>
-                    <SignaturePadComponent onSave={handleSignatureCapture} height={200} />
+                    {savedSignature ? (
+                      <div>
+                        <p className="text-sm text-gray-600 mb-3">Your saved signature:</p>
+                        <div className="border border-gray-200 rounded-lg p-4 bg-gray-50 mb-3 flex items-center justify-center">
+                          <img src={savedSignature} alt="Saved signature" className="h-16 object-contain" />
+                        </div>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleSignatureCapture(savedSignature)}
+                            className="bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium text-sm hover:bg-indigo-700 transition-colors"
+                          >
+                            Use This Signature
+                          </button>
+                          <button
+                            onClick={() => setSavedSignature(null)}
+                            className="text-gray-600 hover:text-gray-800 px-4 py-2 text-sm font-medium"
+                          >
+                            Draw New
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div>
+                        <p className="text-sm text-gray-600 mb-3">Draw your signature below:</p>
+                        <SignaturePadComponent onSave={handleSignatureCapture} height={200} />
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -535,13 +761,26 @@ function WorkflowDetailPage() {
               </button>
             )}
             {workflow.status === 'draft' && (
-              <button
-                onClick={handleStart}
-                disabled={starting}
-                className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50"
-              >
-                {starting ? 'Starting...' : 'Start Workflow'}
-              </button>
+              <>
+                <button
+                  onClick={handleStart}
+                  disabled={starting}
+                  className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50"
+                >
+                  {starting ? 'Starting...' : 'Start Workflow'}
+                </button>
+                <button
+                  onClick={() => {
+                    setEditRecipients(workflow.signers.map((s) => ({ email: s.email, name: s.name, order: s.order })));
+                    setEditingRecipients(true);
+                    setNewRecEmail('');
+                    setNewRecName('');
+                  }}
+                  className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors"
+                >
+                  Edit Recipients
+                </button>
+              </>
             )}
             {workflow.status === 'active' && (
               <>
@@ -560,13 +799,22 @@ function WorkflowDetailPage() {
                 </button>
               </>
             )}
+            {(workflow.status === 'draft' || workflow.status === 'active') && (
+              <button
+                onClick={() => setShowCancelConfirm(true)}
+                disabled={cancelling}
+                className="text-red-500 hover:text-red-700 px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50"
+              >
+                {cancelling ? 'Cancelling...' : 'Cancel Workflow'}
+              </button>
+            )}
             <button
               onClick={() => { setShowHistory(!showHistory); if (!showHistory) fetchHistory(); }}
               className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors"
             >
               {showHistory ? 'Hide History' : 'View History'}
             </button>
-            <Link to="/dashboard" className="px-4 py-2 text-gray-500 hover:text-gray-700 text-sm font-medium">
+            <Link to="/workflows" className="px-4 py-2 text-gray-500 hover:text-gray-700 text-sm font-medium">
               Back
             </Link>
           </div>
@@ -586,6 +834,228 @@ function WorkflowDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Self-sign banner */}
+      {canSelfSign && showSignPrompt && (
+        <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4 mb-6 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center shrink-0">
+              <svg className="w-5 h-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+              </svg>
+            </div>
+            <div>
+              <p className="font-semibold text-indigo-900">It's your turn to sign</p>
+              <p className="text-sm text-indigo-700">You have signature fields waiting for your signature on this document.</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={() => setShowSigningView(true)}
+              className="bg-indigo-600 text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition-colors"
+            >
+              Sign Now
+            </button>
+            <button
+              onClick={() => setShowSignPrompt(false)}
+              className="text-indigo-400 hover:text-indigo-600 p-1"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Cancel confirmation dialog */}
+      {showCancelConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Cancel Workflow?</h3>
+            <p className="text-sm text-gray-600 mb-6">
+              This will invalidate all signing links and notify pending recipients. This action cannot be undone.
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowCancelConfirm(false)}
+                className="px-4 py-2 text-gray-600 hover:text-gray-800 text-sm font-medium"
+              >
+                Keep Workflow
+              </button>
+              <button
+                onClick={handleCancel}
+                disabled={cancelling}
+                className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors disabled:opacity-50"
+              >
+                {cancelling ? 'Cancelling...' : 'Yes, Cancel Workflow'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Recipients Panel */}
+      {editingRecipients && workflow.status === 'draft' && (
+        <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Edit Recipients</h3>
+          <div className="space-y-3 mb-4">
+            {editRecipients
+              .sort((a, b) => a.order - b.order)
+              .map((rec, idx) => (
+                <div key={idx} className="flex items-center gap-3 bg-gray-50 rounded-lg p-3">
+                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-200 text-gray-600 font-semibold text-sm">
+                    {rec.order}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900 truncate">{rec.name || rec.email}</p>
+                    <p className="text-xs text-gray-500">{rec.email}</p>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => {
+                        if (idx === 0) return;
+                        const updated = [...editRecipients].sort((a, b) => a.order - b.order);
+                        const prevOrder = updated[idx - 1].order;
+                        updated[idx - 1].order = updated[idx].order;
+                        updated[idx].order = prevOrder;
+                        setEditRecipients([...updated]);
+                      }}
+                      disabled={idx === 0}
+                      className="text-gray-400 hover:text-gray-600 disabled:opacity-30 p-1"
+                      title="Move up"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={() => {
+                        const sorted = [...editRecipients].sort((a, b) => a.order - b.order);
+                        if (idx === sorted.length - 1) return;
+                        const nextOrder = sorted[idx + 1].order;
+                        sorted[idx + 1].order = sorted[idx].order;
+                        sorted[idx].order = nextOrder;
+                        setEditRecipients([...sorted]);
+                      }}
+                      disabled={idx === editRecipients.length - 1}
+                      className="text-gray-400 hover:text-gray-600 disabled:opacity-30 p-1"
+                      title="Move down"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={() => {
+                        const sorted = [...editRecipients].sort((a, b) => a.order - b.order);
+                        sorted.splice(idx, 1);
+                        // Re-number orders
+                        sorted.forEach((r, i) => { r.order = i + 1; });
+                        setEditRecipients([...sorted]);
+                      }}
+                      className="text-red-400 hover:text-red-600 p-1 ml-1"
+                      title="Remove"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              ))}
+          </div>
+
+          {/* Add recipient form */}
+          <div className="flex items-end gap-3 mb-4">
+            <div className="flex-1">
+              <label className="block text-xs font-medium text-gray-600 mb-1">Email</label>
+              <input
+                type="email"
+                value={newRecEmail}
+                onChange={(e) => setNewRecEmail(e.target.value)}
+                placeholder="recipient@example.com"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+              />
+            </div>
+            <div className="flex-1">
+              <label className="block text-xs font-medium text-gray-600 mb-1">Name</label>
+              <input
+                type="text"
+                value={newRecName}
+                onChange={(e) => setNewRecName(e.target.value)}
+                placeholder="Recipient name"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+              />
+            </div>
+            <button
+              onClick={() => {
+                if (!newRecEmail.trim()) return;
+                const maxOrder = editRecipients.length > 0 ? Math.max(...editRecipients.map((r) => r.order)) : 0;
+                setEditRecipients([...editRecipients, { email: newRecEmail.trim(), name: newRecName.trim(), order: maxOrder + 1 }]);
+                setNewRecEmail('');
+                setNewRecName('');
+              }}
+              disabled={!newRecEmail.trim()}
+              className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50"
+            >
+              Add
+            </button>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => {
+                if (!user?.email) return;
+                const alreadyAdded = editRecipients.some((r) => r.email === user.email);
+                if (alreadyAdded) return;
+                const maxOrder = editRecipients.length > 0 ? Math.max(...editRecipients.map((r) => r.order)) : 0;
+                setEditRecipients([...editRecipients, { email: user.email, name: user.name || '', order: maxOrder + 1 }]);
+              }}
+              className="text-indigo-600 hover:text-indigo-700 text-sm font-medium"
+            >
+              Add Myself
+            </button>
+            <div className="flex-1" />
+            <button
+              onClick={async () => {
+                setSavingRecipients(true);
+                setError('');
+                try {
+                  const response = await ApiService.put(`/workflows/${id}`, {
+                    recipients: editRecipients.map((r) => ({
+                      signer_email: r.email,
+                      signer_name: r.name,
+                      signing_order: r.order,
+                    })),
+                  });
+                  if (response.success) {
+                    setSuccess('Recipients updated');
+                    setEditingRecipients(false);
+                    fetchWorkflow();
+                  } else {
+                    setError(response.error || 'Failed to update recipients');
+                  }
+                } catch {
+                  setError('An unexpected error occurred');
+                } finally {
+                  setSavingRecipients(false);
+                }
+              }}
+              disabled={savingRecipients}
+              className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50"
+            >
+              {savingRecipients ? 'Saving...' : 'Save'}
+            </button>
+            <button
+              onClick={() => setEditingRecipients(false)}
+              className="text-gray-500 hover:text-gray-700 text-sm font-medium px-4 py-2"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Reminder Settings Panel */}
       {showReminderPanel && (

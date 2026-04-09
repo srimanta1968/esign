@@ -191,7 +191,7 @@ function WorkflowCreatePage() {
   };
 
   const selectedDoc = documents.find((d) => d.id === selectedDocumentId);
-  const pdfUrl = selectedDocumentId ? `/api/documents/${selectedDocumentId}/download` : '';
+  const pdfUrl = selectedDocumentId ? `/api/documents/${selectedDocumentId}/file` : '';
 
   // Validation for step 2
   const recipientsWithSig = new Set(

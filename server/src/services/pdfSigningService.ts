@@ -1,7 +1,9 @@
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import * as os from 'os';
 import * as fs from 'fs';
 import * as path from 'path';
 import { DataService } from './DataService';
+import { StorageService } from './storageService';
 
 /**
  * PdfSigningService generates signed PDFs by embedding signature images
@@ -41,15 +43,8 @@ export class PdfSigningService {
       throw new Error(`Document ${workflow.document_id} not found`);
     }
 
-    // 2. Load original PDF from disk
-    const uploadsDir = path.resolve(__dirname, '../../uploads');
-    const originalPath = path.resolve(uploadsDir, document.file_path);
-
-    if (!fs.existsSync(originalPath)) {
-      throw new Error(`Original document file not found: ${originalPath}`);
-    }
-
-    const originalBytes = fs.readFileSync(originalPath);
+    // 2. Load original PDF from S3 via StorageService
+    const originalBytes = await StorageService.getFile(document.file_path);
     const pdfDoc = await PDFDocument.load(originalBytes);
 
     // 3. Get all signature fields with submitted signature data
@@ -87,26 +82,26 @@ export class PdfSigningService {
       await PdfSigningService.embedSignatureOnPage(page, field.signature_data!, field, pdfDoc);
     }
 
-    // 5. Save signed PDF
-    const signedDir = path.resolve(uploadsDir, 'signed');
-    if (!fs.existsSync(signedDir)) {
-      fs.mkdirSync(signedDir, { recursive: true });
-    }
-
-    const signedFilename = `${workflowId}_signed.pdf`;
-    const signedPath = path.resolve(signedDir, signedFilename);
-
+    // 5. Save signed PDF to temp, then upload to S3
     const signedPdfBytes = await pdfDoc.save();
-    fs.writeFileSync(signedPath, signedPdfBytes);
+    const tempPath = path.join(os.tmpdir(), `${workflowId}_signed.pdf`);
+    fs.writeFileSync(tempPath, signedPdfBytes);
 
-    // 6. Store signed_pdf_path in signing_workflows table
-    const relativePath = `signed/${signedFilename}`;
+    const storageResult = await StorageService.store(tempPath, 'signed', {
+      workflowId,
+      filename: `${workflowId}_signed`,
+    });
+
+    // Clean up temp file
+    fs.unlink(tempPath, () => {});
+
+    // 6. Store path in signing_workflows table
     await DataService.query(
       'UPDATE signing_workflows SET signed_pdf_path = $1 WHERE id = $2',
-      [relativePath, workflowId]
+      [storageResult.path, workflowId]
     );
 
-    return relativePath;
+    return storageResult.path;
   }
 
   /**

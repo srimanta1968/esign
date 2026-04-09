@@ -10,7 +10,6 @@ import DashboardPage from './pages/DashboardPage';
 import UploadPage from './pages/UploadPage';
 import DocumentDetailPage from './pages/DocumentDetailPage';
 import DocumentSearchPage from './pages/DocumentSearchPage';
-import SignatureRequestPage from './pages/SignatureRequestPage';
 import SignaturesPage from './pages/SignaturesPage';
 import SignDocumentPage from './pages/SignDocumentPage';
 import ProfilePage from './pages/ProfilePage';
@@ -19,11 +18,21 @@ import TemplatesPage from './pages/TemplatesPage';
 import AuditLogPage from './pages/AuditLogPage';
 import ComplianceDashboardPage from './pages/ComplianceDashboardPage';
 import NotificationPreferencesPage from './pages/NotificationPreferencesPage';
+import WorkflowsListPage from './pages/WorkflowsListPage';
 import WorkflowCreatePage from './pages/WorkflowCreatePage';
 import WorkflowDetailPage from './pages/WorkflowDetailPage';
 import SignatureCreatorPage from './pages/SignatureCreatorPage';
 import SignatureConfirmPage from './pages/SignatureConfirmPage';
 import PublicSignPage from './pages/PublicSignPage';
+import WorkflowDownloadsPage from './pages/WorkflowDownloadsPage';
+import PricingPage from './pages/PricingPage';
+import BillingPage from './pages/BillingPage';
+import CheckoutSuccessPage from './pages/CheckoutSuccessPage';
+import CheckoutCancelPage from './pages/CheckoutCancelPage';
+import GuidePage from './pages/GuidePage';
+import ApiKeysPage from './pages/ApiKeysPage';
+import TeamPage from './pages/TeamPage';
+import TeamJoinPage from './pages/TeamJoinPage';
 
 function App() {
   return (
@@ -51,16 +60,25 @@ function App() {
                   <Route path="/templates" element={<TemplatesPage />} />
                   <Route path="/profile" element={<ProfilePage />} />
                   <Route path="/admin/users" element={<AdminUsersPage />} />
-                  <Route path="/signatures/request/:documentId" element={<SignatureRequestPage />} />
                   <Route path="/signatures" element={<SignaturesPage />} />
                   <Route path="/sign/:signatureId" element={<SignDocumentPage />} />
                   <Route path="/sign/:signatureId/confirm" element={<SignatureConfirmPage />} />
                   <Route path="/signatures/create" element={<SignatureCreatorPage />} />
+                  <Route path="/workflows" element={<WorkflowsListPage />} />
                   <Route path="/workflows/create" element={<WorkflowCreatePage />} />
+                  <Route path="/workflows/:id/downloads" element={<WorkflowDownloadsPage />} />
                   <Route path="/workflows/:id" element={<WorkflowDetailPage />} />
                   <Route path="/admin/audit-logs" element={<AuditLogPage />} />
                   <Route path="/admin/compliance" element={<ComplianceDashboardPage />} />
+                  <Route path="/pricing" element={<PricingPage />} />
+                  <Route path="/settings/billing" element={<BillingPage />} />
+                  <Route path="/checkout/success" element={<CheckoutSuccessPage />} />
+                  <Route path="/checkout/cancel" element={<CheckoutCancelPage />} />
                   <Route path="/settings/notifications" element={<NotificationPreferencesPage />} />
+                  <Route path="/guide" element={<GuidePage />} />
+                  <Route path="/settings/api-keys" element={<ApiKeysPage />} />
+                  <Route path="/team" element={<TeamPage />} />
+                  <Route path="/team/join/:token" element={<TeamJoinPage />} />
                 </Routes>
               </Layout>
             }

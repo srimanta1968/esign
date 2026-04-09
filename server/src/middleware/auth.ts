@@ -13,7 +13,8 @@ export interface AuthenticatedRequest extends Request {
  */
 export function authenticateToken(req: AuthenticatedRequest, res: Response, next: NextFunction): void {
   const authHeader = req.headers.authorization;
-  const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+  const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7)
+    : (req.query.token as string) || null;
 
   if (!token) {
     res.status(401).json({

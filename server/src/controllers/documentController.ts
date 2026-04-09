@@ -1,6 +1,7 @@
 import { Response } from 'express';
-import path from 'path';
+import fs from 'fs';
 import { DocumentService } from '../services/documentService';
+import { StorageService } from '../services/storageService';
 import { AuthenticatedRequest } from '../middleware/auth';
 import { UploadDocumentRequest } from '../types/document';
 
@@ -43,8 +44,25 @@ export class DocumentController {
         return;
       }
 
-      const filePath: string = `/uploads/${file.filename}`;
-      const document = await DocumentService.upload(userId, filePath, file.originalname, file.mimetype, file.size);
+      // Generate a temporary document ID for the S3 key
+      const tempDocId = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+
+      // Upload to S3 via StorageService
+      const storageResult = await StorageService.store(file.path, 'originals', {
+        userId,
+        documentId: tempDocId,
+        filename: file.originalname,
+      });
+
+      if (!storageResult.success) {
+        res.status(500).json({ success: false, error: 'Failed to store document' });
+        return;
+      }
+
+      // Delete the temp file
+      fs.unlink(file.path, () => {});
+
+      const document = await DocumentService.upload(userId, storageResult.path, file.originalname, file.mimetype, file.size);
 
       res.status(201).json({
         success: true,
@@ -166,17 +184,19 @@ export class DocumentController {
         return;
       }
 
-      const filePath: string = path.resolve(__dirname, '../..', document.file_path.replace(/^\//, ''));
-      const downloadName: string = document.original_name || path.basename(document.file_path);
+      const downloadName: string = document.original_name || 'document';
 
-      res.download(filePath, downloadName, (err) => {
-        if (err) {
-          console.error('Download error:', err);
-          if (!res.headersSent) {
-            res.status(404).json({ success: false, error: 'File not found on disk' });
-          }
+      try {
+        const fileBuffer = await StorageService.getFile(document.file_path);
+        if (document.mime_type) {
+          res.setHeader('Content-Type', document.mime_type);
         }
-      });
+        res.setHeader('Content-Disposition', `attachment; filename="${downloadName}"`);
+        res.send(fileBuffer);
+      } catch (err) {
+        console.error('Download error:', err);
+        res.status(404).json({ success: false, error: 'File not found' });
+      }
     } catch (error: any) {
       console.error('Document download error:', error);
       res.status(500).json({ success: false, error: 'Internal server error' });

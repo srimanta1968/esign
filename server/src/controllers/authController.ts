@@ -3,6 +3,7 @@ import { AuthService } from '../services/authService';
 import { SessionService } from '../services/sessionService';
 import { RegisterRequest, LoginRequest, ForgotPasswordRequest, ResetPasswordRequest } from '../types/user';
 import { AuthenticatedRequest } from '../middleware/auth';
+import { config } from '../config/env';
 
 /**
  * AuthController handles HTTP requests for authentication endpoints.
@@ -192,36 +193,38 @@ export class AuthController {
     try {
       const { provider } = req.params;
 
-      if (provider !== 'google') {
-        res.status(400).json({
-          success: false,
-          error: 'Unsupported SSO provider. Supported: google',
-        });
+      if (provider === 'google') {
+        const clientId = process.env.GOOGLE_CLIENT_ID;
+        const redirectUri = process.env.GOOGLE_REDIRECT_URI || `${req.protocol}://${req.get('host')}/api/auth/sso/callback`;
+        if (!clientId) {
+          res.status(500).json({ success: false, error: 'Google OAuth not configured' });
+          return;
+        }
+        const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+          `client_id=${encodeURIComponent(clientId)}` +
+          `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+          `&response_type=code` +
+          `&scope=${encodeURIComponent('email profile')}` +
+          `&state=${encodeURIComponent(provider)}`;
+        res.status(200).json({ success: true, data: { url: authUrl, provider } });
+      } else if (provider === 'linkedin') {
+        const clientId = process.env.LINKEDIN_CLIENT_ID;
+        const redirectUri = process.env.LINKEDIN_REDIRECT_URI || `${req.protocol}://${req.get('host')}/api/auth/sso/callback`;
+        if (!clientId) {
+          res.status(500).json({ success: false, error: 'LinkedIn OAuth not configured' });
+          return;
+        }
+        const authUrl = `https://www.linkedin.com/oauth/v2/authorization?` +
+          `response_type=code` +
+          `&client_id=${encodeURIComponent(clientId)}` +
+          `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+          `&scope=${encodeURIComponent('openid profile email')}` +
+          `&state=${encodeURIComponent(provider)}`;
+        res.status(200).json({ success: true, data: { url: authUrl, provider } });
+      } else {
+        res.status(400).json({ success: false, error: 'Unsupported SSO provider. Supported: google, linkedin' });
         return;
       }
-
-      const clientId = process.env.GOOGLE_CLIENT_ID;
-      const redirectUri = process.env.GOOGLE_REDIRECT_URI || `${req.protocol}://${req.get('host')}/api/auth/sso/callback`;
-
-      if (!clientId) {
-        res.status(500).json({
-          success: false,
-          error: 'Google OAuth not configured',
-        });
-        return;
-      }
-
-      const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
-        `client_id=${encodeURIComponent(clientId)}` +
-        `&redirect_uri=${encodeURIComponent(redirectUri)}` +
-        `&response_type=code` +
-        `&scope=${encodeURIComponent('email profile')}` +
-        `&state=${encodeURIComponent(provider)}`;
-
-      res.status(200).json({
-        success: true,
-        data: { authUrl, provider },
-      });
     } catch (error: any) {
       console.error('SSO redirect error:', error);
       res.status(500).json({
@@ -248,62 +251,76 @@ export class AuthController {
       }
 
       const provider = (state as string) || 'google';
+      let userInfo: { id?: string; email?: string; name?: string } = {};
 
-      if (provider !== 'google') {
-        res.status(400).json({
-          success: false,
-          error: 'Unsupported SSO provider',
+      if (provider === 'google') {
+        const clientId = process.env.GOOGLE_CLIENT_ID;
+        const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+        const redirectUri = process.env.GOOGLE_REDIRECT_URI || `${req.protocol}://${req.get('host')}/api/auth/sso/callback`;
+        if (!clientId || !clientSecret) {
+          res.status(500).json({ success: false, error: 'Google OAuth not configured' });
+          return;
+        }
+        const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            code: code as string,
+            client_id: clientId,
+            client_secret: clientSecret,
+            redirect_uri: redirectUri,
+            grant_type: 'authorization_code',
+          }),
         });
+        const tokenData = await tokenResponse.json();
+        if (!tokenData.access_token) {
+          res.status(400).json({ success: false, error: 'Failed to exchange authorization code' });
+          return;
+        }
+        const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+          headers: { Authorization: `Bearer ${tokenData.access_token}` },
+        });
+        userInfo = await userInfoResponse.json();
+      } else if (provider === 'linkedin') {
+        const clientId = process.env.LINKEDIN_CLIENT_ID;
+        const clientSecret = process.env.LINKEDIN_CLIENT_SECRET;
+        const redirectUri = process.env.LINKEDIN_REDIRECT_URI || `${req.protocol}://${req.get('host')}/api/auth/sso/callback`;
+        if (!clientId || !clientSecret) {
+          res.status(500).json({ success: false, error: 'LinkedIn OAuth not configured' });
+          return;
+        }
+        const tokenResponse = await fetch('https://www.linkedin.com/oauth/v2/accessToken', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            grant_type: 'authorization_code',
+            code: code as string,
+            client_id: clientId,
+            client_secret: clientSecret,
+            redirect_uri: redirectUri,
+          }).toString(),
+        });
+        const tokenData = await tokenResponse.json();
+        if (!tokenData.access_token) {
+          res.status(400).json({ success: false, error: 'Failed to exchange authorization code' });
+          return;
+        }
+        const userInfoResponse = await fetch('https://api.linkedin.com/v2/userinfo', {
+          headers: { Authorization: `Bearer ${tokenData.access_token}` },
+        });
+        const linkedinUser = await userInfoResponse.json();
+        userInfo = {
+          id: linkedinUser.sub || '',
+          email: linkedinUser.email || '',
+          name: linkedinUser.name || '',
+        };
+      } else {
+        res.status(400).json({ success: false, error: 'Unsupported SSO provider' });
         return;
       }
-
-      const clientId = process.env.GOOGLE_CLIENT_ID;
-      const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
-      const redirectUri = process.env.GOOGLE_REDIRECT_URI || `${req.protocol}://${req.get('host')}/api/auth/sso/callback`;
-
-      if (!clientId || !clientSecret) {
-        res.status(500).json({
-          success: false,
-          error: 'Google OAuth not configured',
-        });
-        return;
-      }
-
-      // Exchange code for token
-      const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          code: code as string,
-          client_id: clientId,
-          client_secret: clientSecret,
-          redirect_uri: redirectUri,
-          grant_type: 'authorization_code',
-        }),
-      });
-
-      const tokenData = await tokenResponse.json();
-
-      if (!tokenData.access_token) {
-        res.status(400).json({
-          success: false,
-          error: 'Failed to exchange authorization code',
-        });
-        return;
-      }
-
-      // Get user info from Google
-      const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
-        headers: { Authorization: `Bearer ${tokenData.access_token}` },
-      });
-
-      const userInfo = await userInfoResponse.json();
 
       if (!userInfo.email) {
-        res.status(400).json({
-          success: false,
-          error: 'Failed to retrieve user info from provider',
-        });
+        res.status(400).json({ success: false, error: 'Failed to retrieve user info from provider' });
         return;
       }
 
@@ -314,10 +331,9 @@ export class AuthController {
         userInfo.name || ''
       );
 
-      res.status(200).json({
-        success: true,
-        data: result,
-      });
+      // Redirect to frontend with token so the SPA can pick it up
+      const frontendUrl = config.frontendUrl || 'https://esign.projexlight.com';
+      res.redirect(`${frontendUrl}/login?token=${encodeURIComponent(result.token)}`);
     } catch (error: any) {
       console.error('SSO callback error:', error);
       res.status(500).json({

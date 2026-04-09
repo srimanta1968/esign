@@ -2,7 +2,6 @@ import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import path from 'path';
 import { config } from './config/env';
 import { MigrationService } from './services/migrationService';
 import authRoutes from './routes/authRoutes';
@@ -17,6 +16,8 @@ import auditRoutes from './routes/auditRoutes';
 import complianceRoutes from './routes/complianceRoutes';
 import analyticsRoutes from './routes/analyticsRoutes';
 import signingRoutes from './routes/signingRoutes';
+import billingRoutes from './routes/billingRoutes';
+import teamRoutes from './routes/teamRoutes';
 import { auditMiddleware } from './middleware/auditMiddleware';
 
 const app: Application = express();
@@ -28,11 +29,12 @@ app.use(cors({
   credentials: true,
 }));
 app.use(morgan(config.logFormat));
+// Stripe webhook needs raw body BEFORE JSON parsing
+app.use('/api/billing/webhook', express.raw({ type: 'application/json' }));
 app.use(express.json({ limit: config.bodyLimit }));
 app.use(express.urlencoded({ extended: true }));
 
-// Serve uploaded files
-app.use('/uploads', express.static(path.resolve(__dirname, '../uploads')));
+// Documents are served from S3 via API endpoints, no local static serving needed
 
 // Health check
 app.get('/health', (_req: Request, res: Response) => {
@@ -55,6 +57,8 @@ app.use('/api/audit-logs', auditRoutes);
 app.use('/api/compliance', complianceRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/sign', signingRoutes);
+app.use('/api/billing', billingRoutes);
+app.use('/api/teams', teamRoutes);
 
 // Error handling
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
@@ -68,6 +72,13 @@ const PORT: number = config.port || 3000;
 MigrationService.runMigrations().then(() => {
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+  });
+
+  // Process any incomplete workflow completions on startup
+  import('./services/workflowService').then(({ WorkflowService }) => {
+    WorkflowService.processIncompleteCompletions().then(result => {
+      console.log(`Processed ${result.processed} incomplete workflows, ${result.errors.length} errors`);
+    }).catch(err => console.error('Completion processing error:', err.message));
   });
 }).catch((err) => {
   console.error('Migration failed, starting server anyway:', err);

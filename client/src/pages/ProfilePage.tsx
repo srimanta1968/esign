@@ -54,7 +54,8 @@ function ProfilePage() {
         }
 
         if (sessionsRes.success && sessionsRes.data) {
-          setSessions(sessionsRes.data.sessions);
+          const sessionsData = sessionsRes.data.sessions || sessionsRes.data;
+          setSessions(Array.isArray(sessionsData) ? sessionsData : []);
         }
       } catch {
         setProfile((prev) => ({ ...prev, name: user?.name || '', email: user?.email || '' }));

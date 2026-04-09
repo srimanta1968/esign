@@ -84,7 +84,34 @@ export class WorkflowService {
       recipient_count: data.recipients.length,
     });
 
-    return WorkflowService.formatWorkflowResponse(workflow, recipients, fields);
+    return await WorkflowService.formatWorkflowResponse(workflow, recipients, fields);
+  }
+
+  /**
+   * List all workflows for a user (created by them or where they are a recipient).
+   */
+  static async listWorkflows(userId: string, userEmail: string): Promise<WorkflowResponse[]> {
+    const workflows = await DataService.queryAll<SigningWorkflow>(
+      `SELECT DISTINCT sw.* FROM signing_workflows sw
+       LEFT JOIN workflow_recipients wr ON wr.workflow_id = sw.id
+       WHERE sw.creator_id = $1 OR wr.signer_email = $2
+       ORDER BY sw.updated_at DESC`,
+      [userId, userEmail]
+    );
+
+    const results: WorkflowResponse[] = [];
+    for (const workflow of workflows) {
+      const recipients = await DataService.queryAll<WorkflowRecipient>(
+        'SELECT * FROM workflow_recipients WHERE workflow_id = $1 ORDER BY signing_order ASC',
+        [workflow.id]
+      );
+      const fields = await DataService.queryAll<SignatureField>(
+        'SELECT * FROM signature_fields WHERE workflow_id = $1',
+        [workflow.id]
+      );
+      results.push(await WorkflowService.formatWorkflowResponse(workflow, recipients, fields));
+    }
+    return results;
   }
 
   /**
@@ -107,7 +134,7 @@ export class WorkflowService {
       [workflowId]
     );
 
-    return WorkflowService.formatWorkflowResponse(workflow, recipients, fields);
+    return await WorkflowService.formatWorkflowResponse(workflow, recipients, fields);
   }
 
   /**
@@ -207,7 +234,7 @@ export class WorkflowService {
       [workflowId]
     );
 
-    return WorkflowService.formatWorkflowResponse(updated || workflow, recipients, fields);
+    return await WorkflowService.formatWorkflowResponse(updated || workflow, recipients, fields);
   }
 
   // ─── Task 2: Parallel and sequential signing engine ────────────────
@@ -290,7 +317,7 @@ export class WorkflowService {
       [workflowId]
     );
 
-    return WorkflowService.formatWorkflowResponse(updatedWorkflow || workflow, recipients, fields);
+    return await WorkflowService.formatWorkflowResponse(updatedWorkflow || workflow, recipients, fields);
   }
 
   /**
@@ -472,17 +499,110 @@ export class WorkflowService {
     return WorkflowService.formatStatusResponse(workflow, recipients);
   }
 
+  // ─── Cancel active workflow (TK-2269) ──────────────────────────────
+
+  /**
+   * Cancel a workflow that is in draft or active status.
+   */
+  static async cancelWorkflow(
+    workflowId: string,
+    creatorId: string,
+    creatorEmail: string,
+    actorIp: string,
+    userAgent: string
+  ): Promise<WorkflowResponse> {
+    const workflow = await DataService.queryOne<SigningWorkflow>(
+      'SELECT * FROM signing_workflows WHERE id = $1 AND creator_id = $2',
+      [workflowId, creatorId]
+    );
+    if (!workflow) {
+      throw new Error('Workflow not found or not authorized');
+    }
+
+    if (workflow.status !== 'draft' && workflow.status !== 'active') {
+      throw new Error('Can only cancel workflows in draft or active status');
+    }
+
+    // Set workflow status to cancelled
+    await DataService.query(
+      "UPDATE signing_workflows SET status = 'cancelled', updated_at = NOW() WHERE id = $1",
+      [workflowId]
+    );
+
+    // Invalidate all signing tokens
+    await DataService.query(
+      'UPDATE signing_tokens SET used = true WHERE workflow_id = $1 AND used = false',
+      [workflowId]
+    );
+
+    // Get pending recipients for notifications
+    const pendingRecipients = await DataService.queryAll<WorkflowRecipient>(
+      "SELECT * FROM workflow_recipients WHERE workflow_id = $1 AND status = 'pending' ORDER BY signing_order ASC",
+      [workflowId]
+    );
+
+    // Send cancellation email and in-app notification to each pending recipient
+    for (const recipient of pendingRecipients) {
+      const subject = `Signing request cancelled for workflow ${workflowId}`;
+      const htmlBody = `<p>Hello ${recipient.signer_name || recipient.signer_email},</p>
+        <p>The signing request you received for workflow ${workflowId} has been cancelled by the sender (${creatorEmail}).</p>
+        <p>No further action is required on your part.</p>`;
+      await EmailService.send(recipient.signer_email, subject, htmlBody);
+
+      // Create in-app notification for the recipient
+      const user = await DataService.queryOne<{ id: string }>(
+        'SELECT id FROM users WHERE email = $1',
+        [recipient.signer_email]
+      );
+      if (user) {
+        await NotificationService.create(
+          user.id,
+          'workflow_cancelled',
+          `The signing request for workflow ${workflowId} has been cancelled by ${creatorEmail}.`
+        );
+      }
+    }
+
+    // Log history event
+    await WorkflowService.logHistory(workflowId, 'cancelled', creatorEmail, actorIp, {
+      user_agent: userAgent,
+      previous_status: workflow.status,
+      pending_recipients: pendingRecipients.length,
+    });
+
+    // Return updated workflow response
+    const updatedWorkflow = await DataService.queryOne<SigningWorkflow>(
+      'SELECT * FROM signing_workflows WHERE id = $1',
+      [workflowId]
+    );
+
+    const allRecipients = await DataService.queryAll<WorkflowRecipient>(
+      'SELECT * FROM workflow_recipients WHERE workflow_id = $1 ORDER BY signing_order ASC',
+      [workflowId]
+    );
+
+    const fields = await DataService.queryAll<SignatureField>(
+      'SELECT * FROM signature_fields WHERE workflow_id = $1',
+      [workflowId]
+    );
+
+    return await WorkflowService.formatWorkflowResponse(updatedWorkflow || workflow, allRecipients, fields);
+  }
+
   // ─── Task 3: Signing notification and reminder API ─────────────────
 
   /**
-   * Manually send reminder to all pending signers in a workflow.
+   * Manually send reminder to pending signers in a workflow.
+   * If recipientId is provided, only send to that specific recipient.
+   * Otherwise, send to all pending recipients.
    */
   static async sendReminders(
     workflowId: string,
     creatorId: string,
     creatorEmail: string,
     actorIp: string,
-    userAgent: string
+    userAgent: string,
+    recipientId?: string
   ): Promise<{ reminded: string[] }> {
     const workflow = await DataService.queryOne<SigningWorkflow>(
       'SELECT * FROM signing_workflows WHERE id = $1 AND creator_id = $2',
@@ -496,10 +616,22 @@ export class WorkflowService {
       throw new Error('Can only send reminders for active workflows');
     }
 
-    const pendingRecipients = await DataService.queryAll<WorkflowRecipient>(
-      "SELECT * FROM workflow_recipients WHERE workflow_id = $1 AND status = 'pending' ORDER BY signing_order ASC",
-      [workflowId]
-    );
+    let pendingRecipients: WorkflowRecipient[];
+    if (recipientId) {
+      // Send only to the specific recipient
+      pendingRecipients = await DataService.queryAll<WorkflowRecipient>(
+        "SELECT * FROM workflow_recipients WHERE workflow_id = $1 AND id = $2 AND status = 'pending'",
+        [workflowId, recipientId]
+      );
+      if (pendingRecipients.length === 0) {
+        throw new Error('Recipient not found or not in pending status');
+      }
+    } else {
+      pendingRecipients = await DataService.queryAll<WorkflowRecipient>(
+        "SELECT * FROM workflow_recipients WHERE workflow_id = $1 AND status = 'pending' ORDER BY signing_order ASC",
+        [workflowId]
+      );
+    }
 
     const reminded: string[] = [];
     for (const recipient of pendingRecipients) {
@@ -771,42 +903,177 @@ export class WorkflowService {
   // ─── Post-completion: Signed PDF, Certificate, S3, Email ───────────
 
   /**
+   * Handle post-sign: check completion, notify creator of progress, email next signer.
+   * Called from all signing paths (self-sign, token-sign, signWorkflow).
+   */
+  static async handlePostSign(
+    workflow: SigningWorkflow,
+    signerEmail: string,
+    actorIp: string,
+    userAgent: string
+  ): Promise<{ allSigned: boolean }> {
+    const allRecipients = await DataService.queryAll<WorkflowRecipient>(
+      'SELECT * FROM workflow_recipients WHERE workflow_id = $1 ORDER BY signing_order ASC',
+      [workflow.id]
+    );
+
+    const allSigned = allRecipients.every(r => r.status === 'signed');
+    const signedCount = allRecipients.filter(r => r.status === 'signed').length;
+    const totalCount = allRecipients.length;
+
+    if (allSigned) {
+      // Mark workflow completed
+      await DataService.query(
+        "UPDATE signing_workflows SET status = 'completed', updated_at = NOW() WHERE id = $1",
+        [workflow.id]
+      );
+
+      await WorkflowService.logHistory(workflow.id, 'completed', signerEmail, actorIp, {
+        user_agent: userAgent,
+        completed_at: new Date().toISOString(),
+      });
+
+      await NotificationService.create(
+        workflow.creator_id,
+        'workflow_completed',
+        `All recipients have signed the workflow for document ${workflow.document_id}`
+      );
+
+      // Generate signed PDF, certificate, email all parties
+      await WorkflowService.handleWorkflowCompletion(workflow.id, workflow.creator_id, workflow.document_id, allRecipients);
+    } else {
+      // Not all signed yet — notify creator of progress
+      const pending = allRecipients.filter(r => r.status === 'pending').map(r => r.signer_name || r.signer_email);
+      const document = await DataService.queryOne<{ original_name: string }>(
+        'SELECT original_name FROM documents WHERE id = $1',
+        [workflow.document_id]
+      );
+      const docName = document?.original_name || 'Document';
+
+      // In-app notification to creator
+      await NotificationService.create(
+        workflow.creator_id,
+        'signature_completed',
+        `${signerEmail} has signed "${docName}" (${signedCount}/${totalCount}). Waiting for: ${pending.join(', ')}`
+      );
+
+      // Email creator about progress
+      const creator = await DataService.queryOne<{ email: string; name: string }>(
+        'SELECT email, name FROM users WHERE id = $1',
+        [workflow.creator_id]
+      );
+      if (creator?.email && creator.email !== signerEmail) {
+        await EmailService.send(
+          creator.email,
+          `Signing Update: ${signerEmail} signed "${docName}"`,
+          WorkflowService.buildProgressEmailTemplate(docName, signerEmail, signedCount, totalCount, pending)
+        );
+      }
+
+      // Sequential: email next signer
+      if (workflow.workflow_type === 'sequential') {
+        const nextRecipient = allRecipients.find(r => r.status === 'pending');
+        if (nextRecipient) {
+          await WorkflowService.sendSigningEmail(workflow, nextRecipient);
+        }
+      }
+    }
+
+    return { allSigned };
+  }
+
+  /**
+   * Build progress notification email HTML.
+   */
+  private static buildProgressEmailTemplate(
+    docName: string,
+    signerEmail: string,
+    signedCount: number,
+    totalCount: number,
+    pending: string[]
+  ): string {
+    return `
+    <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px">
+      <h2 style="color:#4f46e5;margin:0 0 16px">eDocSign</h2>
+      <p style="color:#374151;font-size:16px;line-height:1.5">
+        <strong>${signerEmail}</strong> has signed <strong>${docName}</strong>.
+      </p>
+      <div style="background:#f3f4f6;border-radius:8px;padding:16px;margin:16px 0">
+        <p style="margin:0;color:#374151;font-size:14px">
+          <strong>Progress:</strong> ${signedCount} of ${totalCount} signatures complete
+        </p>
+        <div style="background:#e5e7eb;border-radius:4px;height:8px;margin:8px 0">
+          <div style="background:#4f46e5;border-radius:4px;height:8px;width:${Math.round((signedCount / totalCount) * 100)}%"></div>
+        </div>
+        <p style="margin:8px 0 0;color:#6b7280;font-size:13px">
+          Waiting for: ${pending.join(', ')}
+        </p>
+      </div>
+      <p style="color:#9ca3af;font-size:12px;margin-top:24px">This is an automated notification from eDocSign.</p>
+    </div>`;
+  }
+
+  /**
+   * Process all completed workflows that are missing signed PDFs or certificates.
+   * Called on server startup and can be triggered via API.
+   */
+  static async processIncompleteCompletions(): Promise<{ processed: number; errors: string[] }> {
+    const errors: string[] = [];
+    let processed = 0;
+
+    const incomplete = await DataService.queryAll<SigningWorkflow>(
+      `SELECT * FROM signing_workflows
+       WHERE status = 'completed'
+       AND (signed_pdf_path IS NULL OR signed_pdf_path = '' OR certificate_pdf_path IS NULL OR certificate_pdf_path = '')`,
+      []
+    );
+
+    console.log(`Found ${incomplete.length} completed workflows missing signed PDF/certificate`);
+
+    for (const workflow of incomplete) {
+      try {
+        const recipients = await DataService.queryAll<WorkflowRecipient>(
+          'SELECT * FROM workflow_recipients WHERE workflow_id = $1 ORDER BY signing_order ASC',
+          [workflow.id]
+        );
+
+        await WorkflowService.handleWorkflowCompletion(workflow.id, workflow.creator_id, workflow.document_id, recipients);
+        processed++;
+        console.log(`Processed workflow ${workflow.id}: signed PDF + certificate generated and emails sent`);
+      } catch (error) {
+        const msg = `Workflow ${workflow.id}: ${error instanceof Error ? error.message : error}`;
+        console.error('Completion processing failed:', msg);
+        errors.push(msg);
+      }
+    }
+
+    // Workflows that already have signed_pdf_path and certificate_pdf_path
+    // are considered fully processed — no re-send needed.
+
+    return { processed, errors };
+  }
+
+  /**
    * Handle workflow completion: generate signed PDF & certificate,
    * upload to S3 (if configured), email all parties with download links,
    * and create in-app notifications.
    */
-  private static async handleWorkflowCompletion(
+  static async handleWorkflowCompletion(
     workflowId: string,
     creatorId: string,
     documentId: string,
     recipients: WorkflowRecipient[]
   ): Promise<void> {
     try {
-      // 1. Generate signed PDF
+      // 1. Generate signed PDF (uploads to S3 internally)
       const signedPdfPath = await PdfSigningService.generateSignedPdf(workflowId);
       console.log(`Signed PDF generated: ${signedPdfPath}`);
 
-      // 2. Generate signing certificate
+      // 2. Generate signing certificate (uploads to S3 internally)
       const certificatePath = await CertificateService.generateCertificate(workflowId);
       console.log(`Certificate generated: ${certificatePath}`);
 
-      // 3. Upload both to S3 via StorageService (falls back to local if S3 not configured)
-      const path = await import('path');
-      const uploadsDir = path.resolve(__dirname, '../../uploads');
-
-      const signedAbsPath = path.resolve(uploadsDir, signedPdfPath);
-      const certAbsPath = path.resolve(uploadsDir, certificatePath);
-
-      await StorageService.store(signedAbsPath, 'signed', {
-        workflowId,
-        filename: `${workflowId}_signed`,
-      });
-
-      await StorageService.store(certAbsPath, 'certificates', {
-        workflowId,
-      });
-
-      // 4. Get download URLs
+      // 3. Get download URLs from S3
       const signedPdfUrl = await StorageService.getUrl(signedPdfPath);
       const certificateUrl = await StorageService.getUrl(certificatePath);
 
@@ -833,17 +1100,57 @@ export class WorkflowService {
         }
       }
 
-      // 6. Send email to all parties
+      // 6. Send email to all parties with download portal link
       if (allEmails.length > 0) {
-        const emailResult = await EmailService.sendSignedDocumentEmail(
-          allEmails,
-          signedPdfUrl,
-          certificateUrl,
-          documentName
-        );
-        console.log(`Signed document email sent to ${emailResult.sent}/${allEmails.length} recipients`);
-        if (emailResult.errors.length > 0) {
-          console.warn('Email delivery errors:', emailResult.errors);
+        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+        const portalUrl = `${frontendUrl}/workflows/${workflowId}/downloads`;
+
+        const signerRows = recipients.map(r => {
+          const signedDate = r.signed_at ? new Date(r.signed_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Pending';
+          return `<tr><td style="padding:8px 12px;border-bottom:1px solid #eee;">${r.signer_name || r.signer_email}</td><td style="padding:8px 12px;border-bottom:1px solid #eee;">${signedDate}</td></tr>`;
+        }).join('');
+
+        const htmlBody = `
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"></head>
+<body style="font-family:Arial,sans-serif;background:#f5f5f5;margin:0;padding:20px;">
+  <div style="max-width:600px;margin:0 auto;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+    <div style="background:#2563eb;color:#fff;padding:24px;text-align:center;">
+      <h1 style="margin:0;font-size:22px;">Document Fully Signed</h1>
+    </div>
+    <div style="padding:24px;">
+      <p style="font-size:16px;color:#333;">All parties have signed <strong>${documentName}</strong>.</p>
+      <p style="font-size:14px;color:#555;">Log in to eDocSign to download your signed document and certificate.</p>
+      <div style="text-align:center;margin:24px 0;">
+        <a href="${portalUrl}" style="display:inline-block;background:#2563eb;color:#fff;text-decoration:none;padding:14px 32px;border-radius:6px;font-size:16px;font-weight:bold;">Download Documents</a>
+      </div>
+      <h3 style="margin:20px 0 10px;font-size:14px;color:#333;">Signers</h3>
+      <table style="width:100%;border-collapse:collapse;font-size:14px;">
+        <thead><tr style="background:#f9fafb;"><th style="padding:8px 12px;text-align:left;border-bottom:2px solid #eee;">Name</th><th style="padding:8px 12px;text-align:left;border-bottom:2px solid #eee;">Signed</th></tr></thead>
+        <tbody>${signerRows}</tbody>
+      </table>
+      <hr style="margin:24px 0;border:none;border-top:1px solid #eee;">
+      <p style="font-size:12px;color:#999;text-align:center;">Don't have an account? <a href="${frontendUrl}" style="color:#2563eb;">Create one for free</a> to access your documents.</p>
+    </div>
+  </div>
+</body>
+</html>`;
+
+        const subject = `Document Signed: ${documentName}`;
+        let sent = 0;
+        const emailErrors: string[] = [];
+        for (const email of allEmails) {
+          const result = await EmailService.send(email, subject, htmlBody);
+          if (result.success) {
+            sent++;
+          } else {
+            emailErrors.push(result.error || `Failed to send to ${email}`);
+          }
+        }
+        console.log(`Signed document email sent to ${sent}/${allEmails.length} recipients`);
+        if (emailErrors.length > 0) {
+          console.warn('Email delivery errors:', emailErrors);
         }
       }
 
@@ -903,14 +1210,24 @@ export class WorkflowService {
     }
   }
 
-  private static formatWorkflowResponse(
+  private static async getDocumentName(documentId: string): Promise<string> {
+    const doc = await DataService.queryOne<{ original_name: string }>(
+      'SELECT original_name FROM documents WHERE id = $1',
+      [documentId]
+    );
+    return doc?.original_name || '';
+  }
+
+  private static async formatWorkflowResponse(
     workflow: SigningWorkflow,
     recipients: WorkflowRecipient[],
     fields: SignatureField[]
-  ): WorkflowResponse {
+  ): Promise<WorkflowResponse> {
+    const documentName = await WorkflowService.getDocumentName(workflow.document_id);
     return {
       id: workflow.id,
       document_id: workflow.document_id,
+      document_name: documentName,
       creator_id: workflow.creator_id,
       workflow_type: workflow.workflow_type,
       status: workflow.status,

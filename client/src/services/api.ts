@@ -46,6 +46,12 @@ export class ApiService {
       });
 
       const data: ApiResponse<T> = await response.json();
+
+      // Dispatch upgrade prompt event when plan limit is reached
+      if ((data as any).plan_limit_reached) {
+        window.dispatchEvent(new CustomEvent('plan-limit-reached', { detail: data }));
+      }
+
       return data;
     } catch (error: unknown) {
       return {

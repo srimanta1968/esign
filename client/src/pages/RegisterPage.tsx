@@ -1,10 +1,12 @@
 import { useState, FormEvent, useMemo } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 function RegisterPage() {
+  const [searchParams] = useSearchParams();
+  const prefillEmail = searchParams.get('email') || '';
   const [name, setName] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
+  const [email, setEmail] = useState<string>(prefillEmail);
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
@@ -58,7 +60,8 @@ function RegisterPage() {
     try {
       const result = await register(name, email, password);
       if (result.success) {
-        navigate('/dashboard');
+        const returnUrl = searchParams.get('returnUrl') || '/dashboard';
+        navigate(returnUrl);
       } else {
         setError(result.error || 'Registration failed');
       }

@@ -1,9 +1,22 @@
 import multer from 'multer';
 import path from 'path';
+import os from 'os';
+
+/**
+ * Multer stores files to a temporary directory. After upload, files are
+ * immediately transferred to S3 and the local temp file is deleted.
+ * Do NOT rely on files persisting in this directory.
+ */
+const tempDir = path.resolve(os.tmpdir(), 'edocs-uploads');
 
 const storage: multer.StorageEngine = multer.diskStorage({
   destination: (_req, _file, cb) => {
-    cb(null, path.resolve(__dirname, '../../uploads'));
+    // Ensure temp dir exists
+    const fs = require('fs');
+    if (!fs.existsSync(tempDir)) {
+      fs.mkdirSync(tempDir, { recursive: true });
+    }
+    cb(null, tempDir);
   },
   filename: (_req, file, cb) => {
     const uniqueSuffix: string = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;

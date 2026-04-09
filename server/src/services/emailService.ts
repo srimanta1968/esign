@@ -31,6 +31,7 @@ const REPLY_TO = {
 
 const EMAIL_FOOTER = `
   <div style="margin-top: 32px; padding-top: 16px; border-top: 1px solid #e2e8f0; text-align: center;">
+    <p style="margin: 0 0 12px 0;"><a href="https://esign.projexlight.com" style="color: #4f46e5; font-size: 14px; font-weight: 600; text-decoration: none;">esign.projexlight.com</a></p>
     <p style="color: #94a3b8; font-size: 12px; margin: 0;">Need help? Contact us at <a href="mailto:support@projexlight.com" style="color: #4f46e5;">support@projexlight.com</a></p>
     <p style="color: #94a3b8; font-size: 11px; margin: 8px 0 0 0;">Powered by <a href="https://projexlight.com" style="color: #4f46e5; text-decoration: none;">projexlight.com</a></p>
   </div>
@@ -251,7 +252,8 @@ export class EmailService {
                 This is an automated notification from eDocSign. The signing certificate contains a SHA-256 hash
                 of the original document and a full audit trail of all signing activity.
               </p>
-              <p style="color: #9ca3af; font-size: 11px; margin: 12px 0 0 0;">
+              <p style="margin: 12px 0 0 0;"><a href="https://esign.projexlight.com" style="color: #4f46e5; font-size: 13px; font-weight: 600; text-decoration: none;">esign.projexlight.com</a></p>
+              <p style="color: #9ca3af; font-size: 11px; margin: 8px 0 0 0;">
                 Need help? <a href="mailto:support@projexlight.com" style="color: #4f46e5;">support@projexlight.com</a>
                 &nbsp;&bull;&nbsp; Powered by <a href="https://projexlight.com" style="color: #4f46e5; text-decoration: none;">projexlight.com</a>
               </p>

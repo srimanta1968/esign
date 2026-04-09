@@ -35,6 +35,22 @@ function DashboardPage() {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [workflows, setWorkflows] = useState<DashboardWorkflow[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const handleDeleteDocument = async (docId: string, docName: string): Promise<void> => {
+    if (!window.confirm(`Delete "${docName}"? This cannot be undone.`)) return;
+    setDeletingId(docId);
+    try {
+      const response = await ApiService.request(`/documents/${docId}`, { method: 'DELETE' });
+      if (response.success) {
+        setDocuments((prev) => prev.filter((d) => d.id !== docId));
+      }
+    } catch {
+      console.error('Failed to delete document');
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
@@ -191,6 +207,13 @@ function DashboardPage() {
                   <div className="flex gap-3 ml-4 shrink-0">
                     <Link to={`/documents/${doc.id}`} className="text-gray-500 text-sm font-medium hover:text-gray-700">Details</Link>
                     <Link to={`/workflows/create?documentId=${doc.id}`} className="text-indigo-600 text-sm font-medium hover:text-indigo-700">Request Signature</Link>
+                    <button
+                      onClick={() => handleDeleteDocument(doc.id, doc.original_name || doc.file_path)}
+                      disabled={deletingId === doc.id}
+                      className="text-red-500 text-sm font-medium hover:text-red-700 disabled:opacity-50"
+                    >
+                      {deletingId === doc.id ? 'Deleting...' : 'Delete'}
+                    </button>
                   </div>
                 </div>
               ))}

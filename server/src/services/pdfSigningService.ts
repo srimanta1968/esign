@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { DataService } from './DataService';
 import { StorageService } from './storageService';
+import { toWinAnsiSafe } from '../utils/pdfText';
 
 /**
  * PdfSigningService generates signed PDFs by embedding signature images
@@ -139,7 +140,8 @@ export class PdfSigningService {
       const fontSize = Math.min(absHeight * 0.6, 24);
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
-      const text = signatureData.length > 50 ? signatureData.substring(0, 50) : signatureData;
+      const safe = toWinAnsiSafe(signatureData);
+      const text = safe.length > 50 ? safe.substring(0, 50) : safe;
 
       page.drawText(text, {
         x: absX + 4,

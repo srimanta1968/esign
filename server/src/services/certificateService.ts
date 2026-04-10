@@ -5,6 +5,7 @@ import * as path from 'path';
 import * as crypto from 'crypto';
 import { DataService } from './DataService';
 import { StorageService } from './storageService';
+import { toWinAnsiSafe } from '../utils/pdfText';
 
 /**
  * CertificateService generates a Signing Certificate PDF
@@ -166,8 +167,8 @@ export class CertificateService {
 
     const drawLabelValue = (label: string, value: string) => {
       page.drawText(label, { x: labelX, y, size: 10, font: helveticaBold, color: rgb(0.3, 0.3, 0.3) });
-      // Truncate very long values
-      const displayValue = value.length > 70 ? value.substring(0, 67) + '...' : value;
+      const safe = toWinAnsiSafe(value);
+      const displayValue = safe.length > 70 ? safe.substring(0, 67) + '...' : safe;
       page.drawText(displayValue, { x: valueX, y, size: 10, font: helvetica, color: rgb(0.1, 0.1, 0.1) });
       y -= 18;
     };
@@ -228,8 +229,8 @@ export class CertificateService {
         y = pageHeight - 60;
       }
 
-      const signerName = (r.signer_name || 'N/A').substring(0, 18);
-      const email = r.signer_email.substring(0, 22);
+      const signerName = toWinAnsiSafe(r.signer_name || 'N/A').substring(0, 18);
+      const email = toWinAnsiSafe(r.signer_email).substring(0, 22);
       const status = r.status.charAt(0).toUpperCase() + r.status.slice(1);
       const signedAt = r.signed_at
         ? new Date(r.signed_at).toISOString().replace('T', ' ').substring(0, 16)

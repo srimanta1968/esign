@@ -37,8 +37,9 @@ function BillingPage() {
     setPortalLoading(true);
     try {
       const response = await ApiService.post<{ url: string }>('/billing/portal', {});
-      if (response.success && response.data?.url) {
-        window.location.href = response.data.url;
+      const url = (response as any).url || response.data?.url;
+      if (response.success && url) {
+        window.location.href = url;
       }
     } catch {
       // ignore

@@ -105,8 +105,9 @@ function PricingPage() {
         plan: plan.id,
         interval: annual ? 'year' : 'month',
       });
-      if (response.success && response.data?.url) {
-        window.location.href = response.data.url;
+      const url = (response as any).url || response.data?.url;
+      if (response.success && url) {
+        window.location.href = url;
       }
     } catch {
       // Silently handle

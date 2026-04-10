@@ -38,11 +38,20 @@ export class WorkflowService {
     actorIp: string,
     userAgent: string
   ): Promise<WorkflowResponse> {
+    // Snapshot the document name onto the workflow at creation time so the
+    // workflow remains displayable even if the source document is later
+    // deleted. Blank string is acceptable — it will show a neutral fallback.
+    const sourceDoc = await DataService.queryOne<{ original_name: string | null }>(
+      'SELECT original_name FROM documents WHERE id = $1',
+      [data.document_id]
+    );
+    const snapshotName = sourceDoc?.original_name || '';
+
     const workflow = await DataService.queryOne<SigningWorkflow>(
-      `INSERT INTO signing_workflows (document_id, creator_id, workflow_type, status)
-       VALUES ($1, $2, $3, 'draft')
+      `INSERT INTO signing_workflows (document_id, creator_id, workflow_type, status, document_name)
+       VALUES ($1, $2, $3, 'draft', $4)
        RETURNING *`,
-      [data.document_id, creatorId, data.workflow_type]
+      [data.document_id, creatorId, data.workflow_type, snapshotName]
     );
 
     if (!workflow) {
@@ -1256,12 +1265,25 @@ export class WorkflowService {
     return doc?.original_name || '';
   }
 
+  /**
+   * Resolve the best displayable document name for a workflow. Prefers the
+   * snapshot on the workflow itself (survives document deletion) and falls
+   * back to the live documents row for legacy workflows that predate the
+   * snapshot column.
+   */
+  private static async resolveDocumentName(workflow: SigningWorkflow): Promise<string> {
+    if (workflow.document_name && workflow.document_name.trim()) {
+      return workflow.document_name;
+    }
+    return await WorkflowService.getDocumentName(workflow.document_id);
+  }
+
   private static async formatWorkflowResponse(
     workflow: SigningWorkflow,
     recipients: WorkflowRecipient[],
     fields: SignatureField[]
   ): Promise<WorkflowResponse> {
-    const documentName = await WorkflowService.getDocumentName(workflow.document_id);
+    const documentName = await WorkflowService.resolveDocumentName(workflow);
     return {
       id: workflow.id,
       document_id: workflow.document_id,

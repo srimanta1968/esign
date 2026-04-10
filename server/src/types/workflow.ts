@@ -7,12 +7,14 @@ export type WorkflowAction = 'created' | 'started' | 'signed' | 'declined' | 'co
 export interface SigningWorkflow {
   id: string;
   document_id: string;
+  document_name?: string | null;
   creator_id: string;
   workflow_type: WorkflowType;
   status: WorkflowStatus;
   signed_pdf_path?: string | null;
   certificate_pdf_path?: string | null;
   completed_at?: Date | null;
+  completion_email_sent_at?: Date | null;
   created_at: Date;
   updated_at: Date;
 }

@@ -207,6 +207,7 @@ export class MigrationService {
       ['signing_workflows', 'certificate_pdf_path', 'VARCHAR(500) DEFAULT NULL'],
       ['signing_workflows', 'completed_at', 'TIMESTAMP WITH TIME ZONE DEFAULT NULL'],
       ['signing_workflows', 'completion_email_sent_at', 'TIMESTAMP WITH TIME ZONE DEFAULT NULL'],
+      ['signing_workflows', 'document_name', "VARCHAR(500) DEFAULT ''"],
     ];
 
     for (const [table, col, typedef] of alterColumns) {
@@ -571,6 +572,20 @@ export class MigrationService {
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     // PHASE 6 — Seed / default data
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    // Backfill signing_workflows.document_name from the joined documents row
+    // so existing workflows display their original filename. Orphaned
+    // workflows (documents already deleted) stay '' and will show a neutral
+    // fallback label in the UI.
+    await this.run('backfill:signing_workflows.document_name', `
+      UPDATE signing_workflows sw
+      SET document_name = d.original_name
+      FROM documents d
+      WHERE sw.document_id = d.id
+        AND (sw.document_name IS NULL OR sw.document_name = '')
+        AND d.original_name IS NOT NULL
+        AND d.original_name != ''
+    `);
 
     // Backfill completion_email_sent_at for workflows that already have
     // PDF + certificate — these were already emailed before the column existed,

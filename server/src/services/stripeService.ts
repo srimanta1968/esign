@@ -64,7 +64,7 @@ export class StripeService {
   }
 
   static async createCheckoutSession(
-    userId: string, email: string, plan: string, interval: 'monthly' | 'annual', returnUrl: string
+    userId: string, email: string, plan: string, interval: 'monthly' | 'annual' | 'year', returnUrl: string
   ): Promise<string> {
     const stripe = StripeService.getStripe();
     const customerId = await StripeService.getOrCreateCustomer(userId, email);

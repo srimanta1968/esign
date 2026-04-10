@@ -1,4 +1,4 @@
-import { Pool, PoolClient, QueryResult } from 'pg';
+import { Pool, PoolClient, QueryResult, QueryResultRow } from 'pg';
 import { databaseConfig } from '../config/database';
 
 /**
@@ -32,7 +32,7 @@ export class DataService {
   /**
    * Execute a parameterized SQL query.
    */
-  static async query<T = any>(text: string, params?: any[]): Promise<QueryResult<T>> {
+  static async query<T extends QueryResultRow = any>(text: string, params?: any[]): Promise<QueryResult<T>> {
     const client: PoolClient = await pool.connect();
     try {
       const result: QueryResult<T> = await client.query<T>(text, params);
@@ -47,7 +47,7 @@ export class DataService {
   /**
    * Execute a query and return the first row, or null if no rows.
    */
-  static async queryOne<T = any>(text: string, params?: any[]): Promise<T | null> {
+  static async queryOne<T extends QueryResultRow = any>(text: string, params?: any[]): Promise<T | null> {
     const result: QueryResult<T> = await DataService.query<T>(text, params);
     return result.rows[0] || null;
   }
@@ -55,7 +55,7 @@ export class DataService {
   /**
    * Execute a query and return all rows.
    */
-  static async queryAll<T = any>(text: string, params?: any[]): Promise<T[]> {
+  static async queryAll<T extends QueryResultRow = any>(text: string, params?: any[]): Promise<T[]> {
     const result: QueryResult<T> = await DataService.query<T>(text, params);
     return result.rows;
   }

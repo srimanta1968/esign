@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useSearchParams } from 'react-router-dom';
 import { ApiService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import DocumentViewer from '../components/DocumentViewer';
@@ -67,12 +67,26 @@ function formatMetadata(metadata: Record<string, any>): string | undefined {
 
 function WorkflowDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { user } = useAuth();
   const [workflow, setWorkflow] = useState<Workflow | null>(null);
   const [events, setEvents] = useState<WorkflowEvent[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
-  const [success, setSuccess] = useState<string>('');
+  const [success, setSuccess] = useState<string>(
+    searchParams.get('sent') === '1' ? 'Workflow sent — signing emails are on their way to all recipients.' : ''
+  );
+
+  // Clear the ?sent=1 query param after surfacing the success banner once,
+  // so a refresh doesn't re-show a stale "sent" message.
+  useEffect(() => {
+    if (searchParams.get('sent') === '1') {
+      const next = new URLSearchParams(searchParams);
+      next.delete('sent');
+      setSearchParams(next, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
+
   const [starting, setStarting] = useState<boolean>(false);
   const [sendingReminder, setSendingReminder] = useState<string>('');
   const [showReminderPanel, setShowReminderPanel] = useState<boolean>(false);

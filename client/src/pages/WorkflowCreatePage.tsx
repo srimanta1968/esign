@@ -39,6 +39,7 @@ function WorkflowCreatePage() {
   const [workflowType, setWorkflowType] = useState<'sequential' | 'parallel'>('sequential');
   const [signatureFields, setSignatureFields] = useState<SignatureField[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [loadingMessage, setLoadingMessage] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [fetchingDocs, setFetchingDocs] = useState<boolean>(true);
 
@@ -59,15 +60,25 @@ function WorkflowCreatePage() {
   }, []);
 
   const addRecipient = (): void => {
-    if (!newEmail.trim() || !newName.trim()) return;
-    if (recipients.some((r) => r.email === newEmail.trim())) {
+    const trimmedEmail = newEmail.trim();
+    const trimmedName = newName.trim();
+    if (!trimmedEmail || !trimmedName) {
+      setError('Please enter both a name and an email');
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedEmail)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+    if (recipients.some((r) => r.email.toLowerCase() === trimmedEmail.toLowerCase())) {
       setError('Recipient already added');
       return;
     }
     setError('');
     setRecipients([
       ...recipients,
-      { email: newEmail.trim(), name: newName.trim(), order: recipients.length + 1 },
+      { email: trimmedEmail, name: trimmedName, order: recipients.length + 1 },
     ]);
     setNewEmail('');
     setNewName('');
@@ -157,8 +168,9 @@ function WorkflowCreatePage() {
   const handleSubmit = async (): Promise<void> => {
     setError('');
     setLoading(true);
+    setLoadingMessage('Creating workflow...');
     try {
-      const response = await ApiService.post<{ workflow: { id: string } }>('/workflows', {
+      const createResponse = await ApiService.post<{ workflow: { id: string } }>('/workflows', {
         document_id: selectedDocumentId,
         workflow_type: workflowType,
         recipients: recipients.map((r) => ({
@@ -178,15 +190,45 @@ function WorkflowCreatePage() {
         })),
       });
 
-      if (response.success && response.data) {
-        navigate(`/workflows/${response.data.workflow.id}`);
-      } else {
-        setError(response.error || 'Failed to create workflow');
+      if (!createResponse.success || !createResponse.data) {
+        setError(createResponse.error || 'Failed to create workflow');
+        setLoading(false);
+        setLoadingMessage('');
+        return;
       }
+
+      const workflowId = createResponse.data.workflow.id;
+
+      // Immediately start the workflow so signing emails are sent right away.
+      // Without this, the workflow stays in 'draft' and no emails ever go out.
+      setLoadingMessage(
+        workflowType === 'parallel'
+          ? `Sending signing emails to ${recipients.length} recipient${recipients.length !== 1 ? 's' : ''}...`
+          : `Sending signing email to ${recipients[0]?.name || 'first signer'}...`
+      );
+
+      const startResponse = await ApiService.post<{ workflow: { id: string } }>(
+        `/workflows/${workflowId}/start`,
+        {}
+      );
+
+      if (!startResponse.success) {
+        // Workflow was created but starting (and emailing) failed.
+        // Send the user to the detail page where they can retry Start manually.
+        setError(
+          (startResponse.error || 'Workflow created but emails could not be sent') +
+            ' — opening workflow so you can retry.'
+        );
+        setTimeout(() => navigate(`/workflows/${workflowId}`), 1500);
+        return;
+      }
+
+      navigate(`/workflows/${workflowId}?sent=1`);
     } catch {
       setError('An unexpected error occurred');
     } finally {
       setLoading(false);
+      setLoadingMessage('');
     }
   };
 
@@ -246,10 +288,38 @@ function WorkflowCreatePage() {
 
       {error && <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg mb-6 text-sm">{error}</div>}
 
+      {loading && loadingMessage && (
+        <div className="bg-indigo-50 border border-indigo-200 text-indigo-700 px-4 py-3 rounded-lg mb-6 text-sm flex items-center gap-2">
+          <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+          </svg>
+          {loadingMessage}
+        </div>
+      )}
+
+      {/* Persistent "no emails yet" hint on steps 0–2 */}
+      {step < 3 && (
+        <div className="bg-blue-50 border border-blue-200 text-blue-800 px-4 py-3 rounded-lg mb-6 text-sm flex items-start gap-2">
+          <svg className="w-5 h-5 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div>
+            <p className="font-medium">Nothing has been emailed yet.</p>
+            <p className="text-blue-700 text-xs mt-0.5">
+              Recipients will only receive a sign-request email after you click <strong>Send to Recipients</strong> on the final Review step.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Step 0: Document Selection */}
       {step === 0 && (
         <div className="bg-white rounded-xl shadow-sm p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Select Document</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-1">Select Document</h3>
+          <p className="text-xs text-gray-500 mb-4">
+            Pick the PDF you want signed. You will be able to preview it and place fields on the next steps.
+          </p>
           {fetchingDocs ? (
             <p className="text-gray-500 text-sm">Loading documents...</p>
           ) : (
@@ -307,7 +377,13 @@ function WorkflowCreatePage() {
       {/* Step 1: Recipients */}
       {step === 1 && (
         <div className="bg-white rounded-xl shadow-sm p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Recipients</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-1">Recipients</h3>
+          <p className="text-xs text-gray-500 mb-4">
+            Add everyone who needs to sign or fill in a field. Each person will get their own signing link by email when you finish the workflow.
+            {workflowType === 'sequential'
+              ? ' Use the up/down arrows to set who signs first — emails go out one at a time in this order.'
+              : ' All recipients will be emailed at once.'}
+          </p>
 
           {/* Add recipient inputs */}
           <div className="flex flex-col sm:flex-row gap-3 mb-4">
@@ -424,6 +500,41 @@ function WorkflowCreatePage() {
       {/* Step 2: Place Fields */}
       {step === 2 && (
         <div>
+          {/* How-to instructions */}
+          <div className="bg-white border border-gray-200 rounded-xl p-4 mb-4">
+            <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
+              <svg className="w-4 h-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 11H5a2 2 0 00-2 2v7h7v-9zM21 11h-4v9h4v-9zM15 4H9v16h6V4z" />
+              </svg>
+              How to place fields on the document
+            </h4>
+            <ol className="text-xs text-gray-600 space-y-1.5 ml-1">
+              <li className="flex gap-2">
+                <span className="font-semibold text-indigo-600 shrink-0">1.</span>
+                <span>In the left sidebar, choose <strong>who fills the field</strong> under "Who fills this field?" — every box you place after that will belong to that person.</span>
+              </li>
+              <li className="flex gap-2">
+                <span className="font-semibold text-indigo-600 shrink-0">2.</span>
+                <span>Pick a <strong>field type</strong> (Signature, Initials, Date, or Text) under "Field Types". Your cursor turns into a crosshair.</span>
+              </li>
+              <li className="flex gap-2">
+                <span className="font-semibold text-indigo-600 shrink-0">3.</span>
+                <span><strong>Click anywhere on the PDF</strong> to drop the field at that spot. You can place as many as you want.</span>
+              </li>
+              <li className="flex gap-2">
+                <span className="font-semibold text-indigo-600 shrink-0">4.</span>
+                <span><strong>Drag</strong> a placed box to move it, grab the bottom-right corner to <strong>resize</strong>, or hover to reveal the red <strong>×</strong> to delete it.</span>
+              </li>
+              <li className="flex gap-2">
+                <span className="font-semibold text-indigo-600 shrink-0">5.</span>
+                <span>To add fields for another person, switch them in the sidebar first, then place more boxes. Each recipient needs <strong>at least one Signature field</strong> before you can continue.</span>
+              </li>
+            </ol>
+            <p className="text-[11px] text-gray-500 mt-3 pt-3 border-t border-gray-100">
+              <strong>Date</strong> and <strong>Text</strong> fields are filled in by the assigned recipient when they sign — not by you. Pick the right person before placing them.
+            </p>
+          </div>
+
           {/* Validation warnings */}
           {recipients.some((_, i) => !recipientsWithSig.has(i)) && (
             <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 px-4 py-3 rounded-lg mb-4 text-sm">
@@ -455,6 +566,24 @@ function WorkflowCreatePage() {
       {/* Step 3: Review & Send */}
       {step === 3 && (
         <div className="space-y-6">
+          {/* Email-fire warning */}
+          <div className="bg-amber-50 border border-amber-300 text-amber-900 px-4 py-3 rounded-lg text-sm flex items-start gap-2">
+            <svg className="w-5 h-5 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            <div>
+              <p className="font-semibold">This is the final step — clicking Send Now will email recipients immediately.</p>
+              <p className="text-amber-800 text-xs mt-1">
+                {workflowType === 'parallel'
+                  ? `All ${recipients.length} recipient${recipients.length !== 1 ? 's' : ''} will receive a signing-link email at the same time.`
+                  : `${recipients[0]?.name || 'The first signer'} will receive a signing-link email now. The next signer is only emailed after the previous one completes their part.`}
+              </p>
+              <p className="text-amber-800 text-xs mt-1">
+                Each recipient gets a unique private link — they do <strong>not</strong> need to create an account to sign.
+              </p>
+            </div>
+          </div>
+
           {/* Document summary */}
           <div className="bg-white rounded-xl shadow-sm p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Review Workflow</h3>
@@ -543,9 +672,24 @@ function WorkflowCreatePage() {
               type="button"
               onClick={handleSubmit}
               disabled={loading}
-              className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50"
+              className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 flex items-center gap-2"
             >
-              {loading ? 'Creating...' : 'Create & Send Workflow'}
+              {loading ? (
+                <>
+                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                  </svg>
+                  Sending...
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                  </svg>
+                  Send to Recipients
+                </>
+              )}
             </button>
           )}
         </div>

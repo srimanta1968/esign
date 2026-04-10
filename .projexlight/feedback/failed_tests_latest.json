@@ -1,0 +1,512 @@
+{
+  "type": "failed_tests",
+  "timestamp": "2026-04-09T22:10:44.416372",
+  "totalFailures": 17,
+  "instructions": [
+    {
+      "endpoint": "POST /api/auth/login",
+      "issue": "Test failed with status 401",
+      "errorMessage": "Status 401 - Error: Invalid credentials",
+      "suggestedFix": "The request was rejected due to missing or invalid authentication.\n\n**Possible causes:**\n1. No Authorization header provided\n2. Token has expired\n3. Token is malformed or invalid\n4. JWT_SECRET mismatch between server and test\n\n**Recommended actions:**\n1. Ensure registration and login are executed first (priority: 1, 2)\n2. Check that cacheResponse saves the token correctly\n3. Verify JWT_SECRET matches in both server .env and test environment\n\nCheck your auth endpoint definition:\n```json\n{\n  \"priority\": 1,\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\n}\n```",
+      "priority": "high",
+      "debug": {
+        "fullUrl": "http://localhost:3002/api/auth/login",
+        "requestBody": {
+          "email": "testuser_643646@example.com",
+          "password": "SecurePass_643646!"
+        },
+        "responseBody": "{\n  \"success\": false,\n  \"error\": \"Invalid credentials\"\n}",
+        "curlCommand": "curl \\\n  -X \\\n  POST \\\n  -H Content-Type: application/json \\\n  -H Accept: application/json \\\n  -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1YWE0MWRkLWM4NDUtNDRjZi05YjljLTM0ZTNiZTEzZmE5NiIsInVzZXJfaWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ1c2VySWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ0ZW5hbnRfaWQiOiJhMGM4NTY1Yi1lNzcwLTQwOTMtODllMS03MzMyNDk1MzA3MTciLCJ0ZW5hbnRJZCI6ImEwYzg1NjViLWU3NzAtNDA5My04OWUxLTczMzI0OTUzMDcxNyIsImVtYWlsIjoie3tjYXB0dXJlZDphdXRoLnJlZ2lzdGVyLnJlc3BvbnNlLmRhdGEudXNlci5lbWFpbH19Iiwicm9sZSI6ImFkbWluIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NTc3MjY0MywiZXhwIjoxNzc2Mzc3NDQzfQ.nkgg-vYj6YeHk8AXP9tn7RmPs_Sz8AuuM1c6rvWRe7U \\\n  -d '{\n  \"email\": \"testuser_643646@example.com\",\n  \"password\": \"SecurePass_643646!\"\n}' \\\n  \"http://localhost:3002/api/auth/login\"",
+        "instructions": [
+          "Copy the curl command below to reproduce the request locally",
+          "Make sure your local server is running on the same port",
+          "Replace host.docker.internal with localhost if running outside Docker",
+          "Check the response body for detailed error information"
+        ]
+      },
+      "errorCategory": {
+        "category": "authentication",
+        "subcategory": "unauthorized",
+        "severity": "error",
+        "title": "Authentication Required",
+        "description": "Request requires valid authentication token",
+        "guidance": "The request was rejected due to missing or invalid authentication.\n\n**Possible causes:**\n1. No Authorization header provided\n2. Token has expired\n3. Token is malformed or invalid\n4. JWT_SECRET mismatch between server and test\n\n**Recommended actions:**\n1. Ensure registration and login are executed first (priority: 1, 2)\n2. Check that cacheResponse saves the token correctly\n3. Verify JWT_SECRET matches in both server .env and test environment\n\nCheck your auth endpoint definition:\n```json\n{\n  \"priority\": 1,\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\n}\n```",
+        "isExpected": false
+      }
+    },
+    {
+      "endpoint": "POST /api/auth/reset-password",
+      "issue": "Test failed with status 400",
+      "errorMessage": "Status 400 - Error: Invalid reset token",
+      "suggestedFix": "The request payload failed server-side validation.\n\n**Error details:** Status 400 - Error: Invalid reset token\n\n**Common causes:**\n1. Missing required fields in payload\n2. Invalid field format (email, phone, etc.)\n3. Field value constraints violated (min/max length, enum values)\n\n**Recommended actions:**\n1. Review the API schema/documentation for required fields\n2. Update test payload with valid placeholder values\n3. Use appropriate {{dynamic:type}} placeholders\n\nExample payload fix:\n```json\n{\n  \"payload\": {\n    \"email\": \"{{dynamic:email}}\",\n    \"name\": \"{{dynamic:name}}\",\n    \"status\": \"{{static:active}}\"\n  }\n}\n```",
+      "priority": "high",
+      "debug": {
+        "fullUrl": "http://localhost:3002/api/auth/reset-password",
+        "requestBody": {
+          "token": "{{captured:auth.forgotPassword.response.data.resetToken}}",
+          "password": "NewPass@1234"
+        },
+        "responseBody": "{\n  \"success\": false,\n  \"error\": \"Invalid reset token\"\n}",
+        "curlCommand": "curl \\\n  -X \\\n  POST \\\n  -H Content-Type: application/json \\\n  -H Accept: application/json \\\n  -d '{\n  \"token\": \"{{captured:auth.forgotPassword.response.data.resetToken}}\",\n  \"password\": \"NewPass@1234\"\n}' \\\n  \"http://localhost:3002/api/auth/reset-password\"",
+        "instructions": [
+          "Copy the curl command below to reproduce the request locally",
+          "Make sure your local server is running on the same port",
+          "Replace host.docker.internal with localhost if running outside Docker",
+          "Check the response body for detailed error information"
+        ]
+      },
+      "errorCategory": {
+        "category": "validation",
+        "subcategory": "bad_request",
+        "severity": "warning",
+        "title": "Validation Error",
+        "description": "Request data failed validation",
+        "guidance": "The request payload failed server-side validation.\n\n**Error details:** Status 400 - Error: Invalid reset token\n\n**Common causes:**\n1. Missing required fields in payload\n2. Invalid field format (email, phone, etc.)\n3. Field value constraints violated (min/max length, enum values)\n\n**Recommended actions:**\n1. Review the API schema/documentation for required fields\n2. Update test payload with valid placeholder values\n3. Use appropriate {{dynamic:type}} placeholders\n\nExample payload fix:\n```json\n{\n  \"payload\": {\n    \"email\": \"{{dynamic:email}}\",\n    \"name\": \"{{dynamic:name}}\",\n    \"status\": \"{{static:active}}\"\n  }\n}\n```",
+        "isExpected": false
+      }
+    },
+    {
+      "endpoint": "POST /api/documents",
+      "issue": "Test failed with status 400",
+      "errorMessage": "Status 400 - Error: File is required",
+      "suggestedFix": "The request payload failed server-side validation.\n\n**Error details:** Status 400 - Error: File is required\n\n**Common causes:**\n1. Missing required fields in payload\n2. Invalid field format (email, phone, etc.)\n3. Field value constraints violated (min/max length, enum values)\n\n**Recommended actions:**\n1. Review the API schema/documentation for required fields\n2. Update test payload with valid placeholder values\n3. Use appropriate {{dynamic:type}} placeholders\n\nExample payload fix:\n```json\n{\n  \"payload\": {\n    \"email\": \"{{dynamic:email}}\",\n    \"name\": \"{{dynamic:name}}\",\n    \"status\": \"{{static:active}}\"\n  }\n}\n```",
+      "priority": "high",
+      "debug": {
+        "fullUrl": "http://localhost:3002/api/documents",
+        "requestBody": {
+          "file_path": "text_643695",
+          "original_name": "text_643695"
+        },
+        "responseBody": "{\n  \"success\": false,\n  \"error\": \"File is required\"\n}",
+        "curlCommand": "curl \\\n  -X \\\n  POST \\\n  -H Content-Type: application/json \\\n  -H Accept: application/json \\\n  -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1YWE0MWRkLWM4NDUtNDRjZi05YjljLTM0ZTNiZTEzZmE5NiIsInVzZXJfaWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ1c2VySWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ0ZW5hbnRfaWQiOiJhMGM4NTY1Yi1lNzcwLTQwOTMtODllMS03MzMyNDk1MzA3MTciLCJ0ZW5hbnRJZCI6ImEwYzg1NjViLWU3NzAtNDA5My04OWUxLTczMzI0OTUzMDcxNyIsImVtYWlsIjoie3tjYXB0dXJlZDphdXRoLnJlZ2lzdGVyLnJlc3BvbnNlLmRhdGEudXNlci5lbWFpbH19Iiwicm9sZSI6ImFkbWluIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NTc3MjY0MywiZXhwIjoxNzc2Mzc3NDQzfQ.nkgg-vYj6YeHk8AXP9tn7RmPs_Sz8AuuM1c6rvWRe7U \\\n  -d '{\n  \"file_path\": \"text_643695\",\n  \"original_name\": \"text_643695\"\n}' \\\n  \"http://localhost:3002/api/documents\"",
+        "instructions": [
+          "Copy the curl command below to reproduce the request locally",
+          "Make sure your local server is running on the same port",
+          "Replace host.docker.internal with localhost if running outside Docker",
+          "Check the response body for detailed error information"
+        ]
+      },
+      "errorCategory": {
+        "category": "validation",
+        "subcategory": "bad_request",
+        "severity": "warning",
+        "title": "Validation Error",
+        "description": "Request data failed validation",
+        "guidance": "The request payload failed server-side validation.\n\n**Error details:** Status 400 - Error: File is required\n\n**Common causes:**\n1. Missing required fields in payload\n2. Invalid field format (email, phone, etc.)\n3. Field value constraints violated (min/max length, enum values)\n\n**Recommended actions:**\n1. Review the API schema/documentation for required fields\n2. Update test payload with valid placeholder values\n3. Use appropriate {{dynamic:type}} placeholders\n\nExample payload fix:\n```json\n{\n  \"payload\": {\n    \"email\": \"{{dynamic:email}}\",\n    \"name\": \"{{dynamic:name}}\",\n    \"status\": \"{{static:active}}\"\n  }\n}\n```",
+        "isExpected": false
+      }
+    },
+    {
+      "endpoint": "POST /api/compliance/alerts/config",
+      "issue": "Test failed with status 401",
+      "errorMessage": "Status 401 - Error: User not found",
+      "suggestedFix": "The request was rejected due to missing or invalid authentication.\n\n**Possible causes:**\n1. No Authorization header provided\n2. Token has expired\n3. Token is malformed or invalid\n4. JWT_SECRET mismatch between server and test\n\n**Recommended actions:**\n1. Ensure registration and login are executed first (priority: 1, 2)\n2. Check that cacheResponse saves the token correctly\n3. Verify JWT_SECRET matches in both server .env and test environment\n\nCheck your auth endpoint definition:\n```json\n{\n  \"priority\": 1,\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\n}\n```",
+      "priority": "high",
+      "debug": {
+        "fullUrl": "http://localhost:3002/api/compliance/alerts/config",
+        "requestBody": {
+          "rule_type": "unauthorized_access",
+          "threshold": 5,
+          "enabled": true
+        },
+        "responseBody": "{\n  \"success\": false,\n  \"error\": \"User not found\"\n}",
+        "curlCommand": "curl \\\n  -X \\\n  POST \\\n  -H Content-Type: application/json \\\n  -H Accept: application/json \\\n  -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1YWE0MWRkLWM4NDUtNDRjZi05YjljLTM0ZTNiZTEzZmE5NiIsInVzZXJfaWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ1c2VySWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ0ZW5hbnRfaWQiOiJhMGM4NTY1Yi1lNzcwLTQwOTMtODllMS03MzMyNDk1MzA3MTciLCJ0ZW5hbnRJZCI6ImEwYzg1NjViLWU3NzAtNDA5My04OWUxLTczMzI0OTUzMDcxNyIsImVtYWlsIjoie3tjYXB0dXJlZDphdXRoLnJlZ2lzdGVyLnJlc3BvbnNlLmRhdGEudXNlci5lbWFpbH19Iiwicm9sZSI6ImFkbWluIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NTc3MjY0MywiZXhwIjoxNzc2Mzc3NDQzfQ.nkgg-vYj6YeHk8AXP9tn7RmPs_Sz8AuuM1c6rvWRe7U \\\n  -d '{\n  \"rule_type\": \"unauthorized_access\",\n  \"threshold\": 5,\n  \"enabled\": true\n}' \\\n  \"http://localhost:3002/api/compliance/alerts/config\"",
+        "instructions": [
+          "Copy the curl command below to reproduce the request locally",
+          "Make sure your local server is running on the same port",
+          "Replace host.docker.internal with localhost if running outside Docker",
+          "Check the response body for detailed error information"
+        ]
+      },
+      "errorCategory": {
+        "category": "authentication",
+        "subcategory": "unauthorized",
+        "severity": "error",
+        "title": "Authentication Required",
+        "description": "Request requires valid authentication token",
+        "guidance": "The request was rejected due to missing or invalid authentication.\n\n**Possible causes:**\n1. No Authorization header provided\n2. Token has expired\n3. Token is malformed or invalid\n4. JWT_SECRET mismatch between server and test\n\n**Recommended actions:**\n1. Ensure registration and login are executed first (priority: 1, 2)\n2. Check that cacheResponse saves the token correctly\n3. Verify JWT_SECRET matches in both server .env and test environment\n\nCheck your auth endpoint definition:\n```json\n{\n  \"priority\": 1,\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\n}\n```",
+        "isExpected": false
+      }
+    },
+    {
+      "endpoint": "POST /api/analytics/signature-event",
+      "issue": "Test failed with status 500",
+      "errorMessage": "Status 500 - Error: Internal server error",
+      "suggestedFix": "The server encountered an internal error.\n\n**Error details:** Status 500 - Error: Internal server error\n\n**This usually indicates:**\n1. Bug in server code\n2. Database connection issue\n3. Missing environment variable\n4. Unhandled exception\n\n**Recommended actions:**\n1. Check server logs for detailed error\n2. Verify database is running\n3. Check environment configuration\n4. Review recent code changes",
+      "priority": "high",
+      "debug": {
+        "fullUrl": "http://localhost:3002/api/analytics/signature-event",
+        "requestBody": {
+          "event_type": "signature_viewed",
+          "metadata": {
+            "document_id": "test-doc-123",
+            "duration_ms": 5000
+          }
+        },
+        "responseBody": "{\n  \"success\": false,\n  \"error\": \"Internal server error\"\n}",
+        "curlCommand": "curl \\\n  -X \\\n  POST \\\n  -H Content-Type: application/json \\\n  -H Accept: application/json \\\n  -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1YWE0MWRkLWM4NDUtNDRjZi05YjljLTM0ZTNiZTEzZmE5NiIsInVzZXJfaWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ1c2VySWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ0ZW5hbnRfaWQiOiJhMGM4NTY1Yi1lNzcwLTQwOTMtODllMS03MzMyNDk1MzA3MTciLCJ0ZW5hbnRJZCI6ImEwYzg1NjViLWU3NzAtNDA5My04OWUxLTczMzI0OTUzMDcxNyIsImVtYWlsIjoie3tjYXB0dXJlZDphdXRoLnJlZ2lzdGVyLnJlc3BvbnNlLmRhdGEudXNlci5lbWFpbH19Iiwicm9sZSI6ImFkbWluIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NTc3MjY0MywiZXhwIjoxNzc2Mzc3NDQzfQ.nkgg-vYj6YeHk8AXP9tn7RmPs_Sz8AuuM1c6rvWRe7U \\\n  -d '{\n  \"event_type\": \"signature_viewed\",\n  \"metadata\": {\n    \"document_id\": \"test-doc-123\",\n    \"duration_ms\": 5000\n  }\n}' \\\n  \"http://localhost:3002/api/analytics/signature-event\"",
+        "instructions": [
+          "Copy the curl command below to reproduce the request locally",
+          "Make sure your local server is running on the same port",
+          "Replace host.docker.internal with localhost if running outside Docker",
+          "Check the response body for detailed error information"
+        ]
+      },
+      "errorCategory": {
+        "category": "server_error",
+        "subcategory": "error_500",
+        "severity": "error",
+        "title": "Server Error (500)",
+        "description": "Internal server error occurred",
+        "guidance": "The server encountered an internal error.\n\n**Error details:** Status 500 - Error: Internal server error\n\n**This usually indicates:**\n1. Bug in server code\n2. Database connection issue\n3. Missing environment variable\n4. Unhandled exception\n\n**Recommended actions:**\n1. Check server logs for detailed error\n2. Verify database is running\n3. Check environment configuration\n4. Review recent code changes",
+        "isExpected": false
+      }
+    },
+    {
+      "endpoint": "POST /api/signatures/:id/confirm",
+      "issue": "Test failed with status 500",
+      "errorMessage": "Status 500 - Error: Internal server error",
+      "suggestedFix": "The server encountered an internal error.\n\n**Error details:** Status 500 - Error: Internal server error\n\n**This usually indicates:**\n1. Bug in server code\n2. Database connection issue\n3. Missing environment variable\n4. Unhandled exception\n\n**Recommended actions:**\n1. Check server logs for detailed error\n2. Verify database is running\n3. Check environment configuration\n4. Review recent code changes",
+      "priority": "high",
+      "debug": {
+        "fullUrl": "http://localhost:3002/api/signatures/3e96c73a-6793-4b75-a70e-d3566b4a5610/confirm",
+        "requestBody": {
+          "confirmation_status": "confirmed"
+        },
+        "responseBody": "{\n  \"success\": false,\n  \"error\": \"Internal server error\"\n}",
+        "curlCommand": "curl \\\n  -X \\\n  POST \\\n  -H Content-Type: application/json \\\n  -H Accept: application/json \\\n  -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1YWE0MWRkLWM4NDUtNDRjZi05YjljLTM0ZTNiZTEzZmE5NiIsInVzZXJfaWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ1c2VySWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ0ZW5hbnRfaWQiOiJhMGM4NTY1Yi1lNzcwLTQwOTMtODllMS03MzMyNDk1MzA3MTciLCJ0ZW5hbnRJZCI6ImEwYzg1NjViLWU3NzAtNDA5My04OWUxLTczMzI0OTUzMDcxNyIsImVtYWlsIjoie3tjYXB0dXJlZDphdXRoLnJlZ2lzdGVyLnJlc3BvbnNlLmRhdGEudXNlci5lbWFpbH19Iiwicm9sZSI6ImFkbWluIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NTc3MjY0MywiZXhwIjoxNzc2Mzc3NDQzfQ.nkgg-vYj6YeHk8AXP9tn7RmPs_Sz8AuuM1c6rvWRe7U \\\n  -d '{\n  \"confirmation_status\": \"confirmed\"\n}' \\\n  \"http://localhost:3002/api/signatures/3e96c73a-6793-4b75-a70e-d3566b4a5610/confirm\"",
+        "instructions": [
+          "Copy the curl command below to reproduce the request locally",
+          "Make sure your local server is running on the same port",
+          "Replace host.docker.internal with localhost if running outside Docker",
+          "Check the response body for detailed error information"
+        ]
+      },
+      "errorCategory": {
+        "category": "server_error",
+        "subcategory": "error_500",
+        "severity": "error",
+        "title": "Server Error (500)",
+        "description": "Internal server error occurred",
+        "guidance": "The server encountered an internal error.\n\n**Error details:** Status 500 - Error: Internal server error\n\n**This usually indicates:**\n1. Bug in server code\n2. Database connection issue\n3. Missing environment variable\n4. Unhandled exception\n\n**Recommended actions:**\n1. Check server logs for detailed error\n2. Verify database is running\n3. Check environment configuration\n4. Review recent code changes",
+        "isExpected": false
+      }
+    },
+    {
+      "endpoint": "GET /api/auth/sso/callback",
+      "issue": "Test failed with status 500",
+      "errorMessage": "Status 500 - Error: Google OAuth not configured",
+      "suggestedFix": "The server encountered an internal error.\n\n**Error details:** Status 500 - Error: Google OAuth not configured\n\n**This usually indicates:**\n1. Bug in server code\n2. Database connection issue\n3. Missing environment variable\n4. Unhandled exception\n\n**Recommended actions:**\n1. Check server logs for detailed error\n2. Verify database is running\n3. Check environment configuration\n4. Review recent code changes",
+      "priority": "high",
+      "debug": {
+        "fullUrl": "http://localhost:3002/api/auth/sso/callback",
+        "requestBody": null,
+        "responseBody": "{\n  \"success\": false,\n  \"error\": \"Google OAuth not configured\"\n}",
+        "curlCommand": "curl \\\n  -X \\\n  GET \\\n  -H Content-Type: application/json \\\n  -H Accept: application/json \\\n  \"http://localhost:3002/api/auth/sso/callback?code=test-auth-code&state=google\"",
+        "instructions": [
+          "Copy the curl command below to reproduce the request locally",
+          "Make sure your local server is running on the same port",
+          "Replace host.docker.internal with localhost if running outside Docker",
+          "Check the response body for detailed error information"
+        ]
+      },
+      "errorCategory": {
+        "category": "server_error",
+        "subcategory": "error_500",
+        "severity": "error",
+        "title": "Server Error (500)",
+        "description": "Internal server error occurred",
+        "guidance": "The server encountered an internal error.\n\n**Error details:** Status 500 - Error: Google OAuth not configured\n\n**This usually indicates:**\n1. Bug in server code\n2. Database connection issue\n3. Missing environment variable\n4. Unhandled exception\n\n**Recommended actions:**\n1. Check server logs for detailed error\n2. Verify database is running\n3. Check environment configuration\n4. Review recent code changes",
+        "isExpected": false
+      }
+    },
+    {
+      "endpoint": "GET /api/users/roles",
+      "issue": "Test failed with status 401",
+      "errorMessage": "Status 401 - Error: User not found",
+      "suggestedFix": "The request was rejected due to missing or invalid authentication.\n\n**Possible causes:**\n1. No Authorization header provided\n2. Token has expired\n3. Token is malformed or invalid\n4. JWT_SECRET mismatch between server and test\n\n**Recommended actions:**\n1. Ensure registration and login are executed first (priority: 1, 2)\n2. Check that cacheResponse saves the token correctly\n3. Verify JWT_SECRET matches in both server .env and test environment\n\nCheck your auth endpoint definition:\n```json\n{\n  \"priority\": 1,\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\n}\n```",
+      "priority": "high",
+      "debug": {
+        "fullUrl": "http://localhost:3002/api/users/roles",
+        "requestBody": null,
+        "responseBody": "{\n  \"success\": false,\n  \"error\": \"User not found\"\n}",
+        "curlCommand": "curl \\\n  -X \\\n  GET \\\n  -H Content-Type: application/json \\\n  -H Accept: application/json \\\n  -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1YWE0MWRkLWM4NDUtNDRjZi05YjljLTM0ZTNiZTEzZmE5NiIsInVzZXJfaWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ1c2VySWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ0ZW5hbnRfaWQiOiJhMGM4NTY1Yi1lNzcwLTQwOTMtODllMS03MzMyNDk1MzA3MTciLCJ0ZW5hbnRJZCI6ImEwYzg1NjViLWU3NzAtNDA5My04OWUxLTczMzI0OTUzMDcxNyIsImVtYWlsIjoie3tjYXB0dXJlZDphdXRoLnJlZ2lzdGVyLnJlc3BvbnNlLmRhdGEudXNlci5lbWFpbH19Iiwicm9sZSI6ImFkbWluIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NTc3MjY0MywiZXhwIjoxNzc2Mzc3NDQzfQ.nkgg-vYj6YeHk8AXP9tn7RmPs_Sz8AuuM1c6rvWRe7U \\\n  \"http://localhost:3002/api/users/roles\"",
+        "instructions": [
+          "Copy the curl command below to reproduce the request locally",
+          "Make sure your local server is running on the same port",
+          "Replace host.docker.internal with localhost if running outside Docker",
+          "Check the response body for detailed error information"
+        ]
+      },
+      "errorCategory": {
+        "category": "authentication",
+        "subcategory": "unauthorized",
+        "severity": "error",
+        "title": "Authentication Required",
+        "description": "Request requires valid authentication token",
+        "guidance": "The request was rejected due to missing or invalid authentication.\n\n**Possible causes:**\n1. No Authorization header provided\n2. Token has expired\n3. Token is malformed or invalid\n4. JWT_SECRET mismatch between server and test\n\n**Recommended actions:**\n1. Ensure registration and login are executed first (priority: 1, 2)\n2. Check that cacheResponse saves the token correctly\n3. Verify JWT_SECRET matches in both server .env and test environment\n\nCheck your auth endpoint definition:\n```json\n{\n  \"priority\": 1,\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\n}\n```",
+        "isExpected": false
+      }
+    },
+    {
+      "endpoint": "GET /api/users",
+      "issue": "Test failed with status 401",
+      "errorMessage": "Status 401 - Error: User not found",
+      "suggestedFix": "The request was rejected due to missing or invalid authentication.\n\n**Possible causes:**\n1. No Authorization header provided\n2. Token has expired\n3. Token is malformed or invalid\n4. JWT_SECRET mismatch between server and test\n\n**Recommended actions:**\n1. Ensure registration and login are executed first (priority: 1, 2)\n2. Check that cacheResponse saves the token correctly\n3. Verify JWT_SECRET matches in both server .env and test environment\n\nCheck your auth endpoint definition:\n```json\n{\n  \"priority\": 1,\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\n}\n```",
+      "priority": "high",
+      "debug": {
+        "fullUrl": "http://localhost:3002/api/users",
+        "requestBody": null,
+        "responseBody": "{\n  \"success\": false,\n  \"error\": \"User not found\"\n}",
+        "curlCommand": "curl \\\n  -X \\\n  GET \\\n  -H Content-Type: application/json \\\n  -H Accept: application/json \\\n  -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1YWE0MWRkLWM4NDUtNDRjZi05YjljLTM0ZTNiZTEzZmE5NiIsInVzZXJfaWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ1c2VySWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ0ZW5hbnRfaWQiOiJhMGM4NTY1Yi1lNzcwLTQwOTMtODllMS03MzMyNDk1MzA3MTciLCJ0ZW5hbnRJZCI6ImEwYzg1NjViLWU3NzAtNDA5My04OWUxLTczMzI0OTUzMDcxNyIsImVtYWlsIjoie3tjYXB0dXJlZDphdXRoLnJlZ2lzdGVyLnJlc3BvbnNlLmRhdGEudXNlci5lbWFpbH19Iiwicm9sZSI6ImFkbWluIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NTc3MjY0MywiZXhwIjoxNzc2Mzc3NDQzfQ.nkgg-vYj6YeHk8AXP9tn7RmPs_Sz8AuuM1c6rvWRe7U \\\n  \"http://localhost:3002/api/users\"",
+        "instructions": [
+          "Copy the curl command below to reproduce the request locally",
+          "Make sure your local server is running on the same port",
+          "Replace host.docker.internal with localhost if running outside Docker",
+          "Check the response body for detailed error information"
+        ]
+      },
+      "errorCategory": {
+        "category": "authentication",
+        "subcategory": "unauthorized",
+        "severity": "error",
+        "title": "Authentication Required",
+        "description": "Request requires valid authentication token",
+        "guidance": "The request was rejected due to missing or invalid authentication.\n\n**Possible causes:**\n1. No Authorization header provided\n2. Token has expired\n3. Token is malformed or invalid\n4. JWT_SECRET mismatch between server and test\n\n**Recommended actions:**\n1. Ensure registration and login are executed first (priority: 1, 2)\n2. Check that cacheResponse saves the token correctly\n3. Verify JWT_SECRET matches in both server .env and test environment\n\nCheck your auth endpoint definition:\n```json\n{\n  \"priority\": 1,\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\n}\n```",
+        "isExpected": false
+      }
+    },
+    {
+      "endpoint": "GET /api/audit-logs",
+      "issue": "Test failed with status 401",
+      "errorMessage": "Status 401 - Error: User not found",
+      "suggestedFix": "The request was rejected due to missing or invalid authentication.\n\n**Possible causes:**\n1. No Authorization header provided\n2. Token has expired\n3. Token is malformed or invalid\n4. JWT_SECRET mismatch between server and test\n\n**Recommended actions:**\n1. Ensure registration and login are executed first (priority: 1, 2)\n2. Check that cacheResponse saves the token correctly\n3. Verify JWT_SECRET matches in both server .env and test environment\n\nCheck your auth endpoint definition:\n```json\n{\n  \"priority\": 1,\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\n}\n```",
+      "priority": "high",
+      "debug": {
+        "fullUrl": "http://localhost:3002/api/audit-logs",
+        "requestBody": null,
+        "responseBody": "{\n  \"success\": false,\n  \"error\": \"User not found\"\n}",
+        "curlCommand": "curl \\\n  -X \\\n  GET \\\n  -H Content-Type: application/json \\\n  -H Accept: application/json \\\n  -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1YWE0MWRkLWM4NDUtNDRjZi05YjljLTM0ZTNiZTEzZmE5NiIsInVzZXJfaWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ1c2VySWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ0ZW5hbnRfaWQiOiJhMGM4NTY1Yi1lNzcwLTQwOTMtODllMS03MzMyNDk1MzA3MTciLCJ0ZW5hbnRJZCI6ImEwYzg1NjViLWU3NzAtNDA5My04OWUxLTczMzI0OTUzMDcxNyIsImVtYWlsIjoie3tjYXB0dXJlZDphdXRoLnJlZ2lzdGVyLnJlc3BvbnNlLmRhdGEudXNlci5lbWFpbH19Iiwicm9sZSI6ImFkbWluIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NTc3MjY0MywiZXhwIjoxNzc2Mzc3NDQzfQ.nkgg-vYj6YeHk8AXP9tn7RmPs_Sz8AuuM1c6rvWRe7U \\\n  \"http://localhost:3002/api/audit-logs?page=1&limit=50\"",
+        "instructions": [
+          "Copy the curl command below to reproduce the request locally",
+          "Make sure your local server is running on the same port",
+          "Replace host.docker.internal with localhost if running outside Docker",
+          "Check the response body for detailed error information"
+        ]
+      },
+      "errorCategory": {
+        "category": "authentication",
+        "subcategory": "unauthorized",
+        "severity": "error",
+        "title": "Authentication Required",
+        "description": "Request requires valid authentication token",
+        "guidance": "The request was rejected due to missing or invalid authentication.\n\n**Possible causes:**\n1. No Authorization header provided\n2. Token has expired\n3. Token is malformed or invalid\n4. JWT_SECRET mismatch between server and test\n\n**Recommended actions:**\n1. Ensure registration and login are executed first (priority: 1, 2)\n2. Check that cacheResponse saves the token correctly\n3. Verify JWT_SECRET matches in both server .env and test environment\n\nCheck your auth endpoint definition:\n```json\n{\n  \"priority\": 1,\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\n}\n```",
+        "isExpected": false
+      }
+    },
+    {
+      "endpoint": "GET /api/compliance/alerts",
+      "issue": "Test failed with status 401",
+      "errorMessage": "Status 401 - Error: User not found",
+      "suggestedFix": "The request was rejected due to missing or invalid authentication.\n\n**Possible causes:**\n1. No Authorization header provided\n2. Token has expired\n3. Token is malformed or invalid\n4. JWT_SECRET mismatch between server and test\n\n**Recommended actions:**\n1. Ensure registration and login are executed first (priority: 1, 2)\n2. Check that cacheResponse saves the token correctly\n3. Verify JWT_SECRET matches in both server .env and test environment\n\nCheck your auth endpoint definition:\n```json\n{\n  \"priority\": 1,\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\n}\n```",
+      "priority": "high",
+      "debug": {
+        "fullUrl": "http://localhost:3002/api/compliance/alerts",
+        "requestBody": null,
+        "responseBody": "{\n  \"success\": false,\n  \"error\": \"User not found\"\n}",
+        "curlCommand": "curl \\\n  -X \\\n  GET \\\n  -H Content-Type: application/json \\\n  -H Accept: application/json \\\n  -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1YWE0MWRkLWM4NDUtNDRjZi05YjljLTM0ZTNiZTEzZmE5NiIsInVzZXJfaWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ1c2VySWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ0ZW5hbnRfaWQiOiJhMGM4NTY1Yi1lNzcwLTQwOTMtODllMS03MzMyNDk1MzA3MTciLCJ0ZW5hbnRJZCI6ImEwYzg1NjViLWU3NzAtNDA5My04OWUxLTczMzI0OTUzMDcxNyIsImVtYWlsIjoie3tjYXB0dXJlZDphdXRoLnJlZ2lzdGVyLnJlc3BvbnNlLmRhdGEudXNlci5lbWFpbH19Iiwicm9sZSI6ImFkbWluIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NTc3MjY0MywiZXhwIjoxNzc2Mzc3NDQzfQ.nkgg-vYj6YeHk8AXP9tn7RmPs_Sz8AuuM1c6rvWRe7U \\\n  \"http://localhost:3002/api/compliance/alerts\"",
+        "instructions": [
+          "Copy the curl command below to reproduce the request locally",
+          "Make sure your local server is running on the same port",
+          "Replace host.docker.internal with localhost if running outside Docker",
+          "Check the response body for detailed error information"
+        ]
+      },
+      "errorCategory": {
+        "category": "authentication",
+        "subcategory": "unauthorized",
+        "severity": "error",
+        "title": "Authentication Required",
+        "description": "Request requires valid authentication token",
+        "guidance": "The request was rejected due to missing or invalid authentication.\n\n**Possible causes:**\n1. No Authorization header provided\n2. Token has expired\n3. Token is malformed or invalid\n4. JWT_SECRET mismatch between server and test\n\n**Recommended actions:**\n1. Ensure registration and login are executed first (priority: 1, 2)\n2. Check that cacheResponse saves the token correctly\n3. Verify JWT_SECRET matches in both server .env and test environment\n\nCheck your auth endpoint definition:\n```json\n{\n  \"priority\": 1,\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\n}\n```",
+        "isExpected": false
+      }
+    },
+    {
+      "endpoint": "GET /api/compliance/export",
+      "issue": "Test failed with status 401",
+      "errorMessage": "Status 401 - Error: User not found",
+      "suggestedFix": "The request was rejected due to missing or invalid authentication.\n\n**Possible causes:**\n1. No Authorization header provided\n2. Token has expired\n3. Token is malformed or invalid\n4. JWT_SECRET mismatch between server and test\n\n**Recommended actions:**\n1. Ensure registration and login are executed first (priority: 1, 2)\n2. Check that cacheResponse saves the token correctly\n3. Verify JWT_SECRET matches in both server .env and test environment\n\nCheck your auth endpoint definition:\n```json\n{\n  \"priority\": 1,\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\n}\n```",
+      "priority": "high",
+      "debug": {
+        "fullUrl": "http://localhost:3002/api/compliance/export",
+        "requestBody": null,
+        "responseBody": "{\n  \"success\": false,\n  \"error\": \"User not found\"\n}",
+        "curlCommand": "curl \\\n  -X \\\n  GET \\\n  -H Content-Type: application/json \\\n  -H Accept: application/json \\\n  -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1YWE0MWRkLWM4NDUtNDRjZi05YjljLTM0ZTNiZTEzZmE5NiIsInVzZXJfaWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ1c2VySWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ0ZW5hbnRfaWQiOiJhMGM4NTY1Yi1lNzcwLTQwOTMtODllMS03MzMyNDk1MzA3MTciLCJ0ZW5hbnRJZCI6ImEwYzg1NjViLWU3NzAtNDA5My04OWUxLTczMzI0OTUzMDcxNyIsImVtYWlsIjoie3tjYXB0dXJlZDphdXRoLnJlZ2lzdGVyLnJlc3BvbnNlLmRhdGEudXNlci5lbWFpbH19Iiwicm9sZSI6ImFkbWluIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NTc3MjY0MywiZXhwIjoxNzc2Mzc3NDQzfQ.nkgg-vYj6YeHk8AXP9tn7RmPs_Sz8AuuM1c6rvWRe7U \\\n  \"http://localhost:3002/api/compliance/export?dateFrom=2024-01-01T00:00:00Z&dateTo=2030-12-31T23:59:59Z\"",
+        "instructions": [
+          "Copy the curl command below to reproduce the request locally",
+          "Make sure your local server is running on the same port",
+          "Replace host.docker.internal with localhost if running outside Docker",
+          "Check the response body for detailed error information"
+        ]
+      },
+      "errorCategory": {
+        "category": "authentication",
+        "subcategory": "unauthorized",
+        "severity": "error",
+        "title": "Authentication Required",
+        "description": "Request requires valid authentication token",
+        "guidance": "The request was rejected due to missing or invalid authentication.\n\n**Possible causes:**\n1. No Authorization header provided\n2. Token has expired\n3. Token is malformed or invalid\n4. JWT_SECRET mismatch between server and test\n\n**Recommended actions:**\n1. Ensure registration and login are executed first (priority: 1, 2)\n2. Check that cacheResponse saves the token correctly\n3. Verify JWT_SECRET matches in both server .env and test environment\n\nCheck your auth endpoint definition:\n```json\n{\n  \"priority\": 1,\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\n}\n```",
+        "isExpected": false
+      }
+    },
+    {
+      "endpoint": "GET /api/compliance/report",
+      "issue": "Test failed with status 401",
+      "errorMessage": "Status 401 - Error: User not found",
+      "suggestedFix": "The request was rejected due to missing or invalid authentication.\n\n**Possible causes:**\n1. No Authorization header provided\n2. Token has expired\n3. Token is malformed or invalid\n4. JWT_SECRET mismatch between server and test\n\n**Recommended actions:**\n1. Ensure registration and login are executed first (priority: 1, 2)\n2. Check that cacheResponse saves the token correctly\n3. Verify JWT_SECRET matches in both server .env and test environment\n\nCheck your auth endpoint definition:\n```json\n{\n  \"priority\": 1,\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\n}\n```",
+      "priority": "high",
+      "debug": {
+        "fullUrl": "http://localhost:3002/api/compliance/report",
+        "requestBody": null,
+        "responseBody": "{\n  \"success\": false,\n  \"error\": \"User not found\"\n}",
+        "curlCommand": "curl \\\n  -X \\\n  GET \\\n  -H Content-Type: application/json \\\n  -H Accept: application/json \\\n  -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1YWE0MWRkLWM4NDUtNDRjZi05YjljLTM0ZTNiZTEzZmE5NiIsInVzZXJfaWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ1c2VySWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ0ZW5hbnRfaWQiOiJhMGM4NTY1Yi1lNzcwLTQwOTMtODllMS03MzMyNDk1MzA3MTciLCJ0ZW5hbnRJZCI6ImEwYzg1NjViLWU3NzAtNDA5My04OWUxLTczMzI0OTUzMDcxNyIsImVtYWlsIjoie3tjYXB0dXJlZDphdXRoLnJlZ2lzdGVyLnJlc3BvbnNlLmRhdGEudXNlci5lbWFpbH19Iiwicm9sZSI6ImFkbWluIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NTc3MjY0MywiZXhwIjoxNzc2Mzc3NDQzfQ.nkgg-vYj6YeHk8AXP9tn7RmPs_Sz8AuuM1c6rvWRe7U \\\n  \"http://localhost:3002/api/compliance/report?dateFrom=2024-01-01T00:00:00Z&dateTo=2030-12-31T23:59:59Z\"",
+        "instructions": [
+          "Copy the curl command below to reproduce the request locally",
+          "Make sure your local server is running on the same port",
+          "Replace host.docker.internal with localhost if running outside Docker",
+          "Check the response body for detailed error information"
+        ]
+      },
+      "errorCategory": {
+        "category": "authentication",
+        "subcategory": "unauthorized",
+        "severity": "error",
+        "title": "Authentication Required",
+        "description": "Request requires valid authentication token",
+        "guidance": "The request was rejected due to missing or invalid authentication.\n\n**Possible causes:**\n1. No Authorization header provided\n2. Token has expired\n3. Token is malformed or invalid\n4. JWT_SECRET mismatch between server and test\n\n**Recommended actions:**\n1. Ensure registration and login are executed first (priority: 1, 2)\n2. Check that cacheResponse saves the token correctly\n3. Verify JWT_SECRET matches in both server .env and test environment\n\nCheck your auth endpoint definition:\n```json\n{\n  \"priority\": 1,\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\n}\n```",
+        "isExpected": false
+      }
+    },
+    {
+      "endpoint": "GET /api/compliance/esign-metadata/:signatureId",
+      "issue": "Test failed with status 404",
+      "errorMessage": "Status 404 - Error: Compliance metadata not found for this signature",
+      "suggestedFix": "The endpoint or resource was not found.\n\n**Possible causes:**\n1. Resource hasn't been created yet (POST not run before GET)\n2. Incorrect ID in path parameter\n3. Resource was deleted\n4. Endpoint path is incorrect\n\n**Recommended actions:**\n1. Ensure POST endpoint runs before GET/PUT/DELETE (use priority field)\n2. Use {{cache:resource.id}} to capture and reuse created IDs\n3. Add dependsOn to enforce execution order\n\nExample fix:\n```json\n{\n  \"endpoint\": \"/api/compliance/esign-metadata/:signatureId\",\n  \"method\": \"GET\",\n  \"dependsOn\": [\"POST /api/resource\"],\n  \"pathParams\": {\n    \"id\": \"{{cache:resource.id}}\"\n  }\n}\n```",
+      "priority": "high",
+      "debug": {
+        "fullUrl": "http://localhost:3002/api/compliance/esign-metadata/3e96c73a-6793-4b75-a70e-d3566b4a5610",
+        "requestBody": null,
+        "responseBody": "{\n  \"success\": false,\n  \"error\": \"Compliance metadata not found for this signature\"\n}",
+        "curlCommand": "curl \\\n  -X \\\n  GET \\\n  -H Content-Type: application/json \\\n  -H Accept: application/json \\\n  -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1YWE0MWRkLWM4NDUtNDRjZi05YjljLTM0ZTNiZTEzZmE5NiIsInVzZXJfaWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ1c2VySWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ0ZW5hbnRfaWQiOiJhMGM4NTY1Yi1lNzcwLTQwOTMtODllMS03MzMyNDk1MzA3MTciLCJ0ZW5hbnRJZCI6ImEwYzg1NjViLWU3NzAtNDA5My04OWUxLTczMzI0OTUzMDcxNyIsImVtYWlsIjoie3tjYXB0dXJlZDphdXRoLnJlZ2lzdGVyLnJlc3BvbnNlLmRhdGEudXNlci5lbWFpbH19Iiwicm9sZSI6ImFkbWluIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NTc3MjY0MywiZXhwIjoxNzc2Mzc3NDQzfQ.nkgg-vYj6YeHk8AXP9tn7RmPs_Sz8AuuM1c6rvWRe7U \\\n  \"http://localhost:3002/api/compliance/esign-metadata/3e96c73a-6793-4b75-a70e-d3566b4a5610\"",
+        "instructions": [
+          "Copy the curl command below to reproduce the request locally",
+          "Make sure your local server is running on the same port",
+          "Replace host.docker.internal with localhost if running outside Docker",
+          "Check the response body for detailed error information"
+        ]
+      },
+      "errorCategory": {
+        "category": "not_found",
+        "subcategory": "resource_missing",
+        "severity": "warning",
+        "title": "Resource Not Found",
+        "description": "The requested resource does not exist",
+        "guidance": "The endpoint or resource was not found.\n\n**Possible causes:**\n1. Resource hasn't been created yet (POST not run before GET)\n2. Incorrect ID in path parameter\n3. Resource was deleted\n4. Endpoint path is incorrect\n\n**Recommended actions:**\n1. Ensure POST endpoint runs before GET/PUT/DELETE (use priority field)\n2. Use {{cache:resource.id}} to capture and reuse created IDs\n3. Add dependsOn to enforce execution order\n\nExample fix:\n```json\n{\n  \"endpoint\": \"/api/compliance/esign-metadata/:signatureId\",\n  \"method\": \"GET\",\n  \"dependsOn\": [\"POST /api/resource\"],\n  \"pathParams\": {\n    \"id\": \"{{cache:resource.id}}\"\n  }\n}\n```",
+        "isExpected": false
+      }
+    },
+    {
+      "endpoint": "PUT /api/users/language",
+      "issue": "Test failed with status 404",
+      "errorMessage": "Status 404 - Error: User not found",
+      "suggestedFix": "The endpoint or resource was not found.\n\n**Possible causes:**\n1. Resource hasn't been created yet (POST not run before GET)\n2. Incorrect ID in path parameter\n3. Resource was deleted\n4. Endpoint path is incorrect\n\n**Recommended actions:**\n1. Ensure POST endpoint runs before GET/PUT/DELETE (use priority field)\n2. Use {{cache:resource.id}} to capture and reuse created IDs\n3. Add dependsOn to enforce execution order\n\nExample fix:\n```json\n{\n  \"endpoint\": \"/api/users/language\",\n  \"method\": \"PUT\",\n  \"dependsOn\": [\"POST /api/resource\"],\n  \"pathParams\": {\n    \"id\": \"{{cache:resource.id}}\"\n  }\n}\n```",
+      "priority": "high",
+      "debug": {
+        "fullUrl": "http://localhost:3002/api/users/language",
+        "requestBody": {
+          "language_preference": "es"
+        },
+        "responseBody": "{\n  \"success\": false,\n  \"error\": \"User not found\"\n}",
+        "curlCommand": "curl \\\n  -X \\\n  PUT \\\n  -H Content-Type: application/json \\\n  -H Accept: application/json \\\n  -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1YWE0MWRkLWM4NDUtNDRjZi05YjljLTM0ZTNiZTEzZmE5NiIsInVzZXJfaWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ1c2VySWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ0ZW5hbnRfaWQiOiJhMGM4NTY1Yi1lNzcwLTQwOTMtODllMS03MzMyNDk1MzA3MTciLCJ0ZW5hbnRJZCI6ImEwYzg1NjViLWU3NzAtNDA5My04OWUxLTczMzI0OTUzMDcxNyIsImVtYWlsIjoie3tjYXB0dXJlZDphdXRoLnJlZ2lzdGVyLnJlc3BvbnNlLmRhdGEudXNlci5lbWFpbH19Iiwicm9sZSI6ImFkbWluIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NTc3MjY0MywiZXhwIjoxNzc2Mzc3NDQzfQ.nkgg-vYj6YeHk8AXP9tn7RmPs_Sz8AuuM1c6rvWRe7U \\\n  -d '{\n  \"language_preference\": \"es\"\n}' \\\n  \"http://localhost:3002/api/users/language\"",
+        "instructions": [
+          "Copy the curl command below to reproduce the request locally",
+          "Make sure your local server is running on the same port",
+          "Replace host.docker.internal with localhost if running outside Docker",
+          "Check the response body for detailed error information"
+        ]
+      },
+      "errorCategory": {
+        "category": "not_found",
+        "subcategory": "resource_missing",
+        "severity": "warning",
+        "title": "Resource Not Found",
+        "description": "The requested resource does not exist",
+        "guidance": "The endpoint or resource was not found.\n\n**Possible causes:**\n1. Resource hasn't been created yet (POST not run before GET)\n2. Incorrect ID in path parameter\n3. Resource was deleted\n4. Endpoint path is incorrect\n\n**Recommended actions:**\n1. Ensure POST endpoint runs before GET/PUT/DELETE (use priority field)\n2. Use {{cache:resource.id}} to capture and reuse created IDs\n3. Add dependsOn to enforce execution order\n\nExample fix:\n```json\n{\n  \"endpoint\": \"/api/users/language\",\n  \"method\": \"PUT\",\n  \"dependsOn\": [\"POST /api/resource\"],\n  \"pathParams\": {\n    \"id\": \"{{cache:resource.id}}\"\n  }\n}\n```",
+        "isExpected": false
+      }
+    },
+    {
+      "endpoint": "PUT /api/workflows/:id/reminders",
+      "issue": "Test failed with status 500",
+      "errorMessage": "Status 500 - Error: Database query failed: inconsistent types deduced for parameter $3",
+      "suggestedFix": "The server encountered an internal error.\n\n**Error details:** Status 500 - Error: Database query failed: inconsistent types deduced for parameter $3\n\n**This usually indicates:**\n1. Bug in server code\n2. Database connection issue\n3. Missing environment variable\n4. Unhandled exception\n\n**Recommended actions:**\n1. Check server logs for detailed error\n2. Verify database is running\n3. Check environment configuration\n4. Review recent code changes",
+      "priority": "high",
+      "debug": {
+        "fullUrl": "http://localhost:3002/api/workflows/69fc546b-27eb-45c6-abe6-8938daacd71f/reminders",
+        "requestBody": {
+          "reminder_interval_hours": 24
+        },
+        "responseBody": "{\n  \"success\": false,\n  \"error\": \"Database query failed: inconsistent types deduced for parameter $3\"\n}",
+        "curlCommand": "curl \\\n  -X \\\n  PUT \\\n  -H Content-Type: application/json \\\n  -H Accept: application/json \\\n  -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1YWE0MWRkLWM4NDUtNDRjZi05YjljLTM0ZTNiZTEzZmE5NiIsInVzZXJfaWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ1c2VySWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ0ZW5hbnRfaWQiOiJhMGM4NTY1Yi1lNzcwLTQwOTMtODllMS03MzMyNDk1MzA3MTciLCJ0ZW5hbnRJZCI6ImEwYzg1NjViLWU3NzAtNDA5My04OWUxLTczMzI0OTUzMDcxNyIsImVtYWlsIjoie3tjYXB0dXJlZDphdXRoLnJlZ2lzdGVyLnJlc3BvbnNlLmRhdGEudXNlci5lbWFpbH19Iiwicm9sZSI6ImFkbWluIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NTc3MjY0MywiZXhwIjoxNzc2Mzc3NDQzfQ.nkgg-vYj6YeHk8AXP9tn7RmPs_Sz8AuuM1c6rvWRe7U \\\n  -d '{\n  \"reminder_interval_hours\": 24\n}' \\\n  \"http://localhost:3002/api/workflows/69fc546b-27eb-45c6-abe6-8938daacd71f/reminders\"",
+        "instructions": [
+          "Copy the curl command below to reproduce the request locally",
+          "Make sure your local server is running on the same port",
+          "Replace host.docker.internal with localhost if running outside Docker",
+          "Check the response body for detailed error information"
+        ]
+      },
+      "errorCategory": {
+        "category": "server_error",
+        "subcategory": "error_500",
+        "severity": "error",
+        "title": "Server Error (500)",
+        "description": "Internal server error occurred",
+        "guidance": "The server encountered an internal error.\n\n**Error details:** Status 500 - Error: Database query failed: inconsistent types deduced for parameter $3\n\n**This usually indicates:**\n1. Bug in server code\n2. Database connection issue\n3. Missing environment variable\n4. Unhandled exception\n\n**Recommended actions:**\n1. Check server logs for detailed error\n2. Verify database is running\n3. Check environment configuration\n4. Review recent code changes",
+        "isExpected": false
+      }
+    },
+    {
+      "endpoint": "ALL /api/*",
+      "issue": "Test failed with status 400",
+      "errorMessage": "Status 400",
+      "suggestedFix": "The request payload failed server-side validation.\n\n**Error details:** Status 400\n\n**Common causes:**\n1. Missing required fields in payload\n2. Invalid field format (email, phone, etc.)\n3. Field value constraints violated (min/max length, enum values)\n\n**Recommended actions:**\n1. Review the API schema/documentation for required fields\n2. Update test payload with valid placeholder values\n3. Use appropriate {{dynamic:type}} placeholders\n\nExample payload fix:\n```json\n{\n  \"payload\": {\n    \"email\": \"{{dynamic:email}}\",\n    \"name\": \"{{dynamic:name}}\",\n    \"status\": \"{{static:active}}\"\n  }\n}\n```",
+      "priority": "high",
+      "debug": {
+        "fullUrl": "http://localhost:3002/api/*",
+        "requestBody": {
+          "email": "audit-test@example.com",
+          "password": "TestPass123!"
+        },
+        "responseBody": null,
+        "curlCommand": "curl \\\n  -X \\\n  ALL \\\n  -H Content-Type: application/json \\\n  -H Accept: application/json \\\n  \"http://localhost:3002/api/*\"",
+        "instructions": [
+          "Copy the curl command below to reproduce the request locally",
+          "Make sure your local server is running on the same port",
+          "Replace host.docker.internal with localhost if running outside Docker",
+          "Check the response body for detailed error information"
+        ]
+      },
+      "errorCategory": {
+        "category": "validation",
+        "subcategory": "bad_request",
+        "severity": "warning",
+        "title": "Validation Error",
+        "description": "Request data failed validation",
+        "guidance": "The request payload failed server-side validation.\n\n**Error details:** Status 400\n\n**Common causes:**\n1. Missing required fields in payload\n2. Invalid field format (email, phone, etc.)\n3. Field value constraints violated (min/max length, enum values)\n\n**Recommended actions:**\n1. Review the API schema/documentation for required fields\n2. Update test payload with valid placeholder values\n3. Use appropriate {{dynamic:type}} placeholders\n\nExample payload fix:\n```json\n{\n  \"payload\": {\n    \"email\": \"{{dynamic:email}}\",\n    \"name\": \"{{dynamic:name}}\",\n    \"status\": \"{{static:active}}\"\n  }\n}\n```",
+        "isExpected": false
+      }
+    }
+  ],
+  "llm_prompt": "# Failed API Tests - Fix Required\n\n17 API test(s) failed. Please review and fix the following issues:\n\n## Failed Tests:\n\n### Issue 1:\n- **endpoint**: POST /api/auth/login\n- **issue**: Test failed with status 401\n- **errorMessage**: Status 401 - Error: Invalid credentials\n- **suggestedFix**: The request was rejected due to missing or invalid authentication.\n\n**Possible causes:**\n1. No Authorization header provided\n2. Token has expired\n3. Token is malformed or invalid\n4. JWT_SECRET mismatch between server and test\n\n**Recommended actions:**\n1. Ensure registration and login are executed first (priority: 1, 2)\n2. Check that cacheResponse saves the token correctly\n3. Verify JWT_SECRET matches in both server .env and test environment\n\nCheck your auth endpoint definition:\n```json\n{\n  \"priority\": 1,\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\n}\n```\n- **debug**: {'fullUrl': 'http://localhost:3002/api/auth/login', 'requestBody': {'email': 'testuser_643646@example.com', 'password': 'SecurePass_643646!'}, 'responseBody': '{\\n  \"success\": false,\\n  \"error\": \"Invalid credentials\"\\n}', 'curlCommand': 'curl \\\\\\n  -X \\\\\\n  POST \\\\\\n  -H Content-Type: application/json \\\\\\n  -H Accept: application/json \\\\\\n  -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1YWE0MWRkLWM4NDUtNDRjZi05YjljLTM0ZTNiZTEzZmE5NiIsInVzZXJfaWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ1c2VySWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ0ZW5hbnRfaWQiOiJhMGM4NTY1Yi1lNzcwLTQwOTMtODllMS03MzMyNDk1MzA3MTciLCJ0ZW5hbnRJZCI6ImEwYzg1NjViLWU3NzAtNDA5My04OWUxLTczMzI0OTUzMDcxNyIsImVtYWlsIjoie3tjYXB0dXJlZDphdXRoLnJlZ2lzdGVyLnJlc3BvbnNlLmRhdGEudXNlci5lbWFpbH19Iiwicm9sZSI6ImFkbWluIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NTc3MjY0MywiZXhwIjoxNzc2Mzc3NDQzfQ.nkgg-vYj6YeHk8AXP9tn7RmPs_Sz8AuuM1c6rvWRe7U \\\\\\n  -d \\'{\\n  \"email\": \"testuser_643646@example.com\",\\n  \"password\": \"SecurePass_643646!\"\\n}\\' \\\\\\n  \"http://localhost:3002/api/auth/login\"', 'instructions': ['Copy the curl command below to reproduce the request locally', 'Make sure your local server is running on the same port', 'Replace host.docker.internal with localhost if running outside Docker', 'Check the response body for detailed error information']}\n- **errorCategory**: {'category': 'authentication', 'subcategory': 'unauthorized', 'severity': 'error', 'title': 'Authentication Required', 'description': 'Request requires valid authentication token', 'guidance': 'The request was rejected due to missing or invalid authentication.\\n\\n**Possible causes:**\\n1. No Authorization header provided\\n2. Token has expired\\n3. Token is malformed or invalid\\n4. JWT_SECRET mismatch between server and test\\n\\n**Recommended actions:**\\n1. Ensure registration and login are executed first (priority: 1, 2)\\n2. Check that cacheResponse saves the token correctly\\n3. Verify JWT_SECRET matches in both server .env and test environment\\n\\nCheck your auth endpoint definition:\\n```json\\n{\\n  \"priority\": 1,\\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\\n}\\n```', 'isExpected': False}\n\n### Issue 2:\n- **endpoint**: POST /api/auth/reset-password\n- **issue**: Test failed with status 400\n- **errorMessage**: Status 400 - Error: Invalid reset token\n- **suggestedFix**: The request payload failed server-side validation.\n\n**Error details:** Status 400 - Error: Invalid reset token\n\n**Common causes:**\n1. Missing required fields in payload\n2. Invalid field format (email, phone, etc.)\n3. Field value constraints violated (min/max length, enum values)\n\n**Recommended actions:**\n1. Review the API schema/documentation for required fields\n2. Update test payload with valid placeholder values\n3. Use appropriate {{dynamic:type}} placeholders\n\nExample payload fix:\n```json\n{\n  \"payload\": {\n    \"email\": \"{{dynamic:email}}\",\n    \"name\": \"{{dynamic:name}}\",\n    \"status\": \"{{static:active}}\"\n  }\n}\n```\n- **debug**: {'fullUrl': 'http://localhost:3002/api/auth/reset-password', 'requestBody': {'token': '{{captured:auth.forgotPassword.response.data.resetToken}}', 'password': 'NewPass@1234'}, 'responseBody': '{\\n  \"success\": false,\\n  \"error\": \"Invalid reset token\"\\n}', 'curlCommand': 'curl \\\\\\n  -X \\\\\\n  POST \\\\\\n  -H Content-Type: application/json \\\\\\n  -H Accept: application/json \\\\\\n  -d \\'{\\n  \"token\": \"{{captured:auth.forgotPassword.response.data.resetToken}}\",\\n  \"password\": \"NewPass@1234\"\\n}\\' \\\\\\n  \"http://localhost:3002/api/auth/reset-password\"', 'instructions': ['Copy the curl command below to reproduce the request locally', 'Make sure your local server is running on the same port', 'Replace host.docker.internal with localhost if running outside Docker', 'Check the response body for detailed error information']}\n- **errorCategory**: {'category': 'validation', 'subcategory': 'bad_request', 'severity': 'warning', 'title': 'Validation Error', 'description': 'Request data failed validation', 'guidance': 'The request payload failed server-side validation.\\n\\n**Error details:** Status 400 - Error: Invalid reset token\\n\\n**Common causes:**\\n1. Missing required fields in payload\\n2. Invalid field format (email, phone, etc.)\\n3. Field value constraints violated (min/max length, enum values)\\n\\n**Recommended actions:**\\n1. Review the API schema/documentation for required fields\\n2. Update test payload with valid placeholder values\\n3. Use appropriate {{dynamic:type}} placeholders\\n\\nExample payload fix:\\n```json\\n{\\n  \"payload\": {\\n    \"email\": \"{{dynamic:email}}\",\\n    \"name\": \"{{dynamic:name}}\",\\n    \"status\": \"{{static:active}}\"\\n  }\\n}\\n```', 'isExpected': False}\n\n### Issue 3:\n- **endpoint**: POST /api/documents\n- **issue**: Test failed with status 400\n- **errorMessage**: Status 400 - Error: File is required\n- **suggestedFix**: The request payload failed server-side validation.\n\n**Error details:** Status 400 - Error: File is required\n\n**Common causes:**\n1. Missing required fields in payload\n2. Invalid field format (email, phone, etc.)\n3. Field value constraints violated (min/max length, enum values)\n\n**Recommended actions:**\n1. Review the API schema/documentation for required fields\n2. Update test payload with valid placeholder values\n3. Use appropriate {{dynamic:type}} placeholders\n\nExample payload fix:\n```json\n{\n  \"payload\": {\n    \"email\": \"{{dynamic:email}}\",\n    \"name\": \"{{dynamic:name}}\",\n    \"status\": \"{{static:active}}\"\n  }\n}\n```\n- **debug**: {'fullUrl': 'http://localhost:3002/api/documents', 'requestBody': {'file_path': 'text_643695', 'original_name': 'text_643695'}, 'responseBody': '{\\n  \"success\": false,\\n  \"error\": \"File is required\"\\n}', 'curlCommand': 'curl \\\\\\n  -X \\\\\\n  POST \\\\\\n  -H Content-Type: application/json \\\\\\n  -H Accept: application/json \\\\\\n  -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1YWE0MWRkLWM4NDUtNDRjZi05YjljLTM0ZTNiZTEzZmE5NiIsInVzZXJfaWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ1c2VySWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ0ZW5hbnRfaWQiOiJhMGM4NTY1Yi1lNzcwLTQwOTMtODllMS03MzMyNDk1MzA3MTciLCJ0ZW5hbnRJZCI6ImEwYzg1NjViLWU3NzAtNDA5My04OWUxLTczMzI0OTUzMDcxNyIsImVtYWlsIjoie3tjYXB0dXJlZDphdXRoLnJlZ2lzdGVyLnJlc3BvbnNlLmRhdGEudXNlci5lbWFpbH19Iiwicm9sZSI6ImFkbWluIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NTc3MjY0MywiZXhwIjoxNzc2Mzc3NDQzfQ.nkgg-vYj6YeHk8AXP9tn7RmPs_Sz8AuuM1c6rvWRe7U \\\\\\n  -d \\'{\\n  \"file_path\": \"text_643695\",\\n  \"original_name\": \"text_643695\"\\n}\\' \\\\\\n  \"http://localhost:3002/api/documents\"', 'instructions': ['Copy the curl command below to reproduce the request locally', 'Make sure your local server is running on the same port', 'Replace host.docker.internal with localhost if running outside Docker', 'Check the response body for detailed error information']}\n- **errorCategory**: {'category': 'validation', 'subcategory': 'bad_request', 'severity': 'warning', 'title': 'Validation Error', 'description': 'Request data failed validation', 'guidance': 'The request payload failed server-side validation.\\n\\n**Error details:** Status 400 - Error: File is required\\n\\n**Common causes:**\\n1. Missing required fields in payload\\n2. Invalid field format (email, phone, etc.)\\n3. Field value constraints violated (min/max length, enum values)\\n\\n**Recommended actions:**\\n1. Review the API schema/documentation for required fields\\n2. Update test payload with valid placeholder values\\n3. Use appropriate {{dynamic:type}} placeholders\\n\\nExample payload fix:\\n```json\\n{\\n  \"payload\": {\\n    \"email\": \"{{dynamic:email}}\",\\n    \"name\": \"{{dynamic:name}}\",\\n    \"status\": \"{{static:active}}\"\\n  }\\n}\\n```', 'isExpected': False}\n\n### Issue 4:\n- **endpoint**: POST /api/compliance/alerts/config\n- **issue**: Test failed with status 401\n- **errorMessage**: Status 401 - Error: User not found\n- **suggestedFix**: The request was rejected due to missing or invalid authentication.\n\n**Possible causes:**\n1. No Authorization header provided\n2. Token has expired\n3. Token is malformed or invalid\n4. JWT_SECRET mismatch between server and test\n\n**Recommended actions:**\n1. Ensure registration and login are executed first (priority: 1, 2)\n2. Check that cacheResponse saves the token correctly\n3. Verify JWT_SECRET matches in both server .env and test environment\n\nCheck your auth endpoint definition:\n```json\n{\n  \"priority\": 1,\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\n}\n```\n- **debug**: {'fullUrl': 'http://localhost:3002/api/compliance/alerts/config', 'requestBody': {'rule_type': 'unauthorized_access', 'threshold': 5, 'enabled': True}, 'responseBody': '{\\n  \"success\": false,\\n  \"error\": \"User not found\"\\n}', 'curlCommand': 'curl \\\\\\n  -X \\\\\\n  POST \\\\\\n  -H Content-Type: application/json \\\\\\n  -H Accept: application/json \\\\\\n  -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1YWE0MWRkLWM4NDUtNDRjZi05YjljLTM0ZTNiZTEzZmE5NiIsInVzZXJfaWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ1c2VySWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ0ZW5hbnRfaWQiOiJhMGM4NTY1Yi1lNzcwLTQwOTMtODllMS03MzMyNDk1MzA3MTciLCJ0ZW5hbnRJZCI6ImEwYzg1NjViLWU3NzAtNDA5My04OWUxLTczMzI0OTUzMDcxNyIsImVtYWlsIjoie3tjYXB0dXJlZDphdXRoLnJlZ2lzdGVyLnJlc3BvbnNlLmRhdGEudXNlci5lbWFpbH19Iiwicm9sZSI6ImFkbWluIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NTc3MjY0MywiZXhwIjoxNzc2Mzc3NDQzfQ.nkgg-vYj6YeHk8AXP9tn7RmPs_Sz8AuuM1c6rvWRe7U \\\\\\n  -d \\'{\\n  \"rule_type\": \"unauthorized_access\",\\n  \"threshold\": 5,\\n  \"enabled\": true\\n}\\' \\\\\\n  \"http://localhost:3002/api/compliance/alerts/config\"', 'instructions': ['Copy the curl command below to reproduce the request locally', 'Make sure your local server is running on the same port', 'Replace host.docker.internal with localhost if running outside Docker', 'Check the response body for detailed error information']}\n- **errorCategory**: {'category': 'authentication', 'subcategory': 'unauthorized', 'severity': 'error', 'title': 'Authentication Required', 'description': 'Request requires valid authentication token', 'guidance': 'The request was rejected due to missing or invalid authentication.\\n\\n**Possible causes:**\\n1. No Authorization header provided\\n2. Token has expired\\n3. Token is malformed or invalid\\n4. JWT_SECRET mismatch between server and test\\n\\n**Recommended actions:**\\n1. Ensure registration and login are executed first (priority: 1, 2)\\n2. Check that cacheResponse saves the token correctly\\n3. Verify JWT_SECRET matches in both server .env and test environment\\n\\nCheck your auth endpoint definition:\\n```json\\n{\\n  \"priority\": 1,\\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\\n}\\n```', 'isExpected': False}\n\n### Issue 5:\n- **endpoint**: POST /api/analytics/signature-event\n- **issue**: Test failed with status 500\n- **errorMessage**: Status 500 - Error: Internal server error\n- **suggestedFix**: The server encountered an internal error.\n\n**Error details:** Status 500 - Error: Internal server error\n\n**This usually indicates:**\n1. Bug in server code\n2. Database connection issue\n3. Missing environment variable\n4. Unhandled exception\n\n**Recommended actions:**\n1. Check server logs for detailed error\n2. Verify database is running\n3. Check environment configuration\n4. Review recent code changes\n- **debug**: {'fullUrl': 'http://localhost:3002/api/analytics/signature-event', 'requestBody': {'event_type': 'signature_viewed', 'metadata': {'document_id': 'test-doc-123', 'duration_ms': 5000}}, 'responseBody': '{\\n  \"success\": false,\\n  \"error\": \"Internal server error\"\\n}', 'curlCommand': 'curl \\\\\\n  -X \\\\\\n  POST \\\\\\n  -H Content-Type: application/json \\\\\\n  -H Accept: application/json \\\\\\n  -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1YWE0MWRkLWM4NDUtNDRjZi05YjljLTM0ZTNiZTEzZmE5NiIsInVzZXJfaWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ1c2VySWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ0ZW5hbnRfaWQiOiJhMGM4NTY1Yi1lNzcwLTQwOTMtODllMS03MzMyNDk1MzA3MTciLCJ0ZW5hbnRJZCI6ImEwYzg1NjViLWU3NzAtNDA5My04OWUxLTczMzI0OTUzMDcxNyIsImVtYWlsIjoie3tjYXB0dXJlZDphdXRoLnJlZ2lzdGVyLnJlc3BvbnNlLmRhdGEudXNlci5lbWFpbH19Iiwicm9sZSI6ImFkbWluIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NTc3MjY0MywiZXhwIjoxNzc2Mzc3NDQzfQ.nkgg-vYj6YeHk8AXP9tn7RmPs_Sz8AuuM1c6rvWRe7U \\\\\\n  -d \\'{\\n  \"event_type\": \"signature_viewed\",\\n  \"metadata\": {\\n    \"document_id\": \"test-doc-123\",\\n    \"duration_ms\": 5000\\n  }\\n}\\' \\\\\\n  \"http://localhost:3002/api/analytics/signature-event\"', 'instructions': ['Copy the curl command below to reproduce the request locally', 'Make sure your local server is running on the same port', 'Replace host.docker.internal with localhost if running outside Docker', 'Check the response body for detailed error information']}\n- **errorCategory**: {'category': 'server_error', 'subcategory': 'error_500', 'severity': 'error', 'title': 'Server Error (500)', 'description': 'Internal server error occurred', 'guidance': 'The server encountered an internal error.\\n\\n**Error details:** Status 500 - Error: Internal server error\\n\\n**This usually indicates:**\\n1. Bug in server code\\n2. Database connection issue\\n3. Missing environment variable\\n4. Unhandled exception\\n\\n**Recommended actions:**\\n1. Check server logs for detailed error\\n2. Verify database is running\\n3. Check environment configuration\\n4. Review recent code changes', 'isExpected': False}\n\n### Issue 6:\n- **endpoint**: POST /api/signatures/:id/confirm\n- **issue**: Test failed with status 500\n- **errorMessage**: Status 500 - Error: Internal server error\n- **suggestedFix**: The server encountered an internal error.\n\n**Error details:** Status 500 - Error: Internal server error\n\n**This usually indicates:**\n1. Bug in server code\n2. Database connection issue\n3. Missing environment variable\n4. Unhandled exception\n\n**Recommended actions:**\n1. Check server logs for detailed error\n2. Verify database is running\n3. Check environment configuration\n4. Review recent code changes\n- **debug**: {'fullUrl': 'http://localhost:3002/api/signatures/3e96c73a-6793-4b75-a70e-d3566b4a5610/confirm', 'requestBody': {'confirmation_status': 'confirmed'}, 'responseBody': '{\\n  \"success\": false,\\n  \"error\": \"Internal server error\"\\n}', 'curlCommand': 'curl \\\\\\n  -X \\\\\\n  POST \\\\\\n  -H Content-Type: application/json \\\\\\n  -H Accept: application/json \\\\\\n  -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1YWE0MWRkLWM4NDUtNDRjZi05YjljLTM0ZTNiZTEzZmE5NiIsInVzZXJfaWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ1c2VySWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ0ZW5hbnRfaWQiOiJhMGM4NTY1Yi1lNzcwLTQwOTMtODllMS03MzMyNDk1MzA3MTciLCJ0ZW5hbnRJZCI6ImEwYzg1NjViLWU3NzAtNDA5My04OWUxLTczMzI0OTUzMDcxNyIsImVtYWlsIjoie3tjYXB0dXJlZDphdXRoLnJlZ2lzdGVyLnJlc3BvbnNlLmRhdGEudXNlci5lbWFpbH19Iiwicm9sZSI6ImFkbWluIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NTc3MjY0MywiZXhwIjoxNzc2Mzc3NDQzfQ.nkgg-vYj6YeHk8AXP9tn7RmPs_Sz8AuuM1c6rvWRe7U \\\\\\n  -d \\'{\\n  \"confirmation_status\": \"confirmed\"\\n}\\' \\\\\\n  \"http://localhost:3002/api/signatures/3e96c73a-6793-4b75-a70e-d3566b4a5610/confirm\"', 'instructions': ['Copy the curl command below to reproduce the request locally', 'Make sure your local server is running on the same port', 'Replace host.docker.internal with localhost if running outside Docker', 'Check the response body for detailed error information']}\n- **errorCategory**: {'category': 'server_error', 'subcategory': 'error_500', 'severity': 'error', 'title': 'Server Error (500)', 'description': 'Internal server error occurred', 'guidance': 'The server encountered an internal error.\\n\\n**Error details:** Status 500 - Error: Internal server error\\n\\n**This usually indicates:**\\n1. Bug in server code\\n2. Database connection issue\\n3. Missing environment variable\\n4. Unhandled exception\\n\\n**Recommended actions:**\\n1. Check server logs for detailed error\\n2. Verify database is running\\n3. Check environment configuration\\n4. Review recent code changes', 'isExpected': False}\n\n### Issue 7:\n- **endpoint**: GET /api/auth/sso/callback\n- **issue**: Test failed with status 500\n- **errorMessage**: Status 500 - Error: Google OAuth not configured\n- **suggestedFix**: The server encountered an internal error.\n\n**Error details:** Status 500 - Error: Google OAuth not configured\n\n**This usually indicates:**\n1. Bug in server code\n2. Database connection issue\n3. Missing environment variable\n4. Unhandled exception\n\n**Recommended actions:**\n1. Check server logs for detailed error\n2. Verify database is running\n3. Check environment configuration\n4. Review recent code changes\n- **debug**: {'fullUrl': 'http://localhost:3002/api/auth/sso/callback', 'requestBody': None, 'responseBody': '{\\n  \"success\": false,\\n  \"error\": \"Google OAuth not configured\"\\n}', 'curlCommand': 'curl \\\\\\n  -X \\\\\\n  GET \\\\\\n  -H Content-Type: application/json \\\\\\n  -H Accept: application/json \\\\\\n  \"http://localhost:3002/api/auth/sso/callback?code=test-auth-code&state=google\"', 'instructions': ['Copy the curl command below to reproduce the request locally', 'Make sure your local server is running on the same port', 'Replace host.docker.internal with localhost if running outside Docker', 'Check the response body for detailed error information']}\n- **errorCategory**: {'category': 'server_error', 'subcategory': 'error_500', 'severity': 'error', 'title': 'Server Error (500)', 'description': 'Internal server error occurred', 'guidance': 'The server encountered an internal error.\\n\\n**Error details:** Status 500 - Error: Google OAuth not configured\\n\\n**This usually indicates:**\\n1. Bug in server code\\n2. Database connection issue\\n3. Missing environment variable\\n4. Unhandled exception\\n\\n**Recommended actions:**\\n1. Check server logs for detailed error\\n2. Verify database is running\\n3. Check environment configuration\\n4. Review recent code changes', 'isExpected': False}\n\n### Issue 8:\n- **endpoint**: GET /api/users/roles\n- **issue**: Test failed with status 401\n- **errorMessage**: Status 401 - Error: User not found\n- **suggestedFix**: The request was rejected due to missing or invalid authentication.\n\n**Possible causes:**\n1. No Authorization header provided\n2. Token has expired\n3. Token is malformed or invalid\n4. JWT_SECRET mismatch between server and test\n\n**Recommended actions:**\n1. Ensure registration and login are executed first (priority: 1, 2)\n2. Check that cacheResponse saves the token correctly\n3. Verify JWT_SECRET matches in both server .env and test environment\n\nCheck your auth endpoint definition:\n```json\n{\n  \"priority\": 1,\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\n}\n```\n- **debug**: {'fullUrl': 'http://localhost:3002/api/users/roles', 'requestBody': None, 'responseBody': '{\\n  \"success\": false,\\n  \"error\": \"User not found\"\\n}', 'curlCommand': 'curl \\\\\\n  -X \\\\\\n  GET \\\\\\n  -H Content-Type: application/json \\\\\\n  -H Accept: application/json \\\\\\n  -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1YWE0MWRkLWM4NDUtNDRjZi05YjljLTM0ZTNiZTEzZmE5NiIsInVzZXJfaWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ1c2VySWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ0ZW5hbnRfaWQiOiJhMGM4NTY1Yi1lNzcwLTQwOTMtODllMS03MzMyNDk1MzA3MTciLCJ0ZW5hbnRJZCI6ImEwYzg1NjViLWU3NzAtNDA5My04OWUxLTczMzI0OTUzMDcxNyIsImVtYWlsIjoie3tjYXB0dXJlZDphdXRoLnJlZ2lzdGVyLnJlc3BvbnNlLmRhdGEudXNlci5lbWFpbH19Iiwicm9sZSI6ImFkbWluIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NTc3MjY0MywiZXhwIjoxNzc2Mzc3NDQzfQ.nkgg-vYj6YeHk8AXP9tn7RmPs_Sz8AuuM1c6rvWRe7U \\\\\\n  \"http://localhost:3002/api/users/roles\"', 'instructions': ['Copy the curl command below to reproduce the request locally', 'Make sure your local server is running on the same port', 'Replace host.docker.internal with localhost if running outside Docker', 'Check the response body for detailed error information']}\n- **errorCategory**: {'category': 'authentication', 'subcategory': 'unauthorized', 'severity': 'error', 'title': 'Authentication Required', 'description': 'Request requires valid authentication token', 'guidance': 'The request was rejected due to missing or invalid authentication.\\n\\n**Possible causes:**\\n1. No Authorization header provided\\n2. Token has expired\\n3. Token is malformed or invalid\\n4. JWT_SECRET mismatch between server and test\\n\\n**Recommended actions:**\\n1. Ensure registration and login are executed first (priority: 1, 2)\\n2. Check that cacheResponse saves the token correctly\\n3. Verify JWT_SECRET matches in both server .env and test environment\\n\\nCheck your auth endpoint definition:\\n```json\\n{\\n  \"priority\": 1,\\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\\n}\\n```', 'isExpected': False}\n\n### Issue 9:\n- **endpoint**: GET /api/users\n- **issue**: Test failed with status 401\n- **errorMessage**: Status 401 - Error: User not found\n- **suggestedFix**: The request was rejected due to missing or invalid authentication.\n\n**Possible causes:**\n1. No Authorization header provided\n2. Token has expired\n3. Token is malformed or invalid\n4. JWT_SECRET mismatch between server and test\n\n**Recommended actions:**\n1. Ensure registration and login are executed first (priority: 1, 2)\n2. Check that cacheResponse saves the token correctly\n3. Verify JWT_SECRET matches in both server .env and test environment\n\nCheck your auth endpoint definition:\n```json\n{\n  \"priority\": 1,\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\n}\n```\n- **debug**: {'fullUrl': 'http://localhost:3002/api/users', 'requestBody': None, 'responseBody': '{\\n  \"success\": false,\\n  \"error\": \"User not found\"\\n}', 'curlCommand': 'curl \\\\\\n  -X \\\\\\n  GET \\\\\\n  -H Content-Type: application/json \\\\\\n  -H Accept: application/json \\\\\\n  -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1YWE0MWRkLWM4NDUtNDRjZi05YjljLTM0ZTNiZTEzZmE5NiIsInVzZXJfaWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ1c2VySWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ0ZW5hbnRfaWQiOiJhMGM4NTY1Yi1lNzcwLTQwOTMtODllMS03MzMyNDk1MzA3MTciLCJ0ZW5hbnRJZCI6ImEwYzg1NjViLWU3NzAtNDA5My04OWUxLTczMzI0OTUzMDcxNyIsImVtYWlsIjoie3tjYXB0dXJlZDphdXRoLnJlZ2lzdGVyLnJlc3BvbnNlLmRhdGEudXNlci5lbWFpbH19Iiwicm9sZSI6ImFkbWluIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NTc3MjY0MywiZXhwIjoxNzc2Mzc3NDQzfQ.nkgg-vYj6YeHk8AXP9tn7RmPs_Sz8AuuM1c6rvWRe7U \\\\\\n  \"http://localhost:3002/api/users\"', 'instructions': ['Copy the curl command below to reproduce the request locally', 'Make sure your local server is running on the same port', 'Replace host.docker.internal with localhost if running outside Docker', 'Check the response body for detailed error information']}\n- **errorCategory**: {'category': 'authentication', 'subcategory': 'unauthorized', 'severity': 'error', 'title': 'Authentication Required', 'description': 'Request requires valid authentication token', 'guidance': 'The request was rejected due to missing or invalid authentication.\\n\\n**Possible causes:**\\n1. No Authorization header provided\\n2. Token has expired\\n3. Token is malformed or invalid\\n4. JWT_SECRET mismatch between server and test\\n\\n**Recommended actions:**\\n1. Ensure registration and login are executed first (priority: 1, 2)\\n2. Check that cacheResponse saves the token correctly\\n3. Verify JWT_SECRET matches in both server .env and test environment\\n\\nCheck your auth endpoint definition:\\n```json\\n{\\n  \"priority\": 1,\\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\\n}\\n```', 'isExpected': False}\n\n### Issue 10:\n- **endpoint**: GET /api/audit-logs\n- **issue**: Test failed with status 401\n- **errorMessage**: Status 401 - Error: User not found\n- **suggestedFix**: The request was rejected due to missing or invalid authentication.\n\n**Possible causes:**\n1. No Authorization header provided\n2. Token has expired\n3. Token is malformed or invalid\n4. JWT_SECRET mismatch between server and test\n\n**Recommended actions:**\n1. Ensure registration and login are executed first (priority: 1, 2)\n2. Check that cacheResponse saves the token correctly\n3. Verify JWT_SECRET matches in both server .env and test environment\n\nCheck your auth endpoint definition:\n```json\n{\n  \"priority\": 1,\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\n}\n```\n- **debug**: {'fullUrl': 'http://localhost:3002/api/audit-logs', 'requestBody': None, 'responseBody': '{\\n  \"success\": false,\\n  \"error\": \"User not found\"\\n}', 'curlCommand': 'curl \\\\\\n  -X \\\\\\n  GET \\\\\\n  -H Content-Type: application/json \\\\\\n  -H Accept: application/json \\\\\\n  -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1YWE0MWRkLWM4NDUtNDRjZi05YjljLTM0ZTNiZTEzZmE5NiIsInVzZXJfaWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ1c2VySWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ0ZW5hbnRfaWQiOiJhMGM4NTY1Yi1lNzcwLTQwOTMtODllMS03MzMyNDk1MzA3MTciLCJ0ZW5hbnRJZCI6ImEwYzg1NjViLWU3NzAtNDA5My04OWUxLTczMzI0OTUzMDcxNyIsImVtYWlsIjoie3tjYXB0dXJlZDphdXRoLnJlZ2lzdGVyLnJlc3BvbnNlLmRhdGEudXNlci5lbWFpbH19Iiwicm9sZSI6ImFkbWluIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NTc3MjY0MywiZXhwIjoxNzc2Mzc3NDQzfQ.nkgg-vYj6YeHk8AXP9tn7RmPs_Sz8AuuM1c6rvWRe7U \\\\\\n  \"http://localhost:3002/api/audit-logs?page=1&limit=50\"', 'instructions': ['Copy the curl command below to reproduce the request locally', 'Make sure your local server is running on the same port', 'Replace host.docker.internal with localhost if running outside Docker', 'Check the response body for detailed error information']}\n- **errorCategory**: {'category': 'authentication', 'subcategory': 'unauthorized', 'severity': 'error', 'title': 'Authentication Required', 'description': 'Request requires valid authentication token', 'guidance': 'The request was rejected due to missing or invalid authentication.\\n\\n**Possible causes:**\\n1. No Authorization header provided\\n2. Token has expired\\n3. Token is malformed or invalid\\n4. JWT_SECRET mismatch between server and test\\n\\n**Recommended actions:**\\n1. Ensure registration and login are executed first (priority: 1, 2)\\n2. Check that cacheResponse saves the token correctly\\n3. Verify JWT_SECRET matches in both server .env and test environment\\n\\nCheck your auth endpoint definition:\\n```json\\n{\\n  \"priority\": 1,\\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\\n}\\n```', 'isExpected': False}\n\n### Issue 11:\n- **endpoint**: GET /api/compliance/alerts\n- **issue**: Test failed with status 401\n- **errorMessage**: Status 401 - Error: User not found\n- **suggestedFix**: The request was rejected due to missing or invalid authentication.\n\n**Possible causes:**\n1. No Authorization header provided\n2. Token has expired\n3. Token is malformed or invalid\n4. JWT_SECRET mismatch between server and test\n\n**Recommended actions:**\n1. Ensure registration and login are executed first (priority: 1, 2)\n2. Check that cacheResponse saves the token correctly\n3. Verify JWT_SECRET matches in both server .env and test environment\n\nCheck your auth endpoint definition:\n```json\n{\n  \"priority\": 1,\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\n}\n```\n- **debug**: {'fullUrl': 'http://localhost:3002/api/compliance/alerts', 'requestBody': None, 'responseBody': '{\\n  \"success\": false,\\n  \"error\": \"User not found\"\\n}', 'curlCommand': 'curl \\\\\\n  -X \\\\\\n  GET \\\\\\n  -H Content-Type: application/json \\\\\\n  -H Accept: application/json \\\\\\n  -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1YWE0MWRkLWM4NDUtNDRjZi05YjljLTM0ZTNiZTEzZmE5NiIsInVzZXJfaWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ1c2VySWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ0ZW5hbnRfaWQiOiJhMGM4NTY1Yi1lNzcwLTQwOTMtODllMS03MzMyNDk1MzA3MTciLCJ0ZW5hbnRJZCI6ImEwYzg1NjViLWU3NzAtNDA5My04OWUxLTczMzI0OTUzMDcxNyIsImVtYWlsIjoie3tjYXB0dXJlZDphdXRoLnJlZ2lzdGVyLnJlc3BvbnNlLmRhdGEudXNlci5lbWFpbH19Iiwicm9sZSI6ImFkbWluIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NTc3MjY0MywiZXhwIjoxNzc2Mzc3NDQzfQ.nkgg-vYj6YeHk8AXP9tn7RmPs_Sz8AuuM1c6rvWRe7U \\\\\\n  \"http://localhost:3002/api/compliance/alerts\"', 'instructions': ['Copy the curl command below to reproduce the request locally', 'Make sure your local server is running on the same port', 'Replace host.docker.internal with localhost if running outside Docker', 'Check the response body for detailed error information']}\n- **errorCategory**: {'category': 'authentication', 'subcategory': 'unauthorized', 'severity': 'error', 'title': 'Authentication Required', 'description': 'Request requires valid authentication token', 'guidance': 'The request was rejected due to missing or invalid authentication.\\n\\n**Possible causes:**\\n1. No Authorization header provided\\n2. Token has expired\\n3. Token is malformed or invalid\\n4. JWT_SECRET mismatch between server and test\\n\\n**Recommended actions:**\\n1. Ensure registration and login are executed first (priority: 1, 2)\\n2. Check that cacheResponse saves the token correctly\\n3. Verify JWT_SECRET matches in both server .env and test environment\\n\\nCheck your auth endpoint definition:\\n```json\\n{\\n  \"priority\": 1,\\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\\n}\\n```', 'isExpected': False}\n\n### Issue 12:\n- **endpoint**: GET /api/compliance/export\n- **issue**: Test failed with status 401\n- **errorMessage**: Status 401 - Error: User not found\n- **suggestedFix**: The request was rejected due to missing or invalid authentication.\n\n**Possible causes:**\n1. No Authorization header provided\n2. Token has expired\n3. Token is malformed or invalid\n4. JWT_SECRET mismatch between server and test\n\n**Recommended actions:**\n1. Ensure registration and login are executed first (priority: 1, 2)\n2. Check that cacheResponse saves the token correctly\n3. Verify JWT_SECRET matches in both server .env and test environment\n\nCheck your auth endpoint definition:\n```json\n{\n  \"priority\": 1,\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\n}\n```\n- **debug**: {'fullUrl': 'http://localhost:3002/api/compliance/export', 'requestBody': None, 'responseBody': '{\\n  \"success\": false,\\n  \"error\": \"User not found\"\\n}', 'curlCommand': 'curl \\\\\\n  -X \\\\\\n  GET \\\\\\n  -H Content-Type: application/json \\\\\\n  -H Accept: application/json \\\\\\n  -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1YWE0MWRkLWM4NDUtNDRjZi05YjljLTM0ZTNiZTEzZmE5NiIsInVzZXJfaWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ1c2VySWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ0ZW5hbnRfaWQiOiJhMGM4NTY1Yi1lNzcwLTQwOTMtODllMS03MzMyNDk1MzA3MTciLCJ0ZW5hbnRJZCI6ImEwYzg1NjViLWU3NzAtNDA5My04OWUxLTczMzI0OTUzMDcxNyIsImVtYWlsIjoie3tjYXB0dXJlZDphdXRoLnJlZ2lzdGVyLnJlc3BvbnNlLmRhdGEudXNlci5lbWFpbH19Iiwicm9sZSI6ImFkbWluIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NTc3MjY0MywiZXhwIjoxNzc2Mzc3NDQzfQ.nkgg-vYj6YeHk8AXP9tn7RmPs_Sz8AuuM1c6rvWRe7U \\\\\\n  \"http://localhost:3002/api/compliance/export?dateFrom=2024-01-01T00:00:00Z&dateTo=2030-12-31T23:59:59Z\"', 'instructions': ['Copy the curl command below to reproduce the request locally', 'Make sure your local server is running on the same port', 'Replace host.docker.internal with localhost if running outside Docker', 'Check the response body for detailed error information']}\n- **errorCategory**: {'category': 'authentication', 'subcategory': 'unauthorized', 'severity': 'error', 'title': 'Authentication Required', 'description': 'Request requires valid authentication token', 'guidance': 'The request was rejected due to missing or invalid authentication.\\n\\n**Possible causes:**\\n1. No Authorization header provided\\n2. Token has expired\\n3. Token is malformed or invalid\\n4. JWT_SECRET mismatch between server and test\\n\\n**Recommended actions:**\\n1. Ensure registration and login are executed first (priority: 1, 2)\\n2. Check that cacheResponse saves the token correctly\\n3. Verify JWT_SECRET matches in both server .env and test environment\\n\\nCheck your auth endpoint definition:\\n```json\\n{\\n  \"priority\": 1,\\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\\n}\\n```', 'isExpected': False}\n\n### Issue 13:\n- **endpoint**: GET /api/compliance/report\n- **issue**: Test failed with status 401\n- **errorMessage**: Status 401 - Error: User not found\n- **suggestedFix**: The request was rejected due to missing or invalid authentication.\n\n**Possible causes:**\n1. No Authorization header provided\n2. Token has expired\n3. Token is malformed or invalid\n4. JWT_SECRET mismatch between server and test\n\n**Recommended actions:**\n1. Ensure registration and login are executed first (priority: 1, 2)\n2. Check that cacheResponse saves the token correctly\n3. Verify JWT_SECRET matches in both server .env and test environment\n\nCheck your auth endpoint definition:\n```json\n{\n  \"priority\": 1,\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\n}\n```\n- **debug**: {'fullUrl': 'http://localhost:3002/api/compliance/report', 'requestBody': None, 'responseBody': '{\\n  \"success\": false,\\n  \"error\": \"User not found\"\\n}', 'curlCommand': 'curl \\\\\\n  -X \\\\\\n  GET \\\\\\n  -H Content-Type: application/json \\\\\\n  -H Accept: application/json \\\\\\n  -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1YWE0MWRkLWM4NDUtNDRjZi05YjljLTM0ZTNiZTEzZmE5NiIsInVzZXJfaWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ1c2VySWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ0ZW5hbnRfaWQiOiJhMGM4NTY1Yi1lNzcwLTQwOTMtODllMS03MzMyNDk1MzA3MTciLCJ0ZW5hbnRJZCI6ImEwYzg1NjViLWU3NzAtNDA5My04OWUxLTczMzI0OTUzMDcxNyIsImVtYWlsIjoie3tjYXB0dXJlZDphdXRoLnJlZ2lzdGVyLnJlc3BvbnNlLmRhdGEudXNlci5lbWFpbH19Iiwicm9sZSI6ImFkbWluIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NTc3MjY0MywiZXhwIjoxNzc2Mzc3NDQzfQ.nkgg-vYj6YeHk8AXP9tn7RmPs_Sz8AuuM1c6rvWRe7U \\\\\\n  \"http://localhost:3002/api/compliance/report?dateFrom=2024-01-01T00:00:00Z&dateTo=2030-12-31T23:59:59Z\"', 'instructions': ['Copy the curl command below to reproduce the request locally', 'Make sure your local server is running on the same port', 'Replace host.docker.internal with localhost if running outside Docker', 'Check the response body for detailed error information']}\n- **errorCategory**: {'category': 'authentication', 'subcategory': 'unauthorized', 'severity': 'error', 'title': 'Authentication Required', 'description': 'Request requires valid authentication token', 'guidance': 'The request was rejected due to missing or invalid authentication.\\n\\n**Possible causes:**\\n1. No Authorization header provided\\n2. Token has expired\\n3. Token is malformed or invalid\\n4. JWT_SECRET mismatch between server and test\\n\\n**Recommended actions:**\\n1. Ensure registration and login are executed first (priority: 1, 2)\\n2. Check that cacheResponse saves the token correctly\\n3. Verify JWT_SECRET matches in both server .env and test environment\\n\\nCheck your auth endpoint definition:\\n```json\\n{\\n  \"priority\": 1,\\n  \"captureResponse\": {\"auth.token\": \"data.token\"}\\n}\\n```', 'isExpected': False}\n\n### Issue 14:\n- **endpoint**: GET /api/compliance/esign-metadata/:signatureId\n- **issue**: Test failed with status 404\n- **errorMessage**: Status 404 - Error: Compliance metadata not found for this signature\n- **suggestedFix**: The endpoint or resource was not found.\n\n**Possible causes:**\n1. Resource hasn't been created yet (POST not run before GET)\n2. Incorrect ID in path parameter\n3. Resource was deleted\n4. Endpoint path is incorrect\n\n**Recommended actions:**\n1. Ensure POST endpoint runs before GET/PUT/DELETE (use priority field)\n2. Use {{cache:resource.id}} to capture and reuse created IDs\n3. Add dependsOn to enforce execution order\n\nExample fix:\n```json\n{\n  \"endpoint\": \"/api/compliance/esign-metadata/:signatureId\",\n  \"method\": \"GET\",\n  \"dependsOn\": [\"POST /api/resource\"],\n  \"pathParams\": {\n    \"id\": \"{{cache:resource.id}}\"\n  }\n}\n```\n- **debug**: {'fullUrl': 'http://localhost:3002/api/compliance/esign-metadata/3e96c73a-6793-4b75-a70e-d3566b4a5610', 'requestBody': None, 'responseBody': '{\\n  \"success\": false,\\n  \"error\": \"Compliance metadata not found for this signature\"\\n}', 'curlCommand': 'curl \\\\\\n  -X \\\\\\n  GET \\\\\\n  -H Content-Type: application/json \\\\\\n  -H Accept: application/json \\\\\\n  -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1YWE0MWRkLWM4NDUtNDRjZi05YjljLTM0ZTNiZTEzZmE5NiIsInVzZXJfaWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ1c2VySWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ0ZW5hbnRfaWQiOiJhMGM4NTY1Yi1lNzcwLTQwOTMtODllMS03MzMyNDk1MzA3MTciLCJ0ZW5hbnRJZCI6ImEwYzg1NjViLWU3NzAtNDA5My04OWUxLTczMzI0OTUzMDcxNyIsImVtYWlsIjoie3tjYXB0dXJlZDphdXRoLnJlZ2lzdGVyLnJlc3BvbnNlLmRhdGEudXNlci5lbWFpbH19Iiwicm9sZSI6ImFkbWluIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NTc3MjY0MywiZXhwIjoxNzc2Mzc3NDQzfQ.nkgg-vYj6YeHk8AXP9tn7RmPs_Sz8AuuM1c6rvWRe7U \\\\\\n  \"http://localhost:3002/api/compliance/esign-metadata/3e96c73a-6793-4b75-a70e-d3566b4a5610\"', 'instructions': ['Copy the curl command below to reproduce the request locally', 'Make sure your local server is running on the same port', 'Replace host.docker.internal with localhost if running outside Docker', 'Check the response body for detailed error information']}\n- **errorCategory**: {'category': 'not_found', 'subcategory': 'resource_missing', 'severity': 'warning', 'title': 'Resource Not Found', 'description': 'The requested resource does not exist', 'guidance': 'The endpoint or resource was not found.\\n\\n**Possible causes:**\\n1. Resource hasn\\'t been created yet (POST not run before GET)\\n2. Incorrect ID in path parameter\\n3. Resource was deleted\\n4. Endpoint path is incorrect\\n\\n**Recommended actions:**\\n1. Ensure POST endpoint runs before GET/PUT/DELETE (use priority field)\\n2. Use {{cache:resource.id}} to capture and reuse created IDs\\n3. Add dependsOn to enforce execution order\\n\\nExample fix:\\n```json\\n{\\n  \"endpoint\": \"/api/compliance/esign-metadata/:signatureId\",\\n  \"method\": \"GET\",\\n  \"dependsOn\": [\"POST /api/resource\"],\\n  \"pathParams\": {\\n    \"id\": \"{{cache:resource.id}}\"\\n  }\\n}\\n```', 'isExpected': False}\n\n### Issue 15:\n- **endpoint**: PUT /api/users/language\n- **issue**: Test failed with status 404\n- **errorMessage**: Status 404 - Error: User not found\n- **suggestedFix**: The endpoint or resource was not found.\n\n**Possible causes:**\n1. Resource hasn't been created yet (POST not run before GET)\n2. Incorrect ID in path parameter\n3. Resource was deleted\n4. Endpoint path is incorrect\n\n**Recommended actions:**\n1. Ensure POST endpoint runs before GET/PUT/DELETE (use priority field)\n2. Use {{cache:resource.id}} to capture and reuse created IDs\n3. Add dependsOn to enforce execution order\n\nExample fix:\n```json\n{\n  \"endpoint\": \"/api/users/language\",\n  \"method\": \"PUT\",\n  \"dependsOn\": [\"POST /api/resource\"],\n  \"pathParams\": {\n    \"id\": \"{{cache:resource.id}}\"\n  }\n}\n```\n- **debug**: {'fullUrl': 'http://localhost:3002/api/users/language', 'requestBody': {'language_preference': 'es'}, 'responseBody': '{\\n  \"success\": false,\\n  \"error\": \"User not found\"\\n}', 'curlCommand': 'curl \\\\\\n  -X \\\\\\n  PUT \\\\\\n  -H Content-Type: application/json \\\\\\n  -H Accept: application/json \\\\\\n  -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1YWE0MWRkLWM4NDUtNDRjZi05YjljLTM0ZTNiZTEzZmE5NiIsInVzZXJfaWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ1c2VySWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ0ZW5hbnRfaWQiOiJhMGM4NTY1Yi1lNzcwLTQwOTMtODllMS03MzMyNDk1MzA3MTciLCJ0ZW5hbnRJZCI6ImEwYzg1NjViLWU3NzAtNDA5My04OWUxLTczMzI0OTUzMDcxNyIsImVtYWlsIjoie3tjYXB0dXJlZDphdXRoLnJlZ2lzdGVyLnJlc3BvbnNlLmRhdGEudXNlci5lbWFpbH19Iiwicm9sZSI6ImFkbWluIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NTc3MjY0MywiZXhwIjoxNzc2Mzc3NDQzfQ.nkgg-vYj6YeHk8AXP9tn7RmPs_Sz8AuuM1c6rvWRe7U \\\\\\n  -d \\'{\\n  \"language_preference\": \"es\"\\n}\\' \\\\\\n  \"http://localhost:3002/api/users/language\"', 'instructions': ['Copy the curl command below to reproduce the request locally', 'Make sure your local server is running on the same port', 'Replace host.docker.internal with localhost if running outside Docker', 'Check the response body for detailed error information']}\n- **errorCategory**: {'category': 'not_found', 'subcategory': 'resource_missing', 'severity': 'warning', 'title': 'Resource Not Found', 'description': 'The requested resource does not exist', 'guidance': 'The endpoint or resource was not found.\\n\\n**Possible causes:**\\n1. Resource hasn\\'t been created yet (POST not run before GET)\\n2. Incorrect ID in path parameter\\n3. Resource was deleted\\n4. Endpoint path is incorrect\\n\\n**Recommended actions:**\\n1. Ensure POST endpoint runs before GET/PUT/DELETE (use priority field)\\n2. Use {{cache:resource.id}} to capture and reuse created IDs\\n3. Add dependsOn to enforce execution order\\n\\nExample fix:\\n```json\\n{\\n  \"endpoint\": \"/api/users/language\",\\n  \"method\": \"PUT\",\\n  \"dependsOn\": [\"POST /api/resource\"],\\n  \"pathParams\": {\\n    \"id\": \"{{cache:resource.id}}\"\\n  }\\n}\\n```', 'isExpected': False}\n\n### Issue 16:\n- **endpoint**: PUT /api/workflows/:id/reminders\n- **issue**: Test failed with status 500\n- **errorMessage**: Status 500 - Error: Database query failed: inconsistent types deduced for parameter $3\n- **suggestedFix**: The server encountered an internal error.\n\n**Error details:** Status 500 - Error: Database query failed: inconsistent types deduced for parameter $3\n\n**This usually indicates:**\n1. Bug in server code\n2. Database connection issue\n3. Missing environment variable\n4. Unhandled exception\n\n**Recommended actions:**\n1. Check server logs for detailed error\n2. Verify database is running\n3. Check environment configuration\n4. Review recent code changes\n- **debug**: {'fullUrl': 'http://localhost:3002/api/workflows/69fc546b-27eb-45c6-abe6-8938daacd71f/reminders', 'requestBody': {'reminder_interval_hours': 24}, 'responseBody': '{\\n  \"success\": false,\\n  \"error\": \"Database query failed: inconsistent types deduced for parameter $3\"\\n}', 'curlCommand': 'curl \\\\\\n  -X \\\\\\n  PUT \\\\\\n  -H Content-Type: application/json \\\\\\n  -H Accept: application/json \\\\\\n  -H Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE1YWE0MWRkLWM4NDUtNDRjZi05YjljLTM0ZTNiZTEzZmE5NiIsInVzZXJfaWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ1c2VySWQiOiIxNWFhNDFkZC1jODQ1LTQ0Y2YtOWI5Yy0zNGUzYmUxM2ZhOTYiLCJ0ZW5hbnRfaWQiOiJhMGM4NTY1Yi1lNzcwLTQwOTMtODllMS03MzMyNDk1MzA3MTciLCJ0ZW5hbnRJZCI6ImEwYzg1NjViLWU3NzAtNDA5My04OWUxLTczMzI0OTUzMDcxNyIsImVtYWlsIjoie3tjYXB0dXJlZDphdXRoLnJlZ2lzdGVyLnJlc3BvbnNlLmRhdGEudXNlci5lbWFpbH19Iiwicm9sZSI6ImFkbWluIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc3NTc3MjY0MywiZXhwIjoxNzc2Mzc3NDQzfQ.nkgg-vYj6YeHk8AXP9tn7RmPs_Sz8AuuM1c6rvWRe7U \\\\\\n  -d \\'{\\n  \"reminder_interval_hours\": 24\\n}\\' \\\\\\n  \"http://localhost:3002/api/workflows/69fc546b-27eb-45c6-abe6-8938daacd71f/reminders\"', 'instructions': ['Copy the curl command below to reproduce the request locally', 'Make sure your local server is running on the same port', 'Replace host.docker.internal with localhost if running outside Docker', 'Check the response body for detailed error information']}\n- **errorCategory**: {'category': 'server_error', 'subcategory': 'error_500', 'severity': 'error', 'title': 'Server Error (500)', 'description': 'Internal server error occurred', 'guidance': 'The server encountered an internal error.\\n\\n**Error details:** Status 500 - Error: Database query failed: inconsistent types deduced for parameter $3\\n\\n**This usually indicates:**\\n1. Bug in server code\\n2. Database connection issue\\n3. Missing environment variable\\n4. Unhandled exception\\n\\n**Recommended actions:**\\n1. Check server logs for detailed error\\n2. Verify database is running\\n3. Check environment configuration\\n4. Review recent code changes', 'isExpected': False}\n\n### Issue 17:\n- **endpoint**: ALL /api/*\n- **issue**: Test failed with status 400\n- **errorMessage**: Status 400\n- **suggestedFix**: The request payload failed server-side validation.\n\n**Error details:** Status 400\n\n**Common causes:**\n1. Missing required fields in payload\n2. Invalid field format (email, phone, etc.)\n3. Field value constraints violated (min/max length, enum values)\n\n**Recommended actions:**\n1. Review the API schema/documentation for required fields\n2. Update test payload with valid placeholder values\n3. Use appropriate {{dynamic:type}} placeholders\n\nExample payload fix:\n```json\n{\n  \"payload\": {\n    \"email\": \"{{dynamic:email}}\",\n    \"name\": \"{{dynamic:name}}\",\n    \"status\": \"{{static:active}}\"\n  }\n}\n```\n- **debug**: {'fullUrl': 'http://localhost:3002/api/*', 'requestBody': {'email': 'audit-test@example.com', 'password': 'TestPass123!'}, 'responseBody': None, 'curlCommand': 'curl \\\\\\n  -X \\\\\\n  ALL \\\\\\n  -H Content-Type: application/json \\\\\\n  -H Accept: application/json \\\\\\n  \"http://localhost:3002/api/*\"', 'instructions': ['Copy the curl command below to reproduce the request locally', 'Make sure your local server is running on the same port', 'Replace host.docker.internal with localhost if running outside Docker', 'Check the response body for detailed error information']}\n- **errorCategory**: {'category': 'validation', 'subcategory': 'bad_request', 'severity': 'warning', 'title': 'Validation Error', 'description': 'Request data failed validation', 'guidance': 'The request payload failed server-side validation.\\n\\n**Error details:** Status 400\\n\\n**Common causes:**\\n1. Missing required fields in payload\\n2. Invalid field format (email, phone, etc.)\\n3. Field value constraints violated (min/max length, enum values)\\n\\n**Recommended actions:**\\n1. Review the API schema/documentation for required fields\\n2. Update test payload with valid placeholder values\\n3. Use appropriate {{dynamic:type}} placeholders\\n\\nExample payload fix:\\n```json\\n{\\n  \"payload\": {\\n    \"email\": \"{{dynamic:email}}\",\\n    \"name\": \"{{dynamic:name}}\",\\n    \"status\": \"{{static:active}}\"\\n  }\\n}\\n```', 'isExpected': False}\n\n## Instructions:\n1. Review each failed endpoint\n2. Check the error messages and status codes\n3. Implement the suggested fixes\n4. Re-run tests to verify fixes\n5. Ensure all tests pass before committing\n\n## Priority:\nHIGH - These failures may block deployment"
+}

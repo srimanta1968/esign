@@ -15,7 +15,9 @@
       "Bash(npm list:*)",
       "Bash(npx tsc:*)",
       "mcp__projexlight__projexlight_submit_feature_validation",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(docker exec projexlight-postgres:*)",
+      "Bash(ssh:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

@@ -130,15 +130,25 @@ function SignatureFieldPlacer({
             ))}
           </div>
           {selectedFieldType && (
-            <div className="mt-3 p-2 bg-indigo-50 rounded-lg">
-              <p className="text-xs text-indigo-700">Click on the document to place a "{FIELD_TYPE_LABELS[selectedFieldType]}" field.</p>
+            <div className="mt-3 p-2 bg-indigo-50 rounded-lg space-y-1">
+              <p className="text-xs text-indigo-700">
+                Click on the document to place a "{FIELD_TYPE_LABELS[selectedFieldType]}" field.
+              </p>
+              <p className="text-[11px] text-indigo-600">
+                {selectedFieldType === 'signature' || selectedFieldType === 'initials'
+                  ? `${recipients[selectedRecipientIndex]?.name || 'The selected recipient'} will sign this field.`
+                  : `${recipients[selectedRecipientIndex]?.name || 'The selected recipient'} will fill in this field when signing.`}
+              </p>
             </div>
           )}
         </div>
 
         {/* Recipient selector */}
         <div className="bg-white rounded-xl shadow-sm p-4">
-          <h4 className="text-sm font-semibold text-gray-900 mb-3">Assign To</h4>
+          <h4 className="text-sm font-semibold text-gray-900 mb-1">Who fills this field?</h4>
+          <p className="text-[11px] text-gray-500 mb-3">
+            Every field — including text and date — is filled by the recipient you pick here, not the sender.
+          </p>
           <div className="space-y-2">
             {recipients.map((r, index) => {
               const colorIdx = index % RECIPIENT_COLORS.length;

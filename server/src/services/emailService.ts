@@ -78,8 +78,14 @@ export class EmailService {
       const transporter = await EmailService.getTransporter();
 
       if (!transporter) {
+        if (process.env.NODE_ENV === 'production') {
+          const errorMessage =
+            'Email not sent: no SendGrid or SMTP credentials configured. Set SENDGRID_API_KEY (and verify the sender domain) or SMTP_HOST/SMTP_USER/SMTP_PASS.';
+          console.error(errorMessage);
+          return { success: false, error: errorMessage };
+        }
         const messageId = `dev-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-        console.log('=== EMAIL (console fallback) ===');
+        console.log('=== EMAIL (console fallback — dev only, NOT actually delivered) ===');
         console.log(`To: ${to}`);
         console.log(`Subject: ${subject}`);
         console.log(`MessageId: ${messageId}`);
@@ -108,6 +114,9 @@ export class EmailService {
 
   /**
    * Get or create the nodemailer transporter (fallback).
+   * In production, refuses to fall back to Ethereal — emails must go through
+   * a real SMTP host or SendGrid, otherwise the caller sees an explicit error
+   * instead of a silent "delivered to fake mailbox".
    */
   private static async getTransporter(): Promise<any> {
     if (EmailService.transporter) return EmailService.transporter;
@@ -123,7 +132,7 @@ export class EmailService {
           pass: process.env.SMTP_PASS || '',
         },
       });
-    } else {
+    } else if (process.env.NODE_ENV !== 'production') {
       const testAccount = await nodemailer.createTestAccount();
       EmailService.transporter = nodemailer.createTransport({
         host: 'smtp.ethereal.email',
@@ -131,6 +140,8 @@ export class EmailService {
         secure: false,
         auth: { user: testAccount.user, pass: testAccount.pass },
       });
+    } else {
+      return null;
     }
 
     return EmailService.transporter;

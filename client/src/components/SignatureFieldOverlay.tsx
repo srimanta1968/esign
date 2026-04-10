@@ -151,8 +151,11 @@ function FieldBox({
   }, [mode, field, pageDimensions, onUpdate]);
 
   const handleClick = (e: React.MouseEvent) => {
+    // Always stop propagation so clicks on a field (including the synthetic
+    // click fired after a drag) never bubble to the parent overlay and
+    // accidentally place a new field at the drop location.
+    e.stopPropagation();
     if (mode === 'sign' && isCurrentSigner && !isCompleted) {
-      e.stopPropagation();
       onClick?.(field);
     }
   };

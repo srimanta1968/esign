@@ -130,14 +130,15 @@ export class PdfSigningService {
     const absWidth = (field.width / 100) * pageWidth;
     const absHeight = (field.height / 100) * pageHeight;
 
+    // Text and date fields store plain strings in signature_data and must always
+    // render as text. Signature/initials fields render as text only when typed.
+    const isTextField = field.field_type === 'text' || field.field_type === 'date';
     const isTyped = field.signature_type === 'typed';
 
-    if (isTyped) {
-      // For typed signatures, draw text
+    if (isTextField || isTyped) {
       const fontSize = Math.min(absHeight * 0.6, 24);
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
-      // signatureData is the typed text for typed signatures
       const text = signatureData.length > 50 ? signatureData.substring(0, 50) : signatureData;
 
       page.drawText(text, {

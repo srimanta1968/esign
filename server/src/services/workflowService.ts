@@ -553,9 +553,12 @@ export class WorkflowService {
     // Send cancellation email and in-app notification to each pending recipient
     for (const recipient of pendingRecipients) {
       const subject = `Signing request cancelled for workflow ${workflowId}`;
-      const htmlBody = `<p>Hello ${recipient.signer_name || recipient.signer_email},</p>
-        <p>The signing request you received for workflow ${workflowId} has been cancelled by the sender (${creatorEmail}).</p>
-        <p>No further action is required on your part.</p>`;
+      const htmlBody = `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px">
+          <p>Hello ${recipient.signer_name || recipient.signer_email},</p>
+          <p>The signing request you received for workflow ${workflowId} has been cancelled by the sender (${creatorEmail}).</p>
+          <p>No further action is required on your part.</p>
+          ${WorkflowService.buildProjexLightFooter()}
+        </div>`;
       await EmailService.send(recipient.signer_email, subject, htmlBody);
 
       // Create in-app notification for the recipient
@@ -900,6 +903,7 @@ export class WorkflowService {
               <p style="color: #9ca3af; font-size: 12px; line-height: 1.5; margin: 0;">
                 This is an automated notification from eDocs. If you did not expect this email, please disregard it.
               </p>
+              ${WorkflowService.buildProjexLightFooter()}
             </td>
           </tr>
         </table>
@@ -993,6 +997,15 @@ export class WorkflowService {
   }
 
   /**
+   * Build the shared ProjexLight attribution line shown at the bottom of
+   * every outgoing email. Kept as a single helper so wording and styling
+   * stay consistent across templates.
+   */
+  private static buildProjexLightFooter(): string {
+    return `<p style="color:#9ca3af;font-size:12px;line-height:1.5;text-align:center;margin:16px 0 0;">Build your own app with <a href="https://projexlight.com" style="color:#1a56db;font-weight:600;text-decoration:none;">ProjexLight</a></p>`;
+  }
+
+  /**
    * Build progress notification email HTML.
    */
   private static buildProgressEmailTemplate(
@@ -1020,6 +1033,7 @@ export class WorkflowService {
         </p>
       </div>
       <p style="color:#9ca3af;font-size:12px;margin-top:24px">This is an automated notification from eDocSign.</p>
+      ${WorkflowService.buildProjexLightFooter()}
     </div>`;
   }
 
@@ -1167,6 +1181,7 @@ export class WorkflowService {
       </table>
       <hr style="margin:24px 0;border:none;border-top:1px solid #eee;">
       <p style="font-size:12px;color:#999;text-align:center;">Don't have an account? <a href="${frontendUrl}" style="color:#2563eb;">Create one for free</a> to access your documents.</p>
+      ${WorkflowService.buildProjexLightFooter()}
     </div>
   </div>
 </body>

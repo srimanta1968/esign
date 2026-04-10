@@ -584,8 +584,8 @@ function HomePage() {
           </Link>
           <p className="text-indigo-200 text-sm mt-6">
             Questions? Contact us at{' '}
-            <a href="mailto:support@edocsign.com" className="underline hover:text-white transition-colors">
-              support@edocsign.com
+            <a href="mailto:support@projexlight.com" className="underline hover:text-white transition-colors">
+              support@projexlight.com
             </a>
           </p>
         </div>

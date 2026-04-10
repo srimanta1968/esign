@@ -201,20 +201,20 @@ const teamPhases: Phase[] = [
 const curlExamples = [
   {
     title: 'Upload a document',
-    code: `curl -X POST https://api.edocsign.com/api/documents \\
+    code: `curl -X POST https://esign.projexlight.com/api/documents \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -F "file=@contract.pdf"`,
   },
   {
     title: 'Create a workflow',
-    code: `curl -X POST https://api.edocsign.com/api/workflows \\
+    code: `curl -X POST https://esign.projexlight.com/api/workflows \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{"document_id": "...", "workflow_type": "sequential", "recipients": [...]}'`,
   },
   {
     title: 'Check workflow status',
-    code: `curl https://api.edocsign.com/api/workflows/{id}/status \\
+    code: `curl https://esign.projexlight.com/api/workflows/{id}/status \\
   -H "Authorization: Bearer YOUR_API_KEY"`,
   },
 ];
@@ -523,7 +523,7 @@ function GuidePage() {
             </div>
             <div className="bg-indigo-50 border border-indigo-100 rounded-lg p-5">
               <h3 className="font-semibold text-indigo-900 mb-2">Need Help?</h3>
-              <p className="text-sm text-indigo-700">Contact us at support@edocsign.com for help setting up your team or choosing the right plan.</p>
+              <p className="text-sm text-indigo-700">Contact us at support@projexlight.com for help setting up your team or choosing the right plan.</p>
             </div>
           </div>
         </div>
@@ -549,7 +549,7 @@ function GuidePage() {
           <div className="bg-white border border-gray-200 rounded-lg p-6">
             <h3 className="font-semibold text-gray-900 mb-1">API Base URL</h3>
             <code className="block text-sm bg-gray-50 border border-gray-200 rounded-md px-3 py-2 mb-6 text-gray-700 font-mono">
-              https://api.edocsign.com/api
+              https://esign.projexlight.com/api
             </code>
 
             <h3 className="font-semibold text-gray-900 mb-4">Code Examples</h3>

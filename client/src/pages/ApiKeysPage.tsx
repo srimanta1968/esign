@@ -4,20 +4,20 @@ import { ApiService } from '../services/api';
 const curlExamples = [
   {
     title: 'Upload a document',
-    code: `curl -X POST https://api.edocsign.com/api/documents \\
+    code: `curl -X POST https://esign.projexlight.com/api/documents \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -F "file=@contract.pdf"`,
   },
   {
     title: 'Create a workflow',
-    code: `curl -X POST https://api.edocsign.com/api/workflows \\
+    code: `curl -X POST https://esign.projexlight.com/api/workflows \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{"document_id": "...", "workflow_type": "sequential", "recipients": [...]}'`,
   },
   {
     title: 'Check workflow status',
-    code: `curl https://api.edocsign.com/api/workflows/{id}/status \\
+    code: `curl https://esign.projexlight.com/api/workflows/{id}/status \\
   -H "Authorization: Bearer YOUR_API_KEY"`,
   },
 ];
@@ -244,7 +244,7 @@ function ApiKeysPage() {
 
         <h3 className="text-sm font-semibold text-gray-700 mb-2">Base URL</h3>
         <code className="block text-sm bg-gray-50 border border-gray-200 rounded-md px-3 py-2 mb-6 text-gray-700 font-mono">
-          https://api.edocsign.com/api
+          https://esign.projexlight.com/api
         </code>
 
         <h3 className="text-sm font-semibold text-gray-700 mb-4">Examples</h3>

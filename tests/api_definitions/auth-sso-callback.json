@@ -7,23 +7,15 @@
   "dependsOn": ["GET /api/auth/sso/:provider"],
   "testCases": [
     {
-      "name": "Handle OAuth callback with authorization code",
+      "name": "Reject fake authorization code (cannot exchange with real provider)",
       "queryParams": {
         "code": "test-auth-code",
         "state": "google"
       },
-      "expectedStatus": 200,
+      "expectedStatus": 400,
       "expectedResponse": {
-        "success": true,
-        "data": {
-          "token": "string",
-          "user": {
-            "id": "string",
-            "email": "string",
-            "name": "string",
-            "role": "string"
-          }
-        }
+        "success": false,
+        "error": "Failed to exchange authorization code"
       }
     },
     {

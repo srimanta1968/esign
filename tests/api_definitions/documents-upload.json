@@ -10,14 +10,16 @@
   },
   "testCases": [
     {
-      "name": "Upload a document",
+      "name": "Upload a document (JSON stub in non-production)",
+      "description": "Real uploads use multipart/form-data with a binary file. In non-production environments the endpoint accepts a JSON stub so automated tests can capture a document_id for downstream workflow tests.",
       "headers": {
         "Authorization": "Bearer {{cache:auth.register.response.data.token}}",
         "Content-Type": "application/json"
       },
       "payload": {
-        "file_path": "{{dynamic:text}}",
-        "original_name": "{{dynamic:text}}"
+        "file_path": "stub-{{dynamic:text}}.pdf",
+        "original_name": "stub-{{dynamic:text}}.pdf",
+        "mime_type": "application/pdf"
       },
       "expectedStatus": 201,
       "expectedResponse": {

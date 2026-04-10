@@ -9,9 +9,9 @@
     {
       "name": "Create alert rule (admin only)",
       "headers": {
-        "Authorization": "Bearer {{captured:auth.register.response.data.token}}"
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
       },
-      "body": {
+      "payload": {
         "rule_type": "unauthorized_access",
         "threshold": 5,
         "enabled": true
@@ -30,9 +30,9 @@
     {
       "name": "Reject missing fields",
       "headers": {
-        "Authorization": "Bearer {{captured:auth.register.response.data.token}}"
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
       },
-      "body": {},
+      "payload": {},
       "expectedStatus": 400,
       "expectedResponse": {
         "success": false,

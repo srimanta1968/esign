@@ -9,7 +9,7 @@
     {
       "name": "List active sessions for authenticated user",
       "headers": {
-        "Authorization": "Bearer {{captured:auth.refreshToken.response.data.token}}"
+        "Authorization": "Bearer {{cache:auth.refreshToken.response.data.token}}"
       },
       "expectedStatus": 200,
       "expectedResponse": {

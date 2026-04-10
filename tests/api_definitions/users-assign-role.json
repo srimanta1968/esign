@@ -10,10 +10,10 @@
       "name": "Assign role to a user (admin only)",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Bearer {{captured:auth.register.response.data.token}}"
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
       },
       "urlParams": {
-        "id": "{{captured:auth.register.response.data.user.id}}"
+        "id": "{{cache:auth.register.response.data.user.id}}"
       },
       "payload": {
         "role": "admin"
@@ -33,10 +33,10 @@
       "name": "Reject invalid role",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Bearer {{captured:auth.register.response.data.token}}"
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
       },
       "urlParams": {
-        "id": "{{captured:auth.register.response.data.user.id}}"
+        "id": "{{cache:auth.register.response.data.user.id}}"
       },
       "payload": {
         "role": "superadmin"

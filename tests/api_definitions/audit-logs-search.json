@@ -9,7 +9,7 @@
     {
       "name": "Search audit logs (admin only)",
       "headers": {
-        "Authorization": "Bearer {{captured:auth.register.response.data.token}}"
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
       },
       "queryParams": {
         "page": "1",
@@ -29,7 +29,7 @@
     {
       "name": "Search audit logs with date filter",
       "headers": {
-        "Authorization": "Bearer {{captured:auth.register.response.data.token}}"
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
       },
       "queryParams": {
         "dateFrom": "2024-01-01T00:00:00Z",
@@ -51,7 +51,7 @@
     {
       "name": "Search audit logs with action filter",
       "headers": {
-        "Authorization": "Bearer {{captured:auth.register.response.data.token}}"
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
       },
       "queryParams": {
         "action": "GET",

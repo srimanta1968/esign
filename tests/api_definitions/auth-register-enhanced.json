@@ -74,7 +74,7 @@
         "Content-Type": "application/json"
       },
       "payload": {
-        "email": "{{captured:auth.register.response.data.user.email}}",
+        "email": "{{cache:auth.register.response.data.user.email}}",
         "password": "Test@1234"
       },
       "expectedStatus": 409,

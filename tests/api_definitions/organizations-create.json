@@ -7,25 +7,26 @@
   "dependsOn": ["POST /api/auth/register"],
   "captureResponse": {
     "organizations.create.response.data.id": "data.id",
-    "organizations.create.response.data.slug": "data.slug"
+    "organizations.create.response.data.slug": "data.slug",
+    "organizations.create.response.data.name": "data.name"
   },
   "testCases": [
     {
       "name": "Create a new organization",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Bearer {{captured:auth.register.response.data.token}}"
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
       },
       "payload": {
-        "name": "Test Organization"
+        "name": "Test Org {{dynamic:text}}"
       },
       "expectedStatus": 201,
       "expectedResponse": {
         "success": true,
         "data": {
           "id": "string",
-          "name": "Test Organization",
-          "slug": "test-organization",
+          "name": "string",
+          "slug": "string",
           "created_at": "string"
         }
       }
@@ -34,10 +35,10 @@
       "name": "Reject duplicate organization name",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Bearer {{captured:auth.register.response.data.token}}"
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
       },
       "payload": {
-        "name": "Test Organization"
+        "name": "{{cache:organizations.create.response.data.name}}"
       },
       "expectedStatus": 409,
       "expectedResponse": {

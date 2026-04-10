@@ -9,7 +9,7 @@
     {
       "name": "List available roles (admin only)",
       "headers": {
-        "Authorization": "Bearer {{captured:auth.register.response.data.token}}"
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
       },
       "expectedStatus": 200,
       "expectedResponse": {

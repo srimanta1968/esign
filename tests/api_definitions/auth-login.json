@@ -16,8 +16,8 @@
         "Content-Type": "application/json"
       },
       "payload": {
-        "email": "{{dynamic:email}}",
-        "password": "{{dynamic:password}}"
+        "email": "{{cache:auth.register.response.data.user.email}}",
+        "password": "TestPass@1234"
       },
       "expectedStatus": 200,
       "expectedResponse": {

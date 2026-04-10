@@ -18,7 +18,8 @@
       },
       "payload": {
         "email": "{{dynamic:email}}",
-        "password": "{{dynamic:password}}"
+        "password": "TestPass@1234",
+        "name": "Test User"
       },
       "expectedStatus": 201,
       "expectedResponse": {

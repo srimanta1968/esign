@@ -9,10 +9,10 @@
     {
       "name": "Get organization by ID",
       "headers": {
-        "Authorization": "Bearer {{captured:auth.register.response.data.token}}"
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
       },
       "urlParams": {
-        "id": "{{captured:organizations.create.response.data.id}}"
+        "id": "{{cache:organizations.create.response.data.id}}"
       },
       "expectedStatus": 200,
       "expectedResponse": {
@@ -28,7 +28,7 @@
     {
       "name": "Return 404 for non-existing organization",
       "headers": {
-        "Authorization": "Bearer {{captured:auth.register.response.data.token}}"
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
       },
       "urlParams": {
         "id": "00000000-0000-0000-0000-000000000000"

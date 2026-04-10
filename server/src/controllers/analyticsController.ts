@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../middleware/auth';
-import { AnalyticsService } from '../services/analyticsService';
+import { AnalyticsService, UnknownUserError } from '../services/analyticsService';
 
 /**
  * AnalyticsController handles signature engagement event tracking endpoints.
@@ -36,6 +36,14 @@ export class AnalyticsController {
         data: { event },
       });
     } catch (error: any) {
+      if (error instanceof UnknownUserError) {
+        console.warn('Analytics event tracking: stale JWT for deleted user', req.userId);
+        res.status(401).json({
+          success: false,
+          error: 'Your session is no longer valid. Please log in again.',
+        });
+        return;
+      }
       console.error('Analytics event tracking error:', error);
       res.status(500).json({ success: false, error: 'Internal server error' });
     }

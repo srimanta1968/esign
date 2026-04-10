@@ -15,6 +15,7 @@
       "urlParams": {
         "id": "{{cache:workflows.create.response.data.workflow.id}}"
       },
+      "payload": {},
       "expectedStatus": 200,
       "expectedResponse": {
         "success": true,

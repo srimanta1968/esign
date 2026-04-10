@@ -12,11 +12,15 @@
       "description": "Any API request should be logged in audit_logs table",
       "endpoint": "/api/auth/register",
       "method": "POST",
-      "body": {
-        "email": "audit-test@example.com",
-        "password": "TestPass123!"
+      "headers": {
+        "Content-Type": "application/json"
       },
-      "expectedStatus": 200,
+      "payload": {
+        "email": "{{dynamic:email}}",
+        "password": "TestPass@1234",
+        "name": "Audit Test User"
+      },
+      "expectedStatus": 201,
       "expectedResponse": {
         "success": true
       },

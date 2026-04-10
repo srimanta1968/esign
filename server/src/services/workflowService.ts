@@ -691,9 +691,10 @@ export class WorkflowService {
       // Upsert reminder configuration
       const reminder = await DataService.queryOne<WorkflowReminder>(
         `INSERT INTO workflow_reminders (workflow_id, recipient_id, reminder_interval_hours, next_send_at)
-         VALUES ($1, $2, $3, NOW() + ($3 || ' hours')::interval)
+         VALUES ($1, $2, $3::int, NOW() + make_interval(hours => $3::int))
          ON CONFLICT (workflow_id, recipient_id)
-         DO UPDATE SET reminder_interval_hours = $3, next_send_at = NOW() + ($3 || ' hours')::interval
+         DO UPDATE SET reminder_interval_hours = $3::int,
+                       next_send_at = NOW() + make_interval(hours => $3::int)
          RETURNING *`,
         [workflowId, recipient.id, reminderIntervalHours]
       );

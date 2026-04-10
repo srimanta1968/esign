@@ -13,8 +13,9 @@
     {
       "name": "Refresh JWT token",
       "headers": {
-        "Authorization": "Bearer {{captured:auth.login.response.data.token}}"
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
       },
+      "payload": {},
       "expectedStatus": 200,
       "expectedResponse": {
         "success": true,
@@ -34,6 +35,7 @@
     {
       "name": "Reject refresh without token",
       "headers": {},
+      "payload": {},
       "expectedStatus": 400,
       "expectedResponse": {
         "success": false,

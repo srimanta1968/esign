@@ -9,10 +9,10 @@
     {
       "name": "Revoke a session by ID",
       "headers": {
-        "Authorization": "Bearer {{captured:auth.refreshToken.response.data.token}}"
+        "Authorization": "Bearer {{cache:auth.refreshToken.response.data.token}}"
       },
       "urlParams": {
-        "id": "{{captured:auth.refreshToken.response.data.session.id}}"
+        "id": "{{cache:auth.refreshToken.response.data.session.id}}"
       },
       "expectedStatus": 200,
       "expectedResponse": {
@@ -25,7 +25,7 @@
     {
       "name": "Return 404 for non-existing session",
       "headers": {
-        "Authorization": "Bearer {{captured:auth.refreshToken.response.data.token}}"
+        "Authorization": "Bearer {{cache:auth.refreshToken.response.data.token}}"
       },
       "urlParams": {
         "id": "00000000-0000-0000-0000-000000000000"

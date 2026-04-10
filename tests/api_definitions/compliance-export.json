@@ -9,7 +9,7 @@
     {
       "name": "Export audit logs as CSV (admin only)",
       "headers": {
-        "Authorization": "Bearer {{captured:auth.register.response.data.token}}"
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
       },
       "queryParams": {
         "dateFrom": "2024-01-01T00:00:00Z",
@@ -23,7 +23,7 @@
     {
       "name": "Reject missing date params",
       "headers": {
-        "Authorization": "Bearer {{captured:auth.register.response.data.token}}"
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
       },
       "expectedStatus": 400,
       "expectedResponse": {

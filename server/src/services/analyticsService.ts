@@ -1,6 +1,13 @@
 import { DataService } from './DataService';
 import { AnalyticsEvent, AnalyticsEventResponse } from '../types/compliance';
 
+export class UnknownUserError extends Error {
+  constructor(userId: string) {
+    super(`Unknown user_id ${userId} — user may have been deleted`);
+    this.name = 'UnknownUserError';
+  }
+}
+
 /**
  * AnalyticsService handles signature engagement event tracking.
  */
@@ -33,10 +40,20 @@ export class AnalyticsService {
         created_at: event.created_at.toISOString(),
       };
     } catch (error: unknown) {
+      // Postgres FK violation on user_id means the JWT is for a user that no
+      // longer exists (e.g., user was deleted, or dev DB was reset). Surface
+      // this as a typed error so the controller can return 401, not 500.
+      const message = error instanceof Error ? error.message : '';
+      if (
+        message.includes('analytics_events_user_id_fkey') ||
+        message.includes('foreign key constraint')
+      ) {
+        throw new UnknownUserError(userId);
+      }
       if (error instanceof Error && error.message === 'Failed to track analytics event') {
         throw error;
       }
-      throw new Error(`Analytics event tracking failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(`Analytics event tracking failed: ${message || 'Unknown error'}`);
     }
   }
 

@@ -70,7 +70,8 @@ export class StripeService {
     const customerId = await StripeService.getOrCreateCustomer(userId, email);
     const prices = PLAN_PRICES[plan];
     if (!prices) throw new Error(`Invalid plan: ${plan}`);
-    const priceId = interval === 'annual' ? prices.annual : prices.monthly;
+    const isAnnual = interval === 'annual' || interval === 'year';
+    const priceId = isAnnual ? prices.annual : prices.monthly;
     if (!priceId) throw new Error(`Price not configured for ${plan} ${interval}`);
 
     const session = await stripe.checkout.sessions.create({

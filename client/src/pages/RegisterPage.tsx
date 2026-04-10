@@ -27,19 +27,15 @@ function RegisterPage() {
     }
   };
 
-  const passwordStrength = useMemo((): { label: string; color: string; width: string; score: number } => {
-    let score = 0;
-    if (password.length >= 8) score++;
-    if (password.length >= 12) score++;
-    if (/[A-Z]/.test(password)) score++;
-    if (/[0-9]/.test(password)) score++;
-    if (/[^A-Za-z0-9]/.test(password)) score++;
+  const passwordRules = useMemo(() => ({
+    length: password.length >= 8,
+    uppercase: /[A-Z]/.test(password),
+    lowercase: /[a-z]/.test(password),
+    number: /[0-9]/.test(password),
+    special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password),
+  }), [password]);
 
-    if (score <= 1) return { label: 'Weak', color: 'bg-red-500', width: 'w-1/4', score };
-    if (score <= 2) return { label: 'Fair', color: 'bg-orange-500', width: 'w-2/4', score };
-    if (score <= 3) return { label: 'Medium', color: 'bg-yellow-500', width: 'w-3/4', score };
-    return { label: 'Strong', color: 'bg-green-500', width: 'w-full', score };
-  }, [password]);
+  const allPasswordRulesPass = Object.values(passwordRules).every(Boolean);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
@@ -49,12 +45,12 @@ function RegisterPage() {
       setError('Please enter a valid email address');
       return;
     }
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
+    if (!allPasswordRulesPass) {
+      setError('Password does not meet all requirements');
       return;
     }
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters');
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
       return;
     }
 
@@ -156,17 +152,30 @@ function RegisterPage() {
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">Password</label>
             <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8}
               className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-shadow"
-              placeholder="At least 8 characters" />
-            {password && (
-              <div className="mt-2">
-                <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
-                  <div className={`h-full rounded-full transition-all duration-300 ${passwordStrength.color} ${passwordStrength.width}`} />
-                </div>
-                <p className={`text-xs mt-1 ${passwordStrength.score <= 1 ? 'text-red-500' : passwordStrength.score <= 2 ? 'text-orange-500' : passwordStrength.score <= 3 ? 'text-yellow-600' : 'text-green-600'}`}>
-                  Password strength: {passwordStrength.label}
-                </p>
-              </div>
-            )}
+              placeholder="Enter a strong password" />
+            <ul className="mt-2 space-y-1 text-xs" aria-label="Password requirements">
+              {([
+                ['length', 'At least 8 characters'],
+                ['uppercase', 'One uppercase letter (A-Z)'],
+                ['lowercase', 'One lowercase letter (a-z)'],
+                ['number', 'One number (0-9)'],
+                ['special', 'One special character (!@#$%...)'],
+              ] as const).map(([key, label]) => {
+                const ok = passwordRules[key];
+                return (
+                  <li key={key} className={`flex items-center gap-2 ${ok ? 'text-green-600' : 'text-gray-500'}`}>
+                    <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                      {ok ? (
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      ) : (
+                        <circle cx="12" cy="12" r="9" strokeWidth={2} />
+                      )}
+                    </svg>
+                    <span>{label}</span>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
           <div>
             <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
@@ -177,8 +186,8 @@ function RegisterPage() {
               <p className="text-red-500 text-xs mt-1">Passwords do not match</p>
             )}
           </div>
-          <button type="submit" disabled={loading}
-            className="w-full bg-indigo-600 text-white py-2.5 rounded-lg font-semibold hover:bg-indigo-700 transition-colors disabled:opacity-50 mt-2">
+          <button type="submit" disabled={loading || !allPasswordRulesPass || password !== confirmPassword || !!emailError}
+            className="w-full bg-indigo-600 text-white py-2.5 rounded-lg font-semibold hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-2">
             {loading ? 'Creating Account...' : 'Create Account'}
           </button>
         </form>

@@ -21,24 +21,19 @@ export class AuthService {
 
   /**
    * Validate password strength: min 8 chars, upper, lower, number, special.
+   * Returns every failing rule at once so clients can show them together
+   * rather than revealing them one request at a time.
    */
   static validatePasswordStrength(password: string): { valid: boolean; message: string } {
-    if (password.length < 8) {
-      return { valid: false, message: 'Password must be at least 8 characters' };
-    }
-    if (!/[A-Z]/.test(password)) {
-      return { valid: false, message: 'Password must contain at least one uppercase letter' };
-    }
-    if (!/[a-z]/.test(password)) {
-      return { valid: false, message: 'Password must contain at least one lowercase letter' };
-    }
-    if (!/[0-9]/.test(password)) {
-      return { valid: false, message: 'Password must contain at least one number' };
-    }
-    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
-      return { valid: false, message: 'Password must contain at least one special character' };
-    }
-    return { valid: true, message: '' };
+    const missing: string[] = [];
+    if (password.length < 8) missing.push('at least 8 characters');
+    if (!/[A-Z]/.test(password)) missing.push('an uppercase letter');
+    if (!/[a-z]/.test(password)) missing.push('a lowercase letter');
+    if (!/[0-9]/.test(password)) missing.push('a number');
+    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) missing.push('a special character');
+
+    if (missing.length === 0) return { valid: true, message: '' };
+    return { valid: false, message: `Password must contain: ${missing.join(', ')}` };
   }
 
   /**

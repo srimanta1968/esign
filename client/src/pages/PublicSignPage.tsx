@@ -36,6 +36,7 @@ function PublicSignPage() {
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [completed, setCompleted] = useState<boolean>(false);
   const [alreadySigned, setAlreadySigned] = useState<{ name: string; email: string; signed_at: string | null; document_name: string } | null>(null);
+  const [cancelledInfo, setCancelledInfo] = useState<{ name: string; email: string; document_name: string } | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   // Modal input states
@@ -47,7 +48,13 @@ function PublicSignPage() {
       try {
         const res = await fetch(`/api/sign/${token}`);
         const data = await res.json();
-        if (data.success && data.data && data.data.already_signed) {
+        if (data.success && data.data && data.data.cancelled) {
+          setCancelledInfo({
+            name: data.data.recipient?.name || '',
+            email: data.data.recipient?.email || '',
+            document_name: data.data.document?.name || 'Document',
+          });
+        } else if (data.success && data.data && data.data.already_signed) {
           setAlreadySigned({
             name: data.data.recipient?.name || '',
             email: data.data.recipient?.email || '',
@@ -180,6 +187,39 @@ function PublicSignPage() {
         <div className="text-center">
           <div className="w-10 h-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mx-auto mb-4" />
           <p className="text-gray-500">Loading document...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (cancelledInfo) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto px-4">
+          <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-10 h-10 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Signing Request Cancelled</h2>
+          <p className="text-gray-600 mb-6">
+            The sender has cancelled this signing request. No signature is required — this link is no longer active.
+          </p>
+          <div className="bg-white rounded-xl shadow-sm p-6 text-left">
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-500">Document</span>
+                <span className="font-medium text-gray-900">{cancelledInfo.document_name}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500">Requested for</span>
+                <span className="font-medium text-gray-900">{cancelledInfo.name || cancelledInfo.email}</span>
+              </div>
+            </div>
+          </div>
+          <p className="text-xs text-gray-400 mt-6">
+            If you believe this was cancelled in error, please contact the sender.
+          </p>
         </div>
       </div>
     );

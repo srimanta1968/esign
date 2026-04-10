@@ -56,7 +56,10 @@ export class SigningController {
         return;
       }
 
-      // Token was used — recipient already signed. Return status info.
+      // Token was used — could be because the recipient signed, OR because
+      // the workflow was cancelled (cancelWorkflow marks all unused tokens used).
+      // Check workflow status first so a cancelled workflow doesn't masquerade
+      // as "already signed".
       if (lookup.reason === 'used' && lookup.signingToken) {
         const recipient = await DataService.queryOne<WorkflowRecipient>(
           'SELECT * FROM workflow_recipients WHERE id = $1',
@@ -70,6 +73,26 @@ export class SigningController {
           'SELECT original_name FROM documents WHERE id = $1',
           [workflow?.document_id || '']
         );
+
+        if (workflow?.status === 'cancelled') {
+          res.status(200).json({
+            success: true,
+            data: {
+              cancelled: true,
+              recipient: {
+                name: recipient?.signer_name || '',
+                email: recipient?.signer_email || '',
+              },
+              document: {
+                name: document?.original_name || 'Document',
+              },
+              workflow: {
+                status: 'cancelled',
+              },
+            },
+          });
+          return;
+        }
 
         res.status(200).json({
           success: true,

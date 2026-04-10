@@ -1025,11 +1025,11 @@ export class WorkflowService {
     const incomplete = await DataService.queryAll<SigningWorkflow>(
       `SELECT * FROM signing_workflows
        WHERE status = 'completed'
-       AND (signed_pdf_path IS NULL OR signed_pdf_path = '' OR certificate_pdf_path IS NULL OR certificate_pdf_path = '')`,
+         AND completion_email_sent_at IS NULL`,
       []
     );
 
-    console.log(`Found ${incomplete.length} completed workflows missing signed PDF/certificate`);
+    console.log(`Found ${incomplete.length} completed workflows pending completion email`);
 
     for (const workflow of incomplete) {
       try {
@@ -1066,13 +1066,38 @@ export class WorkflowService {
     recipients: WorkflowRecipient[]
   ): Promise<void> {
     try {
-      // 1. Generate signed PDF (uploads to S3 internally)
-      const signedPdfPath = await PdfSigningService.generateSignedPdf(workflowId);
-      console.log(`Signed PDF generated: ${signedPdfPath}`);
+      // Idempotency: check what's already done so retries don't redo work or spam emails.
+      const current = await DataService.queryOne<{
+        signed_pdf_path: string | null;
+        certificate_pdf_path: string | null;
+        completion_email_sent_at: Date | null;
+      }>(
+        'SELECT signed_pdf_path, certificate_pdf_path, completion_email_sent_at FROM signing_workflows WHERE id = $1',
+        [workflowId]
+      );
 
-      // 2. Generate signing certificate (uploads to S3 internally)
-      const certificatePath = await CertificateService.generateCertificate(workflowId);
-      console.log(`Certificate generated: ${certificatePath}`);
+      if (current?.completion_email_sent_at) {
+        console.log(`Workflow ${workflowId}: completion email already sent at ${current.completion_email_sent_at.toISOString()}, skipping`);
+        return;
+      }
+
+      // 1. Generate signed PDF (skip if already stored)
+      let signedPdfPath = current?.signed_pdf_path || '';
+      if (!signedPdfPath) {
+        signedPdfPath = await PdfSigningService.generateSignedPdf(workflowId);
+        console.log(`Signed PDF generated: ${signedPdfPath}`);
+      } else {
+        console.log(`Signed PDF already exists for ${workflowId}: ${signedPdfPath}`);
+      }
+
+      // 2. Generate signing certificate (skip if already stored)
+      let certificatePath = current?.certificate_pdf_path || '';
+      if (!certificatePath) {
+        certificatePath = await CertificateService.generateCertificate(workflowId);
+        console.log(`Certificate generated: ${certificatePath}`);
+      } else {
+        console.log(`Certificate already exists for ${workflowId}: ${certificatePath}`);
+      }
 
       // 3. Get download URLs from S3
       const signedPdfUrl = await StorageService.getUrl(signedPdfPath);
@@ -1152,6 +1177,18 @@ export class WorkflowService {
         console.log(`Signed document email sent to ${sent}/${allEmails.length} recipients`);
         if (emailErrors.length > 0) {
           console.warn('Email delivery errors:', emailErrors);
+        }
+
+        // Mark as emailed only if every recipient succeeded — partial failures
+        // stay NULL so processIncompleteCompletions retries on the next restart.
+        // Atomic WHERE ... IS NULL guards against concurrent double-sends.
+        if (sent === allEmails.length) {
+          await DataService.query(
+            `UPDATE signing_workflows
+             SET completion_email_sent_at = NOW()
+             WHERE id = $1 AND completion_email_sent_at IS NULL`,
+            [workflowId]
+          );
         }
       }
 

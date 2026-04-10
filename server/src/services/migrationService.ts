@@ -206,6 +206,7 @@ export class MigrationService {
       ['signing_workflows', 'signed_pdf_path', 'VARCHAR(500) DEFAULT NULL'],
       ['signing_workflows', 'certificate_pdf_path', 'VARCHAR(500) DEFAULT NULL'],
       ['signing_workflows', 'completed_at', 'TIMESTAMP WITH TIME ZONE DEFAULT NULL'],
+      ['signing_workflows', 'completion_email_sent_at', 'TIMESTAMP WITH TIME ZONE DEFAULT NULL'],
     ];
 
     for (const [table, col, typedef] of alterColumns) {
@@ -570,6 +571,18 @@ export class MigrationService {
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     // PHASE 6 — Seed / default data
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    // Backfill completion_email_sent_at for workflows that already have
+    // PDF + certificate — these were already emailed before the column existed,
+    // and must not be re-processed by processIncompleteCompletions.
+    await this.run('backfill:completion_email_sent_at', `
+      UPDATE signing_workflows
+      SET completion_email_sent_at = COALESCE(updated_at, NOW())
+      WHERE status = 'completed'
+        AND signed_pdf_path IS NOT NULL AND signed_pdf_path != ''
+        AND certificate_pdf_path IS NOT NULL AND certificate_pdf_path != ''
+        AND completion_email_sent_at IS NULL
+    `);
 
     // Default compliance alert rules
     await this.run('seed:compliance_rules', `

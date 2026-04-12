@@ -1,0 +1,33 @@
+{
+  "name": "POST /api/auth/api-keys",
+  "endpoint": "/api/auth/api-keys",
+  "method": "POST",
+  "requiresAuth": true,
+  "expectedStatus": 201,
+  "taskId": "17b27375-6bbf-4ffb-b0af-47bfd86c64c5",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+  "priority": 10,
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/auth/login"
+  ],
+  "testCases": [
+    {
+      "name": "Create a new API key",
+      "payload": {
+        "label": "{{dynamic:name}}"
+      },
+      "expectedStatus": 201,
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      },
+      "expectedResponse": {
+        "success": true
+      }
+    }
+  ],
+  "captureResponse": {
+    "auth.apiKeys.response.data.apiKey": "data.apiKey"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "name": "PUT /api/workflows/:id/reminders",
+  "endpoint": "/api/workflows/:id/reminders",
+  "method": "PUT",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "taskId": "81723ecd-acd9-443c-b3e3-351a0410e1c3",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "d7347f9c-c573-4027-a295-8a6419d884cd",
+  "testCases": [
+    {
+      "name": "Configure reminder intervals for workflow recipients",
+      "payload": {
+        "_expectedStatus": 200,
+        "reminder_interval_hours": 24
+      },
+      "expectedStatus": 200,
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
+      }
+    }
+  ],
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/auth/login",
+    "POST /api/workflows"
+  ],
+  "captureResponse": {},
+  "_generated": true,
+  "_source": "api_library_backfill"
+}

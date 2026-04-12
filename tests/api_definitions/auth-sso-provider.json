@@ -1,0 +1,25 @@
+{
+  "name": "GET /api/auth/sso/:provider",
+  "endpoint": "/api/auth/sso/:provider",
+  "method": "GET",
+  "requiresAuth": false,
+  "expectedStatus": 302,
+  "taskId": "68784f2e-0044-4bf7-bdf2-f6ff912dc6ff",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+  "testability": "manual",
+  "skipReason": "SSO redirect requires real OAuth provider configuration and returns a 302 redirect to external URL",
+  "priority": 6,
+  "dependsOn": [],
+  "testCases": [
+    {
+      "name": "Get Google SSO redirect URL",
+      "urlParams": {
+        "provider": "{{static:google}}"
+      },
+      "expectedStatus": 302,
+      "headers": {}
+    }
+  ],
+  "captureResponse": {}
+}

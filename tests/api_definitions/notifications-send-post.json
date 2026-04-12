@@ -1,0 +1,36 @@
+{
+  "name": "POST /api/notifications/send",
+  "endpoint": "/api/notifications/send",
+  "method": "POST",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "taskId": "17b27375-6bbf-4ffb-b0af-47bfd86c64c5",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "9822eaa0-8398-44a9-96c7-6b764b96d86c",
+  "priority": 12,
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/auth/login"
+  ],
+  "testCases": [
+    {
+      "name": "Send an in-app notification",
+      "payload": {
+        "userId": "{{cache:auth.register.response.data.user.id}}",
+        "type": "{{static:document_signed}}",
+        "message": "{{dynamic:text}}",
+        "channels": ["in_app"]
+      },
+      "expectedStatus": 200,
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      },
+      "expectedResponse": {
+        "success": true
+      }
+    }
+  ],
+  "captureResponse": {
+    "notifications.send.response.data.id": "data.id"
+  }
+}

@@ -1,16 +1,20 @@
 {
-  "endpoint": "/api/users/roles",
+  "name": "GET /api/audit-logs",
+  "endpoint": "/api/audit-logs",
   "method": "GET",
-  "taskId": "b7c9c4a1-ea4a-4051-9dd9-de881cfef3bf",
   "requiresAuth": true,
-  "priority": 10,
+  "expectedStatus": 200,
+  "taskId": "a77999c6-ce51-4e46-ac6f-69c26b51d3ec",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "dc7cb8c4-cf98-43ee-b57c-46bfdc1a12f9",
+  "priority": 12,
   "dependsOn": [
     "POST /api/auth/register",
     "POST /api/auth/login"
   ],
   "testCases": [
     {
-      "name": "List available roles (admin only)",
+      "name": "Search audit logs (admin only)",
       "headers": {
         "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
       },
@@ -19,5 +23,6 @@
         "success": true
       }
     }
-  ]
+  ],
+  "captureResponse": {}
 }

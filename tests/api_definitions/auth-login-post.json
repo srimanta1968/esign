@@ -1,0 +1,37 @@
+{
+  "name": "POST /api/auth/login",
+  "endpoint": "/api/auth/login",
+  "method": "POST",
+  "requiresAuth": false,
+  "expectedStatus": 200,
+  "taskId": "9927c6cb-2af2-438a-b9cd-f7f35ff9e6a2",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "b81f3231-2e03-408a-b7b6-9346f9225714",
+  "priority": 2,
+  "dependsOn": [
+    "POST /api/auth/register"
+  ],
+  "testCases": [
+    {
+      "name": "Login with valid credentials",
+      "payload": {
+        "email": "{{cache:auth.register.response.data.user.email}}",
+        "password": "TestPass@1234"
+      },
+      "expectedStatus": 200,
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "token": "string"
+        }
+      }
+    }
+  ],
+  "captureResponse": {
+    "auth.login.response.data.token": "data.token",
+    "auth.login.response.data.user.id": "data.user.id"
+  }
+}

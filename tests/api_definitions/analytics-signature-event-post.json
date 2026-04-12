@@ -1,0 +1,38 @@
+{
+  "name": "POST /api/analytics/signature-event",
+  "endpoint": "/api/analytics/signature-event",
+  "method": "POST",
+  "requiresAuth": true,
+  "expectedStatus": 201,
+  "taskId": "a9068772-e635-4386-bea3-f141a08245bd",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "97fd4e09-9395-4a69-bcc1-b362ff0a1b1a",
+  "priority": 12,
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/auth/login"
+  ],
+  "testCases": [
+    {
+      "name": "Track a signature engagement event",
+      "payload": {
+        "event_type": "{{static:signature_viewed}}",
+        "metadata": {
+          "document_id": "{{static:test-doc-123}}",
+          "duration_ms": 5000
+        }
+      },
+      "expectedStatus": 201,
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      },
+      "expectedResponse": {
+        "success": true
+      }
+    }
+  ],
+  "captureResponse": {
+    "analytics.signatureEvent.response.data.id": "data.id"
+  }
+}

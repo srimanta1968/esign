@@ -1,0 +1,32 @@
+{
+  "name": "PUT /api/users/language",
+  "endpoint": "/api/users/language",
+  "method": "PUT",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "taskId": "a9068772-e635-4386-bea3-f141a08245bd",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "97fd4e09-9395-4a69-bcc1-b362ff0a1b1a",
+  "priority": 11,
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/auth/login"
+  ],
+  "testCases": [
+    {
+      "name": "Update user language preference",
+      "payload": {
+        "language_preference": "{{static:es}}"
+      },
+      "expectedStatus": 200,
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      },
+      "expectedResponse": {
+        "success": true
+      }
+    }
+  ],
+  "captureResponse": {}
+}

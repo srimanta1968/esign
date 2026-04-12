@@ -1,0 +1,27 @@
+{
+  "name": "PATCH /api/notifications/read",
+  "endpoint": "/api/notifications/read",
+  "method": "PATCH",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "taskId": "17b27375-6bbf-4ffb-b0af-47bfd86c64c5",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "9822eaa0-8398-44a9-96c7-6b764b96d86c",
+  "testCases": [
+    {
+      "name": "Default PATCH test",
+      "expectedStatus": 200,
+      "payload": {},
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      }
+    }
+  ],
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/auth/login"
+  ],
+  "captureResponse": {},
+  "_generated": true,
+  "_source": "api_library_backfill"
+}

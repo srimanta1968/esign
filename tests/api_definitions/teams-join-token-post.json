@@ -1,0 +1,30 @@
+{
+  "name": "POST /api/teams/join/:token",
+  "endpoint": "/api/teams/join/:token",
+  "method": "POST",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "taskId": "1a1e1eea-4443-4790-828f-888e437597ab",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+  "testability": "manual",
+  "skipReason": "Requires a valid invite token and a different authenticated user than the team owner to join",
+  "priority": 14,
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/auth/login",
+    "POST /api/teams/",
+    "POST /api/teams/:id/invite"
+  ],
+  "testCases": [
+    {
+      "name": "Join a team via invite token",
+      "payload": {},
+      "expectedStatus": 200,
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      }
+    }
+  ],
+  "captureResponse": {}
+}

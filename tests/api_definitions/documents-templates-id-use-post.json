@@ -1,0 +1,33 @@
+{
+  "name": "POST /api/documents/templates/:id/use",
+  "endpoint": "/api/documents/templates/:id/use",
+  "method": "POST",
+  "requiresAuth": true,
+  "expectedStatus": 201,
+  "taskId": "1a1e1eea-4443-4790-828f-888e437597ab",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+  "priority": 15,
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/auth/login",
+    "POST /api/documents",
+    "POST /api/documents/templates"
+  ],
+  "testCases": [
+    {
+      "name": "Create document from template",
+      "payload": {
+        "name": "{{dynamic:name}}"
+      },
+      "expectedStatus": 201,
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      },
+      "expectedResponse": {
+        "success": true
+      }
+    }
+  ],
+  "captureResponse": {}
+}

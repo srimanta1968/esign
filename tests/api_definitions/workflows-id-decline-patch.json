@@ -1,0 +1,32 @@
+{
+  "name": "PATCH /api/workflows/:id/decline",
+  "endpoint": "/api/workflows/:id/decline",
+  "method": "PATCH",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "taskId": "17b27375-6bbf-4ffb-b0af-47bfd86c64c5",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+  "testability": "manual",
+  "skipReason": "Requires the authenticated user to be a pending recipient of a started workflow, which needs a multi-step flow",
+  "priority": 16,
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/auth/login",
+    "POST /api/workflows",
+    "POST /api/workflows/:id/start"
+  ],
+  "testCases": [
+    {
+      "name": "Decline workflow as current recipient",
+      "payload": {
+        "reason": "{{dynamic:text}}"
+      },
+      "expectedStatus": 200,
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      }
+    }
+  ],
+  "captureResponse": {}
+}

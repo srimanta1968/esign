@@ -1,0 +1,32 @@
+{
+  "name": "GET /api/workflows/:id",
+  "endpoint": "/api/workflows/:id",
+  "method": "GET",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "taskId": "c49c5e95-5e92-4d5d-adb6-9c9ccc99c2bf",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "8cdff6b0-8040-47aa-a789-421101b7f41a",
+  "testCases": [
+    {
+      "name": "Get workflow details by ID",
+      "payload": {
+        "_expectedStatus": 200
+      },
+      "expectedStatus": 200,
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
+      }
+    }
+  ],
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/auth/login",
+    "POST /api/workflows",
+    "auth",
+    "workflows"
+  ],
+  "captureResponse": {},
+  "_generated": true,
+  "_source": "api_library_backfill"
+}

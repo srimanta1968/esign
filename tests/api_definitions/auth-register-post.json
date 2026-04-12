@@ -1,0 +1,37 @@
+{
+  "name": "POST /api/auth/register",
+  "endpoint": "/api/auth/register",
+  "method": "POST",
+  "requiresAuth": false,
+  "expectedStatus": 201,
+  "taskId": "44dfef58-e7ca-4d89-81df-50b207d35dbb",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "b81f3231-2e03-408a-b7b6-9346f9225714",
+  "priority": 1,
+  "dependsOn": [],
+  "testCases": [
+    {
+      "name": "Register a new user",
+      "payload": {
+        "name": "{{dynamic:name}}",
+        "email": "{{dynamic:email}}",
+        "password": "TestPass@1234"
+      },
+      "expectedStatus": 201,
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "token": "string"
+        }
+      }
+    }
+  ],
+  "captureResponse": {
+    "auth.register.response.data.token": "data.token",
+    "auth.register.response.data.user.id": "data.user.id",
+    "auth.register.response.data.user.email": "data.user.email"
+  }
+}

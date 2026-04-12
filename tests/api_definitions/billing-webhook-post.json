@@ -1,0 +1,28 @@
+{
+  "name": "POST /api/billing/webhook",
+  "endpoint": "/api/billing/webhook",
+  "method": "POST",
+  "requiresAuth": false,
+  "expectedStatus": 200,
+  "taskId": "17b27375-6bbf-4ffb-b0af-47bfd86c64c5",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+  "testability": "manual",
+  "skipReason": "Stripe webhook requires valid stripe-signature header with HMAC verification which cannot be automated",
+  "priority": 22,
+  "dependsOn": [],
+  "testCases": [
+    {
+      "name": "Process Stripe webhook event",
+      "payload": {
+        "type": "{{static:checkout.session.completed}}"
+      },
+      "expectedStatus": 200,
+      "headers": {
+        "Content-Type": "application/json",
+        "stripe-signature": "{{static:test_signature}}"
+      }
+    }
+  ],
+  "captureResponse": {}
+}

@@ -1,0 +1,28 @@
+{
+  "name": "POST /api/billing/portal",
+  "endpoint": "/api/billing/portal",
+  "method": "POST",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "taskId": "17b27375-6bbf-4ffb-b0af-47bfd86c64c5",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+  "testability": "manual",
+  "skipReason": "Requires existing Stripe billing account which is not available in test environment",
+  "priority": 21,
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/auth/login"
+  ],
+  "testCases": [
+    {
+      "name": "Create billing portal session",
+      "payload": {},
+      "expectedStatus": 200,
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      }
+    }
+  ],
+  "captureResponse": {}
+}

@@ -1,0 +1,29 @@
+{
+  "name": "POST /api/documents/:id/versions",
+  "endpoint": "/api/documents/:id/versions",
+  "method": "POST",
+  "requiresAuth": true,
+  "expectedStatus": 201,
+  "taskId": "17b27375-6bbf-4ffb-b0af-47bfd86c64c5",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "9822eaa0-8398-44a9-96c7-6b764b96d86c",
+  "testability": "manual",
+  "skipReason": "Requires multipart file upload which cannot be sent via JSON API test payload",
+  "priority": 16,
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/auth/login",
+    "POST /api/documents"
+  ],
+  "testCases": [
+    {
+      "name": "Upload new document version",
+      "payload": {},
+      "expectedStatus": 201,
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      }
+    }
+  ],
+  "captureResponse": {}
+}

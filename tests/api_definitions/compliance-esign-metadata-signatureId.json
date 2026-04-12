@@ -1,0 +1,30 @@
+{
+  "name": "GET /api/compliance/esign-metadata/:signatureId",
+  "endpoint": "/api/compliance/esign-metadata/:signatureId",
+  "method": "GET",
+  "requiresAuth": true,
+  "expectedStatus": 404,
+  "taskId": "a9068772-e635-4386-bea3-f141a08245bd",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "97fd4e09-9395-4a69-bcc1-b362ff0a1b1a",
+  "testability": "manual",
+  "skipReason": "Requires a real signatureId from a completed signing flow which involves multiple dependent steps",
+  "priority": 15,
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/auth/login"
+  ],
+  "testCases": [
+    {
+      "name": "Return 404 when compliance metadata is missing",
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      },
+      "expectedStatus": 404,
+      "expectedResponse": {
+        "success": false
+      }
+    }
+  ],
+  "captureResponse": {}
+}

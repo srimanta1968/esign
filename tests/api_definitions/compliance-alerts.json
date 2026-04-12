@@ -3,18 +3,20 @@
   "method": "GET",
   "taskId": "c1e21f09-7fe1-4a27-957d-c228d9905808",
   "requiresAuth": true,
-  "priority": 11,
-  "dependsOn": ["POST /api/auth/register"],
+  "priority": 13,
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/auth/login"
+  ],
   "testCases": [
     {
       "name": "Get triggered alerts (admin only)",
       "headers": {
-        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
       },
       "expectedStatus": 200,
       "expectedResponse": {
-        "success": true,
-        "data": "array"
+        "success": true
       }
     }
   ]

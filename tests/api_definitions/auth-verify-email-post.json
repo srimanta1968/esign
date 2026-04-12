@@ -1,0 +1,30 @@
+{
+  "name": "POST /api/auth/verify-email",
+  "endpoint": "/api/auth/verify-email",
+  "method": "POST",
+  "requiresAuth": false,
+  "expectedStatus": 200,
+  "taskId": "17b27375-6bbf-4ffb-b0af-47bfd86c64c5",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+  "testability": "manual",
+  "skipReason": "Requires a real verification code from email which cannot be captured in automated tests",
+  "priority": 4,
+  "dependsOn": [
+    "POST /api/auth/register"
+  ],
+  "testCases": [
+    {
+      "name": "Verify email with valid code",
+      "payload": {
+        "email": "{{cache:auth.register.response.data.user.email}}",
+        "code": "123456"
+      },
+      "expectedStatus": 200,
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  ],
+  "captureResponse": {}
+}

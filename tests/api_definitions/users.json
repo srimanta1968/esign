@@ -1,8 +1,12 @@
 {
-  "endpoint": "/api/users/roles",
+  "name": "GET /api/users",
+  "endpoint": "/api/users",
   "method": "GET",
-  "taskId": "b7c9c4a1-ea4a-4051-9dd9-de881cfef3bf",
   "requiresAuth": true,
+  "expectedStatus": 200,
+  "taskId": "b7c9c4a1-ea4a-4051-9dd9-de881cfef3bf",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "37bbefa3-4e37-44a7-9ae0-620b3006c4fa",
   "priority": 10,
   "dependsOn": [
     "POST /api/auth/register",
@@ -10,7 +14,7 @@
   ],
   "testCases": [
     {
-      "name": "List available roles (admin only)",
+      "name": "List all users (admin only)",
       "headers": {
         "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
       },
@@ -19,5 +23,6 @@
         "success": true
       }
     }
-  ]
+  ],
+  "captureResponse": {}
 }

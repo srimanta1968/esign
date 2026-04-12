@@ -1,0 +1,30 @@
+{
+  "name": "DELETE /api/teams/:id/invites/:inviteId",
+  "endpoint": "/api/teams/:id/invites/:inviteId",
+  "method": "DELETE",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "taskId": "1a1e1eea-4443-4790-828f-888e437597ab",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+  "priority": 50,
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/auth/login",
+    "POST /api/teams/",
+    "POST /api/teams/:id/invite"
+  ],
+  "testCases": [
+    {
+      "name": "Cancel a team invite",
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true
+      }
+    }
+  ],
+  "captureResponse": {}
+}

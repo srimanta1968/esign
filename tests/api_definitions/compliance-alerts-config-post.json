@@ -1,0 +1,35 @@
+{
+  "name": "POST /api/compliance/alerts/config",
+  "endpoint": "/api/compliance/alerts/config",
+  "method": "POST",
+  "requiresAuth": true,
+  "expectedStatus": 201,
+  "taskId": "c1e21f09-7fe1-4a27-957d-c228d9905808",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "bcf96a30-a8ef-4cfd-b7a6-2d575d67b26a",
+  "priority": 12,
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/auth/login"
+  ],
+  "testCases": [
+    {
+      "name": "Create alert rule (admin only)",
+      "payload": {
+        "enabled": true,
+        "rule_type": "{{static:unauthorized_access}}",
+        "threshold": 5
+      },
+      "expectedStatus": 201,
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      },
+      "expectedResponse": {
+        "success": true
+      }
+    }
+  ],
+  "captureResponse": {
+    "compliance.alertConfig.response.data.id": "data.id"
+  }
+}

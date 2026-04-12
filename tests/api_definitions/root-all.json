@@ -1,0 +1,27 @@
+{
+  "name": "ALL /api/*",
+  "endpoint": "/api/*",
+  "method": "ALL",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "taskId": "5af22c05-7c1e-47d0-a187-48c9c4ef3553",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "558e0a77-b060-4108-b367-3ffc32d9b069",
+  "testability": "manual",
+  "skipReason": "Catch-all wildcard route cannot be tested directly - audit middleware is validated implicitly by all other API tests",
+  "testCases": [
+    {
+      "name": "Audit middleware logs requests automatically",
+      "payload": {},
+      "expectedStatus": 200,
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      }
+    }
+  ],
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/auth/login"
+  ],
+  "captureResponse": {}
+}

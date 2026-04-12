@@ -1,0 +1,28 @@
+{
+  "name": "POST /api/auth/refresh-token",
+  "endpoint": "/api/auth/refresh-token",
+  "method": "POST",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "taskId": "75c9b422-947c-4a41-b3d4-087cff1f0285",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "b9d9125f-634f-4049-b038-b1c738b55b4f",
+  "priority": 5,
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/auth/login"
+  ],
+  "testCases": [
+    {
+      "name": "Refresh JWT token",
+      "payload": {},
+      "expectedStatus": 200,
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      }
+    }
+  ],
+  "captureResponse": {
+    "auth.refreshToken.response.data.token": "data.token"
+  }
+}

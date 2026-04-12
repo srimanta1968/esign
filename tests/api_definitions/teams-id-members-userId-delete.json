@@ -1,0 +1,28 @@
+{
+  "name": "DELETE /api/teams/:id/members/:userId",
+  "endpoint": "/api/teams/:id/members/:userId",
+  "method": "DELETE",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "taskId": "1a1e1eea-4443-4790-828f-888e437597ab",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+  "testability": "manual",
+  "skipReason": "Requires a second user who has joined the team; single-user test environment cannot test member removal",
+  "priority": 50,
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/auth/login",
+    "POST /api/teams/"
+  ],
+  "testCases": [
+    {
+      "name": "Remove a team member",
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      },
+      "expectedStatus": 200
+    }
+  ],
+  "captureResponse": {}
+}

@@ -1,16 +1,20 @@
 {
-  "endpoint": "/api/users/roles",
+  "name": "GET /api/auth/profile",
+  "endpoint": "/api/auth/profile",
   "method": "GET",
-  "taskId": "b7c9c4a1-ea4a-4051-9dd9-de881cfef3bf",
   "requiresAuth": true,
-  "priority": 10,
+  "expectedStatus": 200,
+  "taskId": "17b27375-6bbf-4ffb-b0af-47bfd86c64c5",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+  "priority": 5,
   "dependsOn": [
     "POST /api/auth/register",
     "POST /api/auth/login"
   ],
   "testCases": [
     {
-      "name": "List available roles (admin only)",
+      "name": "Get user profile",
       "headers": {
         "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
       },
@@ -19,5 +23,6 @@
         "success": true
       }
     }
-  ]
+  ],
+  "captureResponse": {}
 }

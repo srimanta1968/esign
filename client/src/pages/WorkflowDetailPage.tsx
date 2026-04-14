@@ -377,7 +377,23 @@ function WorkflowDetailPage() {
   // Self-signing handlers
   const mySignerEntry = workflow?.signers.find((s) => s.email === user?.email);
   const mySignerIndex = workflow?.signers.findIndex((s) => s.email === user?.email) ?? -1;
-  const canSelfSign = workflow?.status === 'active' && mySignerEntry?.status === 'pending';
+  // For sequential workflows, block until all earlier-order signers have signed.
+  // (Server enforces this too, but without this check the UI shows "Sign Now",
+  // lets the user fill fields, and only rejects at the final confirm step.)
+  const waitingOnPriorSigner =
+    !!workflow &&
+    workflow.workflow_type === 'sequential' &&
+    !!mySignerEntry &&
+    workflow.signers.some((s) => s.order < mySignerEntry.order && s.status === 'pending');
+  const canSelfSign =
+    workflow?.status === 'active' &&
+    mySignerEntry?.status === 'pending' &&
+    !waitingOnPriorSigner;
+  const nextSignerAhead = waitingOnPriorSigner
+    ? workflow!.signers
+        .filter((s) => s.order < (mySignerEntry?.order ?? 0) && s.status === 'pending')
+        .sort((a, b) => a.order - b.order)[0]
+    : null;
 
   const handleFieldClick = useCallback((field: SignatureField) => {
     if (field.completed) return;
@@ -848,6 +864,28 @@ function WorkflowDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Waiting-on-prior-signer banner (sequential workflows) */}
+      {waitingOnPriorSigner && mySignerEntry?.status === 'pending' && workflow?.status === 'active' && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 flex items-center gap-3">
+          <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center shrink-0">
+            <svg className="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div>
+            <p className="font-semibold text-amber-900">Waiting on a prior signer</p>
+            <p className="text-sm text-amber-800">
+              This is a sequential workflow. You will be able to sign once
+              {' '}
+              <span className="font-medium">
+                {nextSignerAhead?.name || nextSignerAhead?.email || 'the previous signer'}
+              </span>
+              {' '}completes their signature.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Self-sign banner */}
       {canSelfSign && showSignPrompt && (

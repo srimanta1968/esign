@@ -38,6 +38,7 @@ function SignatureFieldPlacer({
   const [selectedFieldType, setSelectedFieldType] = useState<FieldType | null>(null);
   const [selectedRecipientIndex, setSelectedRecipientIndex] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [placementWarning, setPlacementWarning] = useState<string>('');
 
   const handleFieldUpdate = useCallback((id: string, updates: Partial<SignatureField>) => {
     onFieldsChange(fields.map((f) => (f.id === id ? { ...f, ...updates } : f)));
@@ -50,6 +51,22 @@ function SignatureFieldPlacer({
   const handleDocumentClick = useCallback((e: React.MouseEvent<HTMLDivElement>, pageNumber: number, dimensions: { width: number; height: number }) => {
     if (!selectedFieldType) return;
 
+    const recipientName = recipients[selectedRecipientIndex]?.name || `Recipient ${selectedRecipientIndex + 1}`;
+
+    // Signature and initials are one-per-recipient by design.
+    if (selectedFieldType === 'signature' || selectedFieldType === 'initials') {
+      const duplicate = fields.find(
+        (f) => f.type === selectedFieldType && f.recipientIndex === selectedRecipientIndex
+      );
+      if (duplicate) {
+        setPlacementWarning(
+          `${recipientName} already has a ${FIELD_TYPE_LABELS[selectedFieldType]} field. Delete it first to place a new one.`
+        );
+        setSelectedFieldType(null);
+        return;
+      }
+    }
+
     const rect = e.currentTarget.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
     const clickY = e.clientY - rect.top;
@@ -61,6 +78,22 @@ function SignatureFieldPlacer({
     // Center the field on click position
     const fieldX = Math.max(0, Math.min(100 - size.width, xPercent - size.width / 2));
     const fieldY = Math.max(0, Math.min(100 - size.height, yPercent - size.height / 2));
+
+    // Reject clicks that would overlap an existing field of the same recipient
+    // (covers accidental double-clicks and tight re-clicks).
+    const overlaps = fields.some((f) => {
+      if (f.page !== pageNumber || f.recipientIndex !== selectedRecipientIndex) return false;
+      return (
+        fieldX < f.x + f.width &&
+        fieldX + size.width > f.x &&
+        fieldY < f.y + f.height &&
+        fieldY + size.height > f.y
+      );
+    });
+    if (overlaps) {
+      setPlacementWarning('A field is already placed here. Move the existing one or click somewhere else.');
+      return;
+    }
 
     const newField: SignatureField = {
       id: generateFieldId(),
@@ -75,7 +108,13 @@ function SignatureFieldPlacer({
     };
 
     onFieldsChange([...fields, newField]);
-  }, [selectedFieldType, selectedRecipientIndex, fields, onFieldsChange]);
+    setPlacementWarning('');
+    // Signature/initials are unique per recipient — deselect the tool so a stray
+    // second click can't place anything. Text/date stay selected for bulk placement.
+    if (selectedFieldType === 'signature' || selectedFieldType === 'initials') {
+      setSelectedFieldType(null);
+    }
+  }, [selectedFieldType, selectedRecipientIndex, fields, recipients, onFieldsChange]);
 
   const fieldTypes: FieldType[] = ['signature', 'initials', 'date', 'text'];
 
@@ -139,6 +178,21 @@ function SignatureFieldPlacer({
                   ? `${recipients[selectedRecipientIndex]?.name || 'The selected recipient'} will sign this field.`
                   : `${recipients[selectedRecipientIndex]?.name || 'The selected recipient'} will fill in this field when signing.`}
               </p>
+            </div>
+          )}
+          {placementWarning && (
+            <div className="mt-3 p-2 bg-amber-50 border border-amber-200 rounded-lg flex items-start justify-between gap-2">
+              <p className="text-xs text-amber-800">{placementWarning}</p>
+              <button
+                type="button"
+                onClick={() => setPlacementWarning('')}
+                className="text-amber-600 hover:text-amber-800 shrink-0"
+                aria-label="Dismiss warning"
+              >
+                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
           )}
         </div>

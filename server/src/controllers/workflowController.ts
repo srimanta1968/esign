@@ -362,8 +362,35 @@ export class WorkflowController {
         return;
       }
 
-      const { reminder_interval_hours, recipient_ids }: ConfigureRemindersRequest = req.body;
+      const body = req.body as ConfigureRemindersRequest & {
+        reminders?: { signer_id: string; interval_hours: number }[];
+      };
 
+      // New per-signer shape from the UI: { reminders: [{ signer_id, interval_hours }] }
+      if (Array.isArray(body.reminders)) {
+        const invalid = body.reminders.find(
+          (r) => !r.signer_id || !Number.isFinite(r.interval_hours) || r.interval_hours < 1
+        );
+        if (invalid) {
+          res.status(400).json({ success: false, error: 'Each reminder interval must be at least 1 hour' });
+          return;
+        }
+        const all: any[] = [];
+        for (const r of body.reminders) {
+          const result = await WorkflowService.configureReminders(
+            req.params.id,
+            req.userId,
+            r.interval_hours,
+            [r.signer_id]
+          );
+          all.push(...result);
+        }
+        res.status(200).json({ success: true, data: { reminders: all } });
+        return;
+      }
+
+      // Legacy shape: { reminder_interval_hours, recipient_ids }
+      const { reminder_interval_hours, recipient_ids } = body;
       if (!reminder_interval_hours || reminder_interval_hours < 1) {
         res.status(400).json({ success: false, error: 'reminder_interval_hours must be at least 1' });
         return;

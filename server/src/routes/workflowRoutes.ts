@@ -208,6 +208,10 @@ router.get('/:id/history/export', authenticateToken as RequestHandler, (async (r
     const history = await WorkflowService.getHistory(req.params.id);
     const format = req.query.format || 'csv';
 
+    // Exports should never be cached — second-click must re-download.
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+
     if (format === 'csv') {
       const header = 'Timestamp,Action,Actor,IP Address,Details\n';
       const rows = history.map((e: any) => {
@@ -221,14 +225,70 @@ router.get('/:id/history/export', authenticateToken as RequestHandler, (async (r
       res.setHeader('Content-Disposition', `attachment; filename="workflow-history-${req.params.id.slice(0, 8)}.csv"`);
       res.send(header + rows);
     } else {
-      // Simple text-based export for PDF placeholder
-      const text = history.map((e: any) => {
-        const ts = e.created_at instanceof Date ? e.created_at.toISOString() : e.created_at;
-        return `[${ts}] ${e.action} by ${e.actor_email || 'system'} from ${e.actor_ip || 'unknown'}`;
-      }).join('\n');
-      res.setHeader('Content-Type', 'text/plain');
-      res.setHeader('Content-Disposition', `attachment; filename="workflow-history-${req.params.id.slice(0, 8)}.txt"`);
-      res.send(text);
+      const { PDFDocument, StandardFonts, rgb } = await import('pdf-lib');
+      const pdfDoc = await PDFDocument.create();
+      const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+      const pageSize: [number, number] = [612, 792];
+      const margin = 40;
+      const lineHeight = 14;
+      let page = pdfDoc.addPage(pageSize);
+      let y = pageSize[1] - margin;
+
+      page.drawText('Workflow Action History', { x: margin, y, size: 16, font: bold, color: rgb(0, 0, 0) });
+      y -= 24;
+      page.drawText(`Workflow: ${req.params.id}`, { x: margin, y, size: 10, font, color: rgb(0.3, 0.3, 0.3) });
+      y -= lineHeight;
+      page.drawText(`Exported: ${new Date().toISOString()}`, { x: margin, y, size: 10, font, color: rgb(0.3, 0.3, 0.3) });
+      y -= lineHeight * 1.5;
+
+      const sanitize = (s: string): string => (s || '').replace(/[^\x20-\x7E]/g, '?');
+      const wrap = (text: string, maxWidth: number, size: number): string[] => {
+        const words = text.split(/\s+/);
+        const lines: string[] = [];
+        let line = '';
+        for (const w of words) {
+          const test = line ? `${line} ${w}` : w;
+          if (font.widthOfTextAtSize(test, size) > maxWidth) {
+            if (line) lines.push(line);
+            line = w;
+          } else {
+            line = test;
+          }
+        }
+        if (line) lines.push(line);
+        return lines;
+      };
+
+      for (const e of history as any[]) {
+        if (y < margin + lineHeight * 3) {
+          page = pdfDoc.addPage(pageSize);
+          y = pageSize[1] - margin;
+        }
+        const ts = e.created_at instanceof Date ? e.created_at.toISOString() : String(e.created_at);
+        const header = sanitize(`[${ts}] ${e.action} by ${e.actor_email || 'system'} from ${e.actor_ip || 'unknown'}`);
+        for (const ln of wrap(header, pageSize[0] - margin * 2, 10)) {
+          page.drawText(ln, { x: margin, y, size: 10, font, color: rgb(0, 0, 0) });
+          y -= lineHeight;
+        }
+        if (e.metadata) {
+          const details = sanitize(typeof e.metadata === 'string' ? e.metadata : JSON.stringify(e.metadata));
+          for (const ln of wrap(details, pageSize[0] - margin * 2 - 12, 8)) {
+            if (y < margin + lineHeight) {
+              page = pdfDoc.addPage(pageSize);
+              y = pageSize[1] - margin;
+            }
+            page.drawText(ln, { x: margin + 12, y, size: 8, font, color: rgb(0.35, 0.35, 0.35) });
+            y -= lineHeight - 2;
+          }
+        }
+        y -= 4;
+      }
+
+      const pdfBytes = await pdfDoc.save();
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="workflow-history-${req.params.id.slice(0, 8)}.pdf"`);
+      res.send(Buffer.from(pdfBytes));
     }
   } catch (error: any) {
     console.error('History export error:', error);

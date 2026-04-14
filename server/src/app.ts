@@ -79,6 +79,18 @@ MigrationService.runMigrations().then(() => {
     WorkflowService.processIncompleteCompletions().then(result => {
       console.log(`Processed ${result.processed} incomplete workflows, ${result.errors.length} errors`);
     }).catch(err => console.error('Completion processing error:', err.message));
+
+    // Reminder scheduler: poll every 5 minutes for due reminders.
+    const REMINDER_POLL_MS = 5 * 60 * 1000;
+    const runReminderTick = (): void => {
+      WorkflowService.processDueReminders()
+        .then(({ sent, errors }) => {
+          if (sent || errors) console.log(`Reminder scheduler: sent=${sent} errors=${errors}`);
+        })
+        .catch(err => console.error('Reminder scheduler error:', err?.message || err));
+    };
+    setTimeout(runReminderTick, 30 * 1000);
+    setInterval(runReminderTick, REMINDER_POLL_MS);
   });
 }).catch((err) => {
   console.error('Migration failed, starting server anyway:', err);

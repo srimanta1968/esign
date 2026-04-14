@@ -716,6 +716,70 @@ export class WorkflowService {
     return reminders;
   }
 
+  /**
+   * Scheduler job: find reminders that are due and send them.
+   * Invoked periodically from app.ts. Safe to call concurrently — each reminder
+   * row is only sent once per interval because next_send_at is advanced atomically.
+   */
+  static async processDueReminders(): Promise<{ sent: number; errors: number }> {
+    const due = await DataService.queryAll<{
+      id: string;
+      workflow_id: string;
+      recipient_id: string;
+      reminder_interval_hours: number;
+    }>(
+      `SELECT wr.id, wr.workflow_id, wr.recipient_id, wr.reminder_interval_hours
+       FROM workflow_reminders wr
+       JOIN signing_workflows w ON w.id = wr.workflow_id
+       JOIN workflow_recipients r ON r.id = wr.recipient_id
+       WHERE wr.next_send_at IS NOT NULL
+         AND wr.next_send_at <= NOW()
+         AND w.status = 'active'
+         AND r.status = 'pending'
+       LIMIT 100`
+    );
+
+    let sent = 0;
+    let errors = 0;
+    for (const row of due) {
+      try {
+        // Claim this reminder atomically by advancing next_send_at before sending.
+        const claimed = await DataService.queryOne<{ id: string }>(
+          `UPDATE workflow_reminders
+              SET last_sent_at = NOW(),
+                  next_send_at = NOW() + make_interval(hours => reminder_interval_hours)
+            WHERE id = $1 AND next_send_at <= NOW()
+            RETURNING id`,
+          [row.id]
+        );
+        if (!claimed) continue;
+
+        const workflow = await DataService.queryOne<SigningWorkflow>(
+          'SELECT * FROM signing_workflows WHERE id = $1',
+          [row.workflow_id]
+        );
+        const recipient = await DataService.queryOne<WorkflowRecipient>(
+          'SELECT * FROM workflow_recipients WHERE id = $1',
+          [row.recipient_id]
+        );
+        if (!workflow || !recipient) continue;
+
+        await WorkflowService.sendSigningEmail(workflow, recipient, true);
+        await WorkflowService.notifyRecipient(workflow, recipient, true);
+        await WorkflowService.logHistory(row.workflow_id, 'reminder_sent', 'system', 'scheduler', {
+          recipient_email: recipient.signer_email,
+          recipient_id: recipient.id,
+          automatic: true,
+        });
+        sent++;
+      } catch (err: any) {
+        errors++;
+        console.error('processDueReminders error for', row.id, err?.message || err);
+      }
+    }
+    return { sent, errors };
+  }
+
   // ─── Task 4: Workflow action history ───────────────────────────────
 
   /**

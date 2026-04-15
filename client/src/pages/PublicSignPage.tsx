@@ -63,6 +63,8 @@ function PublicSignPage() {
           });
         } else if (data.success && data.data) {
           setContext(data.data);
+          // Notify backend that the signing page has been opened (idempotent)
+          fetch(`/api/sign/${token}/started`, { method: 'POST' }).catch(() => {});
           // Map server fields to our SignatureField type
           const mapped: SignatureField[] = data.data.fields.map((f: any) => ({
             id: f.id,
@@ -74,6 +76,7 @@ function PublicSignPage() {
             height: f.height,
             recipientIndex: 0,
             required: f.required,
+            label: f.label ?? null,
             value: undefined,
             completed: false,
           }));
@@ -166,6 +169,32 @@ function PublicSignPage() {
   const completedRequired = requiredFields.filter((f) => f.completed);
   const allRequiredDone = requiredFields.length > 0 && completedRequired.length === requiredFields.length;
   const completedCount = fields.filter((f) => f.completed).length;
+
+  // Next unsigned field in reading order: (page asc, y asc, x asc), required first
+  const nextField = (() => {
+    const pending = fields.filter((f) => !f.completed);
+    if (pending.length === 0) return null;
+    const sorted = [...pending].sort((a, b) => {
+      if ((a.required ? 0 : 1) !== (b.required ? 0 : 1)) return (a.required ? 0 : 1) - (b.required ? 0 : 1);
+      if (a.page !== b.page) return a.page - b.page;
+      if (a.y !== b.y) return a.y - b.y;
+      return a.x - b.x;
+    });
+    return sorted[0];
+  })();
+
+  const nextButtonLabel = completedCount === 0 ? 'Start' : (nextField ? 'Next' : 'Finish');
+
+  const handleJumpToNext = useCallback(() => {
+    if (!nextField) return;
+    if (nextField.page !== currentPage) setCurrentPage(nextField.page);
+    // Allow the page to render before scrolling/opening the modal.
+    setTimeout(() => {
+      const el = document.querySelector<HTMLElement>(`[data-field-id="${nextField.id}"]`);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      handleFieldClick(nextField);
+    }, nextField.page !== currentPage ? 250 : 0);
+  }, [nextField, currentPage, handleFieldClick]);
 
   const renderOverlay = useCallback((pageNumber: number, dimensions: { width: number; height: number }) => {
     return (
@@ -372,6 +401,21 @@ function PublicSignPage() {
         </div>
       </div>
 
+      {/* Floating Next-Field button */}
+      {nextField && !activeField && (
+        <button
+          type="button"
+          onClick={handleJumpToNext}
+          className="fixed right-6 bottom-6 z-40 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold px-5 py-3 rounded-full shadow-lg flex items-center gap-2 transition-colors"
+          title={`${nextButtonLabel}: go to next ${nextField.type} field`}
+        >
+          <span>{nextButtonLabel}</span>
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      )}
+
       {/* Signing Modal */}
       {activeField && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
@@ -379,7 +423,9 @@ function PublicSignPage() {
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900">
-                  {FIELD_TYPE_LABELS[activeField.type]}
+                  {activeField.type === 'text' && activeField.label
+                    ? activeField.label
+                    : FIELD_TYPE_LABELS[activeField.type]}
                 </h3>
                 <button
                   onClick={() => setActiveField(null)}
@@ -429,12 +475,14 @@ function PublicSignPage() {
               {/* Text type */}
               {activeField.type === 'text' && (
                 <div>
-                  <p className="text-sm text-gray-600 mb-3">Enter text:</p>
+                  <p className="text-sm text-gray-600 mb-3">
+                    {activeField.label ? `Enter your ${activeField.label.toLowerCase()}:` : 'Enter text:'}
+                  </p>
                   <input
-                    type="text"
+                    type={/email/i.test(activeField.label || '') ? 'email' : /phone|mobile/i.test(activeField.label || '') ? 'tel' : 'text'}
                     value={textValue}
                     onChange={(e) => setTextValue(e.target.value)}
-                    placeholder="Type here..."
+                    placeholder={activeField.label ? `Enter ${activeField.label}` : 'Type here...'}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none mb-4"
                     autoFocus
                     onKeyDown={(e) => e.key === 'Enter' && handleTextConfirm()}

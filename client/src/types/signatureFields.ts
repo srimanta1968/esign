@@ -14,9 +14,22 @@ export interface SignatureField {
   height: number;
   recipientIndex: number;
   required: boolean;
+  /** Optional free-form label for text fields (e.g. "Email", "Address"). */
+  label?: string | null;
   value?: string;
   completed?: boolean;
 }
+
+/** Preset labels the sender can pick from when placing a Text field. */
+export const TEXT_FIELD_LABEL_PRESETS = [
+  'Email',
+  'Full Name',
+  'Company',
+  'Title',
+  'Address',
+  'Phone',
+  'Custom',
+] as const;
 
 export const RECIPIENT_COLORS = [
   { bg: 'bg-blue-100', border: 'border-blue-400', text: 'text-blue-700', ring: 'ring-blue-400', hex: '#3b82f6' },

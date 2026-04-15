@@ -187,6 +187,7 @@ function WorkflowCreatePage() {
           height: f.height,
           recipient_index: f.recipientIndex,
           required: f.required,
+          label: f.label ?? null,
         })),
       });
 

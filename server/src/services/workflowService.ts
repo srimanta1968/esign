@@ -77,10 +77,10 @@ export class WorkflowService {
         const recipientId = recipients[f.recipient_index]?.id;
         if (!recipientId) continue;
         const field = await DataService.queryOne<SignatureField>(
-          `INSERT INTO signature_fields (workflow_id, recipient_id, field_type, page, x, y, width, height, required)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+          `INSERT INTO signature_fields (workflow_id, recipient_id, field_type, page, x, y, width, height, required, label)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
            RETURNING *`,
-          [workflow.id, recipientId, f.field_type, f.page, f.x, f.y, f.width, f.height, f.required !== false]
+          [workflow.id, recipientId, f.field_type, f.page, f.x, f.y, f.width, f.height, f.required !== false, f.label ?? null]
         );
         if (field) fields.push(field);
       }
@@ -211,10 +211,10 @@ export class WorkflowService {
         const recipientId = recipients[f.recipient_index]?.id;
         if (!recipientId) continue;
         const field = await DataService.queryOne<SignatureField>(
-          `INSERT INTO signature_fields (workflow_id, recipient_id, field_type, page, x, y, width, height, required)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+          `INSERT INTO signature_fields (workflow_id, recipient_id, field_type, page, x, y, width, height, required, label)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
            RETURNING *`,
-          [workflowId, recipientId, f.field_type, f.page, f.x, f.y, f.width, f.height, f.required !== false]
+          [workflowId, recipientId, f.field_type, f.page, f.x, f.y, f.width, f.height, f.required !== false, f.label ?? null]
         );
         if (field) fields.push(field);
       }

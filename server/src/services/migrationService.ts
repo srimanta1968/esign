@@ -513,6 +513,9 @@ export class MigrationService {
       ['signature_fields', 'signature_data', 'TEXT DEFAULT NULL'],
       ['signature_fields', 'signature_type', 'VARCHAR(20) DEFAULT NULL'],
       ['signature_fields', 'signed_at', 'TIMESTAMP WITH TIME ZONE DEFAULT NULL'],
+      ['workflow_recipients', 'opened_at', 'TIMESTAMP WITH TIME ZONE DEFAULT NULL'],
+      ['workflow_recipients', 'opened_ip', 'VARCHAR(45) DEFAULT NULL'],
+      ['signature_fields', 'label', 'VARCHAR(100) DEFAULT NULL'],
     ];
 
     for (const [table, col, typedef] of dependentAlters) {

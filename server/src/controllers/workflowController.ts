@@ -50,6 +50,7 @@ export class WorkflowController {
         width: f.width,
         height: f.height,
         required: f.required,
+        label: f.label ?? null,
       }));
 
       const actorIp = req.ip || req.socket?.remoteAddress || 'unknown';

@@ -69,6 +69,24 @@ export class PdfSigningService {
       [workflowId]
     );
 
+    // Pull per-recipient sign-time IP from workflow_history for verification stamp
+    const historyRows = await DataService.queryAll<{
+      actor_ip: string;
+      metadata: any;
+      created_at: Date;
+    }>(
+      `SELECT actor_ip, metadata, created_at FROM workflow_history
+       WHERE workflow_id = $1 AND action = 'signed'
+       ORDER BY created_at ASC`,
+      [workflowId]
+    );
+    const recipientIpMap: Record<string, string> = {};
+    for (const h of historyRows) {
+      const meta = typeof h.metadata === 'string' ? JSON.parse(h.metadata) : (h.metadata || {});
+      const rid = meta?.recipient_id;
+      if (rid && !recipientIpMap[rid]) recipientIpMap[rid] = h.actor_ip || '';
+    }
+
     // 4. Embed each signature onto the PDF
     const pages = pdfDoc.getPages();
 
@@ -81,6 +99,15 @@ export class PdfSigningService {
 
       const page = pages[pageIndex];
       await PdfSigningService.embedSignatureOnPage(page, field.signature_data!, field, pdfDoc);
+
+      // Draw verification stamp only next to visible signature/initials fields
+      if (field.field_type === 'signature' || field.field_type === 'initials') {
+        await PdfSigningService.drawVerificationStamp(page, field, pdfDoc, {
+          signedAt: field.signed_at,
+          signerIp: recipientIpMap[field.recipient_id] || 'unknown',
+          envelopeShortId: workflowId.slice(0, 8),
+        });
+      }
     }
 
     // 5. Save signed PDF to temp, then upload to S3
@@ -189,6 +216,76 @@ export class PdfSigningService {
           color: rgb(0, 0, 0.4),
         });
       }
+    }
+  }
+  /**
+   * Draw a small verification stamp to the right of a signature field.
+   * Mimics the classic DocuSign/Adobe Sign verification badge: green border,
+   * light green fill, tiny monospace-style text with date/IP/envelope id.
+   */
+  static async drawVerificationStamp(
+    page: any,
+    field: { x: number; y: number; width: number; height: number },
+    pdfDoc: PDFDocument,
+    info: { signedAt: Date | null; signerIp: string; envelopeShortId: string }
+  ): Promise<void> {
+    const { width: pageWidth, height: pageHeight } = page.getSize();
+
+    const fieldAbsX = (field.x / 100) * pageWidth;
+    const fieldAbsY = pageHeight - ((field.y / 100) * pageHeight) - ((field.height / 100) * pageHeight);
+    const fieldAbsWidth = (field.width / 100) * pageWidth;
+    const fieldAbsHeight = (field.height / 100) * pageHeight;
+
+    const stampWidth = Math.min(150, pageWidth * 0.26);
+    const stampHeight = Math.max(fieldAbsHeight, 38);
+
+    // Place stamp to the right of the field; if it overflows, place below instead.
+    let stampX = fieldAbsX + fieldAbsWidth + 4;
+    let stampY = fieldAbsY;
+    if (stampX + stampWidth > pageWidth - 2) {
+      stampX = Math.max(2, Math.min(fieldAbsX, pageWidth - stampWidth - 2));
+      stampY = fieldAbsY - stampHeight - 4;
+    }
+    if (stampY < 2) stampY = 2;
+
+    const borderColor = rgb(0.20, 0.58, 0.30); // green
+    const fillColor = rgb(0.90, 0.97, 0.91);   // light green
+    const textColor = rgb(0.10, 0.35, 0.15);
+
+    page.drawRectangle({
+      x: stampX,
+      y: stampY,
+      width: stampWidth,
+      height: stampHeight,
+      color: fillColor,
+      borderColor,
+      borderWidth: 0.8,
+    });
+
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+    const signedDate = info.signedAt
+      ? new Date(info.signedAt).toISOString().replace('T', ' ').slice(0, 19) + ' UTC'
+      : 'pending';
+    const lines: Array<{ text: string; bold?: boolean }> = [
+      { text: toWinAnsiSafe('eDocSign Verified'), bold: true },
+      { text: toWinAnsiSafe(signedDate) },
+      { text: toWinAnsiSafe(`IP ${info.signerIp}`) },
+      { text: toWinAnsiSafe(`ID ${info.envelopeShortId}`) },
+    ];
+
+    const lineSize = Math.min(6.5, (stampHeight - 4) / lines.length);
+    let cursorY = stampY + stampHeight - lineSize - 1;
+    for (const line of lines) {
+      page.drawText(line.text, {
+        x: stampX + 4,
+        y: cursorY,
+        size: lineSize,
+        font: line.bold ? boldFont : font,
+        color: textColor,
+      });
+      cursorY -= lineSize + 1;
     }
   }
 }

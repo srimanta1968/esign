@@ -21,6 +21,11 @@ router.get('/:token/document', ((req: Request, res: Response): void => {
   SigningController.getDocument(req, res);
 }) as RequestHandler);
 
+// Mark signing started (fired on page open)
+router.post('/:token/started', ((req: Request, res: Response): void => {
+  SigningController.markSigningStarted(req, res);
+}) as RequestHandler);
+
 // Complete signing - submit signatures for all assigned fields
 router.post('/:token/complete', ((req: Request, res: Response): void => {
   SigningController.completeSigning(req, res);

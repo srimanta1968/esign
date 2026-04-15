@@ -269,6 +269,62 @@ export class SigningController {
   }
 
   /**
+   * POST /api/sign/:token/started
+   * Mark that the recipient has opened the signing page.
+   * Idempotent: only the first call records opened_at and logs history.
+   */
+  static async markSigningStarted(req: Request, res: Response): Promise<void> {
+    try {
+      const { token } = req.params;
+
+      const signingToken = await SigningTokenService.validateToken(token);
+      if (!signingToken) {
+        res.status(401).json({ success: false, error: 'Invalid, expired, or already used signing token' });
+        return;
+      }
+
+      const recipient = await DataService.queryOne<WorkflowRecipient & { opened_at: Date | null }>(
+        'SELECT * FROM workflow_recipients WHERE id = $1',
+        [signingToken.recipient_id]
+      );
+      if (!recipient) {
+        res.status(404).json({ success: false, error: 'Recipient not found' });
+        return;
+      }
+
+      const actorIp = req.ip || req.socket?.remoteAddress || 'unknown';
+      const userAgent = req.headers['user-agent'] || 'unknown';
+      const alreadyOpened = !!recipient.opened_at;
+
+      if (!alreadyOpened) {
+        await DataService.query(
+          'UPDATE workflow_recipients SET opened_at = NOW(), opened_ip = $1 WHERE id = $2 AND opened_at IS NULL',
+          [actorIp, signingToken.recipient_id]
+        );
+
+        await WorkflowService.logHistory(signingToken.workflow_id, 'opened', recipient.signer_email, actorIp, {
+          user_agent: userAgent,
+          recipient_id: recipient.id,
+          signing_order: recipient.signing_order,
+          timestamp: new Date().toISOString(),
+        });
+      }
+
+      res.status(200).json({
+        success: true,
+        data: {
+          recipient_id: recipient.id,
+          first_opened: !alreadyOpened,
+          opened_at: alreadyOpened ? recipient.opened_at : new Date().toISOString(),
+        },
+      });
+    } catch (error: any) {
+      console.error('Mark signing started error:', error);
+      res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+  }
+
+  /**
    * GET /api/sign/:token/document
    * Serve the actual document file for the token's workflow.
    */
@@ -610,6 +666,7 @@ export class SigningController {
         width: f.width,
         height: f.height,
         required: f.required !== false,
+        label: (f as any).label ?? null,
       })),
     };
   }

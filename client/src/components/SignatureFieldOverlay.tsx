@@ -181,6 +181,7 @@ function FieldBox({
   return (
     <div
       ref={boxRef}
+      data-field-id={field.id}
       className={`absolute ${borderStyle} ${bgStyle} ${cursorStyle} rounded-sm select-none group transition-shadow ${
         isDragging || isResizing ? 'ring-2 ring-indigo-400 shadow-lg z-20' : 'z-10 hover:shadow-md'
       }`}
@@ -214,7 +215,7 @@ function FieldBox({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={FIELD_TYPE_ICONS[field.type]} />
             </svg>
             <span className={`text-xs truncate ${mode === 'sign' && !isCurrentSigner ? 'text-gray-400' : colors.text}`}>
-              {FIELD_TYPE_LABELS[field.type]}
+              {field.type === 'text' && field.label ? field.label : FIELD_TYPE_LABELS[field.type]}
             </span>
           </>
         )}
@@ -233,7 +234,9 @@ function FieldBox({
       {/* Sign mode: recipient tag */}
       {mode === 'sign' && !isCompleted && isCurrentSigner && (
         <div className={`absolute -top-5 left-0 ${colors.bg} ${colors.text} text-[10px] font-medium px-1.5 py-0.5 rounded-t whitespace-nowrap`}>
-          Click to {field.type === 'signature' ? 'sign' : field.type === 'initials' ? 'initial' : 'fill'}
+          {field.type === 'text' && field.label
+            ? `Click to enter ${field.label}`
+            : `Click to ${field.type === 'signature' ? 'sign' : field.type === 'initials' ? 'initial' : 'fill'}`}
         </div>
       )}
 

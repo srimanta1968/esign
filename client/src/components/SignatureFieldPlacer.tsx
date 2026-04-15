@@ -8,6 +8,7 @@ import {
   FIELD_TYPE_LABELS,
   FIELD_TYPE_ICONS,
   DEFAULT_FIELD_SIZE,
+  TEXT_FIELD_LABEL_PRESETS,
 } from '../types/signatureFields';
 
 interface Recipient {
@@ -39,6 +40,7 @@ function SignatureFieldPlacer({
   const [selectedRecipientIndex, setSelectedRecipientIndex] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [placementWarning, setPlacementWarning] = useState<string>('');
+  const [textFieldLabel, setTextFieldLabel] = useState<string>('Email');
 
   const handleFieldUpdate = useCallback((id: string, updates: Partial<SignatureField>) => {
     onFieldsChange(fields.map((f) => (f.id === id ? { ...f, ...updates } : f)));
@@ -50,22 +52,6 @@ function SignatureFieldPlacer({
 
   const handleDocumentClick = useCallback((e: React.MouseEvent<HTMLDivElement>, pageNumber: number, dimensions: { width: number; height: number }) => {
     if (!selectedFieldType) return;
-
-    const recipientName = recipients[selectedRecipientIndex]?.name || `Recipient ${selectedRecipientIndex + 1}`;
-
-    // Signature and initials are one-per-recipient by design.
-    if (selectedFieldType === 'signature' || selectedFieldType === 'initials') {
-      const duplicate = fields.find(
-        (f) => f.type === selectedFieldType && f.recipientIndex === selectedRecipientIndex
-      );
-      if (duplicate) {
-        setPlacementWarning(
-          `${recipientName} already has a ${FIELD_TYPE_LABELS[selectedFieldType]} field. Delete it first to place a new one.`
-        );
-        setSelectedFieldType(null);
-        return;
-      }
-    }
 
     const rect = e.currentTarget.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
@@ -105,6 +91,7 @@ function SignatureFieldPlacer({
       height: size.height,
       recipientIndex: selectedRecipientIndex,
       required: selectedFieldType === 'signature' || selectedFieldType === 'initials',
+      label: selectedFieldType === 'text' ? textFieldLabel.trim() || null : null,
     };
 
     onFieldsChange([...fields, newField]);
@@ -114,7 +101,7 @@ function SignatureFieldPlacer({
     if (selectedFieldType === 'signature' || selectedFieldType === 'initials') {
       setSelectedFieldType(null);
     }
-  }, [selectedFieldType, selectedRecipientIndex, fields, recipients, onFieldsChange]);
+  }, [selectedFieldType, selectedRecipientIndex, fields, recipients, onFieldsChange, textFieldLabel]);
 
   const fieldTypes: FieldType[] = ['signature', 'initials', 'date', 'text'];
 
@@ -169,7 +156,7 @@ function SignatureFieldPlacer({
             ))}
           </div>
           {selectedFieldType && (
-            <div className="mt-3 p-2 bg-indigo-50 rounded-lg space-y-1">
+            <div className="mt-3 p-2 bg-indigo-50 rounded-lg space-y-2">
               <p className="text-xs text-indigo-700">
                 Click on the document to place a "{FIELD_TYPE_LABELS[selectedFieldType]}" field.
               </p>
@@ -178,6 +165,36 @@ function SignatureFieldPlacer({
                   ? `${recipients[selectedRecipientIndex]?.name || 'The selected recipient'} will sign this field.`
                   : `${recipients[selectedRecipientIndex]?.name || 'The selected recipient'} will fill in this field when signing.`}
               </p>
+              {selectedFieldType === 'text' && (
+                <div>
+                  <label className="block text-[11px] font-medium text-indigo-700 mb-1">
+                    What should the signer enter?
+                  </label>
+                  <div className="flex flex-wrap gap-1 mb-1">
+                    {TEXT_FIELD_LABEL_PRESETS.filter((p) => p !== 'Custom').map((preset) => (
+                      <button
+                        key={preset}
+                        type="button"
+                        onClick={() => setTextFieldLabel(preset)}
+                        className={`text-[11px] px-2 py-0.5 rounded-full border transition-colors ${
+                          textFieldLabel === preset
+                            ? 'bg-indigo-600 text-white border-indigo-600'
+                            : 'bg-white text-indigo-700 border-indigo-200 hover:bg-indigo-100'
+                        }`}
+                      >
+                        {preset}
+                      </button>
+                    ))}
+                  </div>
+                  <input
+                    type="text"
+                    value={textFieldLabel}
+                    onChange={(e) => setTextFieldLabel(e.target.value)}
+                    placeholder="e.g. Email, Address, Company"
+                    className="w-full text-xs px-2 py-1 border border-indigo-200 rounded focus:ring-1 focus:ring-indigo-400 focus:border-indigo-400 outline-none"
+                  />
+                </div>
+              )}
             </div>
           )}
           {placementWarning && (

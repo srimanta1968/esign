@@ -81,12 +81,10 @@ function SignaturePadComponent({ onSave, height = 200 }: SignaturePadProps) {
 
     ctx.beginPath();
     ctx.lineWidth = lineWidth;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
     ctx.moveTo(from.x, from.y);
-
-    // Smooth curve using quadratic bezier
-    const midX = (from.x + to.x) / 2;
-    const midY = (from.y + to.y) / 2;
-    ctx.quadraticCurveTo(from.x, from.y, midX, midY);
+    ctx.lineTo(to.x, to.y);
     ctx.stroke();
   };
 
@@ -101,8 +99,9 @@ function SignaturePadComponent({ onSave, height = 200 }: SignaturePadProps) {
 
     const ctx = canvas.getContext('2d');
     if (ctx) {
+      ctx.fillStyle = '#1e3a5f';
       ctx.beginPath();
-      ctx.arc(point.x, point.y, 1, 0, Math.PI * 2);
+      ctx.arc(point.x, point.y, 1.2, 0, Math.PI * 2);
       ctx.fill();
     }
   };

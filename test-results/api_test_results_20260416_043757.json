@@ -1,0 +1,1261 @@
+{
+  "status": "completed",
+  "results": [
+    {
+      "test": "GET /api/auth/sso/:provider - Reject unsupported SSO provider",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/auth/sso/:provider",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 9.799999999999999,
+      "request_body": null,
+      "curl_command": "curl -X GET \"http://localhost:3005/api/auth/sso/:provider\"",
+      "data_set_id": "test-1776314255439-1",
+      "data_set_name": "Reject unsupported SSO provider"
+    },
+    {
+      "test": "GET /api/auth/sso/callback - Reject fake authorization code (cannot exchange with real provider)",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/auth/sso/callback?code=test-auth-code&state=google",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.4789999999999996,
+      "request_body": null,
+      "curl_command": "curl -X GET \"http://localhost:3005/api/auth/sso/callback?code=test-auth-code&state=google\"",
+      "data_set_id": "test-1776314255448-0",
+      "data_set_name": "Reject fake authorization code (cannot exchange with real provider)"
+    },
+    {
+      "test": "POST /api/auth/register - Register a new user",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/auth/register",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 4.039,
+      "request_body": {
+        "name": "Test User",
+        "email": "qa_test_1776299536@example.com",
+        "password": "ProjexTest_1776314238_450a48!"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -d \\\n  '{\n  \"name\": \"Test User\",\n  \"email\": \"qa_test_1776299536@example.com\",\n  \"password\": \"ProjexTest_1776314238_450a48!\"\n}' \\\n  \"http://localhost:3005/api/auth/register\"",
+      "data_set_id": "test-1776314255191-0",
+      "data_set_name": "Register a new user"
+    },
+    {
+      "test": "POST /api/auth/login - Login with valid credentials",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/auth/login",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.1069999999999998,
+      "request_body": {
+        "email": "qa_test_1776299536@example.com",
+        "password": "QaTest1776299536!"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -d \\\n  '{\n  \"email\": \"qa_test_1776299536@example.com\",\n  \"password\": \"QaTest1776299536!\"\n}' \\\n  \"http://localhost:3005/api/auth/login\"",
+      "data_set_id": "test-1776302421341-0",
+      "data_set_name": "Login with valid credentials"
+    },
+    {
+      "test": "POST /api/auth/forgot-password - Request password reset for non-existing email (still returns 200)",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/auth/forgot-password",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.175,
+      "request_body": {
+        "email": "nonexistent_277127@example.com"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -d \\\n  '{\n  \"email\": \"nonexistent_277127@example.com\"\n}' \\\n  \"http://localhost:3005/api/auth/forgot-password\"",
+      "data_set_id": "test-1776314255277-1",
+      "data_set_name": "Request password reset for non-existing email (still returns 200)"
+    },
+    {
+      "test": "POST /api/auth/verify-email - Verify email with valid code",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/auth/verify-email",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 1.671,
+      "request_body": {
+        "code": "123456",
+        "email": "{{cache:auth.register.response.data.user.email}}"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -d \\\n  '{\n  \"code\": \"123456\",\n  \"email\": \"{{cache:auth.register.response.data.user.email}}\"\n}' \\\n  \"http://localhost:3005/api/auth/verify-email\"",
+      "data_set_id": "test-1776314255289-0",
+      "data_set_name": "Verify email with valid code"
+    },
+    {
+      "test": "POST /api/auth/resend-verification - Resend verification code to registered email",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/auth/resend-verification",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 1.377,
+      "request_body": {
+        "email": "{{cache:auth.register.response.data.user.email}}"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -d \\\n  '{\n  \"email\": \"{{cache:auth.register.response.data.user.email}}\"\n}' \\\n  \"http://localhost:3005/api/auth/resend-verification\"",
+      "data_set_id": "test-1776314255284-0",
+      "data_set_name": "Resend verification code to registered email"
+    },
+    {
+      "test": "GET /api/users/roles - List available roles (admin only)",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/users/roles",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 4.854,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/users/roles\"",
+      "data_set_id": "test-1776314255457-0",
+      "data_set_name": "List available roles (admin only)"
+    },
+    {
+      "test": "GET /api/compliance/esign-metadata/:signatureId - Return 404 when compliance metadata is missing",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/compliance/esign-metadata/:signatureId",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 1.387,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/compliance/esign-metadata/:signatureId\"",
+      "data_set_id": "test-1776314255521-0",
+      "data_set_name": "Return 404 when compliance metadata is missing"
+    },
+    {
+      "test": "GET /api/notifications - Default GET test",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/notifications",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 1.176,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/notifications\"",
+      "data_set_id": "test-1776299602633-0",
+      "data_set_name": "Default GET test"
+    },
+    {
+      "test": "POST /api/teams - Create a new team",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/teams",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 4.458,
+      "request_body": {
+        "name": "James Martinez"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"name\": \"James Martinez\"\n}' \\\n  \"http://localhost:3005/api/teams\"",
+      "data_set_id": "test-1776314255311-0",
+      "data_set_name": "Create a new team"
+    },
+    {
+      "test": "GET /api/teams/join/:token - Default GET test",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/teams/join/:token",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 1.426,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/teams/join/:token\"",
+      "data_set_id": "test-1776314255566-0",
+      "data_set_name": "Default GET test"
+    },
+    {
+      "test": "GET /api/auth/me - Default GET test",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/auth/me",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 1.996,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/auth/me\"",
+      "data_set_id": "test-1776297946078-0",
+      "data_set_name": "Default GET test"
+    },
+    {
+      "test": "POST /api/compliance/alerts/config - Reject missing fields",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/compliance/alerts/config",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 1.787,
+      "request_body": null,
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/compliance/alerts/config\"",
+      "data_set_id": "test-1776314255332-1",
+      "data_set_name": "Reject missing fields"
+    },
+    {
+      "test": "GET /api/users - List all users (admin only)",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/users",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 1.964,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/users\"",
+      "data_set_id": "test-1776314255452-0",
+      "data_set_name": "List all users (admin only)"
+    },
+    {
+      "test": "POST /api/documents - Upload a document (JSON stub in non-production)",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/documents",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 3.663,
+      "request_body": {
+        "file_path": "stub-egqhuhvyhycmxpjd.pdf_277153",
+        "mime_type": "application/pdf",
+        "original_name": "stub-egqhuhvyhycmxpjd.pdf"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"file_path\": \"stub-egqhuhvyhycmxpjd.pdf_277153\",\n  \"mime_type\": \"application/pdf\",\n  \"original_name\": \"stub-egqhuhvyhycmxpjd.pdf\"\n}' \\\n  \"http://localhost:3005/api/documents\"",
+      "data_set_id": "test-1776314255297-0",
+      "data_set_name": "Upload a document (JSON stub in non-production)"
+    },
+    {
+      "test": "POST /api/organizations - Create a new organization",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/organizations",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 1.861,
+      "request_body": {
+        "name": "James Martinez"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"name\": \"James Martinez\"\n}' \\\n  \"http://localhost:3005/api/organizations\"",
+      "data_set_id": "test-1776314255306-0",
+      "data_set_name": "Create a new organization"
+    },
+    {
+      "test": "POST /api/workflows/admin/process-completions - Default POST test",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/workflows/admin/process-completions",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 1.556,
+      "request_body": null,
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/workflows/admin/process-completions\"",
+      "data_set_id": "test-1776314255435-0",
+      "data_set_name": "Default POST test"
+    },
+    {
+      "test": "PUT /api/users/language - Fail with invalid language code",
+      "method": "PUT",
+      "url": "http://host.docker.internal:3005/api/users/language",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 1.797,
+      "request_body": {
+        "language_preference": "invalid_lang"
+      },
+      "curl_command": "curl -X PUT \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"language_preference\": \"invalid_lang\"\n}' \\\n  \"http://localhost:3005/api/users/language\"",
+      "data_set_id": "test-1776314255606-1",
+      "data_set_name": "Fail with invalid language code"
+    },
+    {
+      "test": "GET /api/compliance/alerts - Get triggered alerts (admin only)",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/compliance/alerts",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 1.7799999999999998,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/compliance/alerts\"",
+      "data_set_id": "test-1776314255485-0",
+      "data_set_name": "Get triggered alerts (admin only)"
+    },
+    {
+      "test": "GET /api/compliance/report - Generate compliance report (admin only)",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/compliance/report?dateTo=2030-12-31T23%3A59%3A59Z&dateFrom=2024-01-01T00%3A00%3A00Z",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 5.845999999999999,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/compliance/report?dateTo=2030-12-31T23%3A59%3A59Z&dateFrom=2024-01-01T00%3A00%3A00Z\"",
+      "data_set_id": "test-1776314255493-0",
+      "data_set_name": "Generate compliance report (admin only)"
+    },
+    {
+      "test": "PUT /api/notifications/preferences - Update notification preferences",
+      "method": "PUT",
+      "url": "http://host.docker.internal:3005/api/notifications/preferences",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 3.294,
+      "request_body": {
+        "preferences": [
+          {
+            "sms_enabled": false,
+            "email_enabled": true,
+            "in_app_enabled": true,
+            "notification_type": "signature_completed"
+          }
+        ]
+      },
+      "curl_command": "curl -X PUT \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"preferences\": [\n    {\n      \"sms_enabled\": false,\n      \"email_enabled\": true,\n      \"in_app_enabled\": true,\n      \"notification_type\": \"signature_completed\"\n    }\n  ]\n}' \\\n  \"http://localhost:3005/api/notifications/preferences\"",
+      "data_set_id": "test-1776314255602-0",
+      "data_set_name": "Update notification preferences"
+    },
+    {
+      "test": "GET /api/notifications/stream - Auto-generated test for GET /api/notifications/stream",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/notifications/stream",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.126,
+      "request_body": null,
+      "curl_command": "curl -X GET \"http://localhost:3005/api/notifications/stream\"",
+      "data_set_id": "test-1776314255529-0",
+      "data_set_name": "Auto-generated test for GET /api/notifications/stream"
+    },
+    {
+      "test": "GET /api/audit-logs - Search audit logs (admin only)",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/audit-logs",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.1510000000000002,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/audit-logs\"",
+      "data_set_id": "test-1776314255476-0",
+      "data_set_name": "Search audit logs (admin only)"
+    },
+    {
+      "test": "PUT /api/users/:id/role - Assign role to a user (admin only)",
+      "method": "PUT",
+      "url": "http://host.docker.internal:3005/api/users/:id/role",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.626,
+      "request_body": {
+        "role": "user"
+      },
+      "curl_command": "curl -X PUT \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"role\": \"user\"\n}' \\\n  \"http://localhost:3005/api/users/:id/role\"",
+      "data_set_id": "test-1776314255594-0",
+      "data_set_name": "Assign role to a user (admin only)"
+    },
+    {
+      "test": "POST /api/billing/webhook - Process Stripe webhook event",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/billing/webhook",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.948,
+      "request_body": {
+        "type": "checkout.session.completed"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -H \\\n  \"stripe-signature: test_signature\" \\\n  -d \\\n  '{\n  \"type\": \"checkout.session.completed\"\n}' \\\n  \"http://localhost:3005/api/billing/webhook\"",
+      "data_set_id": "test-1776314255398-0",
+      "data_set_name": "Process Stripe webhook event"
+    },
+    {
+      "test": "POST /api/auth/api-keys - Create a new API key",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/auth/api-keys",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 3.213,
+      "request_body": {
+        "label": "James Martinez"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"label\": \"James Martinez\"\n}' \\\n  \"http://localhost:3005/api/auth/api-keys\"",
+      "data_set_id": "test-1776314255301-0",
+      "data_set_name": "Create a new API key"
+    },
+    {
+      "test": "POST /api/analytics/signature-event - Fail without event_type",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/analytics/signature-event",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.557,
+      "request_body": {
+        "metadata": {}
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"metadata\": {}\n}' \\\n  \"http://localhost:3005/api/analytics/signature-event\"",
+      "data_set_id": "test-1776314255402-1",
+      "data_set_name": "Fail without event_type"
+    },
+    {
+      "test": "PUT /api/auth/profile - Default PUT test",
+      "method": "PUT",
+      "url": "http://host.docker.internal:3005/api/auth/profile",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.011,
+      "request_body": null,
+      "curl_command": "curl -X PUT \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/auth/profile\"",
+      "data_set_id": "test-1776314255619-0",
+      "data_set_name": "Default PUT test"
+    },
+    {
+      "test": "GET /api/auth/profile - Get user profile",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/auth/profile",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 1.9400000000000002,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/auth/profile\"",
+      "data_set_id": "test-1776314255443-0",
+      "data_set_name": "Get user profile"
+    },
+    {
+      "test": "GET /api/workflows - Default GET test",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/workflows",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.205,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/workflows\"",
+      "data_set_id": "test-1776314255576-0",
+      "data_set_name": "Default GET test"
+    },
+    {
+      "test": "GET /api/documents/:id/tags - Default GET test",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/documents/:id/tags",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.947,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/documents/:id/tags\"",
+      "data_set_id": "test-1776314255549-0",
+      "data_set_name": "Default GET test"
+    },
+    {
+      "test": "GET /api/compliance/export - Export audit logs as CSV (admin only)",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/compliance/export?dateTo=2030-12-31T23%3A59%3A59Z&dateFrom=2024-01-01T00%3A00%3A00Z",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 3.849,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/compliance/export?dateTo=2030-12-31T23%3A59%3A59Z&dateFrom=2024-01-01T00%3A00%3A00Z\"",
+      "data_set_id": "test-1776314255489-0",
+      "data_set_name": "Export audit logs as CSV (admin only)"
+    },
+    {
+      "test": "GET /api/billing/subscription - Default GET test",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/billing/subscription",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 4.278,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/billing/subscription\"",
+      "data_set_id": "test-1776314255541-0",
+      "data_set_name": "Default GET test"
+    },
+    {
+      "test": "POST /api/notifications/send - Send an in-app notification",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/notifications/send",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.669,
+      "request_body": {
+        "type": "document_signed",
+        "userId": "{{cache:auth.register.response.data.user.id}}",
+        "message": "egqhuhvyhycmxpjd",
+        "channels": [
+          "in_app"
+        ]
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"type\": \"document_signed\",\n  \"userId\": \"{{cache:auth.register.response.data.user.id}}\",\n  \"message\": \"egqhuhvyhycmxpjd\",\n  \"channels\": [\n    \"in_app\"\n  ]\n}' \\\n  \"http://localhost:3005/api/notifications/send\"",
+      "data_set_id": "test-1776314255343-0",
+      "data_set_name": "Send an in-app notification"
+    },
+    {
+      "test": "GET /api/* - Audit middleware logs requests automatically",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/*",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.6229999999999998,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/*\"",
+      "data_set_id": "test-1776311233331-0",
+      "data_set_name": "Audit middleware logs requests automatically"
+    },
+    {
+      "test": "POST /api/auth/refresh-token - Reject refresh without token",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/auth/refresh-token",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.937,
+      "request_body": null,
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/auth/refresh-token\"",
+      "data_set_id": "test-1776314255336-1",
+      "data_set_name": "Reject refresh without token"
+    },
+    {
+      "test": "POST /api/billing/checkout - Create checkout session for solo plan",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/billing/checkout",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.9299999999999997,
+      "request_body": {
+        "plan": "solo",
+        "interval": "monthly"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"plan\": \"solo\",\n  \"interval\": \"monthly\"\n}' \\\n  \"http://localhost:3005/api/billing/checkout\"",
+      "data_set_id": "test-1776314255389-0",
+      "data_set_name": "Create checkout session for solo plan"
+    },
+    {
+      "test": "POST /api/user-signatures - Fail to create uploaded signature without file",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/user-signatures",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 3.435,
+      "request_body": {
+        "signature_type": "uploaded"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"signature_type\": \"uploaded\"\n}' \\\n  \"http://localhost:3005/api/user-signatures\"",
+      "data_set_id": "test-1776314255408-2",
+      "data_set_name": "Fail to create uploaded signature without file"
+    },
+    {
+      "test": "GET /api/documents/search - Default GET test",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/documents/search",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.5469999999999997,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/documents/search\"",
+      "data_set_id": "test-1776314255557-0",
+      "data_set_name": "Default GET test"
+    },
+    {
+      "test": "GET /api/documents/:id/versions - Default GET test",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/documents/:id/versions",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.045,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/documents/:id/versions\"",
+      "data_set_id": "test-1776314255553-0",
+      "data_set_name": "Default GET test"
+    },
+    {
+      "test": "POST /api/billing/portal - Create billing portal session",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/billing/portal",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.213,
+      "request_body": null,
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/billing/portal\"",
+      "data_set_id": "test-1776314255394-0",
+      "data_set_name": "Create billing portal session"
+    },
+    {
+      "test": "GET /api/auth/api-keys - Default GET test",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/auth/api-keys",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.7430000000000003,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/auth/api-keys\"",
+      "data_set_id": "test-1776314255533-0",
+      "data_set_name": "Default GET test"
+    },
+    {
+      "test": "PATCH /api/notifications/read - Default PATCH test",
+      "method": "PATCH",
+      "url": "http://host.docker.internal:3005/api/notifications/read",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 3.44,
+      "request_body": null,
+      "curl_command": "curl -X PATCH \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/notifications/read\"",
+      "data_set_id": "test-1776314255638-0",
+      "data_set_name": "Default PATCH test"
+    },
+    {
+      "test": "POST /api/auth/reset-password - Reject invalid reset token",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/auth/reset-password",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.6710000000000003,
+      "request_body": {
+        "token": "invalid-token-value",
+        "password": "NewPass@1234"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -d \\\n  '{\n  \"token\": \"invalid-token-value\",\n  \"password\": \"NewPass@1234\"\n}' \\\n  \"http://localhost:3005/api/auth/reset-password\"",
+      "data_set_id": "test-1776314255292-1",
+      "data_set_name": "Reject invalid reset token"
+    },
+    {
+      "test": "POST /api/teams/:id/leave - Leave a team",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/teams/:id/leave",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.3440000000000003,
+      "request_body": null,
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/teams/:id/leave\"",
+      "data_set_id": "test-1776314255427-0",
+      "data_set_name": "Leave a team"
+    },
+    {
+      "test": "GET /api/teams/:id - Get team by ID",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/teams/:id",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.25,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/teams/:id\"",
+      "data_set_id": "test-1776314255481-0",
+      "data_set_name": "Get team by ID"
+    },
+    {
+      "test": "DELETE /api/teams/:id/members/:userId - Remove a team member",
+      "method": "DELETE",
+      "url": "http://host.docker.internal:3005/api/teams/:id/members/:userId",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 1.9719999999999998,
+      "request_body": null,
+      "curl_command": "curl -X DELETE \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/teams/:id/members/:userId\"",
+      "data_set_id": "test-1776314255656-0",
+      "data_set_name": "Remove a team member"
+    },
+    {
+      "test": "PATCH /api/teams/:id/members/:userId - Update team member role",
+      "method": "PATCH",
+      "url": "http://host.docker.internal:3005/api/teams/:id/members/:userId",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.2950000000000004,
+      "request_body": {
+        "role": "admin"
+      },
+      "curl_command": "curl -X PATCH \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"role\": \"admin\"\n}' \\\n  \"http://localhost:3005/api/teams/:id/members/:userId\"",
+      "data_set_id": "test-1776314255623-0",
+      "data_set_name": "Update team member role"
+    },
+    {
+      "test": "DELETE /api/teams/:id - Delete a team",
+      "method": "DELETE",
+      "url": "http://host.docker.internal:3005/api/teams/:id",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 1.804,
+      "request_body": null,
+      "curl_command": "curl -X DELETE \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/teams/:id\"",
+      "data_set_id": "test-1776314255653-0",
+      "data_set_name": "Delete a team"
+    },
+    {
+      "test": "POST /api/teams/:id/invite - Invite a member to the team",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/teams/:id/invite",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 3.44,
+      "request_body": {
+        "emails": [
+          "test_1776314277091_ded7a130_0@example.com"
+        ]
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"emails\": [\n    \"test_1776314277091_ded7a130_0@example.com\"\n  ]\n}' \\\n  \"http://localhost:3005/api/teams/:id/invite\"",
+      "data_set_id": "test-1776314255347-0",
+      "data_set_name": "Invite a member to the team"
+    },
+    {
+      "test": "GET /api/teams/mine - Get current user team",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/teams/mine",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.6940000000000004,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/teams/mine\"",
+      "data_set_id": "test-1776314255469-0",
+      "data_set_name": "Get current user team"
+    },
+    {
+      "test": "POST /api/signatures - Create a signature request",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/signatures",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.903,
+      "request_body": {
+        "document_id": "{{cache:documents.create.response.data.document.id}}",
+        "signer_email": "test_1776314277091_ded7a130@example.com"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"document_id\": \"{{cache:documents.create.response.data.document.id}}\",\n  \"signer_email\": \"test_1776314277091_ded7a130@example.com\"\n}' \\\n  \"http://localhost:3005/api/signatures\"",
+      "data_set_id": "test-1776314255316-0",
+      "data_set_name": "Create a signature request"
+    },
+    {
+      "test": "POST /api/documents/templates - Create a document template",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/documents/templates",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.601,
+      "request_body": {
+        "name": "James Martinez",
+        "description": "egqhuhvyhycmxpjd",
+        "document_id": "{{cache:documents.create.response.data.document.id}}"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"name\": \"James Martinez\",\n  \"description\": \"egqhuhvyhycmxpjd\",\n  \"document_id\": \"{{cache:documents.create.response.data.document.id}}\"\n}' \\\n  \"http://localhost:3005/api/documents/templates\"",
+      "data_set_id": "test-1776314255357-0",
+      "data_set_name": "Create a document template"
+    },
+    {
+      "test": "GET /api/documents - Get user documents",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/documents",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.176,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/documents\"",
+      "data_set_id": "test-1776314255545-0",
+      "data_set_name": "Get user documents"
+    },
+    {
+      "test": "POST /api/workflows - Create a signing workflow with recipients",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/workflows",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.503,
+      "request_body": {
+        "fields": [
+          {
+            "x": 100,
+            "y": 500,
+            "page": 1,
+            "width": 200,
+            "height": 50,
+            "field_type": "signature",
+            "recipient_index": 0
+          }
+        ],
+        "recipients": [
+          {
+            "signer_name": "Olivia Martinez_0",
+            "signer_email": "test_1776314277091_ded7a130_0@example.com",
+            "signing_order": 1
+          },
+          {
+            "signer_name": "Michael Jones_1",
+            "signer_email": "test_1776314277091_ded7a130_1@example.com",
+            "signing_order": 2
+          }
+        ],
+        "document_id": "{{cache:documents.create.response.data.document.id}}",
+        "workflow_type": "sequential"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"fields\": [\n    {\n      \"x\": 100,\n      \"y\": 500,\n      \"page\": 1,\n      \"width\": 200,\n      \"height\": 50,\n      \"field_type\": \"signature\",\n      \"recipient_index\": 0\n    }\n  ],\n  \"recipients\": [\n    {\n      \"signer_name\": \"Olivia Martinez_0\",\n      \"signer_email\": \"test_1776314277091_ded7a130_0@example.com\",\n      \"signing_order\": 1\n    },\n    {\n      \"signer_name\": \"Michael Jones_1\",\n      \"signer_email\": \"test_1776314277091_ded7a130_1@example.com\",\n      \"signing_order\": 2\n    }\n  ],\n  \"document_id\": \"{{cache:documents.create.response.data.document.id}}\",\n  \"workflow_type\": \"sequential\"\n}' \\\n  \"http://localhost:3005/api/workflows\"",
+      "data_set_id": "test-1776314255321-0",
+      "data_set_name": "Create a signing workflow with recipients"
+    },
+    {
+      "test": "GET /api/documents/:id - Get document by ID",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/documents/:id",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.6029999999999998,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/documents/:id\"",
+      "data_set_id": "test-1776314255461-0",
+      "data_set_name": "Get document by ID"
+    },
+    {
+      "test": "GET /api/documents/:id/download - Download document file",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/documents/:id/download",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.137,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/documents/:id/download\"",
+      "data_set_id": "test-1776314255501-0",
+      "data_set_name": "Download document file"
+    },
+    {
+      "test": "DELETE /api/documents/:id - Delete a document",
+      "method": "DELETE",
+      "url": "http://host.docker.internal:3005/api/documents/:id",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.02,
+      "request_body": null,
+      "curl_command": "curl -X DELETE \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/documents/:id\"",
+      "data_set_id": "test-1776314255645-0",
+      "data_set_name": "Delete a document"
+    },
+    {
+      "test": "POST /api/documents/:id/tags - Add tags to a document",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/documents/:id/tags",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.403,
+      "request_body": {
+        "tags": [
+          "contract",
+          "urgent"
+        ]
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"tags\": [\n    \"contract\",\n    \"urgent\"\n  ]\n}' \\\n  \"http://localhost:3005/api/documents/:id/tags\"",
+      "data_set_id": "test-1776314255366-0",
+      "data_set_name": "Add tags to a document"
+    },
+    {
+      "test": "POST /api/documents/:id/versions - Upload new document version",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/documents/:id/versions",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 1.8090000000000002,
+      "request_body": null,
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/documents/:id/versions\"",
+      "data_set_id": "test-1776314255381-0",
+      "data_set_name": "Upload new document version"
+    },
+    {
+      "test": "POST /api/documents/:id/versions/:versionId/revert - Revert document to a previous version",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/documents/:id/versions/:versionId/revert",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.0669999999999997,
+      "request_body": null,
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/documents/:id/versions/:versionId/revert\"",
+      "data_set_id": "test-1776314255385-0",
+      "data_set_name": "Revert document to a previous version"
+    },
+    {
+      "test": "GET /api/documents/:id/file - Serve document file",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/documents/:id/file",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.3600000000000003,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/documents/:id/file\"",
+      "data_set_id": "test-1776314255505-0",
+      "data_set_name": "Serve document file"
+    },
+    {
+      "test": "GET /api/organizations/:id - Get organization by ID",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/organizations/:id",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.3440000000000003,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/organizations/:id\"",
+      "data_set_id": "test-1776314255465-0",
+      "data_set_name": "Get organization by ID"
+    },
+    {
+      "test": "DELETE /api/auth/api-keys/:id - Delete an API key",
+      "method": "DELETE",
+      "url": "http://host.docker.internal:3005/api/auth/api-keys/:id",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.175,
+      "request_body": null,
+      "curl_command": "curl -X DELETE \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/auth/api-keys/:id\"",
+      "data_set_id": "test-1776314255649-0",
+      "data_set_name": "Delete an API key"
+    },
+    {
+      "test": "GET /api/auth/sessions - List active sessions for authenticated user",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/auth/sessions",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 1.776,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/auth/sessions\"",
+      "data_set_id": "test-1776314255589-0",
+      "data_set_name": "List active sessions for authenticated user"
+    },
+    {
+      "test": "DELETE /api/user-signatures/:id - Delete a user signature",
+      "method": "DELETE",
+      "url": "http://host.docker.internal:3005/api/user-signatures/:id",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.4610000000000003,
+      "request_body": null,
+      "curl_command": "curl -X DELETE \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/user-signatures/:id\"",
+      "data_set_id": "test-1776314255671-0",
+      "data_set_name": "Delete a user signature"
+    },
+    {
+      "test": "GET /api/user-signatures - Get user signatures",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/user-signatures",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 1.785,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/user-signatures\"",
+      "data_set_id": "test-1776314255570-0",
+      "data_set_name": "Get user signatures"
+    },
+    {
+      "test": "PUT /api/user-signatures/:id - Update a user signature",
+      "method": "PUT",
+      "url": "http://host.docker.internal:3005/api/user-signatures/:id",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 1.971,
+      "request_body": {
+        "is_default": true
+      },
+      "curl_command": "curl -X PUT \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"is_default\": true\n}' \\\n  \"http://localhost:3005/api/user-signatures/:id\"",
+      "data_set_id": "test-1776314255598-0",
+      "data_set_name": "Update a user signature"
+    },
+    {
+      "test": "GET /api/user-signatures/:id - Get a single signature by ID",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/user-signatures/:id",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 1.807,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/user-signatures/:id\"",
+      "data_set_id": "test-1776314255473-0",
+      "data_set_name": "Get a single signature by ID"
+    },
+    {
+      "test": "POST /api/teams/join/:token - Join a team via invite token",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/teams/join/:token",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 1.88,
+      "request_body": null,
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/teams/join/:token\"",
+      "data_set_id": "test-1776314255362-0",
+      "data_set_name": "Join a team via invite token"
+    },
+    {
+      "test": "DELETE /api/teams/:id/invites/:inviteId - Cancel a team invite",
+      "method": "DELETE",
+      "url": "http://host.docker.internal:3005/api/teams/:id/invites/:inviteId",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 1.768,
+      "request_body": null,
+      "curl_command": "curl -X DELETE \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/teams/:id/invites/:inviteId\"",
+      "data_set_id": "test-1776314255660-0",
+      "data_set_name": "Cancel a team invite"
+    },
+    {
+      "test": "GET /api/signatures/:documentId - Get signature status for document",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/signatures/:documentId",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.247,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/signatures/:documentId\"",
+      "data_set_id": "test-1776314255517-0",
+      "data_set_name": "Get signature status for document"
+    },
+    {
+      "test": "PATCH /api/signatures/:id/sign - Sign a document",
+      "method": "PATCH",
+      "url": "http://host.docker.internal:3005/api/signatures/:id/sign",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 1.966,
+      "request_body": {
+        "user_signature_id": "{{cache:userSignatures.create.response.data.userSignature.id}}"
+      },
+      "curl_command": "curl -X PATCH \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"user_signature_id\": \"{{cache:userSignatures.create.response.data.userSignature.id}}\"\n}' \\\n  \"http://localhost:3005/api/signatures/:id/sign\"",
+      "data_set_id": "test-1776314255630-0",
+      "data_set_name": "Sign a document"
+    },
+    {
+      "test": "POST /api/signatures/:id/confirm - Confirm a signature application",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/signatures/:id/confirm",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.7230000000000003,
+      "request_body": {
+        "confirmation_status": "confirmed"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"confirmation_status\": \"confirmed\"\n}' \\\n  \"http://localhost:3005/api/signatures/:id/confirm\"",
+      "data_set_id": "test-1776314255352-0",
+      "data_set_name": "Confirm a signature application"
+    },
+    {
+      "test": "POST /api/documents/templates/:id/use - Create document from template",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/documents/templates/:id/use",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.2239999999999998,
+      "request_body": {
+        "name": "James Martinez"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"name\": \"James Martinez\"\n}' \\\n  \"http://localhost:3005/api/documents/templates/:id/use\"",
+      "data_set_id": "test-1776314255376-0",
+      "data_set_name": "Create document from template"
+    },
+    {
+      "test": "GET /api/documents/templates/:id - Get template by ID",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/documents/templates/:id",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.0730000000000004,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/documents/templates/:id\"",
+      "data_set_id": "test-1776314255509-0",
+      "data_set_name": "Get template by ID"
+    },
+    {
+      "test": "DELETE /api/documents/templates/:id - Delete a document template",
+      "method": "DELETE",
+      "url": "http://host.docker.internal:3005/api/documents/templates/:id",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 1.74,
+      "request_body": null,
+      "curl_command": "curl -X DELETE \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/documents/templates/:id\"",
+      "data_set_id": "test-1776314255664-0",
+      "data_set_name": "Delete a document template"
+    },
+    {
+      "test": "GET /api/workflows/:id/history - Get full workflow action history with compliance metadata",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/workflows/:id/history",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.177,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/workflows/:id/history\"",
+      "data_set_id": "test-1776314255585-0",
+      "data_set_name": "Get full workflow action history with compliance metadata"
+    },
+    {
+      "test": "POST /api/workflows/:id/start - Start the signing process for a workflow",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/workflows/:id/start",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.0669999999999997,
+      "request_body": null,
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/workflows/:id/start\"",
+      "data_set_id": "test-1776314255415-0",
+      "data_set_name": "Start the signing process for a workflow"
+    },
+    {
+      "test": "GET /api/workflows/:id/downloads - Get download links for completed workflow",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/workflows/:id/downloads",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.232,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/workflows/:id/downloads\"",
+      "data_set_id": "test-1776314255513-0",
+      "data_set_name": "Get download links for completed workflow"
+    },
+    {
+      "test": "POST /api/workflows/:id/self-sign - Self-sign a workflow as the creator",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/workflows/:id/self-sign",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 1.8699999999999999,
+      "request_body": null,
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/workflows/:id/self-sign\"",
+      "data_set_id": "test-1776314255412-0",
+      "data_set_name": "Self-sign a workflow as the creator"
+    },
+    {
+      "test": "PUT /api/workflows/:id/reminders - Configure reminder intervals for workflow recipients",
+      "method": "PUT",
+      "url": "http://host.docker.internal:3005/api/workflows/:id/reminders",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.125,
+      "request_body": {
+        "reminder_interval_hours": 24
+      },
+      "curl_command": "curl -X PUT \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"reminder_interval_hours\": 24\n}' \\\n  \"http://localhost:3005/api/workflows/:id/reminders\"",
+      "data_set_id": "test-1776314255615-0",
+      "data_set_name": "Configure reminder intervals for workflow recipients"
+    },
+    {
+      "test": "GET /api/workflows/:id/history/export - Export workflow history as CSV",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/workflows/:id/history/export",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 1.915,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/workflows/:id/history/export\"",
+      "data_set_id": "test-1776314255497-0",
+      "data_set_name": "Export workflow history as CSV"
+    },
+    {
+      "test": "PUT /api/workflows/:id - Update workflow recipients and fields",
+      "method": "PUT",
+      "url": "http://host.docker.internal:3005/api/workflows/:id",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.162,
+      "request_body": {
+        "recipients": [
+          {
+            "signer_name": "Updated Signer 1",
+            "signer_email": "test_1776314277091_ded7a130_0@example.com",
+            "signing_order": 1
+          }
+        ]
+      },
+      "curl_command": "curl -X PUT \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"recipients\": [\n    {\n      \"signer_name\": \"Updated Signer 1\",\n      \"signer_email\": \"test_1776314277091_ded7a130_0@example.com\",\n      \"signing_order\": 1\n    }\n  ]\n}' \\\n  \"http://localhost:3005/api/workflows/:id\"",
+      "data_set_id": "test-1776314255610-0",
+      "data_set_name": "Update workflow recipients and fields"
+    },
+    {
+      "test": "GET /api/workflows/:id - Get workflow details by ID",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/workflows/:id",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.337,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/workflows/:id\"",
+      "data_set_id": "test-1776314255580-0",
+      "data_set_name": "Get workflow details by ID"
+    },
+    {
+      "test": "DELETE /api/documents/:id/tags/:tag - Remove a tag from a document",
+      "method": "DELETE",
+      "url": "http://host.docker.internal:3005/api/documents/:id/tags/:tag",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 1.6260000000000001,
+      "request_body": null,
+      "curl_command": "curl -X DELETE \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/documents/:id/tags/:tag\"",
+      "data_set_id": "test-1776314255668-0",
+      "data_set_name": "Remove a tag from a document"
+    },
+    {
+      "test": "DELETE /api/auth/sessions/:id - Return 404 for non-existing session",
+      "method": "DELETE",
+      "url": "http://host.docker.internal:3005/api/auth/sessions/:id",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.4290000000000003,
+      "request_body": null,
+      "curl_command": "curl -X DELETE \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/auth/sessions/:id\"",
+      "data_set_id": "test-1776314255642-1",
+      "data_set_name": "Return 404 for non-existing session"
+    },
+    {
+      "test": "GET /api/workflows/:id/status - Get real-time status of all signers in a workflow",
+      "method": "GET",
+      "url": "http://host.docker.internal:3005/api/workflows/:id/status",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.9619999999999997,
+      "request_body": null,
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/workflows/:id/status\"",
+      "data_set_id": "test-1776314255525-0",
+      "data_set_name": "Get real-time status of all signers in a workflow"
+    },
+    {
+      "test": "POST /api/workflows/:id/remind - Send reminder to pending signers",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/workflows/:id/remind",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.317,
+      "request_body": null,
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/workflows/:id/remind\"",
+      "data_set_id": "test-1776314255423-0",
+      "data_set_name": "Send reminder to pending signers"
+    },
+    {
+      "test": "PATCH /api/workflows/:id/sign - Sign workflow as current recipient",
+      "method": "PATCH",
+      "url": "http://host.docker.internal:3005/api/workflows/:id/sign",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 1.891,
+      "request_body": null,
+      "curl_command": "curl -X PATCH \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/workflows/:id/sign\"",
+      "data_set_id": "test-1776314255634-0",
+      "data_set_name": "Sign workflow as current recipient"
+    },
+    {
+      "test": "PATCH /api/workflows/:id/decline - Decline workflow as current recipient",
+      "method": "PATCH",
+      "url": "http://host.docker.internal:3005/api/workflows/:id/decline",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.1189999999999998,
+      "request_body": {
+        "reason": "egqhuhvyhycmxpjd"
+      },
+      "curl_command": "curl -X PATCH \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"reason\": \"egqhuhvyhycmxpjd\"\n}' \\\n  \"http://localhost:3005/api/workflows/:id/decline\"",
+      "data_set_id": "test-1776314255626-0",
+      "data_set_name": "Decline workflow as current recipient"
+    },
+    {
+      "test": "POST /api/sign/:token/started - Mark signing page opened (first call)",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/sign/:token/started",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 2.0140000000000002,
+      "request_body": null,
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  \"http://localhost:3005/api/sign/:token/started\"",
+      "data_set_id": "test-1776314255419-0",
+      "data_set_name": "Mark signing page opened (first call)"
+    },
+    {
+      "test": "POST /api/workflows/:id/cancel - Cancel an active workflow",
+      "method": "POST",
+      "url": "http://host.docker.internal:3005/api/workflows/:id/cancel",
+      "status": "error",
+      "error": "Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed ('192.168.65.254', 3005)]",
+      "duration_ms": 1.761,
+      "request_body": null,
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3005/api/workflows/:id/cancel\"",
+      "data_set_id": "test-1776314255431-0",
+      "data_set_name": "Cancel an active workflow"
+    }
+  ],
+  "summary": {
+    "total": 94,
+    "passed": 0,
+    "failed": 0,
+    "errors": 94,
+    "pass_rate": 0.0,
+    "total_duration_ms": 232.92200000000003
+  }
+}

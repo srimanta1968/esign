@@ -1,34 +1,26 @@
 {
+  "name": "POST /api/user-signatures - Save user signature",
   "endpoint": "/api/user-signatures",
   "method": "POST",
-  "taskId": "f2e996a5-6c35-4899-8965-d5fd4afad095",
   "requiresAuth": true,
-  "priority": 30,
-  "dependsOn": ["POST /api/auth/register"],
-  "captureResponse": {
-    "userSignatures.create.response.data.userSignature.id": "data.userSignature.id"
-  },
+  "expectedStatus": 201,
+  "taskId": "0b78d714-656f-4111-b136-e7f1312bebe1",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
   "testCases": [
     {
-      "name": "Create a user signature",
-      "headers": {
-        "Authorization": "Bearer {{cache:auth.register.response.data.token}}",
-        "Content-Type": "application/json"
-      },
+      "name": "Create user signature from data URL",
       "payload": {
-        "signature_type": "{{dynamic:text}}"
+        "signature_data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==",
+        "type": "drawn"
       },
       "expectedStatus": 201,
-      "expectedResponse": {
-        "success": true,
-        "data": {
-          "userSignature": {
-            "id": "string",
-            "user_id": "string",
-            "signature_type": "string"
-          }
-        }
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
       }
     }
-  ]
+  ],
+  "captureResponse": {
+    "userSignatures.create.response.data.id": "data.signature.id"
+  },
+  "dependsOn": ["POST /api/auth/register", "POST /api/auth/login"]
 }

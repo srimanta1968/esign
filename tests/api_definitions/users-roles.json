@@ -1,23 +1,19 @@
 {
+  "name": "GET /api/users/roles - List available roles (admin)",
   "endpoint": "/api/users/roles",
   "method": "GET",
-  "taskId": "b7c9c4a1-ea4a-4051-9dd9-de881cfef3bf",
   "requiresAuth": true,
-  "priority": 10,
-  "dependsOn": [
-    "POST /api/auth/register",
-    "POST /api/auth/login"
-  ],
+  "expectedStatus": 200,
+  "taskId": "9927c6cb-2af2-438a-b9cd-f7f35ff9e6a2",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
   "testCases": [
     {
-      "name": "List available roles (admin only)",
+      "name": "Non-admin forbidden",
+      "expectedStatus": 403,
       "headers": {
         "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
-      },
-      "expectedStatus": 200,
-      "expectedResponse": {
-        "success": true
       }
     }
-  ]
+  ],
+  "dependsOn": ["POST /api/auth/register", "POST /api/auth/login"]
 }

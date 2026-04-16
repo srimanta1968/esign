@@ -1,27 +1,20 @@
 {
-  "endpoint": "/api/workflows/:id/remind",
+  "name": "POST /api/workflows/:id/remind - Send reminders",
+  "endpoint": "/api/workflows/{{cache:workflows.create.response.data.id}}/remind",
   "method": "POST",
-  "taskId": "81723ecd-acd9-443c-b3e3-351a0410e1c3",
   "requiresAuth": true,
-  "priority": 36,
-  "dependsOn": ["POST /api/workflows/:id/start"],
+  "expectedStatus": 200,
+  "taskId": "2bee76ea-823d-4c9b-b6ed-312b00dc487e",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
   "testCases": [
     {
-      "name": "Send reminder to pending signers",
-      "headers": {
-        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
-      },
-      "urlParams": {
-        "id": "{{cache:workflows.create.response.data.workflow.id}}"
-      },
+      "name": "Send reminder to pending recipients",
       "payload": {},
       "expectedStatus": 200,
-      "expectedResponse": {
-        "success": true,
-        "data": {
-          "reminded": "array"
-        }
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
       }
     }
-  ]
+  ],
+  "dependsOn": ["POST /api/auth/register", "POST /api/auth/login", "POST /api/workflows"]
 }

@@ -283,17 +283,20 @@ docker-compose down -v
 
 ---
 
-## Additional Documentation
+## Documentation
 
-- **[DOCKER_HUB.md](DOCKER_HUB.md)** - Docker Hub image usage guide
-- **[QUICK_START.md](QUICK_START.md)** - Detailed setup guide
-- **[DEBUGGING.md](DEBUGGING.md)** - Troubleshooting and logs
-- **[HOOKS_INSTALLATION.md](HOOKS_INSTALLATION.md)** - Git hooks details
+All detailed documentation lives in the `docs/` folder. You only need three guides:
+
+- **[docs/DEV_MCP.md](docs/DEV_MCP.md)** — Dev MCP: code generation, git hooks (pre-commit duplicate detection, pre-push API testing), LLM test data generation, multi-project setup, Dev MCP troubleshooting
+- **[docs/TEST_MCP.md](docs/TEST_MCP.md)** — Test MCP: running UI tests, running API tests via `run-all-tests.sh`, test configuration (`test-config.json`), environment variables, Test MCP troubleshooting
+- **[docs/SUT_SETUP_GUIDE.md](docs/SUT_SETUP_GUIDE.md)** — Framework-specific commands to bind your web app to `0.0.0.0` (required for Docker containers to reach your local dev server). Covers 12 backends and frontends: Express, NestJS, Django, Flask, FastAPI, Spring Boot, Go, Rails, Vite, CRA, Next.js, Angular, Nuxt, SvelteKit, Astro.
 
 ---
 
 ## Support
 
-1. Check **[DEBUGGING.md](DEBUGGING.md)** for common solutions
-2. View logs: `docker logs projexlight-mcp`
-3. Contact ProjexLight support through the platform
+1. **Dev MCP issues** — see [docs/DEV_MCP.md](docs/DEV_MCP.md) § Debugging scenarios
+2. **Test MCP issues** — see [docs/TEST_MCP.md](docs/TEST_MCP.md) § Troubleshooting
+3. **`Cannot connect to host host.docker.internal:PORT`** — run `./check-sut.sh` or see [docs/SUT_SETUP_GUIDE.md](docs/SUT_SETUP_GUIDE.md)
+4. **View container logs** — `docker logs projexlight-dev-mcp -f` and `docker logs projexlight-test-mcp -f`
+5. Contact ProjexLight support through the platform

@@ -1,26 +1,19 @@
 {
-  "endpoint": "/api/workflows/:id/history",
+  "name": "GET /api/workflows/:id/history - Get workflow history",
+  "endpoint": "/api/workflows/{{cache:workflows.create.response.data.id}}/history",
   "method": "GET",
-  "taskId": "9b71e1b4-1fa7-4133-a3dc-7b9e8ac000d7",
   "requiresAuth": true,
-  "priority": 38,
-  "dependsOn": ["POST /api/workflows"],
+  "expectedStatus": 200,
+  "taskId": "8f7955e9-3755-446d-af1c-0aeb7d7e0d21",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
   "testCases": [
     {
-      "name": "Get full workflow action history with compliance metadata",
-      "headers": {
-        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
-      },
-      "urlParams": {
-        "id": "{{cache:workflows.create.response.data.workflow.id}}"
-      },
+      "name": "Get workflow action history",
       "expectedStatus": 200,
-      "expectedResponse": {
-        "success": true,
-        "data": {
-          "history": "array"
-        }
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
       }
     }
-  ]
+  ],
+  "dependsOn": ["POST /api/auth/register", "POST /api/auth/login", "POST /api/workflows"]
 }

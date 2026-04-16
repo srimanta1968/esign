@@ -1,0 +1,3216 @@
+{
+  "status": "completed",
+  "results": [
+    {
+      "test": "GET /api/auth/sso/:provider - Reject unsupported SSO provider",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/auth/sso/:provider",
+      "status": "passed",
+      "http_status": 400,
+      "duration_ms": 3.508,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 400,
+        "actual_status": 400
+      },
+      "response": null,
+      "error": null,
+      "request_body": null,
+      "request_headers": null,
+      "curl_command": "curl -X GET \"http://localhost:3002/api/auth/sso/:provider\"",
+      "data_set_id": "test-1776316012434-1",
+      "data_set_name": "Reject unsupported SSO provider",
+      "test_type": "positive",
+      "endpoint_id": "1280dcc0-6cfd-442a-98d4-6c4f7e74a0ef",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473"
+    },
+    {
+      "test": "GET /api/auth/sso/callback - Reject fake authorization code (cannot exchange with real provider)",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/auth/sso/callback?code=test-auth-code&state=google",
+      "status": "passed",
+      "http_status": 400,
+      "duration_ms": 226.45499999999998,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 400,
+        "actual_status": 400
+      },
+      "response": null,
+      "error": null,
+      "request_body": null,
+      "request_headers": null,
+      "curl_command": "curl -X GET \"http://localhost:3002/api/auth/sso/callback?code=test-auth-code&state=google\"",
+      "data_set_id": "test-1776316011693-0",
+      "data_set_name": "Reject fake authorization code (cannot exchange with real provider)",
+      "test_type": "positive",
+      "endpoint_id": "57ad52bf-c3af-4ba8-8ca1-053331e6a1ba",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473"
+    },
+    {
+      "test": "POST /api/auth/register - Register a new user",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/auth/register",
+      "status": "passed",
+      "http_status": 201,
+      "duration_ms": 128.51399999999998,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 201,
+        "actual_status": 201
+      },
+      "response": null,
+      "error": null,
+      "request_body": {
+        "name": "Test User",
+        "email": "test_1776316190724_ba1255bc@example.com",
+        "password": "TestPass@1234"
+      },
+      "request_headers": {
+        "Content-Type": "application/json"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -d \\\n  '{\n  \"name\": \"Test User\",\n  \"email\": \"test_1776316190724_ba1255bc@example.com\",\n  \"password\": \"TestPass@1234\"\n}' \\\n  \"http://localhost:3002/api/auth/register\"",
+      "data_set_id": "test-1776316008727-0",
+      "data_set_name": "Register a new user",
+      "test_type": "positive",
+      "endpoint_id": "5d1cea18-c47c-4698-8069-c67bff3df2f2",
+      "feature_id": "fa85c87d-7cc3-4f9d-b3b9-09d37d60fbb4",
+      "scenario_id": "9166109e-3c13-428a-94e9-780e5d26a12b"
+    },
+    {
+      "test": "POST /api/auth/login - Login with valid credentials",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/auth/login",
+      "status": "passed",
+      "http_status": 200,
+      "duration_ms": 55.70399999999999,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 200,
+        "actual_status": 200
+      },
+      "response": null,
+      "error": null,
+      "request_body": {
+        "email": "qa_test_1776316188@example.com",
+        "password": "QaTest1776316188!"
+      },
+      "request_headers": {
+        "Content-Type": "application/json"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -d \\\n  '{\n  \"email\": \"qa_test_1776316188@example.com\",\n  \"password\": \"QaTest1776316188!\"\n}' \\\n  \"http://localhost:3002/api/auth/login\"",
+      "data_set_id": "test-1776316005662-0",
+      "data_set_name": "Login with valid credentials",
+      "test_type": "positive",
+      "endpoint_id": "9f6e7f91-8dd4-4215-a7fc-319ab3ad16d5",
+      "feature_id": "b81f3231-2e03-408a-b7b6-9346f9225714",
+      "scenario_id": "8b662f08-bfe3-4e6c-9d4e-4703ccd8ec21"
+    },
+    {
+      "test": "POST /api/auth/forgot-password - Request password reset for non-existing email (still returns 200)",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/auth/forgot-password",
+      "status": "passed",
+      "http_status": 200,
+      "duration_ms": 3.712,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 200,
+        "actual_status": 200
+      },
+      "response": null,
+      "error": null,
+      "request_body": {
+        "email": "nonexistent@example.com"
+      },
+      "request_headers": {
+        "Content-Type": "application/json"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -d \\\n  '{\n  \"email\": \"nonexistent@example.com\"\n}' \\\n  \"http://localhost:3002/api/auth/forgot-password\"",
+      "data_set_id": "test-1776316004901-1",
+      "data_set_name": "Request password reset for non-existing email (still returns 200)",
+      "test_type": "positive",
+      "endpoint_id": "6679a7f8-2adb-463e-9d82-39288bbc7459",
+      "feature_id": "fa85c87d-7cc3-4f9d-b3b9-09d37d60fbb4",
+      "scenario_id": "9166109e-3c13-428a-94e9-780e5d26a12b"
+    },
+    {
+      "test": "POST /api/auth/resend-verification - Resend verification code to registered email",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/auth/resend-verification",
+      "status": "passed",
+      "http_status": 200,
+      "duration_ms": 62.309999999999995,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 200,
+        "actual_status": 200
+      },
+      "response": null,
+      "error": null,
+      "request_body": {
+        "email": "test_1776316190724_ba1255bc@example.com"
+      },
+      "request_headers": {
+        "Content-Type": "application/json"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -d \\\n  '{\n  \"email\": \"test_1776316190724_ba1255bc@example.com\"\n}' \\\n  \"http://localhost:3002/api/auth/resend-verification\"",
+      "data_set_id": "test-1776316009123-0",
+      "data_set_name": "Resend verification code to registered email",
+      "test_type": "positive",
+      "endpoint_id": "7bbfe42f-0c4d-471f-a412-72b6a43c5e32",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473"
+    },
+    {
+      "test": "POST /api/auth/verify-email - Verify email with valid code",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/auth/verify-email",
+      "status": "failed",
+      "http_status": 400,
+      "duration_ms": 5.791,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 400"
+        ],
+        "expected_status": 200,
+        "actual_status": 400
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 400"
+      ],
+      "request_body": {
+        "code": "123456",
+        "email": "test_1776316190724_ba1255bc@example.com"
+      },
+      "request_headers": {
+        "Content-Type": "application/json"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -d \\\n  '{\n  \"code\": \"123456\",\n  \"email\": \"test_1776316190724_ba1255bc@example.com\"\n}' \\\n  \"http://localhost:3002/api/auth/verify-email\"",
+      "data_set_id": "test-1776316012805-0",
+      "data_set_name": "Verify email with valid code",
+      "test_type": "positive",
+      "endpoint_id": "110ecba3-26e2-4076-a825-be504b42e316",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Invalid verification code\"\n}"
+    },
+    {
+      "test": "GET /api/audit-logs - Search audit logs (admin only)",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/audit-logs",
+      "status": "failed",
+      "http_status": 403,
+      "duration_ms": 3.4499999999999997,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 403"
+        ],
+        "expected_status": 200,
+        "actual_status": 403
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 403"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/audit-logs\"",
+      "data_set_id": "test-1776316002920-0",
+      "data_set_name": "Search audit logs (admin only)",
+      "test_type": "positive",
+      "endpoint_id": "49e0c1d0-46db-42c8-b9ab-1ff813895b26",
+      "feature_id": "dc7cb8c4-cf98-43ee-b57c-46bfdc1a12f9",
+      "scenario_id": "2d3a1eec-288b-4d41-98d6-e2d265b0297d",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Insufficient permissions\"\n}"
+    },
+    {
+      "test": "GET /api/users/roles - List available roles (admin only)",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/users/roles",
+      "status": "failed",
+      "http_status": 403,
+      "duration_ms": 3.3579999999999997,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 403"
+        ],
+        "expected_status": 200,
+        "actual_status": 403
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 403"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/users/roles\"",
+      "data_set_id": "test-1776316041946-0",
+      "data_set_name": "List available roles (admin only)",
+      "test_type": "positive",
+      "endpoint_id": "4011c11a-6716-4e3a-8c92-0520ebf5bfd6",
+      "feature_id": "37bbefa3-4e37-44a7-9ae0-620b3006c4fa",
+      "scenario_id": "5114622c-3e44-41b8-ba83-9ad763514558",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Insufficient permissions\"\n}"
+    },
+    {
+      "test": "POST /api/documents - Upload a document (JSON stub in non-production)",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/documents",
+      "status": "passed",
+      "http_status": 201,
+      "duration_ms": 13.955,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 201,
+        "actual_status": 201
+      },
+      "response": null,
+      "error": null,
+      "request_body": {
+        "file_path": "stub-zuasrhbvogzhvgh.pdf_191443",
+        "mime_type": "application/pdf",
+        "original_name": "stub-zuasrhbvogzhvgh.pdf"
+      },
+      "request_headers": {
+        "Content-Type": "application/json"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -d \\\n  '{\n  \"file_path\": \"stub-zuasrhbvogzhvgh.pdf_191443\",\n  \"mime_type\": \"application/pdf\",\n  \"original_name\": \"stub-zuasrhbvogzhvgh.pdf\"\n}' \\\n  \"http://localhost:3002/api/documents\"",
+      "data_set_id": "test-1776316024932-0",
+      "data_set_name": "Upload a document (JSON stub in non-production)",
+      "test_type": "positive",
+      "endpoint_id": "7b19e9d1-9490-4404-ad5f-e60b094653c6",
+      "feature_id": "fcf20055-62ae-431a-b2a6-cbce3b2dad91",
+      "scenario_id": "aa7b1b88-9b1e-4f08-85f1-f0e281197d3b"
+    },
+    {
+      "test": "GET /api/notifications/stream - Default test case",
+      "status": "error",
+      "error": ""
+    },
+    {
+      "test": "POST /api/analytics/signature-event - Fail without event_type",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/analytics/signature-event",
+      "status": "passed",
+      "http_status": 400,
+      "duration_ms": 9.548,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 400,
+        "actual_status": 400
+      },
+      "response": null,
+      "error": null,
+      "request_body": {
+        "metadata": {}
+      },
+      "request_headers": {
+        "Content-Type": "application/json"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -d \\\n  '{\n  \"metadata\": {}\n}' \\\n  \"http://localhost:3002/api/analytics/signature-event\"",
+      "data_set_id": "test-1776316002191-1",
+      "data_set_name": "Fail without event_type",
+      "test_type": "positive",
+      "endpoint_id": "7a0244bc-9ad9-4074-86a3-f538f4006b4b",
+      "feature_id": "97fd4e09-9395-4a69-bcc1-b362ff0a1b1a",
+      "scenario_id": "7da4fb58-e066-447f-9bfa-3d9eb728f815"
+    },
+    {
+      "test": "GET /api/* - Audit middleware logs requests automatically",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/*",
+      "status": "failed",
+      "http_status": 404,
+      "duration_ms": 1.8860000000000001,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 404"
+        ],
+        "expected_status": 200,
+        "actual_status": 404
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 404"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/*\"",
+      "data_set_id": "test-1776316028981-0",
+      "data_set_name": "Audit middleware logs requests automatically",
+      "test_type": "positive",
+      "endpoint_id": "6fdd0ecb-9cf1-4223-a08b-f19d2bf765fe",
+      "feature_id": "558e0a77-b060-4108-b367-3ffc32d9b069",
+      "scenario_id": "151da2a4-c065-4012-b935-b91519221c96",
+      "response_preview": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /api/*</pre>\n</body>\n</html>\n"
+    },
+    {
+      "test": "GET /api/documents/:id/versions - Default GET test",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/documents/1f309135-7ff6-4d54-a32d-9476655ea2e4/versions",
+      "status": "failed",
+      "http_status": 404,
+      "duration_ms": 13.318,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 404"
+        ],
+        "expected_status": 200,
+        "actual_status": 404
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 404"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/documents/1f309135-7ff6-4d54-a32d-9476655ea2e4/versions\"",
+      "data_set_id": "test-1776316021186-0",
+      "data_set_name": "Default GET test",
+      "test_type": "positive",
+      "endpoint_id": "47a736c2-3248-44f3-9bdc-9a748c97ab4f",
+      "feature_id": "9822eaa0-8398-44a9-96c7-6b764b96d86c",
+      "scenario_id": "aa4e4614-0fae-4e24-b368-bf57ceaf71ae",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Document not found\"\n}"
+    },
+    {
+      "test": "POST /api/organizations/",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/organizations/",
+      "status": "failed",
+      "http_status": 400,
+      "duration_ms": 2.769,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 400"
+        ],
+        "expected_status": 200,
+        "actual_status": 400
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 400"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/organizations/\"",
+      "data_set_id": null,
+      "data_set_name": null,
+      "test_type": "positive",
+      "endpoint_id": "8038bda4-c781-42d9-a933-6ebc1cd34eaf",
+      "feature_id": "dc7cb8c4-cf98-43ee-b57c-46bfdc1a12f9",
+      "scenario_id": null,
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Organization name is required\"\n}"
+    },
+    {
+      "test": "GET /api/billing/subscription - Default GET test",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/billing/subscription",
+      "status": "passed",
+      "http_status": 200,
+      "duration_ms": 4.942,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 200,
+        "actual_status": 200
+      },
+      "response": null,
+      "error": null,
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/billing/subscription\"",
+      "data_set_id": "test-1776316013931-0",
+      "data_set_name": "Default GET test",
+      "test_type": "positive",
+      "endpoint_id": "ce88eac9-7949-4cb1-9f2a-6c70966625de",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473"
+    },
+    {
+      "test": "GET /api/documents/",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/documents/",
+      "status": "passed",
+      "http_status": 200,
+      "duration_ms": 3.375,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 200,
+        "actual_status": 200
+      },
+      "response": null,
+      "error": null,
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/documents/\"",
+      "data_set_id": null,
+      "data_set_name": null,
+      "test_type": "positive",
+      "endpoint_id": "5e420737-fd9e-4e5b-b9c9-21df50ce65ae",
+      "feature_id": "dc7cb8c4-cf98-43ee-b57c-46bfdc1a12f9",
+      "scenario_id": null
+    },
+    {
+      "test": "PUT /api/notifications/preferences - Update notification preferences",
+      "method": "PUT",
+      "url": "http://host.docker.internal:3002/api/notifications/preferences",
+      "status": "passed",
+      "http_status": 200,
+      "duration_ms": 7.08,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 200,
+        "actual_status": 200
+      },
+      "response": null,
+      "error": null,
+      "request_body": {
+        "preferences": [
+          {
+            "sms_enabled": false,
+            "email_enabled": true,
+            "in_app_enabled": true,
+            "notification_type": "signature_completed"
+          }
+        ]
+      },
+      "request_headers": {},
+      "curl_command": "curl -X PUT \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"preferences\": [\n    {\n      \"sms_enabled\": false,\n      \"email_enabled\": true,\n      \"in_app_enabled\": true,\n      \"notification_type\": \"signature_completed\"\n    }\n  ]\n}' \\\n  \"http://localhost:3002/api/notifications/preferences\"",
+      "data_set_id": "test-1776316025654-0",
+      "data_set_name": "Update notification preferences",
+      "test_type": "positive",
+      "endpoint_id": "e60c82f0-f196-4fe4-8c6d-0890554eca5f",
+      "feature_id": "9822eaa0-8398-44a9-96c7-6b764b96d86c",
+      "scenario_id": "aa4e4614-0fae-4e24-b368-bf57ceaf71ae"
+    },
+    {
+      "test": "GET /api/auth/api-keys - Default GET test",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/auth/api-keys",
+      "status": "passed",
+      "http_status": 200,
+      "duration_ms": 3.296,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 200,
+        "actual_status": 200
+      },
+      "response": null,
+      "error": null,
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/auth/api-keys\"",
+      "data_set_id": "test-1776316004146-0",
+      "data_set_name": "Default GET test",
+      "test_type": "positive",
+      "endpoint_id": "eb8ebf5e-1ecb-4fb2-ba9b-2086aba81c22",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473"
+    },
+    {
+      "test": "POST /api/billing/checkout - Create checkout session for solo plan",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/billing/checkout",
+      "status": "failed",
+      "http_status": 503,
+      "duration_ms": 3.009,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 503"
+        ],
+        "expected_status": 200,
+        "actual_status": 503
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 503"
+      ],
+      "request_body": {
+        "plan": "solo",
+        "interval": "monthly"
+      },
+      "request_headers": {},
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"plan\": \"solo\",\n  \"interval\": \"monthly\"\n}' \\\n  \"http://localhost:3002/api/billing/checkout\"",
+      "data_set_id": "test-1776316013169-0",
+      "data_set_name": "Create checkout session for solo plan",
+      "test_type": "positive",
+      "endpoint_id": "8ac82036-92ae-4c1e-9d26-7608c556aa58",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Stripe is not configured\"\n}"
+    },
+    {
+      "test": "GET /api/auth/me - Default GET test",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/auth/me",
+      "status": "passed",
+      "http_status": 200,
+      "duration_ms": 2.87,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 200,
+        "actual_status": 200
+      },
+      "response": null,
+      "error": null,
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/auth/me\"",
+      "data_set_id": "test-1776316006023-0",
+      "data_set_name": "Default GET test",
+      "test_type": "positive",
+      "endpoint_id": "17d8fd39-b64f-4409-b51b-6d2b65160e14",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473"
+    },
+    {
+      "test": "POST /api/user-signatures/",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/user-signatures/",
+      "status": "failed",
+      "http_status": 400,
+      "duration_ms": 2.1879999999999997,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 400"
+        ],
+        "expected_status": 200,
+        "actual_status": 400
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 400"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/user-signatures/\"",
+      "data_set_id": null,
+      "data_set_name": null,
+      "test_type": "positive",
+      "endpoint_id": "b1f234bd-1290-451c-93ff-c85b7c8fc1f4",
+      "feature_id": "dc7cb8c4-cf98-43ee-b57c-46bfdc1a12f9",
+      "scenario_id": null,
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"signature_type is required\"\n}"
+    },
+    {
+      "test": "POST /api/documents/",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/documents/",
+      "status": "failed",
+      "http_status": 400,
+      "duration_ms": 5.261,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 400"
+        ],
+        "expected_status": 200,
+        "actual_status": 400
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 400"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/documents/\"",
+      "data_set_id": null,
+      "data_set_name": null,
+      "test_type": "positive",
+      "endpoint_id": "0c6b42fc-caa9-4395-a593-1d433228bfba",
+      "feature_id": "dc7cb8c4-cf98-43ee-b57c-46bfdc1a12f9",
+      "scenario_id": null,
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"File is required\"\n}"
+    },
+    {
+      "test": "POST /api/auth/api-keys - Create a new API key",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/auth/api-keys",
+      "status": "passed",
+      "http_status": 201,
+      "duration_ms": 7.832999999999999,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 201,
+        "actual_status": 201
+      },
+      "response": null,
+      "error": null,
+      "request_body": {
+        "label": "Mia Rodriguez"
+      },
+      "request_headers": {},
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"label\": \"Mia Rodriguez\"\n}' \\\n  \"http://localhost:3002/api/auth/api-keys\"",
+      "data_set_id": "test-1776316003778-0",
+      "data_set_name": "Create a new API key",
+      "test_type": "positive",
+      "endpoint_id": "f8868cba-5bb0-4695-a649-f07e2d6ca821",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473"
+    },
+    {
+      "test": "POST /api/billing/portal - Create billing portal session",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/billing/portal",
+      "status": "failed",
+      "http_status": 503,
+      "duration_ms": 2.4130000000000003,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 503"
+        ],
+        "expected_status": 200,
+        "actual_status": 503
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 503"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/billing/portal\"",
+      "data_set_id": "test-1776316013579-0",
+      "data_set_name": "Create billing portal session",
+      "test_type": "positive",
+      "endpoint_id": "289b6e94-cb6c-4b14-b11a-e512766feb17",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Stripe is not configured\"\n}"
+    },
+    {
+      "test": "POST /api/billing/webhook - Process Stripe webhook event",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/billing/webhook",
+      "status": "failed",
+      "http_status": 503,
+      "duration_ms": 1.952,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 503"
+        ],
+        "expected_status": 200,
+        "actual_status": 503
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 503"
+      ],
+      "request_body": {
+        "type": "checkout.session.completed"
+      },
+      "request_headers": {
+        "Content-Type": "application/json",
+        "stripe-signature": "test_signature"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -H \\\n  \"stripe-signature: test_signature\" \\\n  -d \\\n  '{\n  \"type\": \"checkout.session.completed\"\n}' \\\n  \"http://localhost:3002/api/billing/webhook\"",
+      "data_set_id": "test-1776316014304-0",
+      "data_set_name": "Process Stripe webhook event",
+      "test_type": "positive",
+      "endpoint_id": "686fcb55-9b8a-4d1e-8ce2-6dde6cc27db1",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473",
+      "response_preview": "{\n  \"error\": \"Stripe not configured\"\n}"
+    },
+    {
+      "test": "POST /api/notifications/send - Send an in-app notification",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/notifications/send",
+      "status": "failed",
+      "http_status": 400,
+      "duration_ms": 2.2030000000000003,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 400"
+        ],
+        "expected_status": 200,
+        "actual_status": 400
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 400"
+      ],
+      "request_body": {
+        "type": "document_signed",
+        "userId": "1d7a48a9-7921-4d3e-9b03-ea1a7e313c36",
+        "message": "zuasrhbvogzhvgh",
+        "channels": [
+          "in_app"
+        ]
+      },
+      "request_headers": {},
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"type\": \"document_signed\",\n  \"userId\": \"1d7a48a9-7921-4d3e-9b03-ea1a7e313c36\",\n  \"message\": \"zuasrhbvogzhvgh\",\n  \"channels\": [\n    \"in_app\"\n  ]\n}' \\\n  \"http://localhost:3002/api/notifications/send\"",
+      "data_set_id": "test-1776316026398-0",
+      "data_set_name": "Send an in-app notification",
+      "test_type": "positive",
+      "endpoint_id": "4c9129da-2cf8-483c-ae61-f6bd8caaf1f6",
+      "feature_id": "9822eaa0-8398-44a9-96c7-6b764b96d86c",
+      "scenario_id": "aa4e4614-0fae-4e24-b368-bf57ceaf71ae",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Invalid type: document_signed. Valid types: signature_requested, signature_completed, document_shared, reminder, system\"\n}"
+    },
+    {
+      "test": "GET /api/sign/:token",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/sign/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMjlmY2U4Zi0yOGJhLTQ0NjYtODdlMy1iMDY0YjVlMzc4MzUiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzE2MTkxLCJleHAiOjE3NzY5MjA5OTF9.IAkJ8HvNOPUJeDFLMGZ2BG1-oCLkRgs88WpMpShk9Io",
+      "status": "failed",
+      "http_status": 401,
+      "duration_ms": 4.152,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 401"
+        ],
+        "expected_status": 200,
+        "actual_status": 401
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 401"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/sign/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMjlmY2U4Zi0yOGJhLTQ0NjYtODdlMy1iMDY0YjVlMzc4MzUiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzE2MTkxLCJleHAiOjE3NzY5MjA5OTF9.IAkJ8HvNOPUJeDFLMGZ2BG1-oCLkRgs88WpMpShk9Io\"",
+      "data_set_id": null,
+      "data_set_name": null,
+      "test_type": "positive",
+      "endpoint_id": "419f41bd-aed5-48bb-88ab-f8ce1ebb9193",
+      "feature_id": "dc7cb8c4-cf98-43ee-b57c-46bfdc1a12f9",
+      "scenario_id": null,
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Invalid signing token\"\n}"
+    },
+    {
+      "test": "PUT /api/users/language - Fail with invalid language code",
+      "method": "PUT",
+      "url": "http://host.docker.internal:3002/api/users/language",
+      "status": "passed",
+      "http_status": 400,
+      "duration_ms": 2.842,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 400,
+        "actual_status": 400
+      },
+      "response": null,
+      "error": null,
+      "request_body": {
+        "language_preference": "invalid_lang"
+      },
+      "request_headers": {
+        "Content-Type": "application/json"
+      },
+      "curl_command": "curl -X PUT \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -d \\\n  '{\n  \"language_preference\": \"invalid_lang\"\n}' \\\n  \"http://localhost:3002/api/users/language\"",
+      "data_set_id": "test-1776316041239-1",
+      "data_set_name": "Fail with invalid language code",
+      "test_type": "positive",
+      "endpoint_id": "0e9c7510-52cd-4d51-bcc9-62c201f7e33c",
+      "feature_id": "97fd4e09-9395-4a69-bcc1-b362ff0a1b1a",
+      "scenario_id": "7da4fb58-e066-447f-9bfa-3d9eb728f815"
+    },
+    {
+      "test": "GET /api/workflows - Default GET test",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/workflows",
+      "status": "passed",
+      "http_status": 200,
+      "duration_ms": 3.47,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 200,
+        "actual_status": 200
+      },
+      "response": null,
+      "error": null,
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/workflows\"",
+      "data_set_id": "test-1776316051405-0",
+      "data_set_name": "Default GET test",
+      "test_type": "positive",
+      "endpoint_id": "4513fb2d-94f6-4b33-b0db-0ebea9a247cc",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473"
+    },
+    {
+      "test": "GET /api/users - List all users (admin only)",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/users",
+      "status": "failed",
+      "http_status": 403,
+      "duration_ms": 2.81,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 403"
+        ],
+        "expected_status": 200,
+        "actual_status": 403
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 403"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/users\"",
+      "data_set_id": "test-1776316042314-0",
+      "data_set_name": "List all users (admin only)",
+      "test_type": "positive",
+      "endpoint_id": "73b5dd1d-25ce-48b0-b057-5d90f4921f94",
+      "feature_id": "37bbefa3-4e37-44a7-9ae0-620b3006c4fa",
+      "scenario_id": "5114622c-3e44-41b8-ba83-9ad763514558",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Insufficient permissions\"\n}"
+    },
+    {
+      "test": "GET /api/documents/search - Default GET test",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/documents/search",
+      "status": "passed",
+      "http_status": 200,
+      "duration_ms": 3.189,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 200,
+        "actual_status": 200
+      },
+      "response": null,
+      "error": null,
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/documents/search\"",
+      "data_set_id": "test-1776316022663-0",
+      "data_set_name": "Default GET test",
+      "test_type": "positive",
+      "endpoint_id": "2bc2a379-b361-4256-a9b2-bf9f74ba365d",
+      "feature_id": "9822eaa0-8398-44a9-96c7-6b764b96d86c",
+      "scenario_id": "aa4e4614-0fae-4e24-b368-bf57ceaf71ae"
+    },
+    {
+      "test": "POST /api/compliance/esign-metadata",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/compliance/esign-metadata",
+      "status": "failed",
+      "http_status": 400,
+      "duration_ms": 13.693999999999999,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 400"
+        ],
+        "expected_status": 200,
+        "actual_status": 400
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 400"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/compliance/esign-metadata\"",
+      "data_set_id": null,
+      "data_set_name": null,
+      "test_type": "positive",
+      "endpoint_id": "b14b829b-7036-47e0-bed2-74e26e19eaab",
+      "feature_id": "dc7cb8c4-cf98-43ee-b57c-46bfdc1a12f9",
+      "scenario_id": null,
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"signature_id is required\"\n}"
+    },
+    {
+      "test": "GET /api/auth/profile - Get user profile",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/auth/profile",
+      "status": "passed",
+      "http_status": 200,
+      "duration_ms": 4.072,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 200,
+        "actual_status": 200
+      },
+      "response": null,
+      "error": null,
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/auth/profile\"",
+      "data_set_id": "test-1776316006786-0",
+      "data_set_name": "Get user profile",
+      "test_type": "positive",
+      "endpoint_id": "02954012-23a6-4a22-ab99-ba42870b4d1f",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473"
+    },
+    {
+      "test": "GET /api/audit-logs/",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/audit-logs/",
+      "status": "failed",
+      "http_status": 403,
+      "duration_ms": 3.516,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 403"
+        ],
+        "expected_status": 200,
+        "actual_status": 403
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 403"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/audit-logs/\"",
+      "data_set_id": null,
+      "data_set_name": null,
+      "test_type": "positive",
+      "endpoint_id": "f3f5e371-acfd-40cb-a1fe-9d0b9605e8dc",
+      "feature_id": "dc7cb8c4-cf98-43ee-b57c-46bfdc1a12f9",
+      "scenario_id": null,
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Insufficient permissions\"\n}"
+    },
+    {
+      "test": "GET /api/documents/:id/tags - Default GET test",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/documents/1f309135-7ff6-4d54-a32d-9476655ea2e4/tags",
+      "status": "failed",
+      "http_status": 404,
+      "duration_ms": 3.362,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 404"
+        ],
+        "expected_status": 200,
+        "actual_status": 404
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 404"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/documents/1f309135-7ff6-4d54-a32d-9476655ea2e4/tags\"",
+      "data_set_id": "test-1776316020098-0",
+      "data_set_name": "Default GET test",
+      "test_type": "positive",
+      "endpoint_id": "05a4f3ce-ee81-489c-b703-ba6425d544b0",
+      "feature_id": "9822eaa0-8398-44a9-96c7-6b764b96d86c",
+      "scenario_id": "aa4e4614-0fae-4e24-b368-bf57ceaf71ae",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Document not found\"\n}"
+    },
+    {
+      "test": "POST /api/signatures/",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/signatures/",
+      "status": "failed",
+      "http_status": 400,
+      "duration_ms": 2.796,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 400"
+        ],
+        "expected_status": 200,
+        "actual_status": 400
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 400"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/signatures/\"",
+      "data_set_id": null,
+      "data_set_name": null,
+      "test_type": "positive",
+      "endpoint_id": "3d8c7439-76ff-4e71-b31a-bf98765e845f",
+      "feature_id": "dc7cb8c4-cf98-43ee-b57c-46bfdc1a12f9",
+      "scenario_id": null,
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"document_id and signer_email are required\"\n}"
+    },
+    {
+      "test": "GET /api/notifications - Default GET test",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/notifications",
+      "status": "passed",
+      "http_status": 200,
+      "duration_ms": 4.699,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 200,
+        "actual_status": 200
+      },
+      "response": null,
+      "error": null,
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/notifications\"",
+      "data_set_id": "test-1776316027105-0",
+      "data_set_name": "Default GET test",
+      "test_type": "positive",
+      "endpoint_id": "5f30d3ed-7c85-4507-974c-ce60e9c99609",
+      "feature_id": "9822eaa0-8398-44a9-96c7-6b764b96d86c",
+      "scenario_id": "aa4e4614-0fae-4e24-b368-bf57ceaf71ae"
+    },
+    {
+      "test": "POST /api/teams - Create a new team",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/teams",
+      "status": "failed",
+      "http_status": 500,
+      "duration_ms": 3.9509999999999996,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 201, got 500"
+        ],
+        "expected_status": 201,
+        "actual_status": 500
+      },
+      "response": null,
+      "error": [
+        "Expected status 201, got 500"
+      ],
+      "request_body": {
+        "name": "Mia Rodriguez"
+      },
+      "request_headers": {},
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"name\": \"Mia Rodriguez\"\n}' \\\n  \"http://localhost:3002/api/teams\"",
+      "data_set_id": "test-1776316036187-0",
+      "data_set_name": "Create a new team",
+      "test_type": "positive",
+      "endpoint_id": "bffbdaa5-701d-4da3-93c8-0649a31c173d",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Your current plan (free) does not support teams. Please upgrade to a Team or Scale plan first.\"\n}"
+    },
+    {
+      "test": "POST /api/auth/refresh-token - Reject refresh without token",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/auth/refresh-token",
+      "status": "failed",
+      "http_status": 200,
+      "duration_ms": 8.231,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 400, got 200"
+        ],
+        "expected_status": 400,
+        "actual_status": 200
+      },
+      "response": null,
+      "error": [
+        "Expected status 400, got 200"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/auth/refresh-token\"",
+      "data_set_id": "test-1776316007530-1",
+      "data_set_name": "Reject refresh without token",
+      "test_type": "positive",
+      "endpoint_id": "a04a6d44-8cec-4efe-92b8-f3617eb9e93e",
+      "feature_id": "b9d9125f-634f-4049-b038-b1c738b55b4f",
+      "scenario_id": "360cf2dd-6360-4b81-8dac-1f16f7e0e6a6",
+      "response_preview": "{\n  \"success\": true,\n  \"data\": {\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMjlmY2U4Zi0yOGJhLTQ0NjYtODdlMy1iMDY0YjVlMzc4MzUiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzE2MjIyLCJleHAiOjE3NzY5MjEwMjJ9.of5u-0XrnHAyuJMeQ9gv8riZwJ17p4TIhToGCxe2pTo\",\n    \"session\": {\n      \"id\": \"14dd8325-a880-4ed0-9e3a-d0d22b7ffbd6\",\n      \"user_id\": \"329fce8f-28ba-4466-87e3-b064b5e37835\",\n      \"ip_address\": \"::ffff:127.0.0.1\",\n      \"user_agent\":... (truncated)"
+    },
+    {
+      "test": "GET /api/users/",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/users/",
+      "status": "failed",
+      "http_status": 403,
+      "duration_ms": 3.332,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 403"
+        ],
+        "expected_status": 200,
+        "actual_status": 403
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 403"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/users/\"",
+      "data_set_id": null,
+      "data_set_name": null,
+      "test_type": "positive",
+      "endpoint_id": "6547f20c-3ef6-4457-96f5-055045030552",
+      "feature_id": "dc7cb8c4-cf98-43ee-b57c-46bfdc1a12f9",
+      "scenario_id": null,
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Insufficient permissions\"\n}"
+    },
+    {
+      "test": "PUT /api/users/:id/role - Assign role to a user (admin only)",
+      "method": "PUT",
+      "url": "http://host.docker.internal:3002/api/users/329fce8f-28ba-4466-87e3-b064b5e37835/role",
+      "status": "failed",
+      "http_status": 403,
+      "duration_ms": 3.362,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 403"
+        ],
+        "expected_status": 200,
+        "actual_status": 403
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 403"
+      ],
+      "request_body": {
+        "role": "user"
+      },
+      "request_headers": {
+        "Content-Type": "application/json"
+      },
+      "curl_command": "curl -X PUT \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -d \\\n  '{\n  \"role\": \"user\"\n}' \\\n  \"http://localhost:3002/api/users/329fce8f-28ba-4466-87e3-b064b5e37835/role\"",
+      "data_set_id": "test-1776316040511-0",
+      "data_set_name": "Assign role to a user (admin only)",
+      "test_type": "positive",
+      "endpoint_id": "a528a39c-4d26-47ca-82ad-65ee50e81275",
+      "feature_id": "37bbefa3-4e37-44a7-9ae0-620b3006c4fa",
+      "scenario_id": "5114622c-3e44-41b8-ba83-9ad763514558",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Insufficient permissions\"\n}"
+    },
+    {
+      "test": "PATCH /api/notifications/read - Default PATCH test",
+      "method": "PATCH",
+      "url": "http://host.docker.internal:3002/api/notifications/read",
+      "status": "passed",
+      "http_status": 200,
+      "duration_ms": 3.154,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 200,
+        "actual_status": 200
+      },
+      "response": null,
+      "error": null,
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X PATCH \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/notifications/read\"",
+      "data_set_id": "test-1776316026031-0",
+      "data_set_name": "Default PATCH test",
+      "test_type": "positive",
+      "endpoint_id": "5a98b32d-c155-413b-aec8-fa25b01c12ab",
+      "feature_id": "9822eaa0-8398-44a9-96c7-6b764b96d86c",
+      "scenario_id": "aa4e4614-0fae-4e24-b368-bf57ceaf71ae"
+    },
+    {
+      "test": "POST /api/workflows/",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/workflows/",
+      "status": "failed",
+      "http_status": 400,
+      "duration_ms": 7.664,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 400"
+        ],
+        "expected_status": 200,
+        "actual_status": 400
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 400"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/workflows/\"",
+      "data_set_id": null,
+      "data_set_name": null,
+      "test_type": "positive",
+      "endpoint_id": "2ce88f04-c977-4cab-8f43-aa6eabec0e88",
+      "feature_id": "dc7cb8c4-cf98-43ee-b57c-46bfdc1a12f9",
+      "scenario_id": null,
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"document_id, workflow_type, and at least one recipient are required\"\n}"
+    },
+    {
+      "test": "GET /api/notifications/preferences",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/notifications/preferences",
+      "status": "passed",
+      "http_status": 200,
+      "duration_ms": 3.49,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 200,
+        "actual_status": 200
+      },
+      "response": null,
+      "error": null,
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/notifications/preferences\"",
+      "data_set_id": null,
+      "data_set_name": null,
+      "test_type": "positive",
+      "endpoint_id": "842be934-2928-4acc-a4bc-a729c5252b69",
+      "feature_id": "dc7cb8c4-cf98-43ee-b57c-46bfdc1a12f9",
+      "scenario_id": null
+    },
+    {
+      "test": "GET /api/compliance/export - Export audit logs as CSV (admin only)",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/compliance/export?dateTo=2030-12-31T23%3A59%3A59Z&dateFrom=2024-01-01T00%3A00%3A00Z",
+      "status": "failed",
+      "http_status": 403,
+      "duration_ms": 2.854,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 403"
+        ],
+        "expected_status": 200,
+        "actual_status": 403
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 403"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/compliance/export?dateTo=2030-12-31T23%3A59%3A59Z&dateFrom=2024-01-01T00%3A00%3A00Z\"",
+      "data_set_id": "test-1776316016632-0",
+      "data_set_name": "Export audit logs as CSV (admin only)",
+      "test_type": "positive",
+      "endpoint_id": "78b8212a-1317-4051-a77b-816178e896b1",
+      "feature_id": "bcf96a30-a8ef-4cfd-b7a6-2d575d67b26a",
+      "scenario_id": "d6d011a8-e906-43ee-b992-eb5e1d340127",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Insufficient permissions\"\n}"
+    },
+    {
+      "test": "GET /api/sign/:token/document",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/sign/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMjlmY2U4Zi0yOGJhLTQ0NjYtODdlMy1iMDY0YjVlMzc4MzUiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzE2MjIyLCJleHAiOjE3NzY5MjEwMjJ9.of5u-0XrnHAyuJMeQ9gv8riZwJ17p4TIhToGCxe2pTo/document",
+      "status": "failed",
+      "http_status": 401,
+      "duration_ms": 2.3040000000000003,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 401"
+        ],
+        "expected_status": 200,
+        "actual_status": 401
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 401"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/sign/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMjlmY2U4Zi0yOGJhLTQ0NjYtODdlMy1iMDY0YjVlMzc4MzUiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzE2MjIyLCJleHAiOjE3NzY5MjEwMjJ9.of5u-0XrnHAyuJMeQ9gv8riZwJ17p4TIhToGCxe2pTo/document\"",
+      "data_set_id": null,
+      "data_set_name": null,
+      "test_type": "positive",
+      "endpoint_id": "1caed8e1-53c8-461d-8657-6d48deff5307",
+      "feature_id": "dc7cb8c4-cf98-43ee-b57c-46bfdc1a12f9",
+      "scenario_id": null,
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Invalid, expired, or already used signing token\"\n}"
+    },
+    {
+      "test": "POST /api/compliance/alerts/config - Reject missing fields",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/compliance/alerts/config",
+      "status": "failed",
+      "http_status": 403,
+      "duration_ms": 5.737,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 400, got 403"
+        ],
+        "expected_status": 400,
+        "actual_status": 403
+      },
+      "response": null,
+      "error": [
+        "Expected status 400, got 403"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/compliance/alerts/config\"",
+      "data_set_id": "test-1776316015071-1",
+      "data_set_name": "Reject missing fields",
+      "test_type": "positive",
+      "endpoint_id": "2cc7326f-5c11-40ff-a659-9ebc271fd49d",
+      "feature_id": "bcf96a30-a8ef-4cfd-b7a6-2d575d67b26a",
+      "scenario_id": "d6d011a8-e906-43ee-b992-eb5e1d340127",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Insufficient permissions\"\n}"
+    },
+    {
+      "test": "POST /api/sign/:token/complete",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/sign/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMjlmY2U4Zi0yOGJhLTQ0NjYtODdlMy1iMDY0YjVlMzc4MzUiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzE2MjIyLCJleHAiOjE3NzY5MjEwMjJ9.of5u-0XrnHAyuJMeQ9gv8riZwJ17p4TIhToGCxe2pTo/complete",
+      "status": "failed",
+      "http_status": 400,
+      "duration_ms": 3.851,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 400"
+        ],
+        "expected_status": 200,
+        "actual_status": 400
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 400"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/sign/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMjlmY2U4Zi0yOGJhLTQ0NjYtODdlMy1iMDY0YjVlMzc4MzUiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzE2MjIyLCJleHAiOjE3NzY5MjEwMjJ9.of5u-0XrnHAyuJMeQ9gv8riZwJ17p4TIhToGCxe2pTo/complete\"",
+      "data_set_id": null,
+      "data_set_name": null,
+      "test_type": "positive",
+      "endpoint_id": "ddc06e72-fcdf-41de-809c-4c923fe6a5e9",
+      "feature_id": "dc7cb8c4-cf98-43ee-b57c-46bfdc1a12f9",
+      "scenario_id": null,
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"signatures array is required and must not be empty\"\n}"
+    },
+    {
+      "test": "POST /api/user-signatures - Fail to create uploaded signature without file",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/user-signatures",
+      "status": "passed",
+      "http_status": 400,
+      "duration_ms": 2.529,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 400,
+        "actual_status": 400
+      },
+      "response": null,
+      "error": null,
+      "request_body": {
+        "signature_type": "uploaded"
+      },
+      "request_headers": {
+        "Content-Type": "application/json"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -d \\\n  '{\n  \"signature_type\": \"uploaded\"\n}' \\\n  \"http://localhost:3002/api/user-signatures\"",
+      "data_set_id": "test-1776316039440-2",
+      "data_set_name": "Fail to create uploaded signature without file",
+      "test_type": "positive",
+      "endpoint_id": "a6ef8080-7bbf-4a01-b78a-4dfce44633fd",
+      "feature_id": "7590f1ac-62e8-4087-9ad3-54d7671a4db1",
+      "scenario_id": "68e4bc55-ae9a-4755-bde9-79bf9545ecd2"
+    },
+    {
+      "test": "GET /api/teams/join/:token - Default GET test",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/teams/join/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMjlmY2U4Zi0yOGJhLTQ0NjYtODdlMy1iMDY0YjVlMzc4MzUiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzE2MjIyLCJleHAiOjE3NzY5MjEwMjJ9.of5u-0XrnHAyuJMeQ9gv8riZwJ17p4TIhToGCxe2pTo",
+      "status": "failed",
+      "http_status": 404,
+      "duration_ms": 2.819,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 404"
+        ],
+        "expected_status": 200,
+        "actual_status": 404
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 404"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/teams/join/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMjlmY2U4Zi0yOGJhLTQ0NjYtODdlMy1iMDY0YjVlMzc4MzUiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzE2MjIyLCJleHAiOjE3NzY5MjEwMjJ9.of5u-0XrnHAyuJMeQ9gv8riZwJ17p4TIhToGCxe2pTo\"",
+      "data_set_id": "test-1776316035468-0",
+      "data_set_name": "Default GET test",
+      "test_type": "positive",
+      "endpoint_id": "bdb22484-6b8f-4501-8d3a-4cc7f790dcbb",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Invalid invite link\"\n}"
+    },
+    {
+      "test": "GET /api/compliance/alerts - Get triggered alerts (admin only)",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/compliance/alerts",
+      "status": "failed",
+      "http_status": 403,
+      "duration_ms": 3.355,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 403"
+        ],
+        "expected_status": 200,
+        "actual_status": 403
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 403"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/compliance/alerts\"",
+      "data_set_id": "test-1776316015429-0",
+      "data_set_name": "Get triggered alerts (admin only)",
+      "test_type": "positive",
+      "endpoint_id": "a376231c-4959-4cc0-b93c-13291d75a2d1",
+      "feature_id": "bcf96a30-a8ef-4cfd-b7a6-2d575d67b26a",
+      "scenario_id": "d6d011a8-e906-43ee-b992-eb5e1d340127",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Insufficient permissions\"\n}"
+    },
+    {
+      "test": "PUT /api/auth/profile - Default PUT test",
+      "method": "PUT",
+      "url": "http://host.docker.internal:3002/api/auth/profile",
+      "status": "passed",
+      "http_status": 200,
+      "duration_ms": 6.9430000000000005,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 200,
+        "actual_status": 200
+      },
+      "response": null,
+      "error": null,
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X PUT \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/auth/profile\"",
+      "data_set_id": "test-1776316006424-0",
+      "data_set_name": "Default PUT test",
+      "test_type": "positive",
+      "endpoint_id": "2db34d50-0782-451d-a20f-4ff4fbb341c5",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473"
+    },
+    {
+      "test": "GET /api/compliance/esign-metadata/:signatureId - Return 404 when compliance metadata is missing",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/compliance/esign-metadata/:signatureId",
+      "status": "failed",
+      "http_status": 500,
+      "duration_ms": 3.887,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 404, got 500"
+        ],
+        "expected_status": 404,
+        "actual_status": 500
+      },
+      "response": null,
+      "error": [
+        "Expected status 404, got 500"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/compliance/esign-metadata/:signatureId\"",
+      "data_set_id": "test-1776316016234-0",
+      "data_set_name": "Return 404 when compliance metadata is missing",
+      "test_type": "positive",
+      "endpoint_id": "8ab29b38-cf3f-4018-a7c6-8263a5136b28",
+      "feature_id": "97fd4e09-9395-4a69-bcc1-b362ff0a1b1a",
+      "scenario_id": "7da4fb58-e066-447f-9bfa-3d9eb728f815",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Internal server error\"\n}"
+    },
+    {
+      "test": "GET /api/compliance/report - Generate compliance report (admin only)",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/compliance/report?dateTo=2030-12-31T23%3A59%3A59Z&dateFrom=2024-01-01T00%3A00%3A00Z",
+      "status": "failed",
+      "http_status": 403,
+      "duration_ms": 3.353,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 403"
+        ],
+        "expected_status": 200,
+        "actual_status": 403
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 403"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/compliance/report?dateTo=2030-12-31T23%3A59%3A59Z&dateFrom=2024-01-01T00%3A00%3A00Z\"",
+      "data_set_id": "test-1776316017045-0",
+      "data_set_name": "Generate compliance report (admin only)",
+      "test_type": "positive",
+      "endpoint_id": "498a4302-9d39-4518-84aa-91585ce447eb",
+      "feature_id": "bcf96a30-a8ef-4cfd-b7a6-2d575d67b26a",
+      "scenario_id": "d6d011a8-e906-43ee-b992-eb5e1d340127",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Insufficient permissions\"\n}"
+    },
+    {
+      "test": "GET /api/documents/templates",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/documents/templates",
+      "status": "passed",
+      "http_status": 200,
+      "duration_ms": 4.008,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 200,
+        "actual_status": 200
+      },
+      "response": null,
+      "error": null,
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/documents/templates\"",
+      "data_set_id": null,
+      "data_set_name": null,
+      "test_type": "positive",
+      "endpoint_id": "d1a2b81c-56f5-43c8-865d-d42626b4c825",
+      "feature_id": "dc7cb8c4-cf98-43ee-b57c-46bfdc1a12f9",
+      "scenario_id": null
+    },
+    {
+      "test": "GET /api/user-signatures/",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/user-signatures/",
+      "status": "passed",
+      "http_status": 200,
+      "duration_ms": 4.023,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 200,
+        "actual_status": 200
+      },
+      "response": null,
+      "error": null,
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/user-signatures/\"",
+      "data_set_id": null,
+      "data_set_name": null,
+      "test_type": "positive",
+      "endpoint_id": "7ad1d48a-ab69-4620-8c58-6a3bdf5c7419",
+      "feature_id": "dc7cb8c4-cf98-43ee-b57c-46bfdc1a12f9",
+      "scenario_id": null
+    },
+    {
+      "test": "POST /api/organizations - Create a new organization",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/organizations",
+      "status": "failed",
+      "http_status": 409,
+      "duration_ms": 3.702,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 201, got 409"
+        ],
+        "expected_status": 201,
+        "actual_status": 409
+      },
+      "response": null,
+      "error": [
+        "Expected status 201, got 409"
+      ],
+      "request_body": {
+        "name": "Mia Rodriguez"
+      },
+      "request_headers": {
+        "Content-Type": "application/json"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -d \\\n  '{\n  \"name\": \"Mia Rodriguez\"\n}' \\\n  \"http://localhost:3002/api/organizations\"",
+      "data_set_id": "test-1776316028611-0",
+      "data_set_name": "Create a new organization",
+      "test_type": "positive",
+      "endpoint_id": "b2c66fca-a737-4277-b93c-503a9a03469f",
+      "feature_id": "37bbefa3-4e37-44a7-9ae0-620b3006c4fa",
+      "scenario_id": "5114622c-3e44-41b8-ba83-9ad763514558",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Organization with this name already exists\"\n}"
+    },
+    {
+      "test": "POST /api/workflows/admin/process-completions - Default POST test",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/workflows/admin/process-completions",
+      "status": "passed",
+      "http_status": 200,
+      "duration_ms": 4.018,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 200,
+        "actual_status": 200
+      },
+      "response": null,
+      "error": null,
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/workflows/admin/process-completions\"",
+      "data_set_id": "test-1776316042660-0",
+      "data_set_name": "Default POST test",
+      "test_type": "positive",
+      "endpoint_id": "94f7b589-9884-4aa5-b896-f8fa7d486e64",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473"
+    },
+    {
+      "test": "POST /api/auth/reset-password - Reject invalid reset token",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/auth/reset-password",
+      "status": "passed",
+      "http_status": 400,
+      "duration_ms": 4.037,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 400,
+        "actual_status": 400
+      },
+      "response": null,
+      "error": null,
+      "request_body": {
+        "token": "invalid-token-value",
+        "password": "NewPass@1234"
+      },
+      "request_headers": {
+        "Content-Type": "application/json"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -d \\\n  '{\n  \"token\": \"invalid-token-value\",\n  \"password\": \"NewPass@1234\"\n}' \\\n  \"http://localhost:3002/api/auth/reset-password\"",
+      "data_set_id": "test-1776316009867-1",
+      "data_set_name": "Reject invalid reset token",
+      "test_type": "positive",
+      "endpoint_id": "7dc22803-ea6e-4e14-87a7-e1e8290a1594",
+      "feature_id": "fa85c87d-7cc3-4f9d-b3b9-09d37d60fbb4",
+      "scenario_id": "9166109e-3c13-428a-94e9-780e5d26a12b"
+    },
+    {
+      "test": "GET /api/organizations/:id - Get organization by ID",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/organizations/329fce8f-28ba-4466-87e3-b064b5e37835",
+      "status": "failed",
+      "http_status": 404,
+      "duration_ms": 3.306,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 404"
+        ],
+        "expected_status": 200,
+        "actual_status": 404
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 404"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/organizations/329fce8f-28ba-4466-87e3-b064b5e37835\"",
+      "data_set_id": "test-1776316028250-0",
+      "data_set_name": "Get organization by ID",
+      "test_type": "positive",
+      "endpoint_id": "393d241f-8865-4e9c-a860-e8131770d49a",
+      "feature_id": "37bbefa3-4e37-44a7-9ae0-620b3006c4fa",
+      "scenario_id": "5114622c-3e44-41b8-ba83-9ad763514558",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Organization not found\"\n}"
+    },
+    {
+      "test": "GET /api/user-signatures/:id - Get a single signature by ID",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/user-signatures/329fce8f-28ba-4466-87e3-b064b5e37835",
+      "status": "failed",
+      "http_status": 404,
+      "duration_ms": 3.371,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 404"
+        ],
+        "expected_status": 200,
+        "actual_status": 404
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 404"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/user-signatures/329fce8f-28ba-4466-87e3-b064b5e37835\"",
+      "data_set_id": "test-1776316038378-0",
+      "data_set_name": "Get a single signature by ID",
+      "test_type": "positive",
+      "endpoint_id": "09273bb3-7317-4ebb-b2e5-96ea9a461ccd",
+      "feature_id": "70f4cde6-737a-4a92-967d-a8cf14a335fb",
+      "scenario_id": "7b3df00d-65dc-4aa2-ae02-bcda18f9b94d",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Signature not found\"\n}"
+    },
+    {
+      "test": "PUT /api/user-signatures/:id - Update a user signature",
+      "method": "PUT",
+      "url": "http://host.docker.internal:3002/api/user-signatures/329fce8f-28ba-4466-87e3-b064b5e37835",
+      "status": "failed",
+      "http_status": 400,
+      "duration_ms": 2.7590000000000003,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 400"
+        ],
+        "expected_status": 200,
+        "actual_status": 400
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 400"
+      ],
+      "request_body": {
+        "is_default": true
+      },
+      "request_headers": {},
+      "curl_command": "curl -X PUT \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"is_default\": true\n}' \\\n  \"http://localhost:3002/api/user-signatures/329fce8f-28ba-4466-87e3-b064b5e37835\"",
+      "data_set_id": "test-1776316037938-0",
+      "data_set_name": "Update a user signature",
+      "test_type": "positive",
+      "endpoint_id": "0eb73719-2ae7-461a-b543-32f2514fd833",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"signature_data is required\"\n}"
+    },
+    {
+      "test": "DELETE /api/user-signatures/:id - Delete a user signature",
+      "method": "DELETE",
+      "url": "http://host.docker.internal:3002/api/user-signatures/329fce8f-28ba-4466-87e3-b064b5e37835",
+      "status": "failed",
+      "http_status": 404,
+      "duration_ms": 3.75,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 404"
+        ],
+        "expected_status": 200,
+        "actual_status": 404
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 404"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X DELETE \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/user-signatures/329fce8f-28ba-4466-87e3-b064b5e37835\"",
+      "data_set_id": "test-1776316037582-0",
+      "data_set_name": "Delete a user signature",
+      "test_type": "positive",
+      "endpoint_id": "9d1884f0-bcd5-47f9-89b2-492d00533c11",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Signature not found\"\n}"
+    },
+    {
+      "test": "GET /api/user-signatures - Get user signatures",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/user-signatures",
+      "status": "passed",
+      "http_status": 200,
+      "duration_ms": 3.636,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 200,
+        "actual_status": 200
+      },
+      "response": null,
+      "error": null,
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/user-signatures\"",
+      "data_set_id": "test-1776316039807-0",
+      "data_set_name": "Get user signatures",
+      "test_type": "positive",
+      "endpoint_id": "14dbeb0d-5451-46a3-bd7d-18ccfb235be2",
+      "feature_id": "7590f1ac-62e8-4087-9ad3-54d7671a4db1",
+      "scenario_id": "68e4bc55-ae9a-4755-bde9-79bf9545ecd2"
+    },
+    {
+      "test": "POST /api/documents/:id/tags - Add tags to a document",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/documents/1f309135-7ff6-4d54-a32d-9476655ea2e4/tags",
+      "status": "failed",
+      "http_status": 404,
+      "duration_ms": 4.874,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 404"
+        ],
+        "expected_status": 200,
+        "actual_status": 404
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 404"
+      ],
+      "request_body": {
+        "tags": [
+          "contract",
+          "urgent"
+        ]
+      },
+      "request_headers": {},
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"tags\": [\n    \"contract\",\n    \"urgent\"\n  ]\n}' \\\n  \"http://localhost:3002/api/documents/1f309135-7ff6-4d54-a32d-9476655ea2e4/tags\"",
+      "data_set_id": "test-1776316019359-0",
+      "data_set_name": "Add tags to a document",
+      "test_type": "positive",
+      "endpoint_id": "61fbc217-22f1-4b5b-a109-09e9a2ead518",
+      "feature_id": "9822eaa0-8398-44a9-96c7-6b764b96d86c",
+      "scenario_id": "aa4e4614-0fae-4e24-b368-bf57ceaf71ae",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Document not found\"\n}"
+    },
+    {
+      "test": "GET /api/documents - Get user documents",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/documents",
+      "status": "passed",
+      "http_status": 200,
+      "duration_ms": 3.162,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 200,
+        "actual_status": 200
+      },
+      "response": null,
+      "error": null,
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/documents\"",
+      "data_set_id": "test-1776316025295-0",
+      "data_set_name": "Get user documents",
+      "test_type": "positive",
+      "endpoint_id": "f4275cd8-19b4-44f3-b34f-9d34d03bcf89",
+      "feature_id": "fcf20055-62ae-431a-b2a6-cbce3b2dad91",
+      "scenario_id": "aa7b1b88-9b1e-4f08-85f1-f0e281197d3b"
+    },
+    {
+      "test": "POST /api/documents/:id/versions - Upload new document version",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/documents/1f309135-7ff6-4d54-a32d-9476655ea2e4/versions",
+      "status": "failed",
+      "http_status": 404,
+      "duration_ms": 8.713999999999999,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 201, got 404"
+        ],
+        "expected_status": 201,
+        "actual_status": 404
+      },
+      "response": null,
+      "error": [
+        "Expected status 201, got 404"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/documents/1f309135-7ff6-4d54-a32d-9476655ea2e4/versions\"",
+      "data_set_id": "test-1776316020455-0",
+      "data_set_name": "Upload new document version",
+      "test_type": "positive",
+      "endpoint_id": "4dd101a0-b470-40c5-b581-4c5e26c7c989",
+      "feature_id": "9822eaa0-8398-44a9-96c7-6b764b96d86c",
+      "scenario_id": "aa4e4614-0fae-4e24-b368-bf57ceaf71ae",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Document not found\"\n}"
+    },
+    {
+      "test": "POST /api/documents/:id/versions/:versionId/revert - Revert document to a previous version",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/documents/1f309135-7ff6-4d54-a32d-9476655ea2e4/versions/:versionId/revert",
+      "status": "failed",
+      "http_status": 404,
+      "duration_ms": 6.57,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 404"
+        ],
+        "expected_status": 200,
+        "actual_status": 404
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 404"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/documents/1f309135-7ff6-4d54-a32d-9476655ea2e4/versions/:versionId/revert\"",
+      "data_set_id": "test-1776316020820-0",
+      "data_set_name": "Revert document to a previous version",
+      "test_type": "positive",
+      "endpoint_id": "54cf9330-968e-4da4-adfd-e8815d89edc6",
+      "feature_id": "9822eaa0-8398-44a9-96c7-6b764b96d86c",
+      "scenario_id": "aa4e4614-0fae-4e24-b368-bf57ceaf71ae",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Document not found\"\n}"
+    },
+    {
+      "test": "POST /api/signatures - Create a signature request",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/signatures",
+      "status": "passed",
+      "http_status": 201,
+      "duration_ms": 11.582,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 201,
+        "actual_status": 201
+      },
+      "response": null,
+      "error": null,
+      "request_body": {
+        "document_id": "5b60a57d-0537-42f8-9933-2d9bfde9dd75",
+        "signer_email": "test_1776316190724_ba1255bc@example.com"
+      },
+      "request_headers": {
+        "Content-Type": "application/json"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -d \\\n  '{\n  \"document_id\": \"5b60a57d-0537-42f8-9933-2d9bfde9dd75\",\n  \"signer_email\": \"test_1776316190724_ba1255bc@example.com\"\n}' \\\n  \"http://localhost:3002/api/signatures\"",
+      "data_set_id": "test-1776316031485-0",
+      "data_set_name": "Create a signature request",
+      "test_type": "positive",
+      "endpoint_id": "7378ba28-f3f3-478a-b60e-c6077c2f5a6c",
+      "feature_id": "0328599c-e164-4b79-881f-c183bd2b8453",
+      "scenario_id": "7466cd27-78f6-4c6f-9918-124dd3bedc88"
+    },
+    {
+      "test": "GET /api/documents/:id - Get document by ID",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/documents/1f309135-7ff6-4d54-a32d-9476655ea2e4",
+      "status": "failed",
+      "http_status": 404,
+      "duration_ms": 5.056,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 404"
+        ],
+        "expected_status": 200,
+        "actual_status": 404
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 404"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/documents/1f309135-7ff6-4d54-a32d-9476655ea2e4\"",
+      "data_set_id": "test-1776316021542-0",
+      "data_set_name": "Get document by ID",
+      "test_type": "positive",
+      "endpoint_id": "e50e3d01-f286-4e70-bb29-72c505d13176",
+      "feature_id": "fcf20055-62ae-431a-b2a6-cbce3b2dad91",
+      "scenario_id": "aa7b1b88-9b1e-4f08-85f1-f0e281197d3b",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Document not found\"\n}"
+    },
+    {
+      "test": "DELETE /api/documents/:id - Delete a document",
+      "method": "DELETE",
+      "url": "http://host.docker.internal:3002/api/documents/1f309135-7ff6-4d54-a32d-9476655ea2e4",
+      "status": "failed",
+      "http_status": 404,
+      "duration_ms": 4.012,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 404"
+        ],
+        "expected_status": 200,
+        "actual_status": 404
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 404"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X DELETE \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/documents/1f309135-7ff6-4d54-a32d-9476655ea2e4\"",
+      "data_set_id": "test-1776316018249-0",
+      "data_set_name": "Delete a document",
+      "test_type": "positive",
+      "endpoint_id": "aedcf108-136d-4133-80e8-b3c498c50e81",
+      "feature_id": "fcf20055-62ae-431a-b2a6-cbce3b2dad91",
+      "scenario_id": "aa7b1b88-9b1e-4f08-85f1-f0e281197d3b",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Document not found\"\n}"
+    },
+    {
+      "test": "POST /api/workflows - Create a signing workflow with recipients",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/workflows",
+      "status": "passed",
+      "http_status": 201,
+      "duration_ms": 31.464,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 201,
+        "actual_status": 201
+      },
+      "response": null,
+      "error": null,
+      "request_body": {
+        "fields": [
+          {
+            "x": 100,
+            "y": 500,
+            "page": 1,
+            "width": 200,
+            "height": 50,
+            "field_type": "signature",
+            "recipient_index": 0
+          }
+        ],
+        "recipients": [
+          {
+            "signer_name": "Mia Johnson_0",
+            "signer_email": "test_1776316190724_ba1255bc_0@example.com",
+            "signing_order": 1
+          },
+          {
+            "signer_name": "Olivia Smith_1",
+            "signer_email": "test_1776316190724_ba1255bc_1@example.com",
+            "signing_order": 2
+          }
+        ],
+        "document_id": "6af252f7-675e-468f-a914-ad8db7a09845",
+        "workflow_type": "sequential"
+      },
+      "request_headers": {
+        "Content-Type": "application/json"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -d \\\n  '{\n  \"fields\": [\n    {\n      \"x\": 100,\n      \"y\": 500,\n      \"page\": 1,\n      \"width\": 200,\n      \"height\": 50,\n      \"field_type\": \"signature\",\n      \"recipient_index\": 0\n    }\n  ],\n  \"recipients\": [\n    {\n      \"signer_name\": \"Mia Johnson_0\",\n      \"signer_email\": \"test_1776316190724_ba1255bc_0@example.com\",\n      \"signing_order\": 1\n    },\n    {\n      \"signer_name\": \"Olivia Smith_1\",\n      \"signer_email\": \"test_1776316190724_ba1255bc_1@example.com\",\n      \"signing_order\": 2\n    }\n  ],\n  \"document_id\": \"6af252f7-675e-468f-a914-ad8db7a09845\",\n  \"workflow_type\": \"sequential\"\n}' \\\n  \"http://localhost:3002/api/workflows\"",
+      "data_set_id": "test-1776316048847-0",
+      "data_set_name": "Create a signing workflow with recipients",
+      "test_type": "positive",
+      "endpoint_id": "e68dbf42-cbde-4e7a-9d04-1aec7c79401c",
+      "feature_id": "8cdff6b0-8040-47aa-a789-421101b7f41a",
+      "scenario_id": "816827e1-7357-4354-9449-e10d816f9858"
+    },
+    {
+      "test": "POST /api/documents/templates - Create a document template",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/documents/templates",
+      "status": "failed",
+      "http_status": 404,
+      "duration_ms": 3.437,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 201, got 404"
+        ],
+        "expected_status": 201,
+        "actual_status": 404
+      },
+      "response": null,
+      "error": [
+        "Expected status 201, got 404"
+      ],
+      "request_body": {
+        "name": "Mia Rodriguez",
+        "description": "zuasrhbvogzhvgh",
+        "document_id": "ac3358a9-7356-4137-82dd-8028c1813a00"
+      },
+      "request_headers": {},
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"name\": \"Mia Rodriguez\",\n  \"description\": \"zuasrhbvogzhvgh\",\n  \"document_id\": \"ac3358a9-7356-4137-82dd-8028c1813a00\"\n}' \\\n  \"http://localhost:3002/api/documents/templates\"",
+      "data_set_id": "test-1776316024172-0",
+      "data_set_name": "Create a document template",
+      "test_type": "positive",
+      "endpoint_id": "fd882ace-0f3a-40f0-a257-53dc520b8b9a",
+      "feature_id": "9822eaa0-8398-44a9-96c7-6b764b96d86c",
+      "scenario_id": "aa4e4614-0fae-4e24-b368-bf57ceaf71ae",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Source document not found\"\n}"
+    },
+    {
+      "test": "GET /api/documents/:id/file - Serve document file",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/documents/1f309135-7ff6-4d54-a32d-9476655ea2e4/file",
+      "status": "failed",
+      "http_status": 404,
+      "duration_ms": 3.241,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 404"
+        ],
+        "expected_status": 200,
+        "actual_status": 404
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 404"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/documents/1f309135-7ff6-4d54-a32d-9476655ea2e4/file\"",
+      "data_set_id": "test-1776316018976-0",
+      "data_set_name": "Serve document file",
+      "test_type": "positive",
+      "endpoint_id": "bfe76545-24f6-4a85-a603-5fd1fd857b6d",
+      "feature_id": "9822eaa0-8398-44a9-96c7-6b764b96d86c",
+      "scenario_id": "aa4e4614-0fae-4e24-b368-bf57ceaf71ae",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Document not found\"\n}"
+    },
+    {
+      "test": "GET /api/documents/:id/download - Download document file",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/documents/1f309135-7ff6-4d54-a32d-9476655ea2e4/download",
+      "status": "failed",
+      "http_status": 404,
+      "duration_ms": 4.817,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 404"
+        ],
+        "expected_status": 200,
+        "actual_status": 404
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 404"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/documents/1f309135-7ff6-4d54-a32d-9476655ea2e4/download\"",
+      "data_set_id": "test-1776316018620-0",
+      "data_set_name": "Download document file",
+      "test_type": "positive",
+      "endpoint_id": "216b44e5-78c7-4df9-af15-ebe8f43a691e",
+      "feature_id": "fcf20055-62ae-431a-b2a6-cbce3b2dad91",
+      "scenario_id": "aa7b1b88-9b1e-4f08-85f1-f0e281197d3b",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Document not found\"\n}"
+    },
+    {
+      "test": "DELETE /api/auth/api-keys/:id - Delete an API key",
+      "method": "DELETE",
+      "url": "http://host.docker.internal:3002/api/auth/api-keys/329fce8f-28ba-4466-87e3-b064b5e37835",
+      "status": "failed",
+      "http_status": 404,
+      "duration_ms": 3.621,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 404"
+        ],
+        "expected_status": 200,
+        "actual_status": 404
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 404"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X DELETE \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/auth/api-keys/329fce8f-28ba-4466-87e3-b064b5e37835\"",
+      "data_set_id": "test-1776316003422-0",
+      "data_set_name": "Delete an API key",
+      "test_type": "positive",
+      "endpoint_id": "2b49ad0f-d6e0-4657-bede-75beffd6e467",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"API key not found\"\n}"
+    },
+    {
+      "test": "PATCH /api/signatures/:id/sign - Sign a document",
+      "method": "PATCH",
+      "url": "http://host.docker.internal:3002/api/signatures/5f255acf-50d6-44b6-a934-3bbaec05356d/sign",
+      "status": "passed",
+      "http_status": 200,
+      "duration_ms": 9.637,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 200,
+        "actual_status": 200
+      },
+      "response": null,
+      "error": null,
+      "request_body": {
+        "user_signature_id": "{{cache:userSignatures.create.response.data.userSignature.id}}"
+      },
+      "request_headers": {
+        "Content-Type": "application/json"
+      },
+      "curl_command": "curl -X PATCH \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -d \\\n  '{\n  \"user_signature_id\": \"{{cache:userSignatures.create.response.data.userSignature.id}}\"\n}' \\\n  \"http://localhost:3002/api/signatures/5f255acf-50d6-44b6-a934-3bbaec05356d/sign\"",
+      "data_set_id": "test-1776316031868-0",
+      "data_set_name": "Sign a document",
+      "test_type": "positive",
+      "endpoint_id": "6a0bd4dd-583f-456f-83e2-88366cd5f050",
+      "feature_id": "7590f1ac-62e8-4087-9ad3-54d7671a4db1",
+      "scenario_id": "68e4bc55-ae9a-4755-bde9-79bf9545ecd2"
+    },
+    {
+      "test": "GET /api/signatures/:documentId - Get signature status for document",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/signatures/5f255acf-50d6-44b6-a934-3bbaec05356d",
+      "status": "passed",
+      "http_status": 200,
+      "duration_ms": 4.055,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 200,
+        "actual_status": 200
+      },
+      "response": null,
+      "error": null,
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/signatures/5f255acf-50d6-44b6-a934-3bbaec05356d\"",
+      "data_set_id": "test-1776316032232-0",
+      "data_set_name": "Get signature status for document",
+      "test_type": "positive",
+      "endpoint_id": "795525ba-5e57-4a9b-8b74-f1f346b8f804",
+      "feature_id": "0328599c-e164-4b79-881f-c183bd2b8453",
+      "scenario_id": "7466cd27-78f6-4c6f-9918-124dd3bedc88"
+    },
+    {
+      "test": "POST /api/signatures/:id/confirm - Confirm a signature application",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/signatures/5f255acf-50d6-44b6-a934-3bbaec05356d/confirm",
+      "status": "passed",
+      "http_status": 200,
+      "duration_ms": 175.32500000000002,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 200,
+        "actual_status": 200
+      },
+      "response": null,
+      "error": null,
+      "request_body": {
+        "confirmation_status": "confirmed"
+      },
+      "request_headers": {
+        "Content-Type": "application/json"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -d \\\n  '{\n  \"confirmation_status\": \"confirmed\"\n}' \\\n  \"http://localhost:3002/api/signatures/5f255acf-50d6-44b6-a934-3bbaec05356d/confirm\"",
+      "data_set_id": "test-1776316030771-0",
+      "data_set_name": "Confirm a signature application",
+      "test_type": "positive",
+      "endpoint_id": "654f5cba-b6f0-4003-a3cb-19399552eb66",
+      "feature_id": "10ed8208-861c-4313-895c-0c6ded04e375",
+      "scenario_id": "edb5ccce-4fce-4bcc-8d54-cbc13ebb61f5"
+    },
+    {
+      "test": "DELETE /api/teams/:id - Delete a team",
+      "method": "DELETE",
+      "url": "http://host.docker.internal:3002/api/teams/5f255acf-50d6-44b6-a934-3bbaec05356d",
+      "status": "failed",
+      "http_status": 403,
+      "duration_ms": 5.503,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 403"
+        ],
+        "expected_status": 200,
+        "actual_status": 403
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 403"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X DELETE \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/teams/5f255acf-50d6-44b6-a934-3bbaec05356d\"",
+      "data_set_id": "test-1776316032587-0",
+      "data_set_name": "Delete a team",
+      "test_type": "positive",
+      "endpoint_id": "3767e0ac-fec4-4402-a64b-720723a4ffac",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Only the team owner can delete the team\"\n}"
+    },
+    {
+      "test": "GET /api/teams/mine - Get current user team",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/teams/mine",
+      "status": "failed",
+      "http_status": 404,
+      "duration_ms": 4.33,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 404"
+        ],
+        "expected_status": 200,
+        "actual_status": 404
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 404"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/teams/mine\"",
+      "data_set_id": "test-1776316035820-0",
+      "data_set_name": "Get current user team",
+      "test_type": "positive",
+      "endpoint_id": "e5c92ddd-bf16-4f2f-a004-5f2ee2e138ca",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"You are not a member of any team\"\n}"
+    },
+    {
+      "test": "GET /api/teams/:id - Get team by ID",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/teams/5f255acf-50d6-44b6-a934-3bbaec05356d",
+      "status": "failed",
+      "http_status": 403,
+      "duration_ms": 3.193,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 403"
+        ],
+        "expected_status": 200,
+        "actual_status": 403
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 403"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/teams/5f255acf-50d6-44b6-a934-3bbaec05356d\"",
+      "data_set_id": "test-1776316034733-0",
+      "data_set_name": "Get team by ID",
+      "test_type": "positive",
+      "endpoint_id": "379015e5-3783-4983-9e49-a3dad1ed1cb3",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"You are not a member of this team\"\n}"
+    },
+    {
+      "test": "POST /api/teams/:id/invite - Invite a member to the team",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/teams/5f255acf-50d6-44b6-a934-3bbaec05356d/invite",
+      "status": "failed",
+      "http_status": 403,
+      "duration_ms": 3.6809999999999996,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 201, got 403"
+        ],
+        "expected_status": 201,
+        "actual_status": 403
+      },
+      "response": null,
+      "error": [
+        "Expected status 201, got 403"
+      ],
+      "request_body": {
+        "emails": [
+          "test_1776316190724_ba1255bc_0@example.com"
+        ]
+      },
+      "request_headers": {},
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"emails\": [\n    \"test_1776316190724_ba1255bc_0@example.com\"\n  ]\n}' \\\n  \"http://localhost:3002/api/teams/5f255acf-50d6-44b6-a934-3bbaec05356d/invite\"",
+      "data_set_id": "test-1776316032943-0",
+      "data_set_name": "Invite a member to the team",
+      "test_type": "positive",
+      "endpoint_id": "3cea469a-05a9-4a36-b10e-42a642b2964a",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Only team owner or admin can invite members\"\n}"
+    },
+    {
+      "test": "PATCH /api/teams/:id/members/:userId - Update team member role",
+      "method": "PATCH",
+      "url": "http://host.docker.internal:3002/api/teams/5f255acf-50d6-44b6-a934-3bbaec05356d/members/:userId",
+      "status": "failed",
+      "http_status": 403,
+      "duration_ms": 4.125,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 403"
+        ],
+        "expected_status": 200,
+        "actual_status": 403
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 403"
+      ],
+      "request_body": {
+        "role": "admin"
+      },
+      "request_headers": {},
+      "curl_command": "curl -X PATCH \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"role\": \"admin\"\n}' \\\n  \"http://localhost:3002/api/teams/5f255acf-50d6-44b6-a934-3bbaec05356d/members/:userId\"",
+      "data_set_id": "test-1776316034384-0",
+      "data_set_name": "Update team member role",
+      "test_type": "positive",
+      "endpoint_id": "53292e70-22e7-4a6c-915a-69d7c6af3ee4",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Only the team owner can change member roles\"\n}"
+    },
+    {
+      "test": "POST /api/teams/:id/leave - Leave a team",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/teams/5f255acf-50d6-44b6-a934-3bbaec05356d/leave",
+      "status": "failed",
+      "http_status": 500,
+      "duration_ms": 3.18,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 500"
+        ],
+        "expected_status": 200,
+        "actual_status": 500
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 500"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/teams/5f255acf-50d6-44b6-a934-3bbaec05356d/leave\"",
+      "data_set_id": "test-1776316033698-0",
+      "data_set_name": "Leave a team",
+      "test_type": "positive",
+      "endpoint_id": "45d39c13-56f7-4790-864a-c03fc31c93b9",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"You are not a member of this team\"\n}"
+    },
+    {
+      "test": "DELETE /api/teams/:id/members/:userId - Remove a team member",
+      "method": "DELETE",
+      "url": "http://host.docker.internal:3002/api/teams/5f255acf-50d6-44b6-a934-3bbaec05356d/members/:userId",
+      "status": "failed",
+      "http_status": 403,
+      "duration_ms": 3.46,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 403"
+        ],
+        "expected_status": 200,
+        "actual_status": 403
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 403"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X DELETE \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/teams/5f255acf-50d6-44b6-a934-3bbaec05356d/members/:userId\"",
+      "data_set_id": "test-1776316034047-0",
+      "data_set_name": "Remove a team member",
+      "test_type": "positive",
+      "endpoint_id": "e70bdb10-561b-46e5-9702-6115beb19ff3",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Only team owner or admin can remove members\"\n}"
+    },
+    {
+      "test": "GET /api/auth/sessions - List active sessions for authenticated user",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/auth/sessions",
+      "status": "passed",
+      "http_status": 200,
+      "duration_ms": 3.591,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 200,
+        "actual_status": 200
+      },
+      "response": null,
+      "error": null,
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/auth/sessions\"",
+      "data_set_id": "test-1776316011333-0",
+      "data_set_name": "List active sessions for authenticated user",
+      "test_type": "positive",
+      "endpoint_id": "6c26eaba-4202-45d9-8897-565770cda5b2",
+      "feature_id": "b9d9125f-634f-4049-b038-b1c738b55b4f",
+      "scenario_id": "360cf2dd-6360-4b81-8dac-1f16f7e0e6a6"
+    },
+    {
+      "test": "GET /api/workflows/:id/history - Get full workflow action history with compliance metadata",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/workflows/b49e5c65-b1b0-4f6a-a78b-916b64f7ecc9/history",
+      "status": "passed",
+      "http_status": 200,
+      "duration_ms": 4.749,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 200,
+        "actual_status": 200
+      },
+      "response": null,
+      "error": null,
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/workflows/b49e5c65-b1b0-4f6a-a78b-916b64f7ecc9/history\"",
+      "data_set_id": "test-1776316045589-0",
+      "data_set_name": "Get full workflow action history with compliance metadata",
+      "test_type": "positive",
+      "endpoint_id": "7ab619f1-83e5-4dd2-a970-46fad5516f02",
+      "feature_id": "1c97e97d-d762-4849-83e7-d5dc818e1521",
+      "scenario_id": "65d277e7-ea1f-414b-a103-01e309e7823c"
+    },
+    {
+      "test": "GET /api/workflows/:id/history/export - Export workflow history as CSV",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/workflows/b49e5c65-b1b0-4f6a-a78b-916b64f7ecc9/history/export",
+      "status": "passed",
+      "http_status": 200,
+      "duration_ms": 4.84,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 200,
+        "actual_status": 200
+      },
+      "response": null,
+      "error": null,
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/workflows/b49e5c65-b1b0-4f6a-a78b-916b64f7ecc9/history/export\"",
+      "data_set_id": "test-1776316045237-0",
+      "data_set_name": "Export workflow history as CSV",
+      "test_type": "positive",
+      "endpoint_id": "73aec366-97bb-4c88-aa5c-7cd3bba29399",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473"
+    },
+    {
+      "test": "PUT /api/workflows/:id/reminders - Configure reminder intervals for workflow recipients",
+      "method": "PUT",
+      "url": "http://host.docker.internal:3002/api/workflows/b49e5c65-b1b0-4f6a-a78b-916b64f7ecc9/reminders",
+      "status": "failed",
+      "http_status": 500,
+      "duration_ms": 4.01,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 500"
+        ],
+        "expected_status": 200,
+        "actual_status": 500
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 500"
+      ],
+      "request_body": {
+        "reminder_interval_hours": 24
+      },
+      "request_headers": {
+        "Content-Type": "application/json"
+      },
+      "curl_command": "curl -X PUT \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -d \\\n  '{\n  \"reminder_interval_hours\": 24\n}' \\\n  \"http://localhost:3002/api/workflows/b49e5c65-b1b0-4f6a-a78b-916b64f7ecc9/reminders\"",
+      "data_set_id": "test-1776316049585-0",
+      "data_set_name": "Configure reminder intervals for workflow recipients",
+      "test_type": "positive",
+      "endpoint_id": "bde88ed4-6d09-4ba2-bf50-7f25d947734e",
+      "feature_id": "d7347f9c-c573-4027-a295-8a6419d884cd",
+      "scenario_id": "6f1bed59-0d4d-40ee-914c-fd2e464c0838",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Workflow not found or not authorized\"\n}"
+    },
+    {
+      "test": "POST /api/workflows/:id/self-sign - Self-sign a workflow as the creator",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/workflows/b49e5c65-b1b0-4f6a-a78b-916b64f7ecc9/self-sign",
+      "status": "failed",
+      "http_status": 400,
+      "duration_ms": 2.975,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 400"
+        ],
+        "expected_status": 200,
+        "actual_status": 400
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 400"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/workflows/b49e5c65-b1b0-4f6a-a78b-916b64f7ecc9/self-sign\"",
+      "data_set_id": "test-1776316047038-0",
+      "data_set_name": "Self-sign a workflow as the creator",
+      "test_type": "positive",
+      "endpoint_id": "3b2f6609-c8bb-4a11-8266-d9812f6746cf",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"signatures array is required and must not be empty\"\n}"
+    },
+    {
+      "test": "POST /api/workflows/:id/start - Start the signing process for a workflow",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/workflows/b49e5c65-b1b0-4f6a-a78b-916b64f7ecc9/start",
+      "status": "failed",
+      "http_status": 404,
+      "duration_ms": 4.322,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 404"
+        ],
+        "expected_status": 200,
+        "actual_status": 404
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 404"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/workflows/b49e5c65-b1b0-4f6a-a78b-916b64f7ecc9/start\"",
+      "data_set_id": "test-1776316050297-0",
+      "data_set_name": "Start the signing process for a workflow",
+      "test_type": "positive",
+      "endpoint_id": "19c98bd6-db08-4c59-81eb-d17deaa0ea50",
+      "feature_id": "6fcac4df-b01b-4868-91cc-bc59a9f82109",
+      "scenario_id": "ff4e8d7a-9909-492d-9967-1a3a029b9adb",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Workflow not found or not authorized\"\n}"
+    },
+    {
+      "test": "GET /api/workflows/:id/downloads - Get download links for completed workflow",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/workflows/b49e5c65-b1b0-4f6a-a78b-916b64f7ecc9/downloads",
+      "status": "failed",
+      "http_status": 400,
+      "duration_ms": 4.099,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 400"
+        ],
+        "expected_status": 200,
+        "actual_status": 400
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 400"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/workflows/b49e5c65-b1b0-4f6a-a78b-916b64f7ecc9/downloads\"",
+      "data_set_id": "test-1776316044874-0",
+      "data_set_name": "Get download links for completed workflow",
+      "test_type": "positive",
+      "endpoint_id": "12ae08ff-5083-43d2-8252-cbce2d4a2c6a",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Workflow is not yet completed\"\n}"
+    },
+    {
+      "test": "PUT /api/workflows/:id - Update workflow recipients and fields",
+      "method": "PUT",
+      "url": "http://host.docker.internal:3002/api/workflows/b49e5c65-b1b0-4f6a-a78b-916b64f7ecc9",
+      "status": "failed",
+      "http_status": 404,
+      "duration_ms": 3.4459999999999997,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 404"
+        ],
+        "expected_status": 200,
+        "actual_status": 404
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 404"
+      ],
+      "request_body": {
+        "recipients": [
+          {
+            "signer_name": "Updated Signer 1",
+            "signer_email": "test_1776316190724_ba1255bc_0@example.com",
+            "signing_order": 1
+          }
+        ]
+      },
+      "request_headers": {
+        "Content-Type": "application/json"
+      },
+      "curl_command": "curl -X PUT \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  -d \\\n  '{\n  \"recipients\": [\n    {\n      \"signer_name\": \"Updated Signer 1\",\n      \"signer_email\": \"test_1776316190724_ba1255bc_0@example.com\",\n      \"signing_order\": 1\n    }\n  ]\n}' \\\n  \"http://localhost:3002/api/workflows/b49e5c65-b1b0-4f6a-a78b-916b64f7ecc9\"",
+      "data_set_id": "test-1776316051035-0",
+      "data_set_name": "Update workflow recipients and fields",
+      "test_type": "positive",
+      "endpoint_id": "64da2f2c-a5aa-4b3f-a4f1-588d06eea47e",
+      "feature_id": "8cdff6b0-8040-47aa-a789-421101b7f41a",
+      "scenario_id": "816827e1-7357-4354-9449-e10d816f9858",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Workflow not found or not authorized\"\n}"
+    },
+    {
+      "test": "GET /api/workflows/:id - Get workflow details by ID",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/workflows/b49e5c65-b1b0-4f6a-a78b-916b64f7ecc9",
+      "status": "passed",
+      "http_status": 200,
+      "duration_ms": 5.162,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 200,
+        "actual_status": 200
+      },
+      "response": null,
+      "error": null,
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/workflows/b49e5c65-b1b0-4f6a-a78b-916b64f7ecc9\"",
+      "data_set_id": "test-1776316048503-0",
+      "data_set_name": "Get workflow details by ID",
+      "test_type": "positive",
+      "endpoint_id": "c98baef1-8b49-4eff-b7df-5dc965ce4ef1",
+      "feature_id": "8cdff6b0-8040-47aa-a789-421101b7f41a",
+      "scenario_id": "816827e1-7357-4354-9449-e10d816f9858"
+    },
+    {
+      "test": "DELETE /api/documents/:id/tags/:tag - Remove a tag from a document",
+      "method": "DELETE",
+      "url": "http://host.docker.internal:3002/api/documents/1f309135-7ff6-4d54-a32d-9476655ea2e4/tags/:tag",
+      "status": "failed",
+      "http_status": 404,
+      "duration_ms": 3.2680000000000002,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 404"
+        ],
+        "expected_status": 200,
+        "actual_status": 404
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 404"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X DELETE \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/documents/1f309135-7ff6-4d54-a32d-9476655ea2e4/tags/:tag\"",
+      "data_set_id": "test-1776316019725-0",
+      "data_set_name": "Remove a tag from a document",
+      "test_type": "positive",
+      "endpoint_id": "f6b21a6d-24ae-422d-84a4-16a7172177df",
+      "feature_id": "9822eaa0-8398-44a9-96c7-6b764b96d86c",
+      "scenario_id": "aa4e4614-0fae-4e24-b368-bf57ceaf71ae",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Document not found\"\n}"
+    },
+    {
+      "test": "GET /api/documents/templates/:id - Get template by ID",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/documents/templates/5f255acf-50d6-44b6-a934-3bbaec05356d",
+      "status": "failed",
+      "http_status": 404,
+      "duration_ms": 3.3019999999999996,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 404"
+        ],
+        "expected_status": 200,
+        "actual_status": 404
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 404"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/documents/templates/5f255acf-50d6-44b6-a934-3bbaec05356d\"",
+      "data_set_id": "test-1776316023811-0",
+      "data_set_name": "Get template by ID",
+      "test_type": "positive",
+      "endpoint_id": "20370311-147a-4c50-9ad9-e0a10d75ddd4",
+      "feature_id": "9822eaa0-8398-44a9-96c7-6b764b96d86c",
+      "scenario_id": "aa4e4614-0fae-4e24-b368-bf57ceaf71ae",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Template not found\"\n}"
+    },
+    {
+      "test": "DELETE /api/documents/templates/:id - Delete a document template",
+      "method": "DELETE",
+      "url": "http://host.docker.internal:3002/api/documents/templates/5f255acf-50d6-44b6-a934-3bbaec05356d",
+      "status": "failed",
+      "http_status": 404,
+      "duration_ms": 3.2720000000000002,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 404"
+        ],
+        "expected_status": 200,
+        "actual_status": 404
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 404"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X DELETE \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/documents/templates/5f255acf-50d6-44b6-a934-3bbaec05356d\"",
+      "data_set_id": "test-1776316023029-0",
+      "data_set_name": "Delete a document template",
+      "test_type": "positive",
+      "endpoint_id": "677a9b6c-27f2-4a5f-9c30-4ba576454598",
+      "feature_id": "9822eaa0-8398-44a9-96c7-6b764b96d86c",
+      "scenario_id": "aa4e4614-0fae-4e24-b368-bf57ceaf71ae",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Template not found\"\n}"
+    },
+    {
+      "test": "POST /api/documents/templates/:id/use - Create document from template",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/documents/templates/5f255acf-50d6-44b6-a934-3bbaec05356d/use",
+      "status": "failed",
+      "http_status": 404,
+      "duration_ms": 3.892,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 201, got 404"
+        ],
+        "expected_status": 201,
+        "actual_status": 404
+      },
+      "response": null,
+      "error": [
+        "Expected status 201, got 404"
+      ],
+      "request_body": {
+        "name": "Mia Rodriguez"
+      },
+      "request_headers": {},
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"name\": \"Mia Rodriguez\"\n}' \\\n  \"http://localhost:3002/api/documents/templates/5f255acf-50d6-44b6-a934-3bbaec05356d/use\"",
+      "data_set_id": "test-1776316023440-0",
+      "data_set_name": "Create document from template",
+      "test_type": "positive",
+      "endpoint_id": "c66eba1b-11de-493b-a3db-669c7f6ef4fe",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Template not found\"\n}"
+    },
+    {
+      "test": "POST /api/teams/join/:token - Join a team via invite token",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/teams/join/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMjlmY2U4Zi0yOGJhLTQ0NjYtODdlMy1iMDY0YjVlMzc4MzUiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzE2MjIyLCJleHAiOjE3NzY5MjEwMjJ9.of5u-0XrnHAyuJMeQ9gv8riZwJ17p4TIhToGCxe2pTo",
+      "status": "failed",
+      "http_status": 400,
+      "duration_ms": 5.365,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 400"
+        ],
+        "expected_status": 200,
+        "actual_status": 400
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 400"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/teams/join/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMjlmY2U4Zi0yOGJhLTQ0NjYtODdlMy1iMDY0YjVlMzc4MzUiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzE2MjIyLCJleHAiOjE3NzY5MjEwMjJ9.of5u-0XrnHAyuJMeQ9gv8riZwJ17p4TIhToGCxe2pTo\"",
+      "data_set_id": "test-1776316035099-0",
+      "data_set_name": "Join a team via invite token",
+      "test_type": "positive",
+      "endpoint_id": "e1f5b335-9f44-417b-a313-08f40193ec51",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Invalid invite token\"\n}"
+    },
+    {
+      "test": "DELETE /api/teams/:id/invites/:inviteId - Cancel a team invite",
+      "method": "DELETE",
+      "url": "http://host.docker.internal:3002/api/teams/5f255acf-50d6-44b6-a934-3bbaec05356d/invites/:inviteId",
+      "status": "failed",
+      "http_status": 403,
+      "duration_ms": 3.1740000000000004,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 403"
+        ],
+        "expected_status": 200,
+        "actual_status": 403
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 403"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X DELETE \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/teams/5f255acf-50d6-44b6-a934-3bbaec05356d/invites/:inviteId\"",
+      "data_set_id": "test-1776316033348-0",
+      "data_set_name": "Cancel a team invite",
+      "test_type": "positive",
+      "endpoint_id": "d0aedc2f-2c22-4c24-a2e0-2b360f5f36e2",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Only owner or admin can delete invites\"\n}"
+    },
+    {
+      "test": "DELETE /api/auth/sessions/:id - Return 404 for non-existing session",
+      "method": "DELETE",
+      "url": "http://host.docker.internal:3002/api/auth/sessions/5f255acf-50d6-44b6-a934-3bbaec05356d",
+      "status": "passed",
+      "http_status": 404,
+      "duration_ms": 6.28,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 404,
+        "actual_status": 404
+      },
+      "response": null,
+      "error": null,
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X DELETE \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/auth/sessions/5f255acf-50d6-44b6-a934-3bbaec05356d\"",
+      "data_set_id": "test-1776316010959-1",
+      "data_set_name": "Return 404 for non-existing session",
+      "test_type": "positive",
+      "endpoint_id": "66192382-13cf-4ea1-a3fd-48bf490ee450",
+      "feature_id": "b9d9125f-634f-4049-b038-b1c738b55b4f",
+      "scenario_id": "360cf2dd-6360-4b81-8dac-1f16f7e0e6a6"
+    },
+    {
+      "test": "POST /api/workflows/:id/remind - Send reminder to pending signers",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/workflows/b49e5c65-b1b0-4f6a-a78b-916b64f7ecc9/remind",
+      "status": "failed",
+      "http_status": 404,
+      "duration_ms": 3.146,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 404"
+        ],
+        "expected_status": 200,
+        "actual_status": 404
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 404"
+      ],
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/workflows/b49e5c65-b1b0-4f6a-a78b-916b64f7ecc9/remind\"",
+      "data_set_id": "test-1776316049210-0",
+      "data_set_name": "Send reminder to pending signers",
+      "test_type": "positive",
+      "endpoint_id": "815855a2-4688-43f7-b67b-d91827ce895d",
+      "feature_id": "d7347f9c-c573-4027-a295-8a6419d884cd",
+      "scenario_id": "6f1bed59-0d4d-40ee-914c-fd2e464c0838",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Workflow not found or not authorized\"\n}"
+    },
+    {
+      "test": "PATCH /api/workflows/:id/decline - Decline workflow as current recipient",
+      "method": "PATCH",
+      "url": "http://host.docker.internal:3002/api/workflows/b49e5c65-b1b0-4f6a-a78b-916b64f7ecc9/decline",
+      "status": "failed",
+      "http_status": 500,
+      "duration_ms": 4.11,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 500"
+        ],
+        "expected_status": 200,
+        "actual_status": 500
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 500"
+      ],
+      "request_body": {
+        "reason": "zuasrhbvogzhvgh"
+      },
+      "request_headers": {},
+      "curl_command": "curl -X PATCH \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -d \\\n  '{\n  \"reason\": \"zuasrhbvogzhvgh\"\n}' \\\n  \"http://localhost:3002/api/workflows/b49e5c65-b1b0-4f6a-a78b-916b64f7ecc9/decline\"",
+      "data_set_id": "test-1776316044512-0",
+      "data_set_name": "Decline workflow as current recipient",
+      "test_type": "positive",
+      "endpoint_id": "bcedef7d-0107-423a-bb96-11ada5b22a2f",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Workflow is not active\"\n}"
+    },
+    {
+      "test": "GET /api/workflows/:id/status - Get real-time status of all signers in a workflow",
+      "method": "GET",
+      "url": "http://host.docker.internal:3002/api/workflows/b49e5c65-b1b0-4f6a-a78b-916b64f7ecc9/status",
+      "status": "passed",
+      "http_status": 200,
+      "duration_ms": 5.502,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 200,
+        "actual_status": 200
+      },
+      "response": null,
+      "error": null,
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X GET \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/workflows/b49e5c65-b1b0-4f6a-a78b-916b64f7ecc9/status\"",
+      "data_set_id": "test-1776316050678-0",
+      "data_set_name": "Get real-time status of all signers in a workflow",
+      "test_type": "positive",
+      "endpoint_id": "f903d39e-1f07-4c68-8d0b-504734b7943e",
+      "feature_id": "6fcac4df-b01b-4868-91cc-bc59a9f82109",
+      "scenario_id": "ff4e8d7a-9909-492d-9967-1a3a029b9adb"
+    },
+    {
+      "test": "PATCH /api/workflows/:id/sign - Sign workflow as current recipient",
+      "method": "PATCH",
+      "url": "http://host.docker.internal:3002/api/workflows/b49e5c65-b1b0-4f6a-a78b-916b64f7ecc9/sign",
+      "status": "failed",
+      "http_status": 409,
+      "duration_ms": 3.449,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 409"
+        ],
+        "expected_status": 200,
+        "actual_status": 409
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 409"
+      ],
+      "request_body": null,
+      "request_headers": {
+        "Content-Type": "application/json"
+      },
+      "curl_command": "curl -X PATCH \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  \"http://localhost:3002/api/workflows/b49e5c65-b1b0-4f6a-a78b-916b64f7ecc9/sign\"",
+      "data_set_id": "test-1776316049947-0",
+      "data_set_name": "Sign workflow as current recipient",
+      "test_type": "positive",
+      "endpoint_id": "3cdf97d7-b298-42b8-8e5a-36cf36368a44",
+      "feature_id": "6fcac4df-b01b-4868-91cc-bc59a9f82109",
+      "scenario_id": "ff4e8d7a-9909-492d-9967-1a3a029b9adb",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Workflow is not active\"\n}"
+    },
+    {
+      "test": "POST /api/workflows/:id/cancel - Cancel an active workflow",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/workflows/b49e5c65-b1b0-4f6a-a78b-916b64f7ecc9/cancel",
+      "status": "passed",
+      "http_status": 200,
+      "duration_ms": 118.56800000000001,
+      "validation": {
+        "passed": true,
+        "errors": null,
+        "expected_status": 200,
+        "actual_status": 200
+      },
+      "response": null,
+      "error": null,
+      "request_body": null,
+      "request_headers": {},
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  \"http://localhost:3002/api/workflows/b49e5c65-b1b0-4f6a-a78b-916b64f7ecc9/cancel\"",
+      "data_set_id": "test-1776316044153-0",
+      "data_set_name": "Cancel an active workflow",
+      "test_type": "positive",
+      "endpoint_id": "2719641e-3502-41cb-bfd2-adf1eebc6435",
+      "feature_id": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
+      "scenario_id": "61c191ac-f048-49a9-8a57-c8c948876473"
+    },
+    {
+      "test": "POST /api/sign/:token/started - Mark signing page opened (first call)",
+      "method": "POST",
+      "url": "http://host.docker.internal:3002/api/sign/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMjlmY2U4Zi0yOGJhLTQ0NjYtODdlMy1iMDY0YjVlMzc4MzUiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzE2MjIyLCJleHAiOjE3NzY5MjEwMjJ9.of5u-0XrnHAyuJMeQ9gv8riZwJ17p4TIhToGCxe2pTo/started",
+      "status": "failed",
+      "http_status": 401,
+      "duration_ms": 3.316,
+      "validation": {
+        "passed": false,
+        "errors": [
+          "Expected status 200, got 401"
+        ],
+        "expected_status": 200,
+        "actual_status": 401
+      },
+      "response": null,
+      "error": [
+        "Expected status 200, got 401"
+      ],
+      "request_body": null,
+      "request_headers": {
+        "Content-Type": "application/json"
+      },
+      "curl_command": "curl -X POST \\\n  -H \\\n  \"Authorization: Bearer <TOKEN>\" \\\n  -H \\\n  \"Content-Type: application/json\" \\\n  \"http://localhost:3002/api/sign/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMjlmY2U4Zi0yOGJhLTQ0NjYtODdlMy1iMDY0YjVlMzc4MzUiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzE2MjIyLCJleHAiOjE3NzY5MjEwMjJ9.of5u-0XrnHAyuJMeQ9gv8riZwJ17p4TIhToGCxe2pTo/started\"",
+      "data_set_id": "test-1776316029341-0",
+      "data_set_name": "Mark signing page opened (first call)",
+      "test_type": "positive",
+      "endpoint_id": "f86a265b-3bbc-4314-b2fc-93167a4e756d",
+      "feature_id": "1c97e97d-d762-4849-83e7-d5dc818e1521",
+      "scenario_id": "65d277e7-ea1f-414b-a103-01e309e7823c",
+      "response_preview": "{\n  \"success\": false,\n  \"error\": \"Invalid, expired, or already used signing token\"\n}"
+    }
+  ],
+  "summary": {
+    "total": 109,
+    "passed": 41,
+    "failed": 67,
+    "errors": 1,
+    "pass_rate": 37.61467889908257,
+    "total_duration_ms": 1247.604999999999
+  }
+}

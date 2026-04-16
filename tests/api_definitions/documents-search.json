@@ -1,26 +1,19 @@
 {
-  "name": "GET /api/documents/search",
-  "endpoint": "/api/documents/search",
+  "name": "GET /api/documents/search - Search documents",
+  "endpoint": "/api/documents/search?q=test",
   "method": "GET",
   "requiresAuth": true,
   "expectedStatus": 200,
-  "taskId": "17b27375-6bbf-4ffb-b0af-47bfd86c64c5",
+  "taskId": "8c371718-3a8e-4a35-be90-adce095f36c6",
   "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
-  "featureId": "9822eaa0-8398-44a9-96c7-6b764b96d86c",
   "testCases": [
     {
-      "name": "Default GET test",
+      "name": "Search documents by keyword",
       "expectedStatus": 200,
       "headers": {
         "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
       }
     }
   ],
-  "dependsOn": [
-    "POST /api/auth/register",
-    "POST /api/auth/login"
-  ],
-  "captureResponse": {},
-  "_generated": true,
-  "_source": "api_library_backfill"
+  "dependsOn": ["POST /api/auth/register", "POST /api/auth/login"]
 }

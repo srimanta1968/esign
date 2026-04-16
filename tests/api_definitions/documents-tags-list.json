@@ -1,0 +1,19 @@
+{
+  "name": "GET /api/documents/:id/tags - List tags",
+  "endpoint": "/api/documents/{{cache:documents.upload.response.data.id}}/tags",
+  "method": "GET",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "taskId": "ad4ab56b-fb79-4d6e-9ab7-e598befdf828",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "testCases": [
+    {
+      "name": "List tags on a document",
+      "expectedStatus": 200,
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      }
+    }
+  ],
+  "dependsOn": ["POST /api/auth/register", "POST /api/auth/login", "POST /api/documents"]
+}

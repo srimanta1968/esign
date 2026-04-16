@@ -1,34 +1,19 @@
 {
-  "endpoint": "/api/workflows/:id",
+  "name": "GET /api/workflows/:id - Get workflow",
+  "endpoint": "/api/workflows/{{cache:workflows.create.response.data.id}}",
   "method": "GET",
-  "taskId": "c49c5e95-5e92-4d5d-adb6-9c9ccc99c2bf",
   "requiresAuth": true,
-  "priority": 31,
-  "dependsOn": ["POST /api/workflows"],
+  "expectedStatus": 200,
+  "taskId": "2bee76ea-823d-4c9b-b6ed-312b00dc487e",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
   "testCases": [
     {
-      "name": "Get workflow details by ID",
-      "headers": {
-        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
-      },
-      "urlParams": {
-        "id": "{{cache:workflows.create.response.data.workflow.id}}"
-      },
+      "name": "Get existing workflow",
       "expectedStatus": 200,
-      "expectedResponse": {
-        "success": true,
-        "data": {
-          "workflow": {
-            "id": "string",
-            "document_id": "string",
-            "creator_id": "string",
-            "workflow_type": "string",
-            "status": "string",
-            "recipients": "array",
-            "fields": "array"
-          }
-        }
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
       }
     }
-  ]
+  ],
+  "dependsOn": ["POST /api/auth/register", "POST /api/auth/login", "POST /api/workflows"]
 }

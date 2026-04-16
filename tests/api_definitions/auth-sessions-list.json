@@ -1,21 +1,19 @@
 {
+  "name": "GET /api/auth/sessions - List active sessions",
   "endpoint": "/api/auth/sessions",
   "method": "GET",
-  "taskId": "75c9b422-947c-4a41-b3d4-087cff1f0285",
   "requiresAuth": true,
-  "priority": 13,
-  "dependsOn": ["POST /api/auth/refresh-token"],
+  "expectedStatus": 200,
+  "taskId": "9927c6cb-2af2-438a-b9cd-f7f35ff9e6a2",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
   "testCases": [
     {
-      "name": "List active sessions for authenticated user",
-      "headers": {
-        "Authorization": "Bearer {{cache:auth.refreshToken.response.data.token}}"
-      },
+      "name": "List my active sessions",
       "expectedStatus": 200,
-      "expectedResponse": {
-        "success": true,
-        "data": "array"
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
       }
     }
-  ]
+  ],
+  "dependsOn": ["POST /api/auth/register", "POST /api/auth/login"]
 }

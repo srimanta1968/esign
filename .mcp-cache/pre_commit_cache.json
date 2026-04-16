@@ -1,0 +1,1576 @@
+{
+  "last_scan": "2026-04-16T05:07:32.134232Z",
+  "scanned_files": {
+    "tests/api_definitions/analytics-signature-event-post.json": {
+      "hash": "c45c3dd4fb0a9dce8a38e23b5f7329ff1f6bf5d6d34adca8bb2783b92d61ce29",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:05:59.540663Z",
+      "linesOfCode": 38
+    },
+    "tests/api_definitions/analytics-signature-event.json": {
+      "hash": "7b3a54fed5619e6b3e87d85f9fe6111d3fd536927b19e7cebd140770b36a85f1",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:05:59.563671Z",
+      "linesOfCode": 52
+    },
+    "tests/api_definitions/audit-logs-search.json": {
+      "hash": "2d8a8982169f9e2bb8a6684994d600389d875f64e530a8bab38cf602bee04a92",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:05:59.591846Z",
+      "linesOfCode": 81
+    },
+    "tests/api_definitions/audit-logs.json": {
+      "hash": "5489a77cdc8a488fc433215c1522e864b407ae8cda26d157bd4eaf124a89fffe",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:05:59.621694Z",
+      "linesOfCode": 28
+    },
+    "tests/api_definitions/auth-api-keys-id-delete.json": {
+      "hash": "0d3bb14e347bfa9f8009accb09ecc6f7d597bce43e6019a887050f94e4bb1c8f",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:05:59.651021Z",
+      "linesOfCode": 29
+    },
+    "tests/api_definitions/auth-api-keys-post.json": {
+      "hash": "4a2a4eb8b3251c1ff5a5131a7e68176c7431640677b9595152219b430ba5c672",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:05:59.681495Z",
+      "linesOfCode": 33
+    },
+    "tests/api_definitions/auth-api-keys.json": {
+      "hash": "1d90b898cbd767b0ae5def068f4284a91b4c02cb8c1ce4373178697dcd2fb7d6",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:05:59.707915Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/auth-forgot-password-post.json": {
+      "hash": "7cc3246c6f853857fd1b93d3a9f10fcfce425c5b5885d62f7c9b32c5caf3be88",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:05:59.736874Z",
+      "linesOfCode": 32
+    },
+    "tests/api_definitions/auth-forgot-password.json": {
+      "hash": "d8cfdb295628bdb66e361d36538f22ba7633c0fb201d543d9b643edd34c8b803",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:05:59.766505Z",
+      "linesOfCode": 46
+    },
+    "tests/api_definitions/auth-login-post.json": {
+      "hash": "5ceae622e43b0a7d263e1c9361e210e64f9c4bfc11f510aad1975b70f0b6fb47",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:05:59.792644Z",
+      "linesOfCode": 37
+    },
+    "tests/api_definitions/auth-login.json": {
+      "hash": "a3a82e94d953d7d79870e18d0d19fa027117af1f8cc3c677975580f7a852886a",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:05:59.818851Z",
+      "linesOfCode": 35
+    },
+    "tests/api_definitions/auth-me.json": {
+      "hash": "a3e1ea6605ed7f34ef85e68b882f03bee57bb276c52c782fe4a02474884f2197",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:05:59.852068Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/auth-profile-put.json": {
+      "hash": "054223bdfbe7c750e24401087a752b9167f97fb87ed8d088e8477b15db6cb2d8",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:05:59.882798Z",
+      "linesOfCode": 27
+    },
+    "tests/api_definitions/auth-profile.json": {
+      "hash": "40023885e16d67826c51762ee683e6751d6bcc87c80b12918e2bb1d052328f9d",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:05:59.905384Z",
+      "linesOfCode": 28
+    },
+    "tests/api_definitions/auth-refresh-token-post.json": {
+      "hash": "1164ad3befb80f80b2773c8ff30daee529bea9362a24573e8a5263eb34f4fb96",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:05:59.934539Z",
+      "linesOfCode": 28
+    },
+    "tests/api_definitions/auth-refresh-token.json": {
+      "hash": "e6d94a275ff22bb16e1465bcf0116232a7fb0beffd76f5394d16ea5d24f0fca9",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:05:59.958025Z",
+      "linesOfCode": 46
+    },
+    "tests/api_definitions/auth-register-enhanced.json": {
+      "hash": "223e4b4ae130abd5e4f0128a34712b4f9a219cf1fa0cacda7d305dd696c1a47c",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:05:59.986163Z",
+      "linesOfCode": 87
+    },
+    "tests/api_definitions/auth-register-post.json": {
+      "hash": "3aa69a96fb6696a01378c036dc76fd2f64e60e048300eede4703e49c18b3e43b",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.008065Z",
+      "linesOfCode": 37
+    },
+    "tests/api_definitions/auth-register.json": {
+      "hash": "f6969a105acd5b7454abf93af1ce62f66a2f6f7d022d939d2729c0c420f5e533",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.047837Z",
+      "linesOfCode": 37
+    },
+    "tests/api_definitions/auth-resend-verification-post.json": {
+      "hash": "6ef4aed711cbfb7127fa71f88b73bac2c52ee468313a019b9e49581b9802f40a",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.068695Z",
+      "linesOfCode": 30
+    },
+    "tests/api_definitions/auth-reset-password-post.json": {
+      "hash": "2dfc18486ecf46cc82ffe9a4821f5c5e4aa9a437e4536cab6f4091829bb584f8",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.091017Z",
+      "linesOfCode": 31
+    },
+    "tests/api_definitions/auth-reset-password.json": {
+      "hash": "40d4d79cae434269939cd42b1bc8ed1e9abdf30b1594eb9e472d96510e49e174",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.117883Z",
+      "linesOfCode": 42
+    },
+    "tests/api_definitions/auth-sessions-id-delete.json": {
+      "hash": "e7699595f6bc2b432b7b4a9faf23b104a3c8b2178685c6112ff17982ad15d52d",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.149022Z",
+      "linesOfCode": 28
+    },
+    "tests/api_definitions/auth-sessions-list.json": {
+      "hash": "635464da62af9f1bb9341fac7eae13bd77091bc2a5718bfbb77d5ba080cf4ab9",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.174975Z",
+      "linesOfCode": 21
+    },
+    "tests/api_definitions/auth-sessions-revoke.json": {
+      "hash": "162c5b047df68585030470fb3ef7aeb9f21640c858b07df1d1beef30d478a9aa",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.202992Z",
+      "linesOfCode": 40
+    },
+    "tests/api_definitions/auth-sessions.json": {
+      "hash": "053bb84073b3234aa3f9d55d96d1a9b80fe5ba12f0ef3df449c0d8a35594b84c",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.223364Z",
+      "linesOfCode": 30
+    },
+    "tests/api_definitions/auth-sso-callback.json": {
+      "hash": "5934e749c2bb00dc7c15a8b25999b49d5b3382bad7bea9c522e571f38eeb14cb",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.254778Z",
+      "linesOfCode": 24
+    },
+    "tests/api_definitions/auth-sso-provider.json": {
+      "hash": "b64603859635d39643154b4206a73bf8df21e0755691493e19ba246cf114c37a",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.276697Z",
+      "linesOfCode": 25
+    },
+    "tests/api_definitions/auth-sso-redirect.json": {
+      "hash": "a6a202d44d86537cc62168e2a310f1e2b5af8f6c214dc525cf585f918006cfa9",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.297797Z",
+      "linesOfCode": 35
+    },
+    "tests/api_definitions/auth-verify-email-post.json": {
+      "hash": "688f7245988a001a822ed1da792f4eddd60c7ae8ff937e4ae024dcd981ae76dc",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.322492Z",
+      "linesOfCode": 30
+    },
+    "tests/api_definitions/billing-checkout-post.json": {
+      "hash": "9aaac8ec78f5283633a559408810c67f78151dd53f7e8b9f2aa8a34942f4906a",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.350108Z",
+      "linesOfCode": 31
+    },
+    "tests/api_definitions/billing-portal-post.json": {
+      "hash": "77fc5277f7cafd50ef21e80d8ddf8ec668ac3e7cb415cddf2c93065f7ad71e10",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.379087Z",
+      "linesOfCode": 28
+    },
+    "tests/api_definitions/billing-subscription.json": {
+      "hash": "c25f6807510be6af4e9384e3b31803308cda16c29a9477a7249db511f75b39a1",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.405986Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/billing-webhook-post.json": {
+      "hash": "bd2ad52b0ff34a3909d159302a758656d9e7b1b3e8d73fef375282f56a1813ca",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.434010Z",
+      "linesOfCode": 28
+    },
+    "tests/api_definitions/compliance-alerts-config-post.json": {
+      "hash": "ca57ec4ace4e1658b116953b6797ef3361ab5bbd7e7308af6ffff27b4a5d4b34",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.457002Z",
+      "linesOfCode": 35
+    },
+    "tests/api_definitions/compliance-alerts-config.json": {
+      "hash": "8116cb860a8031d53603f9f626b91cfb1fd772be29cd4b0221ed99436f62e011",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.480689Z",
+      "linesOfCode": 43
+    },
+    "tests/api_definitions/compliance-alerts.json": {
+      "hash": "b8a88213214b906192c1029e9f71492dcb9bd9b6df281b74bf384ac7ffb78680",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.509341Z",
+      "linesOfCode": 23
+    },
+    "tests/api_definitions/compliance-esign-metadata-signatureId.json": {
+      "hash": "f0d0c7b88d4ad28920495fb0dffc1ff357bb6e12e72d0bd4003debc30bf76a11",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.536494Z",
+      "linesOfCode": 30
+    },
+    "tests/api_definitions/compliance-esign-metadata.json": {
+      "hash": "2c63ff3df54e037bb1db933f6dc6f32c470e2965b6341e85d990e6150e6ede8d",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.561698Z",
+      "linesOfCode": 25
+    },
+    "tests/api_definitions/compliance-export.json": {
+      "hash": "a5daaa78ffcb9048286d91621490c24195bd93452695a3bf419c8a7f60590732",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.582865Z",
+      "linesOfCode": 24
+    },
+    "tests/api_definitions/compliance-report.json": {
+      "hash": "b9f4921b38d573d02cfb7fda1072c069a55f25bbf8eabb9ad082881e18fc39e8",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.605262Z",
+      "linesOfCode": 27
+    },
+    "tests/api_definitions/documents-delete.json": {
+      "hash": "ca45f0705e53868b70b51f6314e0767c3b63f0cb619a28219e9716350910947d",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.626756Z",
+      "linesOfCode": 24
+    },
+    "tests/api_definitions/documents-get-1.json": {
+      "hash": "96bb6edbdebb1c84f2e2ba26ca9dee627011d56dcb718fbccb895891c9d6a010",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.649949Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/documents-get-by-id.json": {
+      "hash": "9676c612b38cca0ca4568d0dfa791dba037e44a28573680790cb4467e6487214",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.679361Z",
+      "linesOfCode": 32
+    },
+    "tests/api_definitions/documents-id-delete.json": {
+      "hash": "a404a8463449cce85107e04d451bc77044d2e60e2a7048c38bb884ee3111da6e",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.707158Z",
+      "linesOfCode": 29
+    },
+    "tests/api_definitions/documents-id-download.json": {
+      "hash": "8635ce8000d29cfc6d282f85ec5aebefe799c138c6546dedfd43ba274e1d3359",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.736524Z",
+      "linesOfCode": 28
+    },
+    "tests/api_definitions/documents-id-file.json": {
+      "hash": "938ae182115c041a956504f4858b62d8ce64ef21062282b6fd1c558ab68431e0",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.759623Z",
+      "linesOfCode": 28
+    },
+    "tests/api_definitions/documents-id-tags-post.json": {
+      "hash": "d8241aae07fec646f1af61f8f34f665982bb1f8ef2898cf9d31fa7f866b8f2fd",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.782729Z",
+      "linesOfCode": 32
+    },
+    "tests/api_definitions/documents-id-tags-tag-delete.json": {
+      "hash": "51af1ef3d2a552a7048488a853609d25199c2023b1cdb9c1ade0285b698db873",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.813845Z",
+      "linesOfCode": 30
+    },
+    "tests/api_definitions/documents-id-tags.json": {
+      "hash": "4dfdfda0faaca2222ad95766c19079c051dbef745c31f5f08be143c5e9bac1b3",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.836252Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/documents-id-versions-post.json": {
+      "hash": "0e8e2720a11414c852761c53eb65da0dc5d904ef092c6b8e0f4c3461c12ac7c7",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.860382Z",
+      "linesOfCode": 29
+    },
+    "tests/api_definitions/documents-id-versions-versionId-revert-post.json": {
+      "hash": "8bf8438e30b281a71d92738668d98878194f880b4f9f2db755d2df56bb5bb61d",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.889544Z",
+      "linesOfCode": 29
+    },
+    "tests/api_definitions/documents-id-versions.json": {
+      "hash": "be6ddf13c697315858dfd7e7c3fff5adbf781f2e9aae8bde75a84640b4420ae5",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.930210Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/documents-id.json": {
+      "hash": "2adeed0e74f0bf3a9b1e996463dbecc47b0e8554a71d5f51b1efdd275e7de015",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.961552Z",
+      "linesOfCode": 29
+    },
+    "tests/api_definitions/documents-list.json": {
+      "hash": "1fcc6af828e48cd5aa5b15c7c5ce65781a990c6895c7aaad28b211f07bda6884",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:00.990056Z",
+      "linesOfCode": 24
+    },
+    "tests/api_definitions/documents-post.json": {
+      "hash": "5dc94c1d03af46e22839697f3875b34c833e558c74caafe05f0d2d4bef01c9e1",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.014892Z",
+      "linesOfCode": 36
+    },
+    "tests/api_definitions/documents-search.json": {
+      "hash": "37abc337219a199999c3e1159efe6d29707b48897bfaee455341bf5b32e08a4a",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.041264Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/documents-tags-search.json": {
+      "hash": "4c6115b96fab4285bed8fa3b0656d763e7aee75b7c23cac6d36223ecea9a691d",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.069366Z",
+      "linesOfCode": 182
+    },
+    "tests/api_definitions/documents-templates-id-delete.json": {
+      "hash": "20d7838c67a67231fae565850bb921621d2375d5b81b34654e526d8418ed42d3",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.097349Z",
+      "linesOfCode": 30
+    },
+    "tests/api_definitions/documents-templates-id-use-post.json": {
+      "hash": "bde6ef19b96776fa179fd40f17eab19b7a576e6387c21eb3e70efe78005d6942",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.125378Z",
+      "linesOfCode": 33
+    },
+    "tests/api_definitions/documents-templates-id.json": {
+      "hash": "ed6945310757793b56245225a58df96e34a68573cc28ce5587c06625ad165ad4",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.151167Z",
+      "linesOfCode": 30
+    },
+    "tests/api_definitions/documents-templates-post.json": {
+      "hash": "ecac42e00694b27eaed7b1e5ae9a72990c64882f6595a53f242ff9b90b9e4090",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.173858Z",
+      "linesOfCode": 36
+    },
+    "tests/api_definitions/documents-templates.json": {
+      "hash": "447c4f6cac36eb601b06356d7261bed33547089b6f175d775fd27601514a6808",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.198053Z",
+      "linesOfCode": 175
+    },
+    "tests/api_definitions/documents-upload-multiformat.json": {
+      "hash": "9518f601ad1eccf7a5561a33605103e6aa142a03708033975d0b194b6ae873fe",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.222122Z",
+      "linesOfCode": 52
+    },
+    "tests/api_definitions/documents-upload.json": {
+      "hash": "055f0c597c350a516fedb6c2dbb42ed256b688e2fa25f887d008b75e84a3368d",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.251757Z",
+      "linesOfCode": 38
+    },
+    "tests/api_definitions/documents-versions.json": {
+      "hash": "5ba66ec208f83918aa9b331f63858cb98715f08ff5ea1fcd5fa73c4069c1ea45",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.273348Z",
+      "linesOfCode": 107
+    },
+    "tests/api_definitions/documents.json": {
+      "hash": "8804a843b669d0b22044c00b7b0be47e0ea957acb5d2c83d493eec1a095a0dd6",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.299099Z",
+      "linesOfCode": 31
+    },
+    "tests/api_definitions/notifications-preferences-put.json": {
+      "hash": "f16664d29de59778f7cdf293bd7f2dde7371896a34852f5f50e45583ec87cbb8",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.322529Z",
+      "linesOfCode": 38
+    },
+    "tests/api_definitions/notifications-preferences.json": {
+      "hash": "a7327535832ec7c78c31aa111453c98b24b3d16ac58e6032a9a13f82d5812556",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.350485Z",
+      "linesOfCode": 131
+    },
+    "tests/api_definitions/notifications-read-patch.json": {
+      "hash": "0ea5736fa49adf8c20b986ea7bd0a625638d2eefe302aaa513bd6d551bad966a",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.371950Z",
+      "linesOfCode": 27
+    },
+    "tests/api_definitions/notifications-send-post.json": {
+      "hash": "d1e74522768c9bb3d3ab2d713a86ef8990b9ac50517ef69d192da955618e6714",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.393579Z",
+      "linesOfCode": 36
+    },
+    "tests/api_definitions/notifications-stream.json": {
+      "hash": "3bab03913948e9a2e65637d119cc9cde8e1814ca10ac9a4226e381c47ccd240c",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.422212Z",
+      "linesOfCode": 62
+    },
+    "tests/api_definitions/notifications.json": {
+      "hash": "1db37f128b8247989b78afde8ca6ffa2f596c28e6490c50d7d1fd906bad54cdd",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.446331Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/organizations-create.json": {
+      "hash": "521e6e162c872dbc333add9e9ca813808017d89b2c6acb4430245324803d6c82",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.480520Z",
+      "linesOfCode": 50
+    },
+    "tests/api_definitions/organizations-get.json": {
+      "hash": "258ad75476cc99d413184404992bd3ac15da5a776ddc2d6c2ad5b351f032abc0",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.504553Z",
+      "linesOfCode": 43
+    },
+    "tests/api_definitions/organizations-id.json": {
+      "hash": "48f84aca8cc433ff193e948f7fc447fe005c2063d6f7671dae3c54ad10b13bcc",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.529424Z",
+      "linesOfCode": 29
+    },
+    "tests/api_definitions/organizations-post.json": {
+      "hash": "b51ddaf88187bc34da07d42734e6fb3dc607ce2703873c8c5e9ab1be34d73e33",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.555032Z",
+      "linesOfCode": 35
+    },
+    "tests/api_definitions/root-all.json": {
+      "hash": "4fafa5d30a2f7c168419eb9444bfa1d5395bcee47307a1d1f6944161f979e039",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.578907Z",
+      "linesOfCode": 27
+    },
+    "tests/api_definitions/sign-token-started-post.json": {
+      "hash": "39010a704e0da28136ba4a5fea16aab0181c3faf5ffacf1b5e524fa8191124ed",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.601726Z",
+      "linesOfCode": 28
+    },
+    "tests/api_definitions/signatures-confirm.json": {
+      "hash": "ffe904b3e367078b38440f6fceaa7157511bc33dca0340a0c2d5b7c44b6d3524",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.624638Z",
+      "linesOfCode": 80
+    },
+    "tests/api_definitions/signatures-create.json": {
+      "hash": "bb2ef57302e960aa13eeeea97862f6ee0749d5c80042690c36681e76687bc9bc",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.648799Z",
+      "linesOfCode": 36
+    },
+    "tests/api_definitions/signatures-documentId.json": {
+      "hash": "4323a07071110d83cb31b72ceb3deacaecc1b9e07acc1b348efd323dc1d7935e",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.670347Z",
+      "linesOfCode": 30
+    },
+    "tests/api_definitions/signatures-id-confirm-post.json": {
+      "hash": "36e2d4d270424e0b5e13a00bdc2ffb6ecce7698b92868c4c8a8d90f87760a33e",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.690203Z",
+      "linesOfCode": 34
+    },
+    "tests/api_definitions/signatures-id-sign-patch.json": {
+      "hash": "832b466eb13ae03246ccb445f6c9bdb006f1d57f48f68547003960afaef2bc85",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.716145Z",
+      "linesOfCode": 35
+    },
+    "tests/api_definitions/signatures-post.json": {
+      "hash": "a877a934532cbf214bafbd61115b427cb95144f16f14ffc4fb11a5637d9a08bd",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.744104Z",
+      "linesOfCode": 36
+    },
+    "tests/api_definitions/signatures-sign.json": {
+      "hash": "48bbb3f912db3d754d600fa92e56ea624a1d4180086ac990b98758f683636f11",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.769558Z",
+      "linesOfCode": 34
+    },
+    "tests/api_definitions/signatures-status.json": {
+      "hash": "65ae2e5998266db2159ec94fd3c307c53396a8082b1427300eb1a6acef24b946",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.793798Z",
+      "linesOfCode": 27
+    },
+    "tests/api_definitions/teams-id-delete.json": {
+      "hash": "083e6f307bb045db353789c2a88d25d81437d2226b1e1ca52b1c7bca7fb45f9c",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.814288Z",
+      "linesOfCode": 29
+    },
+    "tests/api_definitions/teams-id-invite-post.json": {
+      "hash": "ec0b4063b167d8917590daf0e85491afe0590d8d40f833bbf6bd9b2ceb8f1cf2",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.840002Z",
+      "linesOfCode": 35
+    },
+    "tests/api_definitions/teams-id-invites-inviteId-delete.json": {
+      "hash": "39fa8cbe5c4dc60b78fd9a642b29ab7c6fb648262b81907b89fd08819f2ca4b0",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.870038Z",
+      "linesOfCode": 30
+    },
+    "tests/api_definitions/teams-id-leave-post.json": {
+      "hash": "f40bbed445b6cde055ac0ba4608b668ab9fd2a16367fc2833a12411b2a363509",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.899720Z",
+      "linesOfCode": 29
+    },
+    "tests/api_definitions/teams-id-members-userId-delete.json": {
+      "hash": "c7228ad7d707d40dc7d7fd8691498fa8589ae6e8f534fd63f957f538e994481e",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.927578Z",
+      "linesOfCode": 28
+    },
+    "tests/api_definitions/teams-id-members-userId-patch.json": {
+      "hash": "12033b78efe894e061cac1aad8d65b65950f4d419fc1fe8125432a833c54b650",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.950514Z",
+      "linesOfCode": 31
+    },
+    "tests/api_definitions/teams-id.json": {
+      "hash": "9e7c2bbe7bf8dcd7be3edf1553d360ad98ba73603938a230b005232284fc4d3d",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:01.974315Z",
+      "linesOfCode": 29
+    },
+    "tests/api_definitions/teams-join-token-post.json": {
+      "hash": "65992ddc9492d051b3a4b884912d3e703a174f8d7b70bee20c06f2b1b782c9e7",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.001977Z",
+      "linesOfCode": 30
+    },
+    "tests/api_definitions/teams-join-token.json": {
+      "hash": "ffb6902bc96a97d517daa6e11e749cf069310e203f4458b7e528ba129eeaf99a",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.029152Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/teams-mine.json": {
+      "hash": "bb39506b9e78b54410b4071aaf97f4f55ab24d3b45672a5d80871133e1f2fe2e",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.051945Z",
+      "linesOfCode": 29
+    },
+    "tests/api_definitions/teams-post.json": {
+      "hash": "5927c8e94882b4aac965cd50beea15870d7cc5cc7042ba5d5b827de5f3f34da3",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.073120Z",
+      "linesOfCode": 33
+    },
+    "tests/api_definitions/user-signatures-create.json": {
+      "hash": "d5c624a569a5d923e8d7d0c4bcf6fb4d472746107c361ee50815057d84e82d70",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.096800Z",
+      "linesOfCode": 34
+    },
+    "tests/api_definitions/user-signatures-drawn.json": {
+      "hash": "cf33817404670654167ed6d014514e1b158423a183599c9a258f1ff22851ad0e",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.121331Z",
+      "linesOfCode": 76
+    },
+    "tests/api_definitions/user-signatures-get-1.json": {
+      "hash": "0edd9b6ba1e200999ba8fa11a1aa9dc1211fe032520a77d7d034106edde7e64d",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.147290Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/user-signatures-get.json": {
+      "hash": "b720e1f1c2b63f3b49f9c64164b6f112644da8ea8867a0b76370415579ebd266",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.168331Z",
+      "linesOfCode": 44
+    },
+    "tests/api_definitions/user-signatures-id-delete.json": {
+      "hash": "a3253f3f7407cfc26840cb567405a0e4332ca55c4acd42fcbc6a38e4a1afcd50",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.195832Z",
+      "linesOfCode": 29
+    },
+    "tests/api_definitions/user-signatures-id-put.json": {
+      "hash": "c5fc7c2dd324bdb00ca857a667920cf81a94a31d5c78efff432680639d4d3d8e",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.218710Z",
+      "linesOfCode": 32
+    },
+    "tests/api_definitions/user-signatures-id.json": {
+      "hash": "0aeb4f8f6e1e4be679cb39e2230569c881c45111c1f7650d4d25f7222f3dc401",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.240605Z",
+      "linesOfCode": 29
+    },
+    "tests/api_definitions/user-signatures-list.json": {
+      "hash": "2b2deceb3956f8866516c145e65ebcf9a703fbbf05e0af9cb4d7e1633328d712",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.265411Z",
+      "linesOfCode": 24
+    },
+    "tests/api_definitions/user-signatures-post.json": {
+      "hash": "36701a0c026fb2e92d5683d653467b71f4362c3317e9ed3cdd139a147dbbe0e5",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.287452Z",
+      "linesOfCode": 36
+    },
+    "tests/api_definitions/user-signatures-typed-uploaded.json": {
+      "hash": "cdb789279e7e042971f19028421181dfb70cf66de87260d246856fdae97b54cc",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.310778Z",
+      "linesOfCode": 69
+    },
+    "tests/api_definitions/user-signatures.json": {
+      "hash": "18d88169a072e78381c1d76d8b9ce1b13426ba8efa380538e5c1c855cbbb705e",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.330939Z",
+      "linesOfCode": 31
+    },
+    "tests/api_definitions/users-assign-role.json": {
+      "hash": "2e78ac0946999edace52d73e0e29586645a63dad8a63cbe269e47e50379e4e09",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.355285Z",
+      "linesOfCode": 51
+    },
+    "tests/api_definitions/users-id-role-put.json": {
+      "hash": "fb5622626f37654c28825379f98802a3ccc52e25ca53daa03a23897481b7268f",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.374104Z",
+      "linesOfCode": 32
+    },
+    "tests/api_definitions/users-language-put.json": {
+      "hash": "76128e9f96cc31464951b40908d3c6986461fcd707649bf1b57c6e578b89251a",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.396311Z",
+      "linesOfCode": 32
+    },
+    "tests/api_definitions/users-language.json": {
+      "hash": "f2578bd703abdb3bae0335521128b70aea551a7f1557f9f287c2e30ef68476b1",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.419653Z",
+      "linesOfCode": 42
+    },
+    "tests/api_definitions/users-list.json": {
+      "hash": "2bfbb344ba526476a3ebfa3034cb170fffd3870ab6262eabbe1531096041e0d0",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.440808Z",
+      "linesOfCode": 21
+    },
+    "tests/api_definitions/users-roles.json": {
+      "hash": "92f896c53441d515687574551b279be90be002ba936947485a244b7f6f1a3d57",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.462972Z",
+      "linesOfCode": 23
+    },
+    "tests/api_definitions/users.json": {
+      "hash": "b46930634262c03f2a87b7d56b87a01ef601dd6b38b47405968d53fe68ca4b84",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.485279Z",
+      "linesOfCode": 28
+    },
+    "tests/api_definitions/workflows-admin-process-completions-post.json": {
+      "hash": "7c866ed7c21764d6f2b737bb7edccafc1e63d0cb5fa8e7f2403f2380b4fbdd98",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.510229Z",
+      "linesOfCode": 27
+    },
+    "tests/api_definitions/workflows-create.json": {
+      "hash": "ff02a13d6746af00acc029dcf2d3828c0e61c89015352fbe651c0280ef27cf6b",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.535464Z",
+      "linesOfCode": 64
+    },
+    "tests/api_definitions/workflows-get.json": {
+      "hash": "7fa7053db9fe4a8185d38fef57a1e4f4679e6be613458b64b70f793399c250f3",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.557824Z",
+      "linesOfCode": 34
+    },
+    "tests/api_definitions/workflows-history.json": {
+      "hash": "2705f50b3125eddc39016c35621bd5e073cd6b4f3576c43a20a43c54eaf56969",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.580525Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/workflows-id-cancel-post.json": {
+      "hash": "69b9b41c2efbcff375b1abbb3446095da4f76c1b96af0fdafe765287f2f3f170",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.602268Z",
+      "linesOfCode": 30
+    },
+    "tests/api_definitions/workflows-id-decline-patch.json": {
+      "hash": "2c6c40e1d7a43ea1749cf6568837b31ff2bff05d2fb4a3015baee6a98b8afce2",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.625791Z",
+      "linesOfCode": 32
+    },
+    "tests/api_definitions/workflows-id-downloads.json": {
+      "hash": "789b595e50c54e734431d7a325fe47cd5761a9da114e9627f96fbc9cb007d7be",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.650654Z",
+      "linesOfCode": 28
+    },
+    "tests/api_definitions/workflows-id-history-export.json": {
+      "hash": "3cf8906e533a787671a6801ad59b8816079b625cad52e82203de2d9d9441cec5",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.670982Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/workflows-id-history.json": {
+      "hash": "0aadd6da70faa1b9f07e369e5d50e172c00a851a4e638e7426d3013d28f67e4f",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.696517Z",
+      "linesOfCode": 30
+    },
+    "tests/api_definitions/workflows-id-put.json": {
+      "hash": "bc9a416a7979c9c6f16e8040512f6097ae375654b5a0ae01700a9866be12e4dc",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.720661Z",
+      "linesOfCode": 39
+    },
+    "tests/api_definitions/workflows-id-remind-post.json": {
+      "hash": "edb086deece430d450acc27c350bd56bc6f28e8abfb9bcaea8db2cd757d9e824",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.747787Z",
+      "linesOfCode": 31
+    },
+    "tests/api_definitions/workflows-id-reminders-put.json": {
+      "hash": "1e073f5aa783d73ea5ee878a93c5a9ed6db085393fdfdd32cff3b9896d6528ee",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.771800Z",
+      "linesOfCode": 32
+    },
+    "tests/api_definitions/workflows-id-self-sign-post.json": {
+      "hash": "034c71ab957292e8bffa55f204ca52dfbf986579a977781cdd08bbc33152d6bf",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.797990Z",
+      "linesOfCode": 30
+    },
+    "tests/api_definitions/workflows-id-sign-patch.json": {
+      "hash": "e337c737ac985ebce9430ffa8266fc7735a15d6ddea73e3df6553f34c901e454",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.820311Z",
+      "linesOfCode": 31
+    },
+    "tests/api_definitions/workflows-id-start-post.json": {
+      "hash": "2711dbfc64f039bdfc27a2ae68e0c3c540383b0b2597bb73256a76a1e9b0f860",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.840184Z",
+      "linesOfCode": 32
+    },
+    "tests/api_definitions/workflows-id-status.json": {
+      "hash": "dadd5fe914588a315dbced38cdbd0eb1ea339490c45fc89af8cab61f6073c496",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.860669Z",
+      "linesOfCode": 30
+    },
+    "tests/api_definitions/workflows-id.json": {
+      "hash": "bafc10b10c6546c4ffab490325f70800817f765be9a164330c8684f1ce728fb2",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.881227Z",
+      "linesOfCode": 32
+    },
+    "tests/api_definitions/workflows-post.json": {
+      "hash": "5a5aae5cf96ecb8c9e53ae860f5343b88d67403019e3b8b0b87fd8727ceec265",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.904681Z",
+      "linesOfCode": 59
+    },
+    "tests/api_definitions/workflows-remind.json": {
+      "hash": "74a5ad7833b042219e64caa3749c0b7089a8ae9154c0a442c80bb0e76bf2397b",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.926611Z",
+      "linesOfCode": 27
+    },
+    "tests/api_definitions/workflows-reminders-configure.json": {
+      "hash": "5114740e484e85784ee10c47f42cea48dc5cd2b706d70cc7840e2fd7915140a5",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.949424Z",
+      "linesOfCode": 30
+    },
+    "tests/api_definitions/workflows-sign.json": {
+      "hash": "766456b92e1f94ce5961ba8997f800993c443d7a6b6a313f342b948510b68055",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.972811Z",
+      "linesOfCode": 39
+    },
+    "tests/api_definitions/workflows-start.json": {
+      "hash": "b8dfe38e0df64cd0f965e28a4b95a67a7bfef94c679594248744ea4ddad756a2",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:02.994792Z",
+      "linesOfCode": 31
+    },
+    "tests/api_definitions/workflows-status.json": {
+      "hash": "b0d8edf9ada929b82f17b0482d9c42b04f016f848320b5897ac920259c12fb51",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:03.030096Z",
+      "linesOfCode": 37
+    },
+    "tests/api_definitions/workflows-update.json": {
+      "hash": "99eec994a68ca1c081858b75435179ec48a4ef2b74cb024208d12af04586dde2",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:03.063175Z",
+      "linesOfCode": 40
+    },
+    "tests/api_definitions/workflows.json": {
+      "hash": "c0f7069248b0360d903e71decf84fee967d02b8da166a0dd2721611a49524142",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:03.104148Z",
+      "linesOfCode": 26
+    },
+    "server/src/routes/analyticsRoutes.ts": {
+      "hash": "dfd4f7d9965fd389f41e158b99855dc37a0168e7a2bcc82bae96fcc631196611",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:03.142513Z",
+      "linesOfCode": 19
+    },
+    "server/src/routes/auditRoutes.ts": {
+      "hash": "8a0d7a061601c2d50e57ba62e5f7ae0ca9ae7e0447eda8c993bae2a210791213",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:03.580972Z",
+      "linesOfCode": 50
+    },
+    "server/src/routes/authRoutes.ts": {
+      "hash": "972c2d659303902bb445c930d42a54a2fb3c09edfede99474eb3519feada495f",
+      "compliance": 75,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-11",
+          "description": "Direct database access - use DataService/ORM instead",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/routes/authRoutes.ts"
+        },
+        {
+          "line": 0,
+          "severity": "major",
+          "category": "api_definition_drift",
+          "rule": "TEST_DEF_OUT_OF_SYNC",
+          "description": "api_definition auth-api-keys-post.json testCases[0] payload missing required fields that the handler destructures from req.body: ['language', 'name']. Handler reads: ['label', 'language', 'name']. Test sends: ['label'].",
+          "currentCode": "const { label, language, name } = req.body",
+          "autoFixable": false,
+          "confidence": 95,
+          "source": "drift_check",
+          "filePath": "server/src/routes/authRoutes.ts"
+        }
+      ],
+      "timestamp": "2026-04-16T05:06:04.442103Z",
+      "linesOfCode": 166
+    },
+    "server/src/routes/billingRoutes.ts": {
+      "hash": "08ebdd8aa639106ac8957cdefe8288140a06deb73b65df10e811bb6f255cb48c",
+      "compliance": 75,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-11",
+          "description": "Direct database access - use DataService/ORM instead",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/routes/billingRoutes.ts"
+        },
+        {
+          "line": 0,
+          "severity": "major",
+          "category": "api_definition_drift",
+          "rule": "TEST_DEF_OUT_OF_SYNC",
+          "description": "api_definition billing-webhook-post.json testCases[0] payload missing required fields that the handler destructures from req.body: ['interval', 'plan']. Handler reads: ['interval', 'plan']. Test sends: ['type'].",
+          "currentCode": "const { interval, plan } = req.body",
+          "autoFixable": false,
+          "confidence": 95,
+          "source": "drift_check",
+          "filePath": "server/src/routes/billingRoutes.ts"
+        }
+      ],
+      "timestamp": "2026-04-16T05:06:11.057571Z",
+      "linesOfCode": 168
+    },
+    "server/src/routes/complianceRoutes.ts": {
+      "hash": "4c51a9fbdb952e1dd6f082bb09722686d0c9fe7da29c2e455f23a10f4c2688d9",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:12.968055Z",
+      "linesOfCode": 159
+    },
+    "server/src/routes/documentRoutes.ts": {
+      "hash": "bbb403960da4376187df838ee4e30f3179b8686f4ea492f2d8f4533fd90a5404",
+      "compliance": 75,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-11",
+          "description": "Direct database access - use DataService/ORM instead",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/routes/documentRoutes.ts"
+        },
+        {
+          "line": 0,
+          "severity": "major",
+          "category": "api_definition_drift",
+          "rule": "TEST_DEF_OUT_OF_SYNC",
+          "description": "api_definition analytics-signature-event-post.json testCases[0] payload missing required fields that the handler destructures from req.body: ['description', 'document_id', 'file_path', 'name', 'tags']. Handler reads: ['description', 'document_id', 'file_path', 'name', 'tags']. Test sends: ['event_type', 'metadata'].",
+          "currentCode": "const { description, document_id, file_path, name, tags } = req.body",
+          "autoFixable": false,
+          "confidence": 95,
+          "source": "drift_check",
+          "filePath": "server/src/routes/documentRoutes.ts"
+        }
+      ],
+      "timestamp": "2026-04-16T05:06:15.581320Z",
+      "linesOfCode": 285
+    },
+    "server/src/routes/notificationRoutes.ts": {
+      "hash": "3dbbb76c984a41d55cedc00973495b838e27af4c7f76734e9e2973bea64e78ea",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:21.717623Z",
+      "linesOfCode": 39
+    },
+    "server/src/routes/organizationRoutes.ts": {
+      "hash": "2ed71810c6c4c3b3cf478983e95002171d2814d84bb13d20c2fa73c898063842",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:23.831772Z",
+      "linesOfCode": 23
+    },
+    "server/src/routes/signatureRoutes.ts": {
+      "hash": "271c83adb191d385d287c71f1f646c6b00b0efbe870d53582b75b3146f9c972a",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:24.537215Z",
+      "linesOfCode": 35
+    },
+    "server/src/routes/signingRoutes.ts": {
+      "hash": "5ffc7253d4ee6a37644006aba37ec566708bc2d99eafa51538999309d939bb0d",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:25.881149Z",
+      "linesOfCode": 21
+    },
+    "server/src/routes/teamRoutes.ts": {
+      "hash": "596a69fd59e6ad27403c3968e8cb57ee7667dee70d6f8610d7a8a9c9a228ddd0",
+      "compliance": 100,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "major",
+          "category": "api_definition_drift",
+          "rule": "TEST_DEF_OUT_OF_SYNC",
+          "description": "api_definition analytics-signature-event-post.json testCases[0] payload missing required fields that the handler destructures from req.body: ['emails', 'name', 'plan', 'role']. Handler reads: ['emails', 'name', 'plan', 'role']. Test sends: ['event_type', 'metadata'].",
+          "currentCode": "const { emails, name, plan, role } = req.body",
+          "autoFixable": false,
+          "confidence": 95,
+          "source": "drift_check",
+          "filePath": "server/src/routes/teamRoutes.ts"
+        }
+      ],
+      "timestamp": "2026-04-16T05:06:27.677413Z",
+      "linesOfCode": 214
+    },
+    "server/src/routes/userRoutes.ts": {
+      "hash": "2131e84aaf91e70399fa7962fa0f2341e04010db9924c81270f394632ee32b0e",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:31.469250Z",
+      "linesOfCode": 35
+    },
+    "server/src/routes/userSignatureRoutes.ts": {
+      "hash": "1d0a3f12545844b584824e6501d86ff3bdefcd1dec7483ec494388049061236d",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:32.922001Z",
+      "linesOfCode": 52
+    },
+    "server/src/routes/workflowRoutes.ts": {
+      "hash": "8bc7a750e2a885e2f27794c308810ac529864aeaa1dfb325df1008eb921cfa2e",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T05:06:34.751231Z",
+      "linesOfCode": 255
+    }
+  },
+  "registered_apis": {
+    "POST:/api/analytics/signature-event": {
+      "filePath": "server/src/routes/analyticsRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134245Z"
+    },
+    "GET:/api/audit-logs/": {
+      "filePath": "server/src/routes/auditRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134582Z"
+    },
+    "POST:/api/auth/register": {
+      "filePath": "server/src/routes/authRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134592Z"
+    },
+    "POST:/api/auth/login": {
+      "filePath": "server/src/routes/authRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134595Z"
+    },
+    "POST:/api/auth/verify-email": {
+      "filePath": "server/src/routes/authRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134597Z"
+    },
+    "POST:/api/auth/resend-verification": {
+      "filePath": "server/src/routes/authRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134600Z"
+    },
+    "POST:/api/auth/forgot-password": {
+      "filePath": "server/src/routes/authRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134602Z"
+    },
+    "POST:/api/auth/reset-password": {
+      "filePath": "server/src/routes/authRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134604Z"
+    },
+    "GET:/api/auth/sso/callback": {
+      "filePath": "server/src/routes/authRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134607Z"
+    },
+    "GET:/api/auth/sso/:provider": {
+      "filePath": "server/src/routes/authRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134608Z"
+    },
+    "POST:/api/auth/refresh-token": {
+      "filePath": "server/src/routes/authRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134610Z"
+    },
+    "GET:/api/auth/sessions": {
+      "filePath": "server/src/routes/authRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134612Z"
+    },
+    "DELETE:/api/auth/sessions/:id": {
+      "filePath": "server/src/routes/authRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134615Z"
+    },
+    "GET:/api/auth/me": {
+      "filePath": "server/src/routes/authRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134616Z"
+    },
+    "GET:/api/auth/profile": {
+      "filePath": "server/src/routes/authRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134617Z"
+    },
+    "PUT:/api/auth/profile": {
+      "filePath": "server/src/routes/authRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134619Z"
+    },
+    "POST:/api/auth/api-keys": {
+      "filePath": "server/src/routes/authRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134621Z"
+    },
+    "GET:/api/auth/api-keys": {
+      "filePath": "server/src/routes/authRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134623Z"
+    },
+    "DELETE:/api/auth/api-keys/:id": {
+      "filePath": "server/src/routes/authRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134625Z"
+    },
+    "POST:/api/billing/checkout": {
+      "filePath": "server/src/routes/billingRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134626Z"
+    },
+    "POST:/api/billing/portal": {
+      "filePath": "server/src/routes/billingRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134628Z"
+    },
+    "GET:/api/billing/subscription": {
+      "filePath": "server/src/routes/billingRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134630Z"
+    },
+    "POST:/api/billing/webhook": {
+      "filePath": "server/src/routes/billingRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134632Z"
+    },
+    "GET:/api/compliance/report": {
+      "filePath": "server/src/routes/complianceRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134633Z"
+    },
+    "POST:/api/compliance/alerts/config": {
+      "filePath": "server/src/routes/complianceRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134635Z"
+    },
+    "GET:/api/compliance/alerts": {
+      "filePath": "server/src/routes/complianceRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134636Z"
+    },
+    "GET:/api/compliance/export": {
+      "filePath": "server/src/routes/complianceRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134637Z"
+    },
+    "GET:/api/compliance/esign-metadata/:signatureId": {
+      "filePath": "server/src/routes/complianceRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134639Z"
+    },
+    "POST:/api/compliance/esign-metadata": {
+      "filePath": "server/src/routes/complianceRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134640Z"
+    },
+    "POST:/api/documents/": {
+      "filePath": "server/src/routes/documentRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134642Z"
+    },
+    "GET:/api/documents/": {
+      "filePath": "server/src/routes/documentRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134644Z"
+    },
+    "GET:/api/documents/search": {
+      "filePath": "server/src/routes/documentRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134645Z"
+    },
+    "POST:/api/documents/templates": {
+      "filePath": "server/src/routes/documentRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134647Z"
+    },
+    "GET:/api/documents/templates": {
+      "filePath": "server/src/routes/documentRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134648Z"
+    },
+    "GET:/api/documents/templates/:id": {
+      "filePath": "server/src/routes/documentRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134651Z"
+    },
+    "POST:/api/documents/templates/:id/use": {
+      "filePath": "server/src/routes/documentRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134653Z"
+    },
+    "DELETE:/api/documents/templates/:id": {
+      "filePath": "server/src/routes/documentRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134655Z"
+    },
+    "POST:/api/documents/:id/versions": {
+      "filePath": "server/src/routes/documentRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134657Z"
+    },
+    "GET:/api/documents/:id/versions": {
+      "filePath": "server/src/routes/documentRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134658Z"
+    },
+    "POST:/api/documents/:id/versions/:versionId/revert": {
+      "filePath": "server/src/routes/documentRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134660Z"
+    },
+    "POST:/api/documents/:id/tags": {
+      "filePath": "server/src/routes/documentRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134662Z"
+    },
+    "GET:/api/documents/:id/tags": {
+      "filePath": "server/src/routes/documentRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134663Z"
+    },
+    "DELETE:/api/documents/:id/tags/:tag": {
+      "filePath": "server/src/routes/documentRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134664Z"
+    },
+    "GET:/api/documents/:id/file": {
+      "filePath": "server/src/routes/documentRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134669Z"
+    },
+    "GET:/api/documents/:id/download": {
+      "filePath": "server/src/routes/documentRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134670Z"
+    },
+    "GET:/api/documents/:id": {
+      "filePath": "server/src/routes/documentRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134672Z"
+    },
+    "DELETE:/api/documents/:id": {
+      "filePath": "server/src/routes/documentRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134673Z"
+    },
+    "GET:/api/notifications/": {
+      "filePath": "server/src/routes/notificationRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134676Z"
+    },
+    "PATCH:/api/notifications/read": {
+      "filePath": "server/src/routes/notificationRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134677Z"
+    },
+    "POST:/api/notifications/send": {
+      "filePath": "server/src/routes/notificationRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134678Z"
+    },
+    "GET:/api/notifications/stream": {
+      "filePath": "server/src/routes/notificationRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134680Z"
+    },
+    "GET:/api/notifications/preferences": {
+      "filePath": "server/src/routes/notificationRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134681Z"
+    },
+    "PUT:/api/notifications/preferences": {
+      "filePath": "server/src/routes/notificationRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134683Z"
+    },
+    "POST:/api/organizations/": {
+      "filePath": "server/src/routes/organizationRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134685Z"
+    },
+    "GET:/api/organizations/:id": {
+      "filePath": "server/src/routes/organizationRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134686Z"
+    },
+    "POST:/api/signatures/": {
+      "filePath": "server/src/routes/signatureRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134688Z"
+    },
+    "PATCH:/api/signatures/:id/sign": {
+      "filePath": "server/src/routes/signatureRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134689Z"
+    },
+    "POST:/api/signatures/:id/confirm": {
+      "filePath": "server/src/routes/signatureRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134691Z"
+    },
+    "GET:/api/signatures/:documentId": {
+      "filePath": "server/src/routes/signatureRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134692Z"
+    },
+    "GET:/api/sign/:token": {
+      "filePath": "server/src/routes/signingRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134693Z"
+    },
+    "GET:/api/sign/:token/document": {
+      "filePath": "server/src/routes/signingRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134695Z"
+    },
+    "POST:/api/sign/:token/started": {
+      "filePath": "server/src/routes/signingRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134697Z"
+    },
+    "POST:/api/sign/:token/complete": {
+      "filePath": "server/src/routes/signingRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134698Z"
+    },
+    "POST:/api/teams/": {
+      "filePath": "server/src/routes/teamRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134699Z"
+    },
+    "GET:/api/teams/mine": {
+      "filePath": "server/src/routes/teamRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134701Z"
+    },
+    "GET:/api/teams/join/:token": {
+      "filePath": "server/src/routes/teamRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134702Z"
+    },
+    "POST:/api/teams/join/:token": {
+      "filePath": "server/src/routes/teamRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134704Z"
+    },
+    "GET:/api/teams/:id": {
+      "filePath": "server/src/routes/teamRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134706Z"
+    },
+    "POST:/api/teams/:id/invite": {
+      "filePath": "server/src/routes/teamRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134708Z"
+    },
+    "DELETE:/api/teams/:id/invites/:inviteId": {
+      "filePath": "server/src/routes/teamRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134709Z"
+    },
+    "DELETE:/api/teams/:id/members/:userId": {
+      "filePath": "server/src/routes/teamRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134711Z"
+    },
+    "PATCH:/api/teams/:id/members/:userId": {
+      "filePath": "server/src/routes/teamRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134712Z"
+    },
+    "POST:/api/teams/:id/leave": {
+      "filePath": "server/src/routes/teamRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134714Z"
+    },
+    "DELETE:/api/teams/:id": {
+      "filePath": "server/src/routes/teamRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134715Z"
+    },
+    "PUT:/api/users/language": {
+      "filePath": "server/src/routes/userRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134717Z"
+    },
+    "GET:/api/users/roles": {
+      "filePath": "server/src/routes/userRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134719Z"
+    },
+    "GET:/api/users/": {
+      "filePath": "server/src/routes/userRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134720Z"
+    },
+    "PUT:/api/users/:id/role": {
+      "filePath": "server/src/routes/userRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134722Z"
+    },
+    "POST:/api/user-signatures/": {
+      "filePath": "server/src/routes/userSignatureRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134724Z"
+    },
+    "GET:/api/user-signatures/": {
+      "filePath": "server/src/routes/userSignatureRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134725Z"
+    },
+    "GET:/api/user-signatures/:id": {
+      "filePath": "server/src/routes/userSignatureRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134727Z"
+    },
+    "PUT:/api/user-signatures/:id": {
+      "filePath": "server/src/routes/userSignatureRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134728Z"
+    },
+    "DELETE:/api/user-signatures/:id": {
+      "filePath": "server/src/routes/userSignatureRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134729Z"
+    },
+    "POST:/api/workflows/": {
+      "filePath": "server/src/routes/workflowRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134731Z"
+    },
+    "GET:/api/workflows/": {
+      "filePath": "server/src/routes/workflowRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134732Z"
+    },
+    "POST:/api/workflows/admin/process-completions": {
+      "filePath": "server/src/routes/workflowRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134733Z"
+    },
+    "GET:/api/workflows/:id/downloads": {
+      "filePath": "server/src/routes/workflowRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134738Z"
+    },
+    "GET:/api/workflows/:id": {
+      "filePath": "server/src/routes/workflowRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134739Z"
+    },
+    "PUT:/api/workflows/:id": {
+      "filePath": "server/src/routes/workflowRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134741Z"
+    },
+    "POST:/api/workflows/:id/start": {
+      "filePath": "server/src/routes/workflowRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134742Z"
+    },
+    "POST:/api/workflows/:id/cancel": {
+      "filePath": "server/src/routes/workflowRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134744Z"
+    },
+    "PATCH:/api/workflows/:id/sign": {
+      "filePath": "server/src/routes/workflowRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134745Z"
+    },
+    "PATCH:/api/workflows/:id/decline": {
+      "filePath": "server/src/routes/workflowRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134747Z"
+    },
+    "GET:/api/workflows/:id/status": {
+      "filePath": "server/src/routes/workflowRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134748Z"
+    },
+    "POST:/api/workflows/:id/remind": {
+      "filePath": "server/src/routes/workflowRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134749Z"
+    },
+    "PUT:/api/workflows/:id/reminders": {
+      "filePath": "server/src/routes/workflowRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134750Z"
+    },
+    "GET:/api/workflows/:id/history": {
+      "filePath": "server/src/routes/workflowRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134752Z"
+    },
+    "GET:/api/workflows/:id/history/export": {
+      "filePath": "server/src/routes/workflowRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134753Z"
+    },
+    "POST:/api/workflows/:id/self-sign": {
+      "filePath": "server/src/routes/workflowRoutes.ts",
+      "timestamp": "2026-04-16T05:07:32.134754Z"
+    }
+  }
+}

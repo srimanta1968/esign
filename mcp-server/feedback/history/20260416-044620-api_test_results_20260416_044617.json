@@ -1,0 +1,25 @@
+{
+  "timestamp": "2026-04-16T04:46:20.014085Z",
+  "file": {
+    "path": "test-results/api_test_results_20260416_044617.json",
+    "language": "json"
+  },
+  "review": {
+    "complianceScore": 100,
+    "status": "excellent",
+    "totalViolations": 0,
+    "autoFixableCount": 0
+  },
+  "violations": [],
+  "autoFixes": [],
+  "metrics": {
+    "llmTokensUsed": 0,
+    "llmCostUsd": 0.0,
+    "reviewedAt": "2026-04-16T04:46:19.994157"
+  },
+  "nextSteps": [
+    "\u2705 Code quality is excellent!",
+    "Safe to commit this code",
+    "Re-run review after fixes to verify compliance"
+  ]
+}

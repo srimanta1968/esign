@@ -1,31 +1,20 @@
 {
-  "endpoint": "/api/workflows/:id/start",
+  "name": "POST /api/workflows/:id/start - Start workflow",
+  "endpoint": "/api/workflows/{{cache:workflows.create.response.data.id}}/start",
   "method": "POST",
-  "taskId": "145a31aa-6e9c-4834-b373-083839d339ac",
   "requiresAuth": true,
-  "priority": 33,
-  "dependsOn": ["POST /api/workflows"],
+  "expectedStatus": 200,
+  "taskId": "2bee76ea-823d-4c9b-b6ed-312b00dc487e",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
   "testCases": [
     {
-      "name": "Start the signing process for a workflow",
-      "headers": {
-        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
-      },
-      "urlParams": {
-        "id": "{{cache:workflows.create.response.data.workflow.id}}"
-      },
+      "name": "Start a draft workflow",
       "payload": {},
       "expectedStatus": 200,
-      "expectedResponse": {
-        "success": true,
-        "data": {
-          "workflow": {
-            "id": "string",
-            "status": "string",
-            "recipients": "array"
-          }
-        }
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
       }
     }
-  ]
+  ],
+  "dependsOn": ["POST /api/auth/register", "POST /api/auth/login", "POST /api/workflows"]
 }

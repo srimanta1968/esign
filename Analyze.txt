@@ -1,254 +1,86 @@
-You’re competing in the mainstream e‑signature SaaS space (DocuSign, Adobe Sign, Dropbox Sign, SignNow, Xodo, etc.), where typical entry pricing is around 9–15 USD/month for individuals and 20–30 USD/user/month for teams.
-
-Key competitors and their pricing
-Tool	Typical entry plan (monthly billing)	Notes
-DocuSign	~15 USD/month Personal, 45 USD/month Standard per user.
-Strong brand, heavy integrations, envelope limits.
-Adobe Sign	Around 15–20 USD/month individual, higher for business tiers.
-Deep Adobe/Acrobat integration.
-Dropbox Sign	15 USD/month Essentials per user.
-Unlimited signatures, simple UI.
-PandaDoc	About 19 USD/user/month Essentials.
-Proposal/CPQ focus, not just signing.
-Xodo / other value players	10–16 USD/month with unlimited documents.
-Compete on low price and no envelope caps.
-“Budget” tools (SignWell, SignNow, etc.)	Often 9–12 USD/month individual.
-Target freelancers and small businesses.
-Today, if you charge above ~9 USD/month for a solo plan you are no longer clearly the cheapest; below ~5 USD/month you undercut almost everyone.
-
-Pricing strategy to be clearly cheapest and still grow
-Assuming your costs are reasonable and you want a “land and expand” SaaS motion:
-
-Individual / Starter (hook plan)
-
-3–4 USD/month (billed monthly), or 30–36 USD/year (2.5–3 USD/month) for annual.
-
-Unlimited signatures but with fair caps on: number of active templates, file size, and team sharing.
-
-Target: freelancers, solo consultants, realtors, small legal/accounting practices that just need a simple signer flow.
-
-Small Team
-
-8–10 USD/user/month with volume discounts after 5 users.
-
-Include: shared templates, team dashboard, basic branding, simple API key or Zapier/webhook integration.
-
-This is still well under typical 20–30 USD/user/month from DocuSign/Adobe/Dropbox Sign.
-
-Free tier (growth engine)
-
-3–5 documents/month, watermark or “Powered by eDocSign” badge, limited storage.
-
-Your CAC drops because users self‑serve and spread links.
-
-Many cheaper competitors still offer either no free tier or very constrained trials, so a generous but clearly limited free plan helps you stand out.
-
-“Scale” / API plan
-
-Flat base 49–79 USD/month with a generous document limit (e.g., 1,000 docs/month) and overage per 1,000 after that.
-
-Target small SaaS, agencies, and internal tools that need to embed signing.
-
-You can always raise prices later; your early moat can be “ridiculously simple, secure, and cheapest trustworthy option for SMBs”.
-
-Additional features to stand out
-Your current feature set (upload, sign, track, audit trail, secure storage) matches the bare minimum of almost all competitors. To differentiate, I’d focus on SMB workflow and automation instead of just “another DocuSign clone”:
-
-Workflow automation for non‑technical users
-
-Visual drag‑and‑drop workflow builder: “When contract is signed → email PDF to client + notify Slack + update CRM + send invoice.”
-
-Native integrations with common SMB tools first: Stripe, QuickBooks, HubSpot, Pipedrive, Notion, Airtable, Zapier/Make, Google Workspace.
-
-Prebuilt workflow templates by industry (real estate offers, freelance contracts, HR onboarding, NDAs).
-
-Industry‑specific templates and playbooks
-
-Built‑in template galleries:
-
-Real estate (listing agreements, offers, rental contracts)
-
-Freelancers/consultants (MSA, SOW, retainer contracts)
-
-HR (offer letters, NDAs, onboarding packs)
-
-“Guided send” flows: ask a few questions and auto‑generate the right document and signer roles.
-
-Embedded signing and white‑label for small SaaS / agencies
-
-Low‑friction embedded signer widget (copy‑paste JavaScript snippet or iframe).
-
-Affordable white‑label branding on the mid‑tier, not only on enterprise like big competitors.
-
-Simple API with great docs and examples in Node/Next.js/Laravel etc., plus ready‑made “starter kits”.
-
-Collaboration and contract lifecycle “lite”
-
-Commenting and internal notes on documents before sending (simple redlining loop).
-
-Version history, reminders, and auto‑chase emails.
-
-Simple renewal/reminder engine (e.g., contracts that expire or renew in 1 year).
-
-Trust & compliance angle tailored to SMBs
-
-Strong, transparent security page (encryption, data residency options, SOC/ISO roadmap).
-
-Simple, human‑readable compliance summaries: ESIGN/UETA, eIDAS basics, and “is this legal in my country?” FAQ.
-
-Public status page and incident history linked from footer.
-
-Concrete “MVP+” feature roadmap
-If you want a tight, realistic roadmap that fits your stack:
-
-Phase 1 (now):
-
-Pricing plans and metering (free + 3–4 USD Starter + 9 USD Team/user).
-
-Email reminders, basic branding (logo, colors), and multiple signers in sequence.
-
-Phase 2 (next):
-
-Template gallery + industry presets.
-
-Zapier/Make integration, Slack and Gmail/Outlook notifications.
-
-Phase 3 (later):
-
-Embeddable signing widget and public API.
-
-Simple workflow builder (“if signed → then do X,Y,Z”).
-
-If you share your current cost structure (infra + support) and target mark
-
-With a fixed cost of 2K USD/month, you can still be the cheapest in market if you use a low entry price, push annual plans, and keep infra/support lean.
-
-How to translate 2K/month cost into targets
-Market benchmark: SMB e‑signature averages around 10–15 USD/month for individuals and 25–40 USD/user/month for team plans.
-
-Healthy SaaS gross margin: investors expect ~70–80%+ for pure SaaS.
-
-So if your all‑in cost is 2K/month, a good first goal is at least 8K–10K/month in MRR at scale (4–5x cost), but you can under‑price now to get users, then raise later.
-
-If you start with aggressive “land and expand” pricing, you can be clearly cheaper while still having a path to 8–10K MRR as you grow.
-
-Concrete pricing recommendation (to be cheapest)
-Assume you want to undercut almost all mainstream tools:
-
-Free plan (growth + marketing)
-
-Price: 0 USD.
-
-Limits: 3–5 documents/month, limited storage, “Powered by eDocSign” badge.
-
-Goal: viral growth + low CAC; competitors mostly start at around 10 USD/month for meaningful usage.
-
-Solo / Starter
-
-Price: 3.99 USD/month (or 39 USD/year).
-
-Positioning: “Cheapest serious e‑signature plan on the market.”
-
-Offer: unlimited signers, enough documents for typical freelancer (e.g., 30–50 sends/month), basic templates, audit logs.
-
-This is less than half of DocuSign/Adobe/Dropbox entry tiers which sit ~10–15 USD/month.
-
-Team
-
-Price: 8.99 USD/user/month (or 89 USD/user/year) for 3+ users.
-
-Offer: shared templates, team dashboard, basic branding, reminders, simple integrations (Gmail/Outlook, Google Drive, Slack).
-
-Still significantly cheaper than the 25–45 USD/user/month that DocuSign and others charge for collaborative plans.
-
-Scale / API
-
-Price: 49–79 USD/month base, including, say, 1,000 documents/month, then low overage.
-
-Purpose: capture small SaaS/agency use cases at a fraction of typical API pricing (DocuSign API plans start ~50 USD/month with tight quotas).
-
-This makes you “obviously cheapest” for solo and small teams while leaving room to raise prices later once you have traction.
-
-Does this work against 2K/month cost?
-Ballpark scenario to cover and then grow beyond 2K:
-
-200 paying Solo users at 4 USD/month = 800 USD MRR.
-
-40 Team seats at 9 USD/month = 360 USD MRR.
-
-10 API customers at 59 USD/month avg = 590 USD MRR.
-
-That’s ~1,750 USD/month already; plus upsell and growth can move you past 2K and toward a healthier 6–10K MRR as you add more teams and API users. This is realistic if you lean hard into inbound and self‑serve motions.
-
-Small pricing tweaks to protect margin
-Encourage annual: give 20–30% discount on yearly plans (helps cash and retention).
-
-Meter heavy users: keep a “reasonable” document cap (e.g., 50–100/month on low tiers) and offer overage or upsell for high‑volume senders.
-
-Add 1–2 “pro” add‑ons later (white‑label, advanced workflows, premium support) so power users subsidize your cheapest plan.
-
-If you share roughly how many active paying customers you expect in the next 6–12 months (e.g., 100, 500, 1,000), I can reverse‑engineer a more precise tier/volume model around your 2K/month cost and show you exactly what ARPU and user counts you need at each tier.
-
-1000
-
-With 1,000 paying customers and 2K USD/month cost, you have a lot of room to be cheapest and still achieve healthy margins, as long as your average revenue per user (ARPU) is set correctly.
-
-What ARPU do you need at 1,000 customers?
-ARPU formula: Total MRR ÷ number of paying users.
-
-Your monthly cost: 2,000 USD.
-
-If you want just to break even:
-
-ARPU = 2,000 ÷ 1,000 = 2 USD/month per user.
-
-If you want a reasonable SaaS margin and growth (e.g., 70–80% gross margin, which is typical for SaaS):
-
-Target MRR ≈ 6,000–10,000 USD.
-
-At 6,000 MRR: ARPU = 6,000 ÷ 1,000 = 6 USD/month.
-
-At 10,000 MRR: ARPU = 10,000 ÷ 1,000 = 10 USD/month.
-
-So with 1,000 paying users, even a 5–7 USD/month blended ARPU makes you profitable and still clearly cheaper than mainstream e‑signature options that often average 10–30 USD/user/month for SMBs.
-
-How to design tiers to reach ~6–7 USD ARPU and still be “cheapest”
-One simple structure for 1,000 paying users:
-
-40% on Solo plan at 3.99 USD/month
-
-400 users × 3.99 ≈ 1,596 USD MRR
-
-50% on Team seats at 8.99 USD/user/month (average 3 users per account, but think in seats)
-
-500 users × 8.99 ≈ 4,495 USD MRR
-
-10% on API/Scale at 59 USD/month (count as users in ARPU calc, but revenue heavier)
-
-100 “users” mapped to ~10–20 higher‑paying accounts, say ~1,000–1,500 USD MRR
-
-Total: roughly 7,000–7,500 USD MRR from 1,000 paying users → ARPU ≈ 7–7.5 USD/month.
-This keeps you:
-
-Clearly cheaper than DocuSign/Adobe/Dropbox Sign for most SMB profiles.
-
-Safely above the 2 USD/month break‑even ARPU given your 2K/month cost.
-
-Recommended move for you now
-Given your 2K cost and 1,000‑user target:
-
-Lock in pricing like:
-
-Free: 0 USD, 3–5 docs/month.
-
-Solo: 3.99 USD/month (or 39/year).
-
-Team: 8.99 USD/user/month.
-
-Scale/API: from 49–79 USD/month.
-
-Push annual (15–25% discount) to help cash and reduce churn.
-
-Design the product so that teams and API users see enough extra value (templates, workflows, integrations, white‑label) that at least half your base ends up above the 4 USD/month Solo tier.
-
-If you share your current or expected split between solos vs teams vs API customers (just a rough guess), I can refine this into a specific table with target user counts per tier and exact revenue projections.
+                                                                                                                                                                                                 
+  Current state — how credentials flow today                                                                                                                                                     
+                                                                                                                                                                                                 
+  Two separate systems, no bridge:                                                                                                                                                               
+                                                                                                                                                                                                 
+  1. UI/BDD tests — .feature files can resolve ${login:email} / ${registered:email} / ${default:email} from tests/config/test-config.json:48-63 (testCredentials.default,                        
+  testCredentials.registered). Documented at mcp-server/docs/TEST_MCP.md:598-648.                                                                                                                
+  2. API tests (the ones pre-push runs, served by http://localhost:8766) — read only tests/api_definitions/*.json. They support three placeholder systems:                                       
+    - {{dynamic:email}} — random per run                                                                                                                                                         
+    - {{cache:…}} — value captured from a prior test's response (captureResponse)                                                                                                                
+    - Hard-coded literals like "password": "TestPass@1234"
+                                                                                                                                                                                                 
+  What they don't support: ${default:email} / ${registered:email} / ${login:email} inside api_definitions/*.json. The bridge never happens. test-config.json.testCredentials is effectively      
+  ignored by the API runner.                                                                                                                                                                     
+
+  OAuth: test-config.json:114-121 has authentication.oauth.tokens.{accessToken,refreshToken,idToken} slots. They're placeholders only — no code reads them, no flow captures them. Manual-paste
+  instructions exist in TEST_MCP.md:694-719 but there's no auto-capture / write-back.
+
+  Pre-flight check: none. mcp-server/run-all-tests.sh:81-160 creates a config if missing but never validates testCredentials.default against the running app. The pre-push hook
+  (mcp-server/templates/pre-push:630-655) POSTs directly to /api/test/start with zero user readiness checks. Result: login test fails → 9 dependents cascade with "User not found", and the user
+  sees a generic red report.
+
+  The gap
+
+  Four missing pieces — in priority order:
+
+  1. API-definition payloads cannot reference test-config.json. Even if creds are there, the runner doesn't resolve ${default:email} in api_definitions/*.json.
+  2. No pre-flight "is the test user real?" check. The runner never tries POST /api/auth/login with the configured default before firing the suite.
+  3. No self-heal. If the default user doesn't exist in the target DB, nothing registers one, persists the generated credentials back to testCredentials.registered, and continues.
+  4. No OAuth bootstrap. bypassEnabled: false and empty tokens mean OAuth-gated APIs silently 401. No "launch browser, capture token, write back" step.
+
+  Concrete change list (no code yet — confirm scope first)
+
+  Two layers to touch: the bash wrappers you own (here in edocs/mcp-server/) and the MCP runner (in projex_dev_mcp/src/).
+
+  In this repo (edocs) — we can change these directly:
+
+  ┌─────────────────────────────────────────────┬────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │                    File                     │                                                                   Change                                                                   │
+  ├─────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ mcp-server/run-all-tests.sh (~L81           │ Add validate_or_seed_test_user(): read testCredentials.default, try POST /api/auth/login; if fails, POST /api/auth/register with {email:   │
+  │ ensure_test_config)                         │ "edocs_test_<timestamp>@example.com", password: "<generated>"}, then jq-write the result into testCredentials.registered and flush the     │
+  │                                             │ file.                                                                                                                                      │
+  ├─────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ mcp-server/templates/pre-push (before       │ Call the same seed function. Abort with a clear "please populate testCredentials.default in tests/config/test-config.json" message if      │
+  │ /api/test/start)                            │ seeding also fails (DB down).                                                                                                              │
+  ├─────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ New: mcp-server/capture-oauth-token.sh      │ Interactive helper: opens Google/SSO URL in browser, pauses, prompts user to paste the token from DevTools, writes it into                 │
+  │                                             │ authentication.oauth.tokens.accessToken + computed expiresAt. Optional trigger bash mcp-server/capture-oauth-token.sh.                     │
+  ├─────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ tests/api_definitions/auth-login.json       │ Short-term bandaid: pin email to "{{config:testCredentials.default.email}}" and password to "{{config:testCredentials.default.password}}"  │
+  │                                             │ (requires resolver support — see next). If resolver not available, hard-code the default credentials so login is deterministic.            │
+  └─────────────────────────────────────────────┴────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+  In projex_dev_mcp/src/ (the MCP server that actually executes the tests):
+
+  ┌─────────────────────────────┬────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │            Area             │                                                                           Change                                                                           │
+  ├─────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ Config loader               │ Add loadTestConfig(projectPath) that reads tests/config/test-config.json at the start of each test run and keeps testCredentials +                         │
+  │                             │ authentication.oauth.tokens in the runner context.                                                                                                         │
+  ├─────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ Placeholder resolver        │ Extend the resolver to understand {{config:path.to.field}} (and/or the UI-style ${default:email} / ${registered:email}) so api_definitions/*.json can      │
+  │                             │ finally reference configured creds.                                                                                                                        │
+  ├─────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ Test orchestrator (where    │ Before running the suite: call POST {apiUrl}/api/auth/login with default creds; if 401, call POST /api/auth/register, capture response, patch              │
+  │ /api/test/start fires)      │ testCredentials.registered back to disk, continue. Emit a structured warning into failed_tests_latest.json if neither works: "test_user_unconfigured":     │
+  │                             │ true, "remediation": "<instructions>".                                                                                                                     │
+  ├─────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │                             │ If authentication.oauth.bypassEnabled: true and tokens.accessToken is empty/expired, emit a pre-run error with the exact DevTools steps + a link to        │
+  │ OAuth bootstrap             │ capture-oauth-token.sh. If token is present, inject Authorization: Bearer <accessToken> into any test that has "requiresOAuth": true in its                │
+  │                             │ api_definition.                                                                                                                                            │
+  ├─────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ Reporting                   │ In the pre-push summary, add a top banner when cascade is detected (e.g. "9 of 22 failures cascade from POST /api/auth/login — likely a credential/config  │
+  │                             │ issue, see tests/config/test-config.json").                                                                                                                │
+  └─────────────────────────────┴────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+  Recommended order
+
+  1. Ship the bash-side seed + validate first (no MCP runner changes) — gets you 90% of the value for pre-push and is reversible. Fails fast with a helpful message instead of 9 confusing
+  cascades.
+  2. Then in projex_dev_mcp, add config resolver + self-heal orchestration so the behavior works regardless of which entry point (run-all-tests.sh vs. direct MCP call) triggered tests.
+  3. OAuth capture helper last — it's the least common path and needs a browser in the loop.
+
+  Want me to start with step 1 (bash-side validate_or_seed_test_user in run-all-tests.sh + pre-push hook) right now? That alone would turn your 22-failure pre-push into a green run (or a single
+   clear actionable error) without touching the MCP runner source.

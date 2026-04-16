@@ -87,7 +87,7 @@ echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━�
 if ! curl -s "${MCP_SERVER_URL}/health" > /dev/null 2>&1; then
     echo -e "${YELLOW}⚠️  MCP server not running at ${MCP_SERVER_URL}${NC}"
     echo -e "${YELLOW}   Pre-commit scan skipped (graceful degradation)${NC}"
-    echo -e "${YELLOW}   Start MCP server: cd mcp-server && docker-compose up -d${NC}"
+    echo -e "${YELLOW}   Start MCP server: cd mcp-server && ./setup-all.sh${NC}"
     exit 0
 fi
 

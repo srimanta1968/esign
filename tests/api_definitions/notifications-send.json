@@ -1,75 +1,25 @@
 {
-  "taskId": "a4be70f6-af3b-4838-80f7-b7f69a4660af",
-  "endpoint": "POST /api/notifications/send",
-  "description": "Send a notification via specified channels (email, sms, in_app) with delivery logging",
-  "auth": "Bearer JWT",
-  "request": {
-    "method": "POST",
-    "path": "/api/notifications/send",
-    "headers": {
-      "Authorization": "Bearer <jwt_token>",
-      "Content-Type": "application/json"
-    },
-    "body": {
-      "userId": "uuid",
-      "type": "signature_requested | signature_completed | document_shared | reminder | system",
-      "message": "string",
-      "channels": ["email", "sms", "in_app"],
-      "actionUrl": "string (optional)"
-    }
-  },
-  "response": {
-    "success": {
-      "status": 200,
-      "body": {
-        "success": true,
-        "data": {
-          "notification": {
-            "id": "uuid",
-            "user_id": "uuid",
-            "type": "string",
-            "message": "string",
-            "is_read": false,
-            "action_url": "string | null",
-            "created_at": "ISO 8601 timestamp"
-          },
-          "deliveries": [
-            {
-              "channel": "email | sms | in_app",
-              "status": "sent | failed | skipped",
-              "error": "string (optional)"
-            }
-          ]
-        }
-      }
-    },
-    "error_400": {
-      "status": 400,
-      "body": {
-        "success": false,
-        "error": "Missing required fields: userId, type, message, channels (array)"
-      }
-    },
-    "error_401": {
-      "status": 401,
-      "body": {
-        "success": false,
-        "error": "Access token required"
+  "name": "POST /api/notifications/send - Send notification",
+  "endpoint": "/api/notifications/send",
+  "method": "POST",
+  "requiresAuth": true,
+  "expectedStatus": 201,
+  "taskId": "9927c6cb-2af2-438a-b9cd-f7f35ff9e6a2",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "testCases": [
+    {
+      "name": "Send a notification",
+      "payload": {
+        "recipient_email": "recipient@example.com",
+        "subject": "Test notification",
+        "message": "Hello",
+        "channel": "email"
+      },
+      "expectedStatus": 201,
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
       }
     }
-  },
-  "tables": {
-    "notification_delivery_log": {
-      "columns": {
-        "id": "UUID PRIMARY KEY",
-        "notification_id": "UUID NOT NULL REFERENCES notifications(id)",
-        "channel": "VARCHAR(20) NOT NULL (email/sms/in_app)",
-        "recipient": "VARCHAR(255) NOT NULL",
-        "status": "VARCHAR(20) NOT NULL (pending/sent/failed)",
-        "sent_at": "TIMESTAMP WITH TIME ZONE (nullable)",
-        "error_message": "TEXT (nullable)",
-        "created_at": "TIMESTAMP WITH TIME ZONE"
-      }
-    }
-  }
+  ],
+  "dependsOn": ["POST /api/auth/register", "POST /api/auth/login"]
 }

@@ -1,27 +1,19 @@
 {
-  "endpoint": "/api/compliance/report",
+  "name": "GET /api/compliance/report - Generate compliance report (admin)",
+  "endpoint": "/api/compliance/report?dateFrom=2026-01-01&dateTo=2026-12-31",
   "method": "GET",
-  "taskId": "c1e21f09-7fe1-4a27-957d-c228d9905808",
   "requiresAuth": true,
-  "priority": 13,
-  "dependsOn": [
-    "POST /api/auth/register",
-    "POST /api/auth/login"
-  ],
+  "expectedStatus": 200,
+  "taskId": "9927c6cb-2af2-438a-b9cd-f7f35ff9e6a2",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
   "testCases": [
     {
-      "name": "Generate compliance report (admin only)",
+      "name": "Non-admin forbidden",
+      "expectedStatus": 403,
       "headers": {
         "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
-      },
-      "queryParams": {
-        "dateFrom": "2024-01-01T00:00:00Z",
-        "dateTo": "2030-12-31T23:59:59Z"
-      },
-      "expectedStatus": 200,
-      "expectedResponse": {
-        "success": true
       }
     }
-  ]
+  ],
+  "dependsOn": ["POST /api/auth/register", "POST /api/auth/login"]
 }

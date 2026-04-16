@@ -55,7 +55,12 @@
     "default": {
       "email": "default_test_user@example.com",
       "password": "DefaultTestPass123!",
-      "description": "Fallback credentials when registration fails or for login-only tests"
+      "description": "Fallback credentials when registration fails or for login-only tests (role: user)"
+    },
+    "admin": {
+      "email": "REPLACE_ME_admin@example.com",
+      "password": "REPLACE_ME_AdminPass123!",
+      "description": "Admin user creds. Test MCP uses these when an api_definition declares requiresRole: ['admin']. The user must exist in DB with role='admin'. If your app doesn't allow self-registration as admin, either pre-seed in init scripts OR enable test-only DB role promotion. Override via --admin-email / --admin-password flags."
     },
     "registered": null,
     "_usage": {

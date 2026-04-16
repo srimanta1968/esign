@@ -1,0 +1,22 @@
+{
+  "name": "PATCH /api/workflows/:id/decline - Decline to sign",
+  "endpoint": "/api/workflows/{{cache:workflows.create.response.data.id}}/decline",
+  "method": "PATCH",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "taskId": "f2e996a5-6c35-4899-8965-d5fd4afad095",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "testCases": [
+    {
+      "name": "Decline to sign workflow",
+      "payload": {
+        "reason": "Not applicable"
+      },
+      "expectedStatus": 200,
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      }
+    }
+  ],
+  "dependsOn": ["POST /api/auth/register", "POST /api/auth/login", "POST /api/workflows"]
+}

@@ -21,7 +21,12 @@ services:
     container_name: projexlight-dev-mcp
     user: root  # Required for git hooks installation on Windows
     ports:
-      - "${MCP_DEV_PORT:-8766}:8766"
+      # Bind to loopback only — MCP HTTP API has no per-request auth.
+      # Override with MCP_DEV_BIND=0.0.0.0 only if you know what you're doing.
+      # Two mappings: IPv4 127.0.0.1 and IPv6 ::1 so browsers that resolve
+      # "localhost" to ::1 first don't have to fall back to IPv4.
+      - "${MCP_DEV_BIND:-127.0.0.1}:${MCP_DEV_PORT:-8766}:8766"
+      - "${MCP_DEV_BIND6:-::1}:${MCP_DEV_PORT:-8766}:8766"
     volumes:
       # ============================================================
       # MULTI-PROJECT VOLUME MOUNTS

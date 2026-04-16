@@ -1,0 +1,20 @@
+{
+  "name": "POST /api/documents/:id/versions/:versionId/revert - Revert to version",
+  "endpoint": "/api/documents/{{cache:documents.upload.response.data.id}}/versions/{{cache:documents.version.response.data.id}}/revert",
+  "method": "POST",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "taskId": "ad4ab56b-fb79-4d6e-9ab7-e598befdf828",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "testCases": [
+    {
+      "name": "Revert document to previous version",
+      "payload": {},
+      "expectedStatus": 200,
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      }
+    }
+  ],
+  "dependsOn": ["POST /api/auth/register", "POST /api/auth/login", "POST /api/documents", "POST /api/documents/:id/versions"]
+}

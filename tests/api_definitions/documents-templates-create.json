@@ -1,0 +1,37 @@
+{
+  "name": "POST /api/documents/templates - Create template",
+  "endpoint": "/api/documents/templates",
+  "method": "POST",
+  "requiresAuth": true,
+  "expectedStatus": 201,
+  "taskId": "ad4ab56b-fb79-4d6e-9ab7-e598befdf828",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "testCases": [
+    {
+      "name": "Create template from existing document",
+      "payload": {
+        "name": "Test Template",
+        "description": "A test template",
+        "document_id": "{{cache:documents.upload.response.data.id}}"
+      },
+      "expectedStatus": 201,
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      }
+    },
+    {
+      "name": "Missing template name",
+      "payload": {
+        "description": "no name"
+      },
+      "expectedStatus": 400,
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      }
+    }
+  ],
+  "captureResponse": {
+    "documents.template.response.data.id": "data.template.id"
+  },
+  "dependsOn": ["POST /api/auth/register", "POST /api/auth/login", "POST /api/documents"]
+}

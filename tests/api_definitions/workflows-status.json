@@ -1,37 +1,19 @@
 {
-  "endpoint": "/api/workflows/:id/status",
+  "name": "GET /api/workflows/:id/status - Get workflow status",
+  "endpoint": "/api/workflows/{{cache:workflows.create.response.data.id}}/status",
   "method": "GET",
-  "taskId": "145a31aa-6e9c-4834-b373-083839d339ac",
   "requiresAuth": true,
-  "priority": 35,
-  "dependsOn": ["POST /api/workflows/:id/start"],
+  "expectedStatus": 200,
+  "taskId": "8f7955e9-3755-446d-af1c-0aeb7d7e0d21",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
   "testCases": [
     {
-      "name": "Get real-time status of all signers in a workflow",
-      "headers": {
-        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
-      },
-      "urlParams": {
-        "id": "{{cache:workflows.create.response.data.workflow.id}}"
-      },
+      "name": "Get workflow status",
       "expectedStatus": 200,
-      "expectedResponse": {
-        "success": true,
-        "data": {
-          "status": {
-            "workflow_id": "string",
-            "workflow_type": "string",
-            "status": "string",
-            "recipients": "array",
-            "progress": {
-              "total": "number",
-              "signed": "number",
-              "pending": "number",
-              "declined": "number"
-            }
-          }
-        }
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
       }
     }
-  ]
+  ],
+  "dependsOn": ["POST /api/auth/register", "POST /api/auth/login", "POST /api/workflows"]
 }

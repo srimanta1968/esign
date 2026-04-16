@@ -1,37 +1,32 @@
 {
+  "name": "POST /api/auth/register - User registration",
   "endpoint": "/api/auth/register",
   "method": "POST",
-  "taskId": "44dfef58-e7ca-4d89-81df-50b207d35dbb",
   "requiresAuth": false,
-  "priority": 1,
-  "dependsOn": [],
-  "captureResponse": {
-    "auth.register.response.data.token": "data.token",
-    "auth.register.response.data.user.id": "data.user.id",
-    "auth.register.response.data.user.email": "data.user.email"
-  },
+  "expectedStatus": 201,
+  "taskId": "44dfef58-e7ca-4d89-81df-50b207d35dbb",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
   "testCases": [
     {
-      "name": "Register a new user",
-      "headers": {
-        "Content-Type": "application/json"
-      },
+      "name": "Register new user",
       "payload": {
-        "email": "{{dynamic:email}}",
-        "password": "TestPass@1234",
+        "email": "testuser_{{timestamp}}@example.com",
+        "password": "TestPass123!",
         "name": "Test User"
       },
-      "expectedStatus": 201,
-      "expectedResponse": {
-        "success": true,
-        "data": {
-          "token": "string",
-          "user": {
-            "id": "string",
-            "email": "string"
-          }
-        }
-      }
+      "expectedStatus": 201
+    },
+    {
+      "name": "Missing email",
+      "payload": {
+        "password": "TestPass123!"
+      },
+      "expectedStatus": 400
     }
-  ]
+  ],
+  "captureResponse": {
+    "auth.register.response.data.userId": "data.id",
+    "auth.register.response.data.email": "data.email"
+  },
+  "dependsOn": []
 }

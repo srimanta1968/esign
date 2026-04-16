@@ -1,30 +1,23 @@
 {
-  "endpoint": "/api/workflows/:id/reminders",
+  "name": "PUT /api/workflows/:id/reminders - Configure reminder schedule",
+  "endpoint": "/api/workflows/{{cache:workflows.create.response.data.id}}/reminders",
   "method": "PUT",
-  "taskId": "81723ecd-acd9-443c-b3e3-351a0410e1c3",
   "requiresAuth": true,
-  "priority": 37,
-  "dependsOn": ["POST /api/workflows"],
+  "expectedStatus": 200,
+  "taskId": "2bee76ea-823d-4c9b-b6ed-312b00dc487e",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
   "testCases": [
     {
-      "name": "Configure reminder intervals for workflow recipients",
-      "headers": {
-        "Authorization": "Bearer {{cache:auth.register.response.data.token}}",
-        "Content-Type": "application/json"
-      },
-      "urlParams": {
-        "id": "{{cache:workflows.create.response.data.workflow.id}}"
-      },
+      "name": "Configure reminder schedule",
       "payload": {
-        "reminder_interval_hours": 24
+        "reminder_interval_days": 3,
+        "reminder_enabled": true
       },
       "expectedStatus": 200,
-      "expectedResponse": {
-        "success": true,
-        "data": {
-          "reminders": "array"
-        }
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
       }
     }
-  ]
+  ],
+  "dependsOn": ["POST /api/auth/register", "POST /api/auth/login", "POST /api/workflows"]
 }

@@ -1,29 +1,19 @@
 {
-  "name": "GET /api/teams/mine",
+  "name": "GET /api/teams/mine - Get my team",
   "endpoint": "/api/teams/mine",
   "method": "GET",
   "requiresAuth": true,
   "expectedStatus": 200,
-  "taskId": "17b27375-6bbf-4ffb-b0af-47bfd86c64c5",
+  "taskId": "9927c6cb-2af2-438a-b9cd-f7f35ff9e6a2",
   "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
-  "featureId": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
-  "priority": 11,
-  "dependsOn": [
-    "POST /api/auth/register",
-    "POST /api/auth/login",
-    "POST /api/teams/"
-  ],
   "testCases": [
     {
-      "name": "Get current user team",
+      "name": "Get my team",
+      "expectedStatus": 200,
       "headers": {
         "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
-      },
-      "expectedStatus": 200,
-      "expectedResponse": {
-        "success": true
       }
     }
   ],
-  "captureResponse": {}
+  "dependsOn": ["POST /api/auth/register", "POST /api/auth/login", "POST /api/teams"]
 }

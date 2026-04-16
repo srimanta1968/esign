@@ -1,64 +1,35 @@
 {
+  "name": "POST /api/workflows - Create signing workflow",
   "endpoint": "/api/workflows",
   "method": "POST",
-  "taskId": "c49c5e95-5e92-4d5d-adb6-9c9ccc99c2bf",
   "requiresAuth": true,
-  "priority": 30,
-  "dependsOn": ["POST /api/auth/register", "POST /api/documents"],
-  "captureResponse": {
-    "workflows.create.response.data.workflow.id": "data.workflow.id"
-  },
+  "expectedStatus": 201,
+  "taskId": "2bee76ea-823d-4c9b-b6ed-312b00dc487e",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
   "testCases": [
     {
-      "name": "Create a signing workflow with recipients",
-      "headers": {
-        "Authorization": "Bearer {{cache:auth.register.response.data.token}}",
-        "Content-Type": "application/json"
-      },
+      "name": "Create a new workflow with recipients",
       "payload": {
-        "document_id": "{{cache:documents.create.response.data.document.id}}",
-        "workflow_type": "sequential",
+        "document_id": "{{cache:documents.upload.response.data.id}}",
+        "name": "Contract Signing",
+        "mode": "sequential",
         "recipients": [
           {
-            "signer_email": "{{dynamic:email}}",
-            "signer_name": "Test Signer 1",
-            "signing_order": 1
-          },
-          {
-            "signer_email": "{{dynamic:email}}",
-            "signer_name": "Test Signer 2",
-            "signing_order": 2
-          }
-        ],
-        "fields": [
-          {
-            "recipient_index": 0,
-            "field_type": "signature",
-            "page": 1,
-            "x": 100,
-            "y": 500,
-            "width": 200,
-            "height": 50
+            "signer_email": "a_{{timestamp}}@example.com",
+            "signer_name": "Signer A",
+            "signing_order": 1,
+            "role": "signer"
           }
         ]
       },
       "expectedStatus": 201,
-      "expectedResponse": {
-        "success": true,
-        "data": {
-          "workflow": {
-            "id": "string",
-            "document_id": "string",
-            "creator_id": "string",
-            "workflow_type": "string",
-            "status": "string",
-            "recipients": "array",
-            "fields": "array",
-            "created_at": "string",
-            "updated_at": "string"
-          }
-        }
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
       }
     }
-  ]
+  ],
+  "captureResponse": {
+    "workflows.create.response.data.id": "data.workflow.id"
+  },
+  "dependsOn": ["POST /api/auth/register", "POST /api/auth/login", "POST /api/documents"]
 }

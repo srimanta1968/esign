@@ -1,24 +1,19 @@
 {
-  "endpoint": "/api/documents/:id",
+  "name": "DELETE /api/documents/:id - Delete document",
+  "endpoint": "/api/documents/{{cache:documents.upload.response.data.id}}",
   "method": "DELETE",
-  "taskId": "8c371718-3a8e-4a35-be90-adce095f36c6",
   "requiresAuth": true,
-  "priority": 13,
-  "dependsOn": ["POST /api/auth/register", "POST /api/documents"],
-  "captureResponse": {},
+  "expectedStatus": 200,
+  "taskId": "8c371718-3a8e-4a35-be90-adce095f36c6",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
   "testCases": [
     {
       "name": "Delete a document",
-      "headers": {
-        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
-      },
-      "pathParams": {
-        "id": "{{cache:documents.create.response.data.document.id}}"
-      },
       "expectedStatus": 200,
-      "expectedResponse": {
-        "success": true
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
       }
     }
-  ]
+  ],
+  "dependsOn": ["POST /api/auth/register", "POST /api/auth/login", "POST /api/documents"]
 }

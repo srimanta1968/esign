@@ -17,7 +17,18 @@
       "mcp__projexlight__projexlight_submit_feature_validation",
       "Bash(npm install:*)",
       "Bash(docker exec projexlight-postgres:*)",
-      "Bash(ssh:*)"
+      "Bash(ssh:*)",
+      "Bash(python -c ':*)",
+      "mcp__projexlight__projexlight_check_server_health",
+      "Bash(xargs grep:*)",
+      "Bash(python -m py_compile src/core/server.py)",
+      "Bash(python -m py_compile src/services/api_tester.py)",
+      "Bash(bash -n C:/Users/srima/projex_mcp/projex_test_mcp/scripts/container-init.sh)",
+      "mcp__projexlight__projexlight_get_api_test_status",
+      "mcp__projexlight__projexlight_clear_api_test_result",
+      "Bash(docker rm:*)",
+      "Bash(bash setup-all.sh --force)",
+      "Bash(tee /tmp/setup_all.log)"
     ]
   },
   "enableAllProjectMcpServers": true,

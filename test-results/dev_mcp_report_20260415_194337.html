@@ -1,0 +1,2159 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test Report - 2026-04-16T01:43:51.275469</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; }
+        .stats-card { border-left: 4px solid #667eea; }
+        .test-results { margin-top: 2rem; }
+        code { background: #f8f9fa; padding: 2px 6px; border-radius: 3px; }
+        .debug-section { background: #fff3cd; border-radius: 8px; padding: 1.5rem; margin-top: 2rem; }
+        .curl-command { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 6px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.85rem; overflow-x: auto; white-space: pre-wrap; word-break: break-all; }
+        .copy-btn { position: absolute; top: 8px; right: 8px; }
+        .curl-container { position: relative; margin-bottom: 1rem; }
+        .response-preview { background: #f8f9fa; padding: 1rem; border-radius: 6px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.85rem; max-height: 200px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>API Test Report</h1>
+            <p class="mb-0">Generated: 2026-04-16 01:44:04 UTC</p>
+            <p class="mb-0">Triggered by: manual</p>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <!-- Statistics -->
+        <div class="row">
+            <div class="col">
+                <div class="card stats-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Tests</h5>
+                        <h2 class="mb-0">97</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card stats-card" style="border-left-color: #28a745;">
+                    <div class="card-body">
+                        <h5 class="card-title">Passed</h5>
+                        <h2 class="mb-0 text-success">48</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card stats-card" style="border-left-color: #dc3545;">
+                    <div class="card-body">
+                        <h5 class="card-title">Failed</h5>
+                        <h2 class="mb-0 text-danger">16</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card stats-card" style="border-left-color: #6c757d;">
+                    <div class="card-body">
+                        <h5 class="card-title">Skipped</h5>
+                        <h2 class="mb-0 text-secondary">33</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card stats-card" style="border-left-color: #ffc107;">
+                    <div class="card-body">
+                        <h5 class="card-title">Pass Rate</h5>
+                        <h2 class="mb-0">49.5%</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <!-- Error Category Summary -->
+        <div class="mt-4">
+            <h5>📊 Error Categories Breakdown</h5>
+            <div class="d-flex flex-wrap align-items-center mt-2">
+                
+                <span class="badge me-2 mb-2" style="background-color: #dc3545; font-size: 0.9rem; padding: 0.5rem 0.75rem;">
+                    🔒 Permission Denied: 8
+                </span>
+            
+                <span class="badge me-2 mb-2" style="background-color: #17a2b8; font-size: 0.9rem; padding: 0.5rem 0.75rem;">
+                    🔍 Resource Not Found: 2
+                </span>
+            
+                <span class="badge me-2 mb-2" style="background-color: #ffc107; font-size: 0.9rem; padding: 0.5rem 0.75rem;">
+                    ⚠️ Validation Error: 2
+                </span>
+            
+                <span class="badge me-2 mb-2" style="background-color: #343a40; font-size: 0.9rem; padding: 0.5rem 0.75rem;">
+                    🔥 Server Error (500): 1
+                </span>
+            
+                <span class="badge me-2 mb-2" style="background-color: #fd7e14; font-size: 0.9rem; padding: 0.5rem 0.75rem;">
+                    🔐 Authentication Required: 1
+                </span>
+            
+                <span class="badge me-2 mb-2" style="background-color: #6c757d; font-size: 0.9rem; padding: 0.5rem 0.75rem;">
+                    ❓ HTTP 200: 1
+                </span>
+            
+                <span class="badge me-2 mb-2" style="background-color: #6f42c1; font-size: 0.9rem; padding: 0.5rem 0.75rem;">
+                    ⚡ Resource Conflict: 1
+                </span>
+            
+            </div>
+            <small class="text-muted">Click on a failed test below for detailed guidance on how to fix each error category.</small>
+        </div>
+        
+
+        
+
+        
+        <!-- Tests Requiring Manual Attention -->
+        <div class="card mt-4 border-warning">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">⚠️ Tests Requiring Manual Attention (19)</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">
+                    The following tests could not be fully automated. Review and fix manually:
+                </p>
+                
+                <div class="mb-3">
+                    <h6 class="text-secondary">🖐️ Manual Testing Required (19)</h6>
+                    <p class="small text-muted">These endpoints cannot be automated (OAuth callbacks, webhooks, etc.):</p>
+                    <ul class="list-group list-group-flush">
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/auth/verify-email</strong>
+                        <br><small class="text-muted">Requires a real verification code from email which cannot be captured in automated tests</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/teams/join/:token</strong>
+                        <br><small class="text-muted">Requires a valid invite token and a different authenticated user than the team owner to join</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/documents/:id/versions</strong>
+                        <br><small class="text-muted">Requires multipart file upload which cannot be sent via JSON API test payload</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/documents/:id/versions/:versionId/revert</strong>
+                        <br><small class="text-muted">Requires a document with multiple versions (via file upload) to have a versionId to revert to</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/billing/checkout</strong>
+                        <br><small class="text-muted">Requires Stripe configuration and real payment processing which cannot be automated in test environment</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/billing/portal</strong>
+                        <br><small class="text-muted">Requires existing Stripe billing account which is not available in test environment</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/billing/webhook</strong>
+                        <br><small class="text-muted">Stripe webhook requires valid stripe-signature header with HMAC verification which cannot be automated</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/workflows/:id/self-sign</strong>
+                        <br><small class="text-muted">Self-signing requires a workflow where the creator is also a recipient, plus a saved user signature</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/sign/:token/started</strong>
+                        <br><small class="text-muted">Requires a valid signing token issued via email from the workflow signing flow; the token is not returned in any API response and cannot be captured in automated tests.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/teams/:id/leave</strong>
+                        <br><small class="text-muted">Team owner cannot leave their own team; would need a second user account to test this</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/workflows/:id/cancel</strong>
+                        <br><small class="text-muted">Would cancel the workflow created by the test suite, breaking downstream sign/decline tests that depend on it</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>GET /api/auth/sso/callback</strong>
+                        <br><small class="text-muted">SSO callback requires real OAuth provider authorization code exchange which cannot be automated</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>GET /api/documents/:id/download</strong>
+                        <br><small class="text-muted">Requires a real uploaded document with file on S3/disk; JSON-stubbed documents have no downloadable file</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>GET /api/documents/:id/file</strong>
+                        <br><small class="text-muted">Requires a real uploaded document with file on S3/disk; JSON-stubbed documents have no servable file</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>GET /api/workflows/:id/downloads</strong>
+                        <br><small class="text-muted">Requires a completed workflow with signed PDF generated, which involves the full signing lifecycle</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>GET /api/*</strong>
+                        <br><small class="text-muted">Catch-all wildcard route cannot be tested directly - audit middleware is validated implicitly by all other API tests</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>PATCH /api/teams/:id/members/:userId</strong>
+                        <br><small class="text-muted">Requires a second user as team member to update their role; single-user test environment cannot test this</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>PATCH /api/workflows/:id/decline</strong>
+                        <br><small class="text-muted">Requires the authenticated user to be a pending recipient of a started workflow, which needs a multi-step flow</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>DELETE /api/teams/:id/members/:userId</strong>
+                        <br><small class="text-muted">Requires a second user who has joined the team; single-user test environment cannot test member removal</small>
+                    </li>
+                </ul>
+                </div>
+            
+                
+            </div>
+        </div>
+        
+
+        <!-- Test Results -->
+        <div class="test-results">
+            <h3>Test Results</h3>
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Status</th>
+                        <th>Method</th>
+                        <th>Endpoint</th>
+                        <th>Code</th>
+                        <th>Time</th>
+                        <th>Setup</th>
+                        <th>Error Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/auth/register</code></td>
+                    <td>201</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/auth/login</code></td>
+                    <td>200</td>
+                    <td>115ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/auth/forgot-password</code></td>
+                    <td>200</td>
+                    <td>18ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/auth/resend-verification</code></td>
+                    <td>200</td>
+                    <td>77ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/auth/verify-email</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires a real verification code from email which cannot be captured in automated tests</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/auth/reset-password</code></td>
+                    <td>200</td>
+                    <td>127ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/documents</code></td>
+                    <td>201</td>
+                    <td>24ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/auth/api-keys</code></td>
+                    <td>201</td>
+                    <td>62ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/organizations</code></td>
+                    <td>201</td>
+                    <td>21ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-danger">✗ FAILED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/teams/</code></td>
+                    <td>500</td>
+                    <td>14ms</td>
+                    <td></td>
+                    <td class="small">Status 500 - Error: Your current plan (free) does not support teams. Please upgrade to a Team or Scale plan first.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/signatures</code></td>
+                    <td>201</td>
+                    <td>28ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/workflows</code></td>
+                    <td>201</td>
+                    <td>41ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-danger">✗ FAILED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/compliance/alerts/config</code></td>
+                    <td>403</td>
+                    <td>11ms</td>
+                    <td></td>
+                    <td class="small">Status 403 - Error: Insufficient permissions</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/auth/refresh-token</code></td>
+                    <td>200</td>
+                    <td>31ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/teams/:id/invite</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['id']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/signatures/:id/confirm</code></td>
+                    <td>200</td>
+                    <td>75ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/documents/templates</code></td>
+                    <td>201</td>
+                    <td>20ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/teams/join/:token</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires a valid invite token and a different authenticated user than the team owner to join</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/documents/:id/tags</code></td>
+                    <td>201</td>
+                    <td>32ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/documents/templates/:id/use</code></td>
+                    <td>201</td>
+                    <td>16ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/documents/:id/versions</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires multipart file upload which cannot be sent via JSON API test payload</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/documents/:id/versions/:versionId/revert</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires a document with multiple versions (via file upload) to have a versionId to revert to</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/billing/checkout</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires Stripe configuration and real payment processing which cannot be automated in test environment</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/billing/portal</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires existing Stripe billing account which is not available in test environment</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/billing/webhook</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Stripe webhook requires valid stripe-signature header with HMAC verification which cannot be automated</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/analytics/signature-event</code></td>
+                    <td>201</td>
+                    <td>13ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/user-signatures</code></td>
+                    <td>201</td>
+                    <td>17ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/workflows/:id/self-sign</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Self-signing requires a workflow where the creator is also a recipient, plus a saved user signature</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/workflows/:id/start</code></td>
+                    <td>200</td>
+                    <td>150ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/sign/:token/started</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires a valid signing token issued via email from the workflow signing flow; the token is not returned in any API response and cannot be captured in automated tests.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/workflows/:id/remind</code></td>
+                    <td>200</td>
+                    <td>173ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/teams/:id/leave</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Team owner cannot leave their own team; would need a second user account to test this</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/workflows/:id/cancel</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Would cancel the workflow created by the test suite, breaking downstream sign/decline tests that depend on it</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-danger">✗ FAILED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/notifications/send</code></td>
+                    <td>401</td>
+                    <td>4ms</td>
+                    <td></td>
+                    <td class="small">Status 401 - Error: Access token required</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/workflows/admin/process-completions</code></td>
+                    <td>200</td>
+                    <td>7ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/auth/sso/:provider</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['provider']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/auth/profile</code></td>
+                    <td>200</td>
+                    <td>7ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/auth/sso/callback</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">SSO callback requires real OAuth provider authorization code exchange which cannot be automated</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-danger">✗ FAILED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/users</code></td>
+                    <td>403</td>
+                    <td>6ms</td>
+                    <td></td>
+                    <td class="small">Status 403 - Error: Insufficient permissions</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-danger">✗ FAILED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/users/roles</code></td>
+                    <td>403</td>
+                    <td>13ms</td>
+                    <td></td>
+                    <td class="small">Status 403 - Error: Insufficient permissions</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/documents/:id</code></td>
+                    <td>200</td>
+                    <td>7ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/organizations/:id</code></td>
+                    <td>200</td>
+                    <td>35ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-danger">✗ FAILED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/teams/mine</code></td>
+                    <td>404</td>
+                    <td>8ms</td>
+                    <td></td>
+                    <td class="small">Status 404 - Error: You are not a member of any team</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/user-signatures/:id</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['id']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-danger">✗ FAILED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/audit-logs</code></td>
+                    <td>403</td>
+                    <td>6ms</td>
+                    <td></td>
+                    <td class="small">Status 403 - Error: Insufficient permissions</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/teams/:id</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['id']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-danger">✗ FAILED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/compliance/alerts</code></td>
+                    <td>403</td>
+                    <td>7ms</td>
+                    <td></td>
+                    <td class="small">Status 403 - Error: Insufficient permissions</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-danger">✗ FAILED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/compliance/export</code></td>
+                    <td>403</td>
+                    <td>9ms</td>
+                    <td></td>
+                    <td class="small">Status 403 - Error: Insufficient permissions</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-danger">✗ FAILED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/compliance/report</code></td>
+                    <td>403</td>
+                    <td>11ms</td>
+                    <td></td>
+                    <td class="small">Status 403 - Error: Insufficient permissions</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-danger">✗ FAILED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/workflows/:id/history/export</code></td>
+                    <td>200</td>
+                    <td>9ms</td>
+                    <td></td>
+                    <td class="small">Status 200 - Timestamp,Action,Actor,IP Address,Details
+"2026-04-16T01:43:53.147Z","created","qa_test_1776299536@example.com","::ffff:127.0.0.1","{""user_agent"":""python-requests/2.31.0"",""workflow_type"":""seque</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/documents/:id/download</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires a real uploaded document with file on S3/disk; JSON-stubbed documents have no downloadable file</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/documents/:id/file</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires a real uploaded document with file on S3/disk; JSON-stubbed documents have no servable file</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/documents/templates/:id</code></td>
+                    <td>200</td>
+                    <td>7ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/workflows/:id/downloads</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires a completed workflow with signed PDF generated, which involves the full signing lifecycle</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/signatures/:documentId</code></td>
+                    <td>200</td>
+                    <td>9ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-danger">✗ FAILED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/compliance/esign-metadata/:signatureId</code></td>
+                    <td>404</td>
+                    <td>11ms</td>
+                    <td></td>
+                    <td class="small">Status 404 - Error: Compliance metadata not found for this signature</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/workflows/:id/status</code></td>
+                    <td>200</td>
+                    <td>13ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/notifications/stream</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Server not reachable</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/auth/api-keys</code></td>
+                    <td>200</td>
+                    <td>17ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/auth/me</code></td>
+                    <td>200</td>
+                    <td>8ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/billing/subscription</code></td>
+                    <td>200</td>
+                    <td>17ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/documents/</code></td>
+                    <td>200</td>
+                    <td>13ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/documents/:id/tags</code></td>
+                    <td>200</td>
+                    <td>14ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/documents/:id/versions</code></td>
+                    <td>200</td>
+                    <td>18ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/documents/search</code></td>
+                    <td>200</td>
+                    <td>11ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/notifications/</code></td>
+                    <td>200</td>
+                    <td>10ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/*</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Catch-all wildcard route cannot be tested directly - audit middleware is validated implicitly by all other API tests</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/teams/join/:token</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['token']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/user-signatures/</code></td>
+                    <td>200</td>
+                    <td>11ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/workflows/</code></td>
+                    <td>200</td>
+                    <td>12ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/documents</code></td>
+                    <td>200</td>
+                    <td>11ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/workflows/:id</code></td>
+                    <td>200</td>
+                    <td>20ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/workflows/:id/history</code></td>
+                    <td>200</td>
+                    <td>13ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/auth/sessions</code></td>
+                    <td>200</td>
+                    <td>12ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/user-signatures</code></td>
+                    <td>200</td>
+                    <td>10ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>PUT</code></td>
+                    <td><code>/api/users/:id/role</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['id']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>PUT</code></td>
+                    <td><code>/api/user-signatures/:id</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['id']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-danger">✗ FAILED</span></td>
+                    <td><code>PUT</code></td>
+                    <td><code>/api/notifications/preferences</code></td>
+                    <td>400</td>
+                    <td>9ms</td>
+                    <td></td>
+                    <td class="small">Status 400 - Error: Invalid notification_type: document_signed. Valid types: signature_requested, signature_completed, document_shared, reminder, system</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>PUT</code></td>
+                    <td><code>/api/users/language</code></td>
+                    <td>200</td>
+                    <td>13ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-danger">✗ FAILED</span></td>
+                    <td><code>PUT</code></td>
+                    <td><code>/api/workflows/:id</code></td>
+                    <td>409</td>
+                    <td>14ms</td>
+                    <td></td>
+                    <td class="small">Status 409 - Error: Cannot update a workflow that is not in draft status</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>PUT</code></td>
+                    <td><code>/api/workflows/:id/reminders</code></td>
+                    <td>200</td>
+                    <td>25ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>PUT</code></td>
+                    <td><code>/api/auth/profile</code></td>
+                    <td>200</td>
+                    <td>11ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>PATCH</code></td>
+                    <td><code>/api/teams/:id/members/:userId</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires a second user as team member to update their role; single-user test environment cannot test this</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>PATCH</code></td>
+                    <td><code>/api/workflows/:id/decline</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires the authenticated user to be a pending recipient of a started workflow, which needs a multi-step flow</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>PATCH</code></td>
+                    <td><code>/api/signatures/:id/sign</code></td>
+                    <td>200</td>
+                    <td>19ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-danger">✗ FAILED</span></td>
+                    <td><code>PATCH</code></td>
+                    <td><code>/api/workflows/:id/sign</code></td>
+                    <td>403</td>
+                    <td>15ms</td>
+                    <td></td>
+                    <td class="small">Status 403 - Error: You are not a recipient of this workflow</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>PATCH</code></td>
+                    <td><code>/api/notifications/read</code></td>
+                    <td>200</td>
+                    <td>14ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>DELETE</code></td>
+                    <td><code>/api/auth/sessions/:id</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['id']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>DELETE</code></td>
+                    <td><code>/api/documents/:id</code></td>
+                    <td>200</td>
+                    <td>16ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>DELETE</code></td>
+                    <td><code>/api/auth/api-keys/:id</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['id']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>DELETE</code></td>
+                    <td><code>/api/teams/:id</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['id']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>DELETE</code></td>
+                    <td><code>/api/teams/:id/members/:userId</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires a second user who has joined the team; single-user test environment cannot test member removal</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>DELETE</code></td>
+                    <td><code>/api/teams/:id/invites/:inviteId</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['id', 'inviteId']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>DELETE</code></td>
+                    <td><code>/api/documents/templates/:id</code></td>
+                    <td>200</td>
+                    <td>12ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>DELETE</code></td>
+                    <td><code>/api/documents/:id/tags/:tag</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['tag']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>DELETE</code></td>
+                    <td><code>/api/user-signatures/:id</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['id']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-danger">✗ FAILED</span></td>
+                    <td><code>ALL</code></td>
+                    <td><code>/api/*</code></td>
+                    <td>400</td>
+                    <td>5ms</td>
+                    <td></td>
+                    <td class="small">Status 400</td>
+                </tr>
+            
+                </tbody>
+            </table>
+        </div>
+
+        
+        <!-- Failed Tests Debug Section -->
+        <div class="debug-section">
+            <h3 class="text-danger">🔍 Failed Tests - Debug Information</h3>
+            <p class="text-muted">Copy the curl commands below to reproduce the failed requests locally.</p>
+            
+            <div class="card mb-3 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <strong>❌ POST /api/teams/</strong>
+                    <span class="badge bg-dark ms-2">Status: 500</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Error:</strong> Status 500 - Error: Your current plan (free) does not support teams. Please upgrade to a Team or Scale plan first.</p>
+                    <p><strong>Full URL:</strong> <code>http://localhost:3002/api/teams/</code></p>
+
+                    
+                    <div class="alert alert-danger mb-3">
+                        <h6 class="alert-heading">
+                            📊 Error Category: <strong>Server Error (500)</strong>
+                            <span class="badge bg-danger ms-2">server_error</span>
+                            
+                        </h6>
+                        <hr>
+                        <div class="small" style="white-space: pre-wrap;">**Actual server response:** Status 500 - Error: Your current plan (free) does not support teams. Please upgrade to a Team or Scale plan first.<br><br>This is a problem on the server side, not in the test. Read the message above for the specific cause (e.g. &#x27;Stripe is not configured&#x27;, &#x27;plan does not support X&#x27;, &#x27;Database query failed: &lt;sql error&gt;&#x27;). Fix the server or mark the test as environment-dependent if the cause is missing infrastructure (Stripe keys, feature flags).</div>
+                    </div>
+                
+
+                    <div class="mb-3">
+                        <strong>📋 Request Body:</strong>
+                        <pre class="response-preview mt-2">{
+  &quot;name&quot;: &quot;Test User_833065&quot;
+}</pre>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>🔧 CURL Command (copy to debug locally):</strong>
+                        <div class="curl-container mt-2">
+                            <pre class="curl-command" id="curl_0">curl \
+  -X \
+  POST \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Accept: application/json&quot; \
+  -H &quot;Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJlMWI2MWM1NS0xODE5LTQ2YTMtYjIwMy02NTNjMDhjYjkxZTMiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjI5OTUzNkBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzAzODMyLCJleHAiOjE3NzY5MDg2MzJ9.s10dEUEd3tNn8zS8-Dt0MDa6JAUIAeGEB5eDBGbCcmU&quot; \
+  -d &#x27;{
+  &quot;name&quot;: &quot;Test User_833065&quot;
+}&#x27; \
+  &quot;http://localhost:3002/api/teams/&quot;</pre>
+                            <button class="btn btn-sm btn-outline-light copy-btn" onclick="copyToClipboard('curl_0')">📋 Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <strong>📄 Response Body:</strong>
+                        <pre class="response-preview mt-2">{&#x27;success&#x27;: False, &#x27;error&#x27;: &#x27;Your current plan (free) does not support teams. Please upgrade to a Team or Scale plan first.&#x27;}</pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-3 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <strong>❌ POST /api/compliance/alerts/config</strong>
+                    <span class="badge bg-dark ms-2">Status: 403</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Error:</strong> Status 403 - Error: Insufficient permissions</p>
+                    <p><strong>Full URL:</strong> <code>http://localhost:3002/api/compliance/alerts/config</code></p>
+
+                    
+                    <div class="alert alert-warning mb-3">
+                        <h6 class="alert-heading">
+                            📊 Error Category: <strong>Permission Denied</strong>
+                            <span class="badge bg-warning ms-2">permission</span>
+                            
+                        </h6>
+                        <hr>
+                        <div class="small" style="white-space: pre-wrap;">The authenticated user doesn&#x27;t have permission for this endpoint.<br><br>**Possible causes:**<br>1. Endpoint requires specific role (admin, owner, etc.)<br>2. User doesn&#x27;t own the resource being accessed<br>3. Missing or invalid authentication token<br><br>**Recommended action:**<br>Add requiresRole to your API definition to document the required permissions:<br>```json<br>{<br>  &quot;endpoint&quot;: &quot;/api/compliance/alerts/config&quot;,<br>  &quot;method&quot;: &quot;POST&quot;,<br>  &quot;requiresRole&quot;: [&quot;admin&quot;],  // or [&quot;owner&quot;], [&quot;manager&quot;], etc.<br>  &quot;testability&quot;: &quot;manual&quot;,<br>  &quot;skipReason&quot;: &quot;Requires elevated permissions&quot;<br>}<br>```</div>
+                    </div>
+                
+
+                    <div class="mb-3">
+                        <strong>📋 Request Body:</strong>
+                        <pre class="response-preview mt-2">{
+  &quot;rule_type&quot;: &quot;unauthorized_access&quot;,
+  &quot;threshold&quot;: 5,
+  &quot;enabled&quot;: true
+}</pre>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>🔧 CURL Command (copy to debug locally):</strong>
+                        <div class="curl-container mt-2">
+                            <pre class="curl-command" id="curl_1">curl \
+  -X \
+  POST \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Accept: application/json&quot; \
+  -H &quot;Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJlMWI2MWM1NS0xODE5LTQ2YTMtYjIwMy02NTNjMDhjYjkxZTMiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjI5OTUzNkBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzAzODMyLCJleHAiOjE3NzY5MDg2MzJ9.s10dEUEd3tNn8zS8-Dt0MDa6JAUIAeGEB5eDBGbCcmU&quot; \
+  -d &#x27;{
+  &quot;rule_type&quot;: &quot;unauthorized_access&quot;,
+  &quot;threshold&quot;: 5,
+  &quot;enabled&quot;: true
+}&#x27; \
+  &quot;http://localhost:3002/api/compliance/alerts/config&quot;</pre>
+                            <button class="btn btn-sm btn-outline-light copy-btn" onclick="copyToClipboard('curl_1')">📋 Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <strong>📄 Response Body:</strong>
+                        <pre class="response-preview mt-2">{&#x27;success&#x27;: False, &#x27;error&#x27;: &#x27;Insufficient permissions&#x27;}</pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-3 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <strong>❌ POST /api/notifications/send</strong>
+                    <span class="badge bg-dark ms-2">Status: 401</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Error:</strong> Status 401 - Error: Access token required</p>
+                    <p><strong>Full URL:</strong> <code>http://localhost:3002/api/notifications/send</code></p>
+
+                    
+                    <div class="alert alert-danger mb-3">
+                        <h6 class="alert-heading">
+                            📊 Error Category: <strong>Authentication Required</strong>
+                            <span class="badge bg-danger ms-2">authentication</span>
+                            
+                        </h6>
+                        <hr>
+                        <div class="small" style="white-space: pre-wrap;">**Actual server response:** Status 401 - Error: Access token required<br><br>**Likely cause:** The server explicitly mentions token/authorization in its response, so this IS a token problem.<br><br>**Check:**<br>1. Was obtain_auth_token() run before this test?<br>2. Does the test define `requiresAuth: true`?<br>3. Is the Authorization header making it to the server (see request_headers in the result JSON)?<br>4. Does JWT_SECRET match between server .env and the token-issuing endpoint (for auto-generated JWTs)?</div>
+                    </div>
+                
+
+                    <div class="mb-3">
+                        <strong>📋 Request Body:</strong>
+                        <pre class="response-preview mt-2">No request body</pre>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>🔧 CURL Command (copy to debug locally):</strong>
+                        <div class="curl-container mt-2">
+                            <pre class="curl-command" id="curl_2">curl \
+  -X \
+  POST \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Accept: application/json&quot; \
+  -H &quot;Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJlMWI2MWM1NS0xODE5LTQ2YTMtYjIwMy02NTNjMDhjYjkxZTMiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjI5OTUzNkBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzAzODMyLCJleHAiOjE3NzY5MDg2MzJ9.s10dEUEd3tNn8zS8-Dt0MDa6JAUIAeGEB5eDBGbCcmU&quot; \
+  &quot;http://localhost:3002/api/notifications/send&quot;</pre>
+                            <button class="btn btn-sm btn-outline-light copy-btn" onclick="copyToClipboard('curl_2')">📋 Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <strong>📄 Response Body:</strong>
+                        <pre class="response-preview mt-2">{&#x27;success&#x27;: False, &#x27;error&#x27;: &#x27;Access token required&#x27;}</pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-3 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <strong>❌ GET /api/users</strong>
+                    <span class="badge bg-dark ms-2">Status: 403</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Error:</strong> Status 403 - Error: Insufficient permissions</p>
+                    <p><strong>Full URL:</strong> <code>http://localhost:3002/api/users</code></p>
+
+                    
+                    <div class="alert alert-warning mb-3">
+                        <h6 class="alert-heading">
+                            📊 Error Category: <strong>Permission Denied</strong>
+                            <span class="badge bg-warning ms-2">permission</span>
+                            
+                        </h6>
+                        <hr>
+                        <div class="small" style="white-space: pre-wrap;">The authenticated user doesn&#x27;t have permission for this endpoint.<br><br>**Possible causes:**<br>1. Endpoint requires specific role (admin, owner, etc.)<br>2. User doesn&#x27;t own the resource being accessed<br>3. Missing or invalid authentication token<br><br>**Recommended action:**<br>Add requiresRole to your API definition to document the required permissions:<br>```json<br>{<br>  &quot;endpoint&quot;: &quot;/api/users&quot;,<br>  &quot;method&quot;: &quot;GET&quot;,<br>  &quot;requiresRole&quot;: [&quot;admin&quot;],  // or [&quot;owner&quot;], [&quot;manager&quot;], etc.<br>  &quot;testability&quot;: &quot;manual&quot;,<br>  &quot;skipReason&quot;: &quot;Requires elevated permissions&quot;<br>}<br>```</div>
+                    </div>
+                
+
+                    <div class="mb-3">
+                        <strong>📋 Request Body:</strong>
+                        <pre class="response-preview mt-2">No request body</pre>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>🔧 CURL Command (copy to debug locally):</strong>
+                        <div class="curl-container mt-2">
+                            <pre class="curl-command" id="curl_3">curl \
+  -X \
+  GET \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Accept: application/json&quot; \
+  -H &quot;Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJlMWI2MWM1NS0xODE5LTQ2YTMtYjIwMy02NTNjMDhjYjkxZTMiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjI5OTUzNkBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzAzODMyLCJleHAiOjE3NzY5MDg2MzJ9.s10dEUEd3tNn8zS8-Dt0MDa6JAUIAeGEB5eDBGbCcmU&quot; \
+  &quot;http://localhost:3002/api/users&quot;</pre>
+                            <button class="btn btn-sm btn-outline-light copy-btn" onclick="copyToClipboard('curl_3')">📋 Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <strong>📄 Response Body:</strong>
+                        <pre class="response-preview mt-2">{&#x27;success&#x27;: False, &#x27;error&#x27;: &#x27;Insufficient permissions&#x27;}</pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-3 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <strong>❌ GET /api/users/roles</strong>
+                    <span class="badge bg-dark ms-2">Status: 403</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Error:</strong> Status 403 - Error: Insufficient permissions</p>
+                    <p><strong>Full URL:</strong> <code>http://localhost:3002/api/users/roles</code></p>
+
+                    
+                    <div class="alert alert-warning mb-3">
+                        <h6 class="alert-heading">
+                            📊 Error Category: <strong>Permission Denied</strong>
+                            <span class="badge bg-warning ms-2">permission</span>
+                            
+                        </h6>
+                        <hr>
+                        <div class="small" style="white-space: pre-wrap;">The authenticated user doesn&#x27;t have permission for this endpoint.<br><br>**Possible causes:**<br>1. Endpoint requires specific role (admin, owner, etc.)<br>2. User doesn&#x27;t own the resource being accessed<br>3. Missing or invalid authentication token<br><br>**Recommended action:**<br>Add requiresRole to your API definition to document the required permissions:<br>```json<br>{<br>  &quot;endpoint&quot;: &quot;/api/users/roles&quot;,<br>  &quot;method&quot;: &quot;GET&quot;,<br>  &quot;requiresRole&quot;: [&quot;admin&quot;],  // or [&quot;owner&quot;], [&quot;manager&quot;], etc.<br>  &quot;testability&quot;: &quot;manual&quot;,<br>  &quot;skipReason&quot;: &quot;Requires elevated permissions&quot;<br>}<br>```</div>
+                    </div>
+                
+
+                    <div class="mb-3">
+                        <strong>📋 Request Body:</strong>
+                        <pre class="response-preview mt-2">No request body</pre>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>🔧 CURL Command (copy to debug locally):</strong>
+                        <div class="curl-container mt-2">
+                            <pre class="curl-command" id="curl_4">curl \
+  -X \
+  GET \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Accept: application/json&quot; \
+  -H &quot;Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJlMWI2MWM1NS0xODE5LTQ2YTMtYjIwMy02NTNjMDhjYjkxZTMiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjI5OTUzNkBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzAzODMyLCJleHAiOjE3NzY5MDg2MzJ9.s10dEUEd3tNn8zS8-Dt0MDa6JAUIAeGEB5eDBGbCcmU&quot; \
+  &quot;http://localhost:3002/api/users/roles&quot;</pre>
+                            <button class="btn btn-sm btn-outline-light copy-btn" onclick="copyToClipboard('curl_4')">📋 Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <strong>📄 Response Body:</strong>
+                        <pre class="response-preview mt-2">{&#x27;success&#x27;: False, &#x27;error&#x27;: &#x27;Insufficient permissions&#x27;}</pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-3 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <strong>❌ GET /api/teams/mine</strong>
+                    <span class="badge bg-dark ms-2">Status: 404</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Error:</strong> Status 404 - Error: You are not a member of any team</p>
+                    <p><strong>Full URL:</strong> <code>http://localhost:3002/api/teams/mine</code></p>
+
+                    
+                    <div class="alert alert-warning mb-3">
+                        <h6 class="alert-heading">
+                            📊 Error Category: <strong>Resource Not Found</strong>
+                            <span class="badge bg-warning ms-2">not_found</span>
+                            
+                        </h6>
+                        <hr>
+                        <div class="small" style="white-space: pre-wrap;">**Actual server response:** Status 404 - Error: You are not a member of any team<br><br>**Request:** GET /api/teams/mine<br><br>The server says the resource or route doesn&#x27;t exist. Interpret based on what the message actually says:<br>- &#x27;Document/User/Workflow not found&#x27; → a path-param id points to a record that doesn&#x27;t exist in the DB. Check that the POST which creates this resource ran first and its id got captured via `captureResponse`.<br>- &#x27;Cannot GET /foo&#x27; (Express-style) → the route itself doesn&#x27;t exist on the server. Check the endpoint path and the method are correct for the current code.</div>
+                    </div>
+                
+
+                    <div class="mb-3">
+                        <strong>📋 Request Body:</strong>
+                        <pre class="response-preview mt-2">No request body</pre>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>🔧 CURL Command (copy to debug locally):</strong>
+                        <div class="curl-container mt-2">
+                            <pre class="curl-command" id="curl_5">curl \
+  -X \
+  GET \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Accept: application/json&quot; \
+  -H &quot;Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJlMWI2MWM1NS0xODE5LTQ2YTMtYjIwMy02NTNjMDhjYjkxZTMiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjI5OTUzNkBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzAzODMyLCJleHAiOjE3NzY5MDg2MzJ9.s10dEUEd3tNn8zS8-Dt0MDa6JAUIAeGEB5eDBGbCcmU&quot; \
+  &quot;http://localhost:3002/api/teams/mine&quot;</pre>
+                            <button class="btn btn-sm btn-outline-light copy-btn" onclick="copyToClipboard('curl_5')">📋 Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <strong>📄 Response Body:</strong>
+                        <pre class="response-preview mt-2">{&#x27;success&#x27;: False, &#x27;error&#x27;: &#x27;You are not a member of any team&#x27;}</pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-3 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <strong>❌ GET /api/audit-logs</strong>
+                    <span class="badge bg-dark ms-2">Status: 403</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Error:</strong> Status 403 - Error: Insufficient permissions</p>
+                    <p><strong>Full URL:</strong> <code>http://localhost:3002/api/audit-logs</code></p>
+
+                    
+                    <div class="alert alert-warning mb-3">
+                        <h6 class="alert-heading">
+                            📊 Error Category: <strong>Permission Denied</strong>
+                            <span class="badge bg-warning ms-2">permission</span>
+                            
+                        </h6>
+                        <hr>
+                        <div class="small" style="white-space: pre-wrap;">The authenticated user doesn&#x27;t have permission for this endpoint.<br><br>**Possible causes:**<br>1. Endpoint requires specific role (admin, owner, etc.)<br>2. User doesn&#x27;t own the resource being accessed<br>3. Missing or invalid authentication token<br><br>**Recommended action:**<br>Add requiresRole to your API definition to document the required permissions:<br>```json<br>{<br>  &quot;endpoint&quot;: &quot;/api/audit-logs&quot;,<br>  &quot;method&quot;: &quot;GET&quot;,<br>  &quot;requiresRole&quot;: [&quot;admin&quot;],  // or [&quot;owner&quot;], [&quot;manager&quot;], etc.<br>  &quot;testability&quot;: &quot;manual&quot;,<br>  &quot;skipReason&quot;: &quot;Requires elevated permissions&quot;<br>}<br>```</div>
+                    </div>
+                
+
+                    <div class="mb-3">
+                        <strong>📋 Request Body:</strong>
+                        <pre class="response-preview mt-2">No request body</pre>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>🔧 CURL Command (copy to debug locally):</strong>
+                        <div class="curl-container mt-2">
+                            <pre class="curl-command" id="curl_6">curl \
+  -X \
+  GET \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Accept: application/json&quot; \
+  -H &quot;Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJlMWI2MWM1NS0xODE5LTQ2YTMtYjIwMy02NTNjMDhjYjkxZTMiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjI5OTUzNkBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzAzODMyLCJleHAiOjE3NzY5MDg2MzJ9.s10dEUEd3tNn8zS8-Dt0MDa6JAUIAeGEB5eDBGbCcmU&quot; \
+  &quot;http://localhost:3002/api/audit-logs&quot;</pre>
+                            <button class="btn btn-sm btn-outline-light copy-btn" onclick="copyToClipboard('curl_6')">📋 Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <strong>📄 Response Body:</strong>
+                        <pre class="response-preview mt-2">{&#x27;success&#x27;: False, &#x27;error&#x27;: &#x27;Insufficient permissions&#x27;}</pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-3 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <strong>❌ GET /api/compliance/alerts</strong>
+                    <span class="badge bg-dark ms-2">Status: 403</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Error:</strong> Status 403 - Error: Insufficient permissions</p>
+                    <p><strong>Full URL:</strong> <code>http://localhost:3002/api/compliance/alerts</code></p>
+
+                    
+                    <div class="alert alert-warning mb-3">
+                        <h6 class="alert-heading">
+                            📊 Error Category: <strong>Permission Denied</strong>
+                            <span class="badge bg-warning ms-2">permission</span>
+                            
+                        </h6>
+                        <hr>
+                        <div class="small" style="white-space: pre-wrap;">The authenticated user doesn&#x27;t have permission for this endpoint.<br><br>**Possible causes:**<br>1. Endpoint requires specific role (admin, owner, etc.)<br>2. User doesn&#x27;t own the resource being accessed<br>3. Missing or invalid authentication token<br><br>**Recommended action:**<br>Add requiresRole to your API definition to document the required permissions:<br>```json<br>{<br>  &quot;endpoint&quot;: &quot;/api/compliance/alerts&quot;,<br>  &quot;method&quot;: &quot;GET&quot;,<br>  &quot;requiresRole&quot;: [&quot;admin&quot;],  // or [&quot;owner&quot;], [&quot;manager&quot;], etc.<br>  &quot;testability&quot;: &quot;manual&quot;,<br>  &quot;skipReason&quot;: &quot;Requires elevated permissions&quot;<br>}<br>```</div>
+                    </div>
+                
+
+                    <div class="mb-3">
+                        <strong>📋 Request Body:</strong>
+                        <pre class="response-preview mt-2">No request body</pre>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>🔧 CURL Command (copy to debug locally):</strong>
+                        <div class="curl-container mt-2">
+                            <pre class="curl-command" id="curl_7">curl \
+  -X \
+  GET \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Accept: application/json&quot; \
+  -H &quot;Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJlMWI2MWM1NS0xODE5LTQ2YTMtYjIwMy02NTNjMDhjYjkxZTMiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjI5OTUzNkBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzAzODMyLCJleHAiOjE3NzY5MDg2MzJ9.s10dEUEd3tNn8zS8-Dt0MDa6JAUIAeGEB5eDBGbCcmU&quot; \
+  &quot;http://localhost:3002/api/compliance/alerts&quot;</pre>
+                            <button class="btn btn-sm btn-outline-light copy-btn" onclick="copyToClipboard('curl_7')">📋 Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <strong>📄 Response Body:</strong>
+                        <pre class="response-preview mt-2">{&#x27;success&#x27;: False, &#x27;error&#x27;: &#x27;Insufficient permissions&#x27;}</pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-3 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <strong>❌ GET /api/compliance/export</strong>
+                    <span class="badge bg-dark ms-2">Status: 403</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Error:</strong> Status 403 - Error: Insufficient permissions</p>
+                    <p><strong>Full URL:</strong> <code>http://localhost:3002/api/compliance/export</code></p>
+
+                    
+                    <div class="alert alert-warning mb-3">
+                        <h6 class="alert-heading">
+                            📊 Error Category: <strong>Permission Denied</strong>
+                            <span class="badge bg-warning ms-2">permission</span>
+                            
+                        </h6>
+                        <hr>
+                        <div class="small" style="white-space: pre-wrap;">The authenticated user doesn&#x27;t have permission for this endpoint.<br><br>**Possible causes:**<br>1. Endpoint requires specific role (admin, owner, etc.)<br>2. User doesn&#x27;t own the resource being accessed<br>3. Missing or invalid authentication token<br><br>**Recommended action:**<br>Add requiresRole to your API definition to document the required permissions:<br>```json<br>{<br>  &quot;endpoint&quot;: &quot;/api/compliance/export&quot;,<br>  &quot;method&quot;: &quot;GET&quot;,<br>  &quot;requiresRole&quot;: [&quot;admin&quot;],  // or [&quot;owner&quot;], [&quot;manager&quot;], etc.<br>  &quot;testability&quot;: &quot;manual&quot;,<br>  &quot;skipReason&quot;: &quot;Requires elevated permissions&quot;<br>}<br>```</div>
+                    </div>
+                
+
+                    <div class="mb-3">
+                        <strong>📋 Request Body:</strong>
+                        <pre class="response-preview mt-2">No request body</pre>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>🔧 CURL Command (copy to debug locally):</strong>
+                        <div class="curl-container mt-2">
+                            <pre class="curl-command" id="curl_8">curl \
+  -X \
+  GET \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Accept: application/json&quot; \
+  -H &quot;Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJlMWI2MWM1NS0xODE5LTQ2YTMtYjIwMy02NTNjMDhjYjkxZTMiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjI5OTUzNkBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzAzODMyLCJleHAiOjE3NzY5MDg2MzJ9.s10dEUEd3tNn8zS8-Dt0MDa6JAUIAeGEB5eDBGbCcmU&quot; \
+  &quot;http://localhost:3002/api/compliance/export?dateFrom=2024-01-01T00:00:00Z&amp;dateTo=2030-12-31T23:59:59Z&quot;</pre>
+                            <button class="btn btn-sm btn-outline-light copy-btn" onclick="copyToClipboard('curl_8')">📋 Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <strong>📄 Response Body:</strong>
+                        <pre class="response-preview mt-2">{&#x27;success&#x27;: False, &#x27;error&#x27;: &#x27;Insufficient permissions&#x27;}</pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-3 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <strong>❌ GET /api/compliance/report</strong>
+                    <span class="badge bg-dark ms-2">Status: 403</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Error:</strong> Status 403 - Error: Insufficient permissions</p>
+                    <p><strong>Full URL:</strong> <code>http://localhost:3002/api/compliance/report</code></p>
+
+                    
+                    <div class="alert alert-warning mb-3">
+                        <h6 class="alert-heading">
+                            📊 Error Category: <strong>Permission Denied</strong>
+                            <span class="badge bg-warning ms-2">permission</span>
+                            
+                        </h6>
+                        <hr>
+                        <div class="small" style="white-space: pre-wrap;">The authenticated user doesn&#x27;t have permission for this endpoint.<br><br>**Possible causes:**<br>1. Endpoint requires specific role (admin, owner, etc.)<br>2. User doesn&#x27;t own the resource being accessed<br>3. Missing or invalid authentication token<br><br>**Recommended action:**<br>Add requiresRole to your API definition to document the required permissions:<br>```json<br>{<br>  &quot;endpoint&quot;: &quot;/api/compliance/report&quot;,<br>  &quot;method&quot;: &quot;GET&quot;,<br>  &quot;requiresRole&quot;: [&quot;admin&quot;],  // or [&quot;owner&quot;], [&quot;manager&quot;], etc.<br>  &quot;testability&quot;: &quot;manual&quot;,<br>  &quot;skipReason&quot;: &quot;Requires elevated permissions&quot;<br>}<br>```</div>
+                    </div>
+                
+
+                    <div class="mb-3">
+                        <strong>📋 Request Body:</strong>
+                        <pre class="response-preview mt-2">No request body</pre>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>🔧 CURL Command (copy to debug locally):</strong>
+                        <div class="curl-container mt-2">
+                            <pre class="curl-command" id="curl_9">curl \
+  -X \
+  GET \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Accept: application/json&quot; \
+  -H &quot;Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJlMWI2MWM1NS0xODE5LTQ2YTMtYjIwMy02NTNjMDhjYjkxZTMiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjI5OTUzNkBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzAzODMyLCJleHAiOjE3NzY5MDg2MzJ9.s10dEUEd3tNn8zS8-Dt0MDa6JAUIAeGEB5eDBGbCcmU&quot; \
+  &quot;http://localhost:3002/api/compliance/report?dateFrom=2024-01-01T00:00:00Z&amp;dateTo=2030-12-31T23:59:59Z&quot;</pre>
+                            <button class="btn btn-sm btn-outline-light copy-btn" onclick="copyToClipboard('curl_9')">📋 Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <strong>📄 Response Body:</strong>
+                        <pre class="response-preview mt-2">{&#x27;success&#x27;: False, &#x27;error&#x27;: &#x27;Insufficient permissions&#x27;}</pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-3 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <strong>❌ GET /api/workflows/:id/history/export</strong>
+                    <span class="badge bg-dark ms-2">Status: 200</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Error:</strong> Status 200 - Timestamp,Action,Actor,IP Address,Details
+&quot;2026-04-16T01:43:53.147Z&quot;,&quot;created&quot;,&quot;qa_test_1776299536@example.com&quot;,&quot;::ffff:127.0.0.1&quot;,&quot;{&quot;&quot;user_agent&quot;&quot;:&quot;&quot;python-requests/2.31.0&quot;&quot;,&quot;&quot;workflow_type&quot;&quot;:&quot;&quot;seque</p>
+                    <p><strong>Full URL:</strong> <code>http://localhost:3002/api/workflows/dd50e87f-5844-4e90-a18e-7e12f1c17ea1/history/export</code></p>
+
+                    
+                    <div class="alert alert-secondary mb-3">
+                        <h6 class="alert-heading">
+                            📊 Error Category: <strong>HTTP 200</strong>
+                            <span class="badge bg-secondary ms-2">other</span>
+                            
+                        </h6>
+                        <hr>
+                        <div class="small" style="white-space: pre-wrap;">**Actual server response:** Status 200 - Timestamp,Action,Actor,IP Address,Details<br>&quot;2026-04-16T01:43:53.147Z&quot;,&quot;created&quot;,&quot;qa_test_1776299536@example.com&quot;,&quot;::ffff:127.0.0.1&quot;,&quot;{&quot;&quot;user_agent&quot;&quot;:&quot;&quot;python-requests/2.31.0&quot;&quot;,&quot;&quot;workflow_type&quot;&quot;:&quot;&quot;seque<br><br>HTTP 200 on GET /api/workflows/:id/history/export. The server message above should explain what it wants. If not, check server logs directly.</div>
+                    </div>
+                
+
+                    <div class="mb-3">
+                        <strong>📋 Request Body:</strong>
+                        <pre class="response-preview mt-2">No request body</pre>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>🔧 CURL Command (copy to debug locally):</strong>
+                        <div class="curl-container mt-2">
+                            <pre class="curl-command" id="curl_10">curl \
+  -X \
+  GET \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Accept: application/json&quot; \
+  -H &quot;Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJlMWI2MWM1NS0xODE5LTQ2YTMtYjIwMy02NTNjMDhjYjkxZTMiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjI5OTUzNkBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzAzODMyLCJleHAiOjE3NzY5MDg2MzJ9.s10dEUEd3tNn8zS8-Dt0MDa6JAUIAeGEB5eDBGbCcmU&quot; \
+  &quot;http://localhost:3002/api/workflows/dd50e87f-5844-4e90-a18e-7e12f1c17ea1/history/export&quot;</pre>
+                            <button class="btn btn-sm btn-outline-light copy-btn" onclick="copyToClipboard('curl_10')">📋 Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <strong>📄 Response Body:</strong>
+                        <pre class="response-preview mt-2">{&#x27;__text&#x27;: &#x27;Timestamp,Action,Actor,IP Address,Details\n&quot;2026-04-16T01:43:53.147Z&quot;,&quot;created&quot;,&quot;qa_test_1776299536@example.com&quot;,&quot;::ffff:127.0.0.1&quot;,&quot;{&quot;&quot;user_agent&quot;&quot;:&quot;&quot;python-requests/2.31.0&quot;&quot;,&quot;&quot;workflow_type&quot;&quot;:&quot;&quot;sequential&quot;&quot;,&quot;&quot;recipient_count&quot;&quot;:2}&quot;\n&quot;2026-04-16T01:43:53.414Z&quot;,&quot;token_generated&quot;,&quot;qa_test_1776299536@example.com&quot;,&quot;::ffff:127.0.0.1&quot;,&quot;{&quot;&quot;user_agent&quot;&quot;:&quot;&quot;python-requests/2.31.0&quot;&quot;,&quot;&quot;recipient_count&quot;&quot;:2}&quot;\n&quot;2026-04-16T01:43:53.525Z&quot;,&quot;started&quot;,&quot;qa_test_1776299536@example.com&quot;,&quot;::ffff:127.0.0.1&quot;,&quot;{&quot;&quot;user_agent&quot;&quot;:&quot;&quot;python-requests/2.31.0&quot;&quot;,&quot;&quot;workflow_type&quot;&quot;:&quot;&quot;sequential&quot;&quot;,&quot;&quot;notified_count&quot;&quot;:1}&quot;\n&quot;2026-04-16T01:43:53.612Z&quot;,&quot;reminder_sent&quot;,&quot;qa_test_1776299536@example.com&quot;,&quot;::ffff:127.0.0.1&quot;,&quot;{&quot;&quot;user_agent&quot;&quot;:&quot;&quot;python-requests/2.31.0&quot;&quot;,&quot;&quot;recipient_id&quot;&quot;:&quot;&quot;9619b66b-26df-4f5b-8fe9-7d9717f84be1&quot;&quot;,&quot;&quot;recipient_email&quot;&quot;:&quot;&quot;testuser_833111@example.com&quot;&quot;}&quot;\n&quot;2026-04-16T01:43:53.698Z&quot;,&quot;reminder_sent&quot;,&quot;qa_test_1776299536@example.com&quot;,&quot;::ffff:127.0.0.1&quot;,&quot;{&quot;&quot;user_agent&quot;&quot;:&quot;&quot;python-requests/2.31.0&quot;&quot;,&quot;&quot;recip</pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-3 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <strong>❌ GET /api/compliance/esign-metadata/:signatureId</strong>
+                    <span class="badge bg-dark ms-2">Status: 404</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Error:</strong> Status 404 - Error: Compliance metadata not found for this signature</p>
+                    <p><strong>Full URL:</strong> <code>http://localhost:3002/api/compliance/esign-metadata/b9e0898e-73fc-434c-a28f-4200e026fc59</code></p>
+
+                    
+                    <div class="alert alert-warning mb-3">
+                        <h6 class="alert-heading">
+                            📊 Error Category: <strong>Resource Not Found</strong>
+                            <span class="badge bg-warning ms-2">not_found</span>
+                            
+                        </h6>
+                        <hr>
+                        <div class="small" style="white-space: pre-wrap;">**Actual server response:** Status 404 - Error: Compliance metadata not found for this signature<br><br>**Request:** GET /api/compliance/esign-metadata/:signatureId<br><br>The server says the resource or route doesn&#x27;t exist. Interpret based on what the message actually says:<br>- &#x27;Document/User/Workflow not found&#x27; → a path-param id points to a record that doesn&#x27;t exist in the DB. Check that the POST which creates this resource ran first and its id got captured via `captureResponse`.<br>- &#x27;Cannot GET /foo&#x27; (Express-style) → the route itself doesn&#x27;t exist on the server. Check the endpoint path and the method are correct for the current code.</div>
+                    </div>
+                
+
+                    <div class="mb-3">
+                        <strong>📋 Request Body:</strong>
+                        <pre class="response-preview mt-2">No request body</pre>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>🔧 CURL Command (copy to debug locally):</strong>
+                        <div class="curl-container mt-2">
+                            <pre class="curl-command" id="curl_11">curl \
+  -X \
+  GET \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Accept: application/json&quot; \
+  -H &quot;Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJlMWI2MWM1NS0xODE5LTQ2YTMtYjIwMy02NTNjMDhjYjkxZTMiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjI5OTUzNkBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzAzODMyLCJleHAiOjE3NzY5MDg2MzJ9.s10dEUEd3tNn8zS8-Dt0MDa6JAUIAeGEB5eDBGbCcmU&quot; \
+  &quot;http://localhost:3002/api/compliance/esign-metadata/b9e0898e-73fc-434c-a28f-4200e026fc59&quot;</pre>
+                            <button class="btn btn-sm btn-outline-light copy-btn" onclick="copyToClipboard('curl_11')">📋 Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <strong>📄 Response Body:</strong>
+                        <pre class="response-preview mt-2">{&#x27;success&#x27;: False, &#x27;error&#x27;: &#x27;Compliance metadata not found for this signature&#x27;}</pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-3 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <strong>❌ PUT /api/notifications/preferences</strong>
+                    <span class="badge bg-dark ms-2">Status: 400</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Error:</strong> Status 400 - Error: Invalid notification_type: document_signed. Valid types: signature_requested, signature_completed, document_shared, reminder, system</p>
+                    <p><strong>Full URL:</strong> <code>http://localhost:3002/api/notifications/preferences</code></p>
+
+                    
+                    <div class="alert alert-warning mb-3">
+                        <h6 class="alert-heading">
+                            📊 Error Category: <strong>Validation Error</strong>
+                            <span class="badge bg-warning ms-2">validation</span>
+                            
+                        </h6>
+                        <hr>
+                        <div class="small" style="white-space: pre-wrap;">**Actual server response:** Status 400 - Error: Invalid notification_type: document_signed. Valid types: signature_requested, signature_completed, document_shared, reminder, system<br><br>Fix the request payload to match whatever the server says is missing/invalid above. Common patterns:<br>- If the server names specific required fields, add them to `testCases[0].payload` in this endpoint&#x27;s api_definition JSON.<br>- If the server says a field format is wrong, replace the literal with a `{{{{dynamic:&lt;type&gt;}}}}` placeholder (email, uuid, phone, date_future, etc.).<br>- If a field must reference another endpoint&#x27;s output, use `{{{{cache:&lt;resource&gt;.create.response.data.&lt;field&gt;}}}}` and add that endpoint to `dependsOn`.</div>
+                    </div>
+                
+
+                    <div class="mb-3">
+                        <strong>📋 Request Body:</strong>
+                        <pre class="response-preview mt-2">{
+  &quot;preferences&quot;: [
+    {
+      &quot;notification_type&quot;: &quot;document_signed&quot;,
+      &quot;email_enabled&quot;: true,
+      &quot;sms_enabled&quot;: false,
+      &quot;in_app_enabled&quot;: true
+    }
+  ]
+}</pre>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>🔧 CURL Command (copy to debug locally):</strong>
+                        <div class="curl-container mt-2">
+                            <pre class="curl-command" id="curl_12">curl \
+  -X \
+  PUT \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Accept: application/json&quot; \
+  -H &quot;Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJlMWI2MWM1NS0xODE5LTQ2YTMtYjIwMy02NTNjMDhjYjkxZTMiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjI5OTUzNkBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzAzODMyLCJleHAiOjE3NzY5MDg2MzJ9.s10dEUEd3tNn8zS8-Dt0MDa6JAUIAeGEB5eDBGbCcmU&quot; \
+  -d &#x27;{
+  &quot;preferences&quot;: [
+    {
+      &quot;notification_type&quot;: &quot;document_signed&quot;,
+      &quot;email_enabled&quot;: true,
+      &quot;sms_enabled&quot;: false,
+      &quot;in_app_enabled&quot;: true
+    }
+  ]
+}&#x27; \
+  &quot;http://localhost:3002/api/notifications/preferences&quot;</pre>
+                            <button class="btn btn-sm btn-outline-light copy-btn" onclick="copyToClipboard('curl_12')">📋 Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <strong>📄 Response Body:</strong>
+                        <pre class="response-preview mt-2">{&#x27;success&#x27;: False, &#x27;error&#x27;: &#x27;Invalid notification_type: document_signed. Valid types: signature_requested, signature_completed, document_shared, reminder, system&#x27;}</pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-3 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <strong>❌ PUT /api/workflows/:id</strong>
+                    <span class="badge bg-dark ms-2">Status: 409</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Error:</strong> Status 409 - Error: Cannot update a workflow that is not in draft status</p>
+                    <p><strong>Full URL:</strong> <code>http://localhost:3002/api/workflows/dd50e87f-5844-4e90-a18e-7e12f1c17ea1</code></p>
+
+                    
+                    <div class="alert alert-warning mb-3">
+                        <h6 class="alert-heading">
+                            📊 Error Category: <strong>Resource Conflict</strong>
+                            <span class="badge bg-warning ms-2">conflict</span>
+                            
+                        </h6>
+                        <hr>
+                        <div class="small" style="white-space: pre-wrap;">**Actual server response:** Status 409 - Error: Cannot update a workflow that is not in draft status<br><br>A unique constraint or state conflict was hit. Based on the message above, the fix is usually one of:<br>- &#x27;Email/username already exists&#x27; → use `{{{{dynamic:email}}}}` / `{{{{dynamic:username}}}}` so each run creates a unique value, or clean the DB between runs.<br>- &#x27;Already in state X&#x27; → the prior test already performed the operation; fix test ordering or make idempotent.<br>- &#x27;Concurrent modification&#x27; → serialize the test or retry.</div>
+                    </div>
+                
+
+                    <div class="mb-3">
+                        <strong>📋 Request Body:</strong>
+                        <pre class="response-preview mt-2">{
+  &quot;recipients&quot;: [
+    {
+      &quot;signer_email&quot;: &quot;testuser_844170@example.com&quot;,
+      &quot;signer_name&quot;: &quot;Updated Signer 1&quot;,
+      &quot;signing_order&quot;: 1
+    }
+  ]
+}</pre>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>🔧 CURL Command (copy to debug locally):</strong>
+                        <div class="curl-container mt-2">
+                            <pre class="curl-command" id="curl_13">curl \
+  -X \
+  PUT \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Accept: application/json&quot; \
+  -H &quot;Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJlMWI2MWM1NS0xODE5LTQ2YTMtYjIwMy02NTNjMDhjYjkxZTMiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjI5OTUzNkBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzAzODMyLCJleHAiOjE3NzY5MDg2MzJ9.s10dEUEd3tNn8zS8-Dt0MDa6JAUIAeGEB5eDBGbCcmU&quot; \
+  -d &#x27;{
+  &quot;recipients&quot;: [
+    {
+      &quot;signer_email&quot;: &quot;testuser_844170@example.com&quot;,
+      &quot;signer_name&quot;: &quot;Updated Signer 1&quot;,
+      &quot;signing_order&quot;: 1
+    }
+  ]
+}&#x27; \
+  &quot;http://localhost:3002/api/workflows/dd50e87f-5844-4e90-a18e-7e12f1c17ea1&quot;</pre>
+                            <button class="btn btn-sm btn-outline-light copy-btn" onclick="copyToClipboard('curl_13')">📋 Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <strong>📄 Response Body:</strong>
+                        <pre class="response-preview mt-2">{&#x27;success&#x27;: False, &#x27;error&#x27;: &#x27;Cannot update a workflow that is not in draft status&#x27;}</pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-3 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <strong>❌ PATCH /api/workflows/:id/sign</strong>
+                    <span class="badge bg-dark ms-2">Status: 403</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Error:</strong> Status 403 - Error: You are not a recipient of this workflow</p>
+                    <p><strong>Full URL:</strong> <code>http://localhost:3002/api/workflows/dd50e87f-5844-4e90-a18e-7e12f1c17ea1/sign</code></p>
+
+                    
+                    <div class="alert alert-warning mb-3">
+                        <h6 class="alert-heading">
+                            📊 Error Category: <strong>Permission Denied</strong>
+                            <span class="badge bg-warning ms-2">permission</span>
+                            
+                        </h6>
+                        <hr>
+                        <div class="small" style="white-space: pre-wrap;">The authenticated user doesn&#x27;t have permission for this endpoint.<br><br>**Possible causes:**<br>1. Endpoint requires specific role (admin, owner, etc.)<br>2. User doesn&#x27;t own the resource being accessed<br>3. Missing or invalid authentication token<br><br>**Recommended action:**<br>Add requiresRole to your API definition to document the required permissions:<br>```json<br>{<br>  &quot;endpoint&quot;: &quot;/api/workflows/:id/sign&quot;,<br>  &quot;method&quot;: &quot;PATCH&quot;,<br>  &quot;requiresRole&quot;: [&quot;admin&quot;],  // or [&quot;owner&quot;], [&quot;manager&quot;], etc.<br>  &quot;testability&quot;: &quot;manual&quot;,<br>  &quot;skipReason&quot;: &quot;Requires elevated permissions&quot;<br>}<br>```</div>
+                    </div>
+                
+
+                    <div class="mb-3">
+                        <strong>📋 Request Body:</strong>
+                        <pre class="response-preview mt-2">No request body</pre>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>🔧 CURL Command (copy to debug locally):</strong>
+                        <div class="curl-container mt-2">
+                            <pre class="curl-command" id="curl_14">curl \
+  -X \
+  PATCH \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Accept: application/json&quot; \
+  -H &quot;Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJlMWI2MWM1NS0xODE5LTQ2YTMtYjIwMy02NTNjMDhjYjkxZTMiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjI5OTUzNkBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzAzODMyLCJleHAiOjE3NzY5MDg2MzJ9.s10dEUEd3tNn8zS8-Dt0MDa6JAUIAeGEB5eDBGbCcmU&quot; \
+  &quot;http://localhost:3002/api/workflows/dd50e87f-5844-4e90-a18e-7e12f1c17ea1/sign&quot;</pre>
+                            <button class="btn btn-sm btn-outline-light copy-btn" onclick="copyToClipboard('curl_14')">📋 Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <strong>📄 Response Body:</strong>
+                        <pre class="response-preview mt-2">{&#x27;success&#x27;: False, &#x27;error&#x27;: &#x27;You are not a recipient of this workflow&#x27;}</pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-3 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <strong>❌ ALL /api/*</strong>
+                    <span class="badge bg-dark ms-2">Status: 400</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Error:</strong> Status 400</p>
+                    <p><strong>Full URL:</strong> <code>http://localhost:3002/api/*</code></p>
+
+                    
+                    <div class="alert alert-warning mb-3">
+                        <h6 class="alert-heading">
+                            📊 Error Category: <strong>Validation Error</strong>
+                            <span class="badge bg-warning ms-2">validation</span>
+                            
+                        </h6>
+                        <hr>
+                        <div class="small" style="white-space: pre-wrap;">**Actual server response:** Status 400<br><br>Fix the request payload to match whatever the server says is missing/invalid above. Common patterns:<br>- If the server names specific required fields, add them to `testCases[0].payload` in this endpoint&#x27;s api_definition JSON.<br>- If the server says a field format is wrong, replace the literal with a `{{{{dynamic:&lt;type&gt;}}}}` placeholder (email, uuid, phone, date_future, etc.).<br>- If a field must reference another endpoint&#x27;s output, use `{{{{cache:&lt;resource&gt;.create.response.data.&lt;field&gt;}}}}` and add that endpoint to `dependsOn`.</div>
+                    </div>
+                
+
+                    <div class="mb-3">
+                        <strong>📋 Request Body:</strong>
+                        <pre class="response-preview mt-2">{
+  &quot;email&quot;: &quot;testuser_844308@example.com&quot;,
+  &quot;password&quot;: &quot;TestPass@1234&quot;,
+  &quot;name&quot;: &quot;Audit Test User&quot;
+}</pre>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>🔧 CURL Command (copy to debug locally):</strong>
+                        <div class="curl-container mt-2">
+                            <pre class="curl-command" id="curl_15">curl \
+  -X \
+  ALL \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Accept: application/json&quot; \
+  &quot;http://localhost:3002/api/*&quot;</pre>
+                            <button class="btn btn-sm btn-outline-light copy-btn" onclick="copyToClipboard('curl_15')">📋 Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <strong>📄 Response Body:</strong>
+                        <pre class="response-preview mt-2">No response body</pre>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
+
+        <div class="mt-4 mb-4">
+            <p class="text-muted">
+                Report generated by ProjexLight MCP Server<br>
+                For feedback and fixes, check <code>.projexlight/feedback/</code> directory
+            </p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = event.target;
+                const originalText = btn.innerText;
+                btn.innerText = 'Copied!';
+                setTimeout(() => { btn.innerText = originalText; }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
+        

@@ -1,26 +1,23 @@
 {
-  "name": "GET /api/auth/me",
+  "name": "GET /api/auth/me - Get current user",
   "endpoint": "/api/auth/me",
   "method": "GET",
   "requiresAuth": true,
   "expectedStatus": 200,
-  "taskId": "17b27375-6bbf-4ffb-b0af-47bfd86c64c5",
+  "taskId": "9927c6cb-2af2-438a-b9cd-f7f35ff9e6a2",
   "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
-  "featureId": "4320c864-0016-4343-b2b7-26dd3cc30dcd",
   "testCases": [
     {
-      "name": "Default GET test",
+      "name": "Get my identity from JWT",
       "expectedStatus": 200,
       "headers": {
         "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
       }
+    },
+    {
+      "name": "No auth token",
+      "expectedStatus": 401
     }
   ],
-  "dependsOn": [
-    "POST /api/auth/register",
-    "POST /api/auth/login"
-  ],
-  "captureResponse": {},
-  "_generated": true,
-  "_source": "api_library_backfill"
+  "dependsOn": ["POST /api/auth/register", "POST /api/auth/login"]
 }

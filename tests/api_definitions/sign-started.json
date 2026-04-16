@@ -1,0 +1,17 @@
+{
+  "name": "POST /api/sign/:token/started - Mark signing started (public)",
+  "endpoint": "/api/sign/invalid-token-sample/started",
+  "method": "POST",
+  "requiresAuth": false,
+  "expectedStatus": 404,
+  "taskId": "f2e996a5-6c35-4899-8965-d5fd4afad095",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "testCases": [
+    {
+      "name": "Invalid token returns 404",
+      "payload": {},
+      "expectedStatus": 404
+    }
+  ],
+  "dependsOn": []
+}

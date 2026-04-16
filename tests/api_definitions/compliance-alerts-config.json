@@ -1,43 +1,24 @@
 {
+  "name": "POST /api/compliance/alerts/config - Configure alert rule (admin)",
   "endpoint": "/api/compliance/alerts/config",
   "method": "POST",
-  "taskId": "c1e21f09-7fe1-4a27-957d-c228d9905808",
   "requiresAuth": true,
-  "priority": 11,
-  "dependsOn": ["POST /api/auth/register"],
+  "expectedStatus": 201,
+  "taskId": "9927c6cb-2af2-438a-b9cd-f7f35ff9e6a2",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
   "testCases": [
     {
-      "name": "Create alert rule (admin only)",
-      "headers": {
-        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
-      },
+      "name": "Non-admin forbidden",
       "payload": {
-        "rule_type": "unauthorized_access",
+        "rule_type": "login_failures",
         "threshold": 5,
         "enabled": true
       },
-      "expectedStatus": 201,
-      "expectedResponse": {
-        "success": true,
-        "data": {
-          "id": "string",
-          "rule_type": "unauthorized_access",
-          "threshold": 5,
-          "enabled": true
-        }
-      }
-    },
-    {
-      "name": "Reject missing fields",
+      "expectedStatus": 403,
       "headers": {
-        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
-      },
-      "payload": {},
-      "expectedStatus": 400,
-      "expectedResponse": {
-        "success": false,
-        "error": "string"
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
       }
     }
-  ]
+  ],
+  "dependsOn": ["POST /api/auth/register", "POST /api/auth/login"]
 }

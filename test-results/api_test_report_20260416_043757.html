@@ -1,0 +1,3838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test Report</title>
+    <style>
+        :root {
+            --color-passed: #28a745;
+            --color-failed: #dc3545;
+            --color-error: #fd7e14;
+            --color-skipped: #6c757d;
+            --color-primary: #007bff;
+            --bg-light: #f8f9fa;
+            --bg-dark: #1e1e1e;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-light);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; }
+
+        h1 {
+            color: #333;
+            border-bottom: 3px solid var(--color-primary);
+            padding-bottom: 15px;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+
+        .timestamp {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .metadata {
+            background: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .meta-item {
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        /* Summary Cards */
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .card:hover { transform: translateY(-2px); }
+
+        .card h3 {
+            margin: 0 0 8px 0;
+            color: #888;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card .value {
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+
+        .card.total .value { color: var(--color-primary); }
+        .card.passed .value { color: var(--color-passed); }
+        .card.failed .value { color: var(--color-failed); }
+        .card.errors .value { color: var(--color-error); }
+        .card.skipped .value { color: var(--color-skipped); }
+        .card.rate .value { color: var(--color-primary); }
+        .card.duration .value { font-size: 1.5rem; color: #555; }
+
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 30px 0 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .section-header h2 {
+            font-size: 1.3rem;
+            color: #333;
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge-failed { background: #f8d7da; color: #721c24; }
+        .badge-passed { background: #d4edda; color: #155724; }
+
+        /* Failed Tests Section */
+        .failed-tests {
+            margin: 20px 0;
+        }
+
+        .failed-test-card {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+            border-left: 4px solid var(--color-failed);
+        }
+
+        .failed-test-card.error {
+            border-left-color: var(--color-error);
+        }
+
+        .failed-test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: #fafafa;
+            cursor: pointer;
+        }
+
+        .failed-test-header:hover {
+            background: #f0f0f0;
+        }
+
+        .failed-test-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .method-badge {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .method-GET { background: #61affe; color: white; }
+        .method-POST { background: #49cc90; color: white; }
+        .method-PUT { background: #fca130; color: white; }
+        .method-DELETE { background: #f93e3e; color: white; }
+        .method-PATCH { background: #50e3c2; color: white; }
+
+        .endpoint {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9rem;
+            color: #333;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-failed { background: #f8d7da; color: #721c24; }
+        .status-error { background: #fff3cd; color: #856404; }
+        .status-passed { background: #d4edda; color: #155724; }
+        .status-skipped { background: #e9ecef; color: #495057; }
+
+        .failed-test-body {
+            padding: 20px;
+            display: none;
+        }
+
+        .failed-test-card.expanded .failed-test-body {
+            display: block;
+        }
+
+        .error-message {
+            background: #fff5f5;
+            border: 1px solid #fed7d7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            color: #c53030;
+            font-size: 0.9rem;
+        }
+
+        .curl-section {
+            margin-top: 15px;
+        }
+
+        .curl-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .curl-header h4 {
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .copy-btn {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .copy-btn:hover { background: #0056b3; }
+        .copy-btn.copied { background: var(--color-passed); }
+
+        .curl-command {
+            background: var(--bg-dark);
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .response-preview {
+            margin-top: 15px;
+        }
+
+        .response-preview h4 {
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .response-content {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.8rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        /* Tests Table */
+        .tests-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-top: 20px;
+        }
+
+        .tests-table th {
+            background: #f8f9fa;
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #555;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .tests-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.9rem;
+        }
+
+        .tests-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .tests-table .endpoint-cell {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.85rem;
+        }
+
+        .http-status {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-weight: 600;
+        }
+
+        .http-status.s2xx { color: var(--color-passed); }
+        .http-status.s4xx { color: var(--color-error); }
+        .http-status.s5xx { color: var(--color-failed); }
+
+        .expand-icon {
+            font-size: 1.2rem;
+            color: #888;
+            transition: transform 0.2s;
+        }
+
+        .failed-test-card.expanded .expand-icon {
+            transform: rotate(90deg);
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        .footer a {
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>API Test Report</h1>
+        <div class="timestamp">Generated: 2026-04-16 04:37:57</div>
+        <div class='metadata'><span class='meta-item'><strong>Environment:</strong> development</span> | <span class='meta-item'><strong>Base URL:</strong> http://host.docker.internal:3005</span></div>
+
+        <div class="summary">
+            <div class="card total">
+                <h3>Total Tests</h3>
+                <div class="value">94</div>
+            </div>
+            <div class="card passed">
+                <h3>Passed</h3>
+                <div class="value">0</div>
+            </div>
+            <div class="card failed">
+                <h3>Failed</h3>
+                <div class="value">0</div>
+            </div>
+            <div class="card errors">
+                <h3>Errors</h3>
+                <div class="value">94</div>
+            </div>
+            <div class="card skipped">
+                <h3>Skipped</h3>
+                <div class="value">0</div>
+            </div>
+            <div class="card rate">
+                <h3>Pass Rate</h3>
+                <div class="value">0.0%</div>
+            </div>
+            <div class="card duration">
+                <h3>Duration</h3>
+                <div class="value">0.23s</div>
+            </div>
+        </div>
+
+        
+        <div class="section-header">
+            <h2>Failed Tests</h2>
+            <span class="badge badge-failed">94 tests need attention</span>
+        </div>
+        <div class="failed-tests">
+            
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/auth/sso/:provider</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_0')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_0">curl -X GET &quot;http://localhost:3005/api/auth/sso/:provider&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/auth/sso/callback?code=test-auth-code&amp;state=google</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_1')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_1">curl -X GET &quot;http://localhost:3005/api/auth/sso/callback?code=test-auth-code&amp;state=google&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/auth/register</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_2')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_2">curl -X POST \
+  -H \
+  &quot;Content-Type: application/json&quot; \
+  -d \
+  &#x27;{
+  &quot;name&quot;: &quot;Test User&quot;,
+  &quot;email&quot;: &quot;qa_test_1776299536@example.com&quot;,
+  &quot;password&quot;: &quot;ProjexTest_1776314238_450a48!&quot;
+}&#x27; \
+  &quot;http://localhost:3005/api/auth/register&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/auth/login</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_3')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_3">curl -X POST \
+  -H \
+  &quot;Content-Type: application/json&quot; \
+  -d \
+  &#x27;{
+  &quot;email&quot;: &quot;qa_test_1776299536@example.com&quot;,
+  &quot;password&quot;: &quot;QaTest1776299536!&quot;
+}&#x27; \
+  &quot;http://localhost:3005/api/auth/login&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/auth/forgot-password</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_4')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_4">curl -X POST \
+  -H \
+  &quot;Content-Type: application/json&quot; \
+  -d \
+  &#x27;{
+  &quot;email&quot;: &quot;nonexistent_277127@example.com&quot;
+}&#x27; \
+  &quot;http://localhost:3005/api/auth/forgot-password&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/auth/verify-email</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_5')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_5">curl -X POST \
+  -H \
+  &quot;Content-Type: application/json&quot; \
+  -d \
+  &#x27;{
+  &quot;code&quot;: &quot;123456&quot;,
+  &quot;email&quot;: &quot;{{cache:auth.register.response.data.user.email}}&quot;
+}&#x27; \
+  &quot;http://localhost:3005/api/auth/verify-email&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/auth/resend-verification</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_6')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_6">curl -X POST \
+  -H \
+  &quot;Content-Type: application/json&quot; \
+  -d \
+  &#x27;{
+  &quot;email&quot;: &quot;{{cache:auth.register.response.data.user.email}}&quot;
+}&#x27; \
+  &quot;http://localhost:3005/api/auth/resend-verification&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/users/roles</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_7')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_7">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/users/roles&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/compliance/esign-metadata/:signatureId</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_8')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_8">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/compliance/esign-metadata/:signatureId&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/notifications</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_9')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_9">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/notifications&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/teams</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_10')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_10">curl -X POST \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  -d \
+  &#x27;{
+  &quot;name&quot;: &quot;James Martinez&quot;
+}&#x27; \
+  &quot;http://localhost:3005/api/teams&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/teams/join/:token</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_11')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_11">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/teams/join/:token&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/auth/me</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_12')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_12">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/auth/me&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/compliance/alerts/config</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_13')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_13">curl -X POST \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/compliance/alerts/config&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/users</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_14')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_14">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/users&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/documents</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_15')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_15">curl -X POST \
+  -H \
+  &quot;Content-Type: application/json&quot; \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  -d \
+  &#x27;{
+  &quot;file_path&quot;: &quot;stub-egqhuhvyhycmxpjd.pdf_277153&quot;,
+  &quot;mime_type&quot;: &quot;application/pdf&quot;,
+  &quot;original_name&quot;: &quot;stub-egqhuhvyhycmxpjd.pdf&quot;
+}&#x27; \
+  &quot;http://localhost:3005/api/documents&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/organizations</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_16')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_16">curl -X POST \
+  -H \
+  &quot;Content-Type: application/json&quot; \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  -d \
+  &#x27;{
+  &quot;name&quot;: &quot;James Martinez&quot;
+}&#x27; \
+  &quot;http://localhost:3005/api/organizations&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/workflows/admin/process-completions</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_17')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_17">curl -X POST \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/workflows/admin/process-completions&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-PUT">PUT</span>
+                        <span class="endpoint">/api/users/language</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_18')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_18">curl -X PUT \
+  -H \
+  &quot;Content-Type: application/json&quot; \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  -d \
+  &#x27;{
+  &quot;language_preference&quot;: &quot;invalid_lang&quot;
+}&#x27; \
+  &quot;http://localhost:3005/api/users/language&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/compliance/alerts</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_19')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_19">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/compliance/alerts&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/compliance/report?dateTo=2030-12-31T23%3A59%3A59Z&amp;dateFrom=2024-01-01T00%3A00%3A00Z</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_20')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_20">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/compliance/report?dateTo=2030-12-31T23%3A59%3A59Z&amp;dateFrom=2024-01-01T00%3A00%3A00Z&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-PUT">PUT</span>
+                        <span class="endpoint">/api/notifications/preferences</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_21')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_21">curl -X PUT \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  -d \
+  &#x27;{
+  &quot;preferences&quot;: [
+    {
+      &quot;sms_enabled&quot;: false,
+      &quot;email_enabled&quot;: true,
+      &quot;in_app_enabled&quot;: true,
+      &quot;notification_type&quot;: &quot;signature_completed&quot;
+    }
+  ]
+}&#x27; \
+  &quot;http://localhost:3005/api/notifications/preferences&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/notifications/stream</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_22')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_22">curl -X GET &quot;http://localhost:3005/api/notifications/stream&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/audit-logs</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_23')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_23">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/audit-logs&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-PUT">PUT</span>
+                        <span class="endpoint">/api/users/:id/role</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_24')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_24">curl -X PUT \
+  -H \
+  &quot;Content-Type: application/json&quot; \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  -d \
+  &#x27;{
+  &quot;role&quot;: &quot;user&quot;
+}&#x27; \
+  &quot;http://localhost:3005/api/users/:id/role&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/billing/webhook</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_25')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_25">curl -X POST \
+  -H \
+  &quot;Content-Type: application/json&quot; \
+  -H \
+  &quot;stripe-signature: test_signature&quot; \
+  -d \
+  &#x27;{
+  &quot;type&quot;: &quot;checkout.session.completed&quot;
+}&#x27; \
+  &quot;http://localhost:3005/api/billing/webhook&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/auth/api-keys</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_26')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_26">curl -X POST \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  -d \
+  &#x27;{
+  &quot;label&quot;: &quot;James Martinez&quot;
+}&#x27; \
+  &quot;http://localhost:3005/api/auth/api-keys&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/analytics/signature-event</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_27')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_27">curl -X POST \
+  -H \
+  &quot;Content-Type: application/json&quot; \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  -d \
+  &#x27;{
+  &quot;metadata&quot;: {}
+}&#x27; \
+  &quot;http://localhost:3005/api/analytics/signature-event&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-PUT">PUT</span>
+                        <span class="endpoint">/api/auth/profile</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_28')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_28">curl -X PUT \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/auth/profile&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/auth/profile</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_29')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_29">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/auth/profile&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/workflows</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_30')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_30">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/workflows&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/documents/:id/tags</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_31')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_31">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/documents/:id/tags&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/compliance/export?dateTo=2030-12-31T23%3A59%3A59Z&amp;dateFrom=2024-01-01T00%3A00%3A00Z</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_32')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_32">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/compliance/export?dateTo=2030-12-31T23%3A59%3A59Z&amp;dateFrom=2024-01-01T00%3A00%3A00Z&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/billing/subscription</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_33')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_33">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/billing/subscription&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/notifications/send</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_34')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_34">curl -X POST \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  -d \
+  &#x27;{
+  &quot;type&quot;: &quot;document_signed&quot;,
+  &quot;userId&quot;: &quot;{{cache:auth.register.response.data.user.id}}&quot;,
+  &quot;message&quot;: &quot;egqhuhvyhycmxpjd&quot;,
+  &quot;channels&quot;: [
+    &quot;in_app&quot;
+  ]
+}&#x27; \
+  &quot;http://localhost:3005/api/notifications/send&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/*</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_35')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_35">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/*&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/auth/refresh-token</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_36')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_36">curl -X POST \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/auth/refresh-token&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/billing/checkout</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_37')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_37">curl -X POST \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  -d \
+  &#x27;{
+  &quot;plan&quot;: &quot;solo&quot;,
+  &quot;interval&quot;: &quot;monthly&quot;
+}&#x27; \
+  &quot;http://localhost:3005/api/billing/checkout&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/user-signatures</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_38')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_38">curl -X POST \
+  -H \
+  &quot;Content-Type: application/json&quot; \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  -d \
+  &#x27;{
+  &quot;signature_type&quot;: &quot;uploaded&quot;
+}&#x27; \
+  &quot;http://localhost:3005/api/user-signatures&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/documents/search</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_39')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_39">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/documents/search&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/documents/:id/versions</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_40')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_40">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/documents/:id/versions&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/billing/portal</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_41')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_41">curl -X POST \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/billing/portal&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/auth/api-keys</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_42')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_42">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/auth/api-keys&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-PATCH">PATCH</span>
+                        <span class="endpoint">/api/notifications/read</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_43')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_43">curl -X PATCH \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/notifications/read&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/auth/reset-password</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_44')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_44">curl -X POST \
+  -H \
+  &quot;Content-Type: application/json&quot; \
+  -d \
+  &#x27;{
+  &quot;token&quot;: &quot;invalid-token-value&quot;,
+  &quot;password&quot;: &quot;NewPass@1234&quot;
+}&#x27; \
+  &quot;http://localhost:3005/api/auth/reset-password&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/teams/:id/leave</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_45')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_45">curl -X POST \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/teams/:id/leave&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/teams/:id</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_46')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_46">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/teams/:id&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-DELETE">DELETE</span>
+                        <span class="endpoint">/api/teams/:id/members/:userId</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_47')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_47">curl -X DELETE \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/teams/:id/members/:userId&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-PATCH">PATCH</span>
+                        <span class="endpoint">/api/teams/:id/members/:userId</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_48')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_48">curl -X PATCH \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  -d \
+  &#x27;{
+  &quot;role&quot;: &quot;admin&quot;
+}&#x27; \
+  &quot;http://localhost:3005/api/teams/:id/members/:userId&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-DELETE">DELETE</span>
+                        <span class="endpoint">/api/teams/:id</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_49')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_49">curl -X DELETE \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/teams/:id&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/teams/:id/invite</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_50')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_50">curl -X POST \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  -d \
+  &#x27;{
+  &quot;emails&quot;: [
+    &quot;test_1776314277091_ded7a130_0@example.com&quot;
+  ]
+}&#x27; \
+  &quot;http://localhost:3005/api/teams/:id/invite&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/teams/mine</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_51')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_51">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/teams/mine&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/signatures</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_52')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_52">curl -X POST \
+  -H \
+  &quot;Content-Type: application/json&quot; \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  -d \
+  &#x27;{
+  &quot;document_id&quot;: &quot;{{cache:documents.create.response.data.document.id}}&quot;,
+  &quot;signer_email&quot;: &quot;test_1776314277091_ded7a130@example.com&quot;
+}&#x27; \
+  &quot;http://localhost:3005/api/signatures&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/documents/templates</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_53')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_53">curl -X POST \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  -d \
+  &#x27;{
+  &quot;name&quot;: &quot;James Martinez&quot;,
+  &quot;description&quot;: &quot;egqhuhvyhycmxpjd&quot;,
+  &quot;document_id&quot;: &quot;{{cache:documents.create.response.data.document.id}}&quot;
+}&#x27; \
+  &quot;http://localhost:3005/api/documents/templates&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/documents</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_54')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_54">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/documents&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/workflows</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_55')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_55">curl -X POST \
+  -H \
+  &quot;Content-Type: application/json&quot; \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  -d \
+  &#x27;{
+  &quot;fields&quot;: [
+    {
+      &quot;x&quot;: 100,
+      &quot;y&quot;: 500,
+      &quot;page&quot;: 1,
+      &quot;width&quot;: 200,
+      &quot;height&quot;: 50,
+      &quot;field_type&quot;: &quot;signature&quot;,
+      &quot;recipient_index&quot;: 0
+    }
+  ],
+  &quot;recipients&quot;: [
+    {
+      &quot;signer_name&quot;: &quot;Olivia Martinez_0&quot;,
+      &quot;signer_email&quot;: &quot;test_1776314277091_ded7a130_0@example.com&quot;,
+      &quot;signing_order&quot;: 1
+    },
+    {
+      &quot;signer_name&quot;: &quot;Michael Jones_1&quot;,
+      &quot;signer_email&quot;: &quot;test_1776314277091_ded7a130_1@example.com&quot;,
+      &quot;signing_order&quot;: 2
+    }
+  ],
+  &quot;document_id&quot;: &quot;{{cache:documents.create.response.data.document.id}}&quot;,
+  &quot;workflow_type&quot;: &quot;sequential&quot;
+}&#x27; \
+  &quot;http://localhost:3005/api/workflows&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/documents/:id</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_56')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_56">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/documents/:id&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/documents/:id/download</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_57')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_57">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/documents/:id/download&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-DELETE">DELETE</span>
+                        <span class="endpoint">/api/documents/:id</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_58')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_58">curl -X DELETE \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/documents/:id&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/documents/:id/tags</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_59')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_59">curl -X POST \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  -d \
+  &#x27;{
+  &quot;tags&quot;: [
+    &quot;contract&quot;,
+    &quot;urgent&quot;
+  ]
+}&#x27; \
+  &quot;http://localhost:3005/api/documents/:id/tags&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/documents/:id/versions</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_60')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_60">curl -X POST \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/documents/:id/versions&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/documents/:id/versions/:versionId/revert</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_61')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_61">curl -X POST \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/documents/:id/versions/:versionId/revert&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/documents/:id/file</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_62')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_62">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/documents/:id/file&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/organizations/:id</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_63')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_63">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/organizations/:id&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-DELETE">DELETE</span>
+                        <span class="endpoint">/api/auth/api-keys/:id</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_64')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_64">curl -X DELETE \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/auth/api-keys/:id&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/auth/sessions</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_65')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_65">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/auth/sessions&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-DELETE">DELETE</span>
+                        <span class="endpoint">/api/user-signatures/:id</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_66')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_66">curl -X DELETE \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/user-signatures/:id&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/user-signatures</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_67')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_67">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/user-signatures&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-PUT">PUT</span>
+                        <span class="endpoint">/api/user-signatures/:id</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_68')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_68">curl -X PUT \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  -d \
+  &#x27;{
+  &quot;is_default&quot;: true
+}&#x27; \
+  &quot;http://localhost:3005/api/user-signatures/:id&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/user-signatures/:id</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_69')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_69">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/user-signatures/:id&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/teams/join/:token</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_70')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_70">curl -X POST \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/teams/join/:token&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-DELETE">DELETE</span>
+                        <span class="endpoint">/api/teams/:id/invites/:inviteId</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_71')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_71">curl -X DELETE \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/teams/:id/invites/:inviteId&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/signatures/:documentId</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_72')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_72">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/signatures/:documentId&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-PATCH">PATCH</span>
+                        <span class="endpoint">/api/signatures/:id/sign</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_73')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_73">curl -X PATCH \
+  -H \
+  &quot;Content-Type: application/json&quot; \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  -d \
+  &#x27;{
+  &quot;user_signature_id&quot;: &quot;{{cache:userSignatures.create.response.data.userSignature.id}}&quot;
+}&#x27; \
+  &quot;http://localhost:3005/api/signatures/:id/sign&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/signatures/:id/confirm</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_74')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_74">curl -X POST \
+  -H \
+  &quot;Content-Type: application/json&quot; \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  -d \
+  &#x27;{
+  &quot;confirmation_status&quot;: &quot;confirmed&quot;
+}&#x27; \
+  &quot;http://localhost:3005/api/signatures/:id/confirm&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/documents/templates/:id/use</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_75')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_75">curl -X POST \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  -d \
+  &#x27;{
+  &quot;name&quot;: &quot;James Martinez&quot;
+}&#x27; \
+  &quot;http://localhost:3005/api/documents/templates/:id/use&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/documents/templates/:id</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_76')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_76">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/documents/templates/:id&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-DELETE">DELETE</span>
+                        <span class="endpoint">/api/documents/templates/:id</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_77')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_77">curl -X DELETE \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/documents/templates/:id&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/workflows/:id/history</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_78')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_78">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/workflows/:id/history&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/workflows/:id/start</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_79')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_79">curl -X POST \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/workflows/:id/start&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/workflows/:id/downloads</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_80')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_80">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/workflows/:id/downloads&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/workflows/:id/self-sign</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_81')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_81">curl -X POST \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/workflows/:id/self-sign&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-PUT">PUT</span>
+                        <span class="endpoint">/api/workflows/:id/reminders</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_82')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_82">curl -X PUT \
+  -H \
+  &quot;Content-Type: application/json&quot; \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  -d \
+  &#x27;{
+  &quot;reminder_interval_hours&quot;: 24
+}&#x27; \
+  &quot;http://localhost:3005/api/workflows/:id/reminders&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/workflows/:id/history/export</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_83')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_83">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/workflows/:id/history/export&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-PUT">PUT</span>
+                        <span class="endpoint">/api/workflows/:id</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_84')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_84">curl -X PUT \
+  -H \
+  &quot;Content-Type: application/json&quot; \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  -d \
+  &#x27;{
+  &quot;recipients&quot;: [
+    {
+      &quot;signer_name&quot;: &quot;Updated Signer 1&quot;,
+      &quot;signer_email&quot;: &quot;test_1776314277091_ded7a130_0@example.com&quot;,
+      &quot;signing_order&quot;: 1
+    }
+  ]
+}&#x27; \
+  &quot;http://localhost:3005/api/workflows/:id&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/workflows/:id</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_85')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_85">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/workflows/:id&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-DELETE">DELETE</span>
+                        <span class="endpoint">/api/documents/:id/tags/:tag</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_86')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_86">curl -X DELETE \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/documents/:id/tags/:tag&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-DELETE">DELETE</span>
+                        <span class="endpoint">/api/auth/sessions/:id</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_87')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_87">curl -X DELETE \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/auth/sessions/:id&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-GET">GET</span>
+                        <span class="endpoint">/api/workflows/:id/status</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_88')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_88">curl -X GET \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/workflows/:id/status&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/workflows/:id/remind</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_89')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_89">curl -X POST \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/workflows/:id/remind&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-PATCH">PATCH</span>
+                        <span class="endpoint">/api/workflows/:id/sign</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_90')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_90">curl -X PATCH \
+  -H \
+  &quot;Content-Type: application/json&quot; \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/workflows/:id/sign&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-PATCH">PATCH</span>
+                        <span class="endpoint">/api/workflows/:id/decline</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_91')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_91">curl -X PATCH \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  -d \
+  &#x27;{
+  &quot;reason&quot;: &quot;egqhuhvyhycmxpjd&quot;
+}&#x27; \
+  &quot;http://localhost:3005/api/workflows/:id/decline&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/sign/:token/started</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_92')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_92">curl -X POST \
+  -H \
+  &quot;Content-Type: application/json&quot; \
+  &quot;http://localhost:3005/api/sign/:token/started&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="failed-test-card error">
+                <div class="failed-test-header">
+                    <div class="failed-test-title">
+                        <span class="method-badge method-POST">POST</span>
+                        <span class="endpoint">/api/workflows/:id/cancel</span>
+                        <span class="http-status s-xx">-</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="status-badge status-error">ERROR</span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                </div>
+                <div class="failed-test-body">
+                    <div class="error-message">• Cannot connect to host host.docker.internal:3005 ssl:default [Connect call failed (&#x27;192.168.65.254&#x27;, 3005)]</div>
+                    <div class="curl-section">
+                        <div class="curl-header">
+                            <h4>Curl Command (for debugging)</h4>
+                            <button class="copy-btn" onclick="copyCurl(this, 'curl_93')">Copy</button>
+                        </div>
+                        <pre class="curl-command" id="curl_93">curl -X POST \
+  -H \
+  &quot;Authorization: Bearer &lt;TOKEN&gt;&quot; \
+  &quot;http://localhost:3005/api/workflows/:id/cancel&quot;</pre>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <h2>All Tests</h2>
+            <span class="badge badge-passed">0 passed</span>
+            <span class="badge badge-failed">94 failed</span>
+        </div>
+
+        
+        <table class="tests-table">
+            <thead>
+                <tr>
+                    <th style="width: 80px;">Method</th>
+                    <th>Endpoint</th>
+                    <th style="width: 100px;">Status</th>
+                    <th style="width: 100px;">HTTP Code</th>
+                    <th style="width: 100px;">Duration</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/auth/sso/:provider<br><span style='color:#6b7280;font-size:12px;'>Reject unsupported SSO provider</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>9.8ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/auth/sso/callback?code=test-auth-code&amp;state=google<br><span style='color:#6b7280;font-size:12px;'>Reject fake authorization code (cannot exchange with real provider)</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.5ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/auth/register<br><span style='color:#6b7280;font-size:12px;'>Register a new user</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>4.0ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/auth/login<br><span style='color:#6b7280;font-size:12px;'>Login with valid credentials</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.1ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/auth/forgot-password<br><span style='color:#6b7280;font-size:12px;'>Request password reset for non-existing email (still returns 200)</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.2ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/auth/verify-email<br><span style='color:#6b7280;font-size:12px;'>Verify email with valid code</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>1.7ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/auth/resend-verification<br><span style='color:#6b7280;font-size:12px;'>Resend verification code to registered email</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>1.4ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/users/roles<br><span style='color:#6b7280;font-size:12px;'>List available roles (admin only)</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>4.9ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/compliance/esign-metadata/:signatureId<br><span style='color:#6b7280;font-size:12px;'>Return 404 when compliance metadata is missing</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>1.4ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/notifications<br><span style='color:#6b7280;font-size:12px;'>Default GET test</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>1.2ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/teams<br><span style='color:#6b7280;font-size:12px;'>Create a new team</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>4.5ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/teams/join/:token<br><span style='color:#6b7280;font-size:12px;'>Default GET test</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>1.4ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/auth/me<br><span style='color:#6b7280;font-size:12px;'>Default GET test</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.0ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/compliance/alerts/config<br><span style='color:#6b7280;font-size:12px;'>Reject missing fields</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>1.8ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/users<br><span style='color:#6b7280;font-size:12px;'>List all users (admin only)</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.0ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/documents<br><span style='color:#6b7280;font-size:12px;'>Upload a document (JSON stub in non-production)</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>3.7ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/organizations<br><span style='color:#6b7280;font-size:12px;'>Create a new organization</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>1.9ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/workflows/admin/process-completions<br><span style='color:#6b7280;font-size:12px;'>Default POST test</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>1.6ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-PUT">PUT</span></td>
+                <td class="endpoint-cell">/api/users/language<br><span style='color:#6b7280;font-size:12px;'>Fail with invalid language code</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>1.8ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/compliance/alerts<br><span style='color:#6b7280;font-size:12px;'>Get triggered alerts (admin only)</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>1.8ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/compliance/report?dateTo=2030-12-31T23%3A59%3A59Z&amp;dateFrom=2024-01-01T00%3A00%3A00Z<br><span style='color:#6b7280;font-size:12px;'>Generate compliance report (admin only)</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>5.8ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-PUT">PUT</span></td>
+                <td class="endpoint-cell">/api/notifications/preferences<br><span style='color:#6b7280;font-size:12px;'>Update notification preferences</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>3.3ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/notifications/stream<br><span style='color:#6b7280;font-size:12px;'>Auto-generated test for GET /api/notifications/stream</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.1ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/audit-logs<br><span style='color:#6b7280;font-size:12px;'>Search audit logs (admin only)</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.2ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-PUT">PUT</span></td>
+                <td class="endpoint-cell">/api/users/:id/role<br><span style='color:#6b7280;font-size:12px;'>Assign role to a user (admin only)</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.6ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/billing/webhook<br><span style='color:#6b7280;font-size:12px;'>Process Stripe webhook event</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.9ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/auth/api-keys<br><span style='color:#6b7280;font-size:12px;'>Create a new API key</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>3.2ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/analytics/signature-event<br><span style='color:#6b7280;font-size:12px;'>Fail without event_type</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.6ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-PUT">PUT</span></td>
+                <td class="endpoint-cell">/api/auth/profile<br><span style='color:#6b7280;font-size:12px;'>Default PUT test</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.0ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/auth/profile<br><span style='color:#6b7280;font-size:12px;'>Get user profile</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>1.9ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/workflows<br><span style='color:#6b7280;font-size:12px;'>Default GET test</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.2ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/documents/:id/tags<br><span style='color:#6b7280;font-size:12px;'>Default GET test</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.9ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/compliance/export?dateTo=2030-12-31T23%3A59%3A59Z&amp;dateFrom=2024-01-01T00%3A00%3A00Z<br><span style='color:#6b7280;font-size:12px;'>Export audit logs as CSV (admin only)</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>3.8ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/billing/subscription<br><span style='color:#6b7280;font-size:12px;'>Default GET test</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>4.3ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/notifications/send<br><span style='color:#6b7280;font-size:12px;'>Send an in-app notification</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.7ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/*<br><span style='color:#6b7280;font-size:12px;'>Audit middleware logs requests automatically</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.6ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/auth/refresh-token<br><span style='color:#6b7280;font-size:12px;'>Reject refresh without token</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.9ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/billing/checkout<br><span style='color:#6b7280;font-size:12px;'>Create checkout session for solo plan</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.9ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/user-signatures<br><span style='color:#6b7280;font-size:12px;'>Fail to create uploaded signature without file</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>3.4ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/documents/search<br><span style='color:#6b7280;font-size:12px;'>Default GET test</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.5ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/documents/:id/versions<br><span style='color:#6b7280;font-size:12px;'>Default GET test</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.0ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/billing/portal<br><span style='color:#6b7280;font-size:12px;'>Create billing portal session</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.2ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/auth/api-keys<br><span style='color:#6b7280;font-size:12px;'>Default GET test</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.7ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-PATCH">PATCH</span></td>
+                <td class="endpoint-cell">/api/notifications/read<br><span style='color:#6b7280;font-size:12px;'>Default PATCH test</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>3.4ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/auth/reset-password<br><span style='color:#6b7280;font-size:12px;'>Reject invalid reset token</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.7ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/teams/:id/leave<br><span style='color:#6b7280;font-size:12px;'>Leave a team</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.3ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/teams/:id<br><span style='color:#6b7280;font-size:12px;'>Get team by ID</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.2ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-DELETE">DELETE</span></td>
+                <td class="endpoint-cell">/api/teams/:id/members/:userId<br><span style='color:#6b7280;font-size:12px;'>Remove a team member</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.0ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-PATCH">PATCH</span></td>
+                <td class="endpoint-cell">/api/teams/:id/members/:userId<br><span style='color:#6b7280;font-size:12px;'>Update team member role</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.3ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-DELETE">DELETE</span></td>
+                <td class="endpoint-cell">/api/teams/:id<br><span style='color:#6b7280;font-size:12px;'>Delete a team</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>1.8ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/teams/:id/invite<br><span style='color:#6b7280;font-size:12px;'>Invite a member to the team</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>3.4ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/teams/mine<br><span style='color:#6b7280;font-size:12px;'>Get current user team</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.7ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/signatures<br><span style='color:#6b7280;font-size:12px;'>Create a signature request</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.9ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/documents/templates<br><span style='color:#6b7280;font-size:12px;'>Create a document template</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.6ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/documents<br><span style='color:#6b7280;font-size:12px;'>Get user documents</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.2ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/workflows<br><span style='color:#6b7280;font-size:12px;'>Create a signing workflow with recipients</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.5ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/documents/:id<br><span style='color:#6b7280;font-size:12px;'>Get document by ID</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.6ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/documents/:id/download<br><span style='color:#6b7280;font-size:12px;'>Download document file</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.1ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-DELETE">DELETE</span></td>
+                <td class="endpoint-cell">/api/documents/:id<br><span style='color:#6b7280;font-size:12px;'>Delete a document</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.0ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/documents/:id/tags<br><span style='color:#6b7280;font-size:12px;'>Add tags to a document</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.4ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/documents/:id/versions<br><span style='color:#6b7280;font-size:12px;'>Upload new document version</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>1.8ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/documents/:id/versions/:versionId/revert<br><span style='color:#6b7280;font-size:12px;'>Revert document to a previous version</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.1ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/documents/:id/file<br><span style='color:#6b7280;font-size:12px;'>Serve document file</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.4ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/organizations/:id<br><span style='color:#6b7280;font-size:12px;'>Get organization by ID</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.3ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-DELETE">DELETE</span></td>
+                <td class="endpoint-cell">/api/auth/api-keys/:id<br><span style='color:#6b7280;font-size:12px;'>Delete an API key</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.2ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/auth/sessions<br><span style='color:#6b7280;font-size:12px;'>List active sessions for authenticated user</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>1.8ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-DELETE">DELETE</span></td>
+                <td class="endpoint-cell">/api/user-signatures/:id<br><span style='color:#6b7280;font-size:12px;'>Delete a user signature</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.5ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/user-signatures<br><span style='color:#6b7280;font-size:12px;'>Get user signatures</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>1.8ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-PUT">PUT</span></td>
+                <td class="endpoint-cell">/api/user-signatures/:id<br><span style='color:#6b7280;font-size:12px;'>Update a user signature</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.0ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/user-signatures/:id<br><span style='color:#6b7280;font-size:12px;'>Get a single signature by ID</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>1.8ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/teams/join/:token<br><span style='color:#6b7280;font-size:12px;'>Join a team via invite token</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>1.9ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-DELETE">DELETE</span></td>
+                <td class="endpoint-cell">/api/teams/:id/invites/:inviteId<br><span style='color:#6b7280;font-size:12px;'>Cancel a team invite</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>1.8ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/signatures/:documentId<br><span style='color:#6b7280;font-size:12px;'>Get signature status for document</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.2ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-PATCH">PATCH</span></td>
+                <td class="endpoint-cell">/api/signatures/:id/sign<br><span style='color:#6b7280;font-size:12px;'>Sign a document</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.0ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/signatures/:id/confirm<br><span style='color:#6b7280;font-size:12px;'>Confirm a signature application</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.7ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/documents/templates/:id/use<br><span style='color:#6b7280;font-size:12px;'>Create document from template</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.2ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/documents/templates/:id<br><span style='color:#6b7280;font-size:12px;'>Get template by ID</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.1ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-DELETE">DELETE</span></td>
+                <td class="endpoint-cell">/api/documents/templates/:id<br><span style='color:#6b7280;font-size:12px;'>Delete a document template</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>1.7ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/workflows/:id/history<br><span style='color:#6b7280;font-size:12px;'>Get full workflow action history with compliance metadata</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.2ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/workflows/:id/start<br><span style='color:#6b7280;font-size:12px;'>Start the signing process for a workflow</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.1ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/workflows/:id/downloads<br><span style='color:#6b7280;font-size:12px;'>Get download links for completed workflow</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.2ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/workflows/:id/self-sign<br><span style='color:#6b7280;font-size:12px;'>Self-sign a workflow as the creator</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>1.9ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-PUT">PUT</span></td>
+                <td class="endpoint-cell">/api/workflows/:id/reminders<br><span style='color:#6b7280;font-size:12px;'>Configure reminder intervals for workflow recipients</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.1ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/workflows/:id/history/export<br><span style='color:#6b7280;font-size:12px;'>Export workflow history as CSV</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>1.9ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-PUT">PUT</span></td>
+                <td class="endpoint-cell">/api/workflows/:id<br><span style='color:#6b7280;font-size:12px;'>Update workflow recipients and fields</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.2ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/workflows/:id<br><span style='color:#6b7280;font-size:12px;'>Get workflow details by ID</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.3ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-DELETE">DELETE</span></td>
+                <td class="endpoint-cell">/api/documents/:id/tags/:tag<br><span style='color:#6b7280;font-size:12px;'>Remove a tag from a document</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>1.6ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-DELETE">DELETE</span></td>
+                <td class="endpoint-cell">/api/auth/sessions/:id<br><span style='color:#6b7280;font-size:12px;'>Return 404 for non-existing session</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.4ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-GET">GET</span></td>
+                <td class="endpoint-cell">/api/workflows/:id/status<br><span style='color:#6b7280;font-size:12px;'>Get real-time status of all signers in a workflow</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>3.0ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/workflows/:id/remind<br><span style='color:#6b7280;font-size:12px;'>Send reminder to pending signers</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.3ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-PATCH">PATCH</span></td>
+                <td class="endpoint-cell">/api/workflows/:id/sign<br><span style='color:#6b7280;font-size:12px;'>Sign workflow as current recipient</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>1.9ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-PATCH">PATCH</span></td>
+                <td class="endpoint-cell">/api/workflows/:id/decline<br><span style='color:#6b7280;font-size:12px;'>Decline workflow as current recipient</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.1ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/sign/:token/started<br><span style='color:#6b7280;font-size:12px;'>Mark signing page opened (first call)</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>2.0ms</td>
+            </tr>
+            <tr>
+                <td><span class="method-badge method-POST">POST</span></td>
+                <td class="endpoint-cell">/api/workflows/:id/cancel<br><span style='color:#6b7280;font-size:12px;'>Cancel an active workflow</span></td>
+                <td><span class="status-badge status-error">ERROR</span></td>
+                <td class="http-status ">-</td>
+                <td>1.8ms</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="footer">
+            Generated by <a href="https://projexlight.com" target="_blank">ProjexLight Test MCP</a>
+        </div>
+    </div>
+
+    <script>
+        // Toggle failed test details
+        document.querySelectorAll('.failed-test-header').forEach(header => {
+            header.addEventListener('click', () => {
+                header.parentElement.classList.toggle('expanded');
+            });
+        });
+
+        // Copy curl command
+        function copyCurl(btn, id) {
+            const curl = document.getElementById(id).textContent;
+            navigator.clipboard.writeText(curl).then(() => {
+                btn.textContent = 'Copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = 'Copy';
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

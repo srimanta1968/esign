@@ -1,38 +1,33 @@
 {
+  "name": "POST /api/documents - Upload document",
   "endpoint": "/api/documents",
   "method": "POST",
-  "taskId": "ad4ab56b-fb79-4d6e-9ab7-e598befdf828",
   "requiresAuth": true,
-  "priority": 10,
-  "dependsOn": ["POST /api/auth/register"],
-  "captureResponse": {
-    "documents.create.response.data.document.id": "data.document.id"
-  },
+  "expectedStatus": 201,
+  "taskId": "ad4ab56b-fb79-4d6e-9ab7-e598befdf828",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "contentType": "multipart/form-data",
   "testCases": [
     {
-      "name": "Upload a document (JSON stub in non-production)",
-      "description": "Real uploads use multipart/form-data with a binary file. In non-production environments the endpoint accepts a JSON stub so automated tests can capture a document_id for downstream workflow tests.",
-      "headers": {
-        "Authorization": "Bearer {{cache:auth.register.response.data.token}}",
-        "Content-Type": "application/json"
-      },
+      "name": "Upload a PDF document",
       "payload": {
-        "file_path": "stub-{{dynamic:text}}.pdf",
-        "original_name": "stub-{{dynamic:text}}.pdf",
-        "mime_type": "application/pdf"
+        "file": "@fixture:sample.pdf"
       },
       "expectedStatus": 201,
-      "expectedResponse": {
-        "success": true,
-        "data": {
-          "document": {
-            "id": "string",
-            "user_id": "string",
-            "file_path": "string",
-            "uploaded_at": "string"
-          }
-        }
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      }
+    },
+    {
+      "name": "Upload without file",
+      "expectedStatus": 400,
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
       }
     }
-  ]
+  ],
+  "captureResponse": {
+    "documents.upload.response.data.id": "data.document.id"
+  },
+  "dependsOn": ["POST /api/auth/register", "POST /api/auth/login"]
 }

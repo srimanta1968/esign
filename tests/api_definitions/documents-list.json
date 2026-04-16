@@ -1,24 +1,23 @@
 {
+  "name": "GET /api/documents - List documents",
   "endpoint": "/api/documents",
   "method": "GET",
-  "taskId": "8c371718-3a8e-4a35-be90-adce095f36c6",
   "requiresAuth": true,
-  "priority": 11,
-  "dependsOn": ["POST /api/auth/register", "POST /api/documents"],
-  "captureResponse": {},
+  "expectedStatus": 200,
+  "taskId": "8c371718-3a8e-4a35-be90-adce095f36c6",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
   "testCases": [
     {
-      "name": "Get user documents",
-      "headers": {
-        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
-      },
+      "name": "List my documents",
       "expectedStatus": 200,
-      "expectedResponse": {
-        "success": true,
-        "data": {
-          "documents": []
-        }
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
       }
+    },
+    {
+      "name": "No auth",
+      "expectedStatus": 401
     }
-  ]
+  ],
+  "dependsOn": ["POST /api/auth/register", "POST /api/auth/login"]
 }

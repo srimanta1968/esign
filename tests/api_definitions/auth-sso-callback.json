@@ -1,24 +1,16 @@
 {
+  "name": "GET /api/auth/sso/callback - SSO callback",
   "endpoint": "/api/auth/sso/callback",
   "method": "GET",
-  "taskId": "68784f2e-0044-4bf7-bdf2-f6ff912dc6ff",
   "requiresAuth": false,
-  "testability": "manual",
-  "skipReason": "SSO callback requires real OAuth provider authorization code exchange which cannot be automated",
-  "priority": 6,
-  "dependsOn": [],
+  "expectedStatus": 400,
+  "taskId": "9927c6cb-2af2-438a-b9cd-f7f35ff9e6a2",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
   "testCases": [
     {
-      "name": "Reject fake authorization code (cannot exchange with real provider)",
-      "queryParams": {
-        "code": "test-auth-code",
-        "state": "google"
-      },
-      "expectedStatus": 400,
-      "expectedResponse": {
-        "success": false,
-        "error": "Failed to exchange authorization code"
-      }
+      "name": "SSO callback without code",
+      "expectedStatus": 400
     }
-  ]
+  ],
+  "dependsOn": []
 }

@@ -471,24 +471,33 @@ update_additional_project_env() {
 # Check if this project is already registered in feedback/registered_projects.json
 is_project_registered() {
     local unix_path=$(get_unix_project_path)
+
+    # Check local feedback directory first
     local reg_file="$SCRIPT_DIR/feedback/registered_projects.json"
 
-    # Check if registration file exists
-    if [ ! -f "$reg_file" ]; then
-        return 1
+    # Also check the owner project's feedback directory (the authoritative copy)
+    local owner_dir
+    owner_dir=$(get_owner_env_dir 2>/dev/null)
+    local owner_reg_file=""
+    if [ -n "$owner_dir" ] && [ "$owner_dir" != "$SCRIPT_DIR" ]; then
+        owner_reg_file="$owner_dir/feedback/registered_projects.json"
     fi
 
-    # Check if project path is in the registration file
-    if command -v jq &> /dev/null; then
-        if jq -e --arg path "$unix_path" '.[] | select(.projectPath == $path)' "$reg_file" > /dev/null 2>&1; then
-            return 0
+    for check_file in "$reg_file" "$owner_reg_file"; do
+        if [ -z "$check_file" ] || [ ! -f "$check_file" ]; then
+            continue
         fi
-    else
-        # Fallback to grep if jq not available
-        if grep -q "\"projectPath\": *\"$unix_path\"" "$reg_file" 2>/dev/null; then
-            return 0
+
+        if command -v jq &> /dev/null; then
+            if jq -e --arg path "$unix_path" '.[] | select(.projectPath == $path)' "$check_file" > /dev/null 2>&1; then
+                return 0
+            fi
+        else
+            if grep -q "\"projectPath\": *\"$unix_path\"" "$check_file" 2>/dev/null; then
+                return 0
+            fi
         fi
-    fi
+    done
 
     return 1
 }
@@ -1217,6 +1226,81 @@ force_restart() {
 }
 
 #===============================================================================
+# .env Recovery from registered_projects.json
+#===============================================================================
+# When Docker restarts, the container is recreated from docker-compose + .env.
+# If additional projects were registered but their ADDITIONAL_PROJECT_N entries
+# are missing from .env, their volumes won't be mounted and tools will fail.
+#
+# This function reads feedback/registered_projects.json (persisted on the
+# feedback volume) and rebuilds all ADDITIONAL_PROJECT_N + PROJECT_PATH_MAPPINGS
+# entries in the owner's .env BEFORE docker-compose up runs.
+
+recover_env_from_registry() {
+    local reg_file="$SCRIPT_DIR/feedback/registered_projects.json"
+    local env_file="$SCRIPT_DIR/.env"
+
+    if [ ! -f "$reg_file" ] || [ ! -f "$env_file" ]; then
+        return 0  # Nothing to recover
+    fi
+
+    if ! command -v jq &> /dev/null; then
+        warn "jq not available - cannot recover .env from registry"
+        return 0
+    fi
+
+    # Get our own project path (the owner)
+    local owner_unix_path=$(get_unix_project_path)
+
+    # Read additional projects (non-owner) from registry
+    local additional_projects
+    additional_projects=$(jq -r '
+        to_entries[]
+        | select(.value.isOwner != true)
+        | select(.value.containerPath | startswith("/projects/additional"))
+        | "\(.value.containerPath | ltrimstr("/projects/additional"))|\(.value.projectPath)"
+    ' "$reg_file" 2>/dev/null)
+
+    if [ -z "$additional_projects" ]; then
+        return 0  # No additional projects to recover
+    fi
+
+    local recovered=0
+    while IFS='|' read -r slot unix_path; do
+        if [ -z "$slot" ] || [ -z "$unix_path" ]; then
+            continue
+        fi
+
+        # Skip if this is the same as the owner project
+        if [ "$unix_path" = "$owner_unix_path" ]; then
+            continue
+        fi
+
+        # Convert Unix path to Windows path for Docker volume mount
+        local windows_path="$unix_path"
+        if [[ "$unix_path" =~ ^/([a-z])/(.*) ]]; then
+            local drive="${BASH_REMATCH[1]}"
+            local rest="${BASH_REMATCH[2]}"
+            windows_path="${drive^}:/$rest"
+        fi
+
+        # Check if ADDITIONAL_PROJECT_N is already set correctly
+        if grep -q "^ADDITIONAL_PROJECT_${slot}=${windows_path}$" "$env_file" 2>/dev/null; then
+            continue  # Already correct
+        fi
+
+        # Recover the entry
+        log "Recovering ADDITIONAL_PROJECT_${slot}=${windows_path} from registry"
+        update_additional_project_env "$slot" "$unix_path" "$env_file"
+        recovered=$((recovered + 1))
+    done <<< "$additional_projects"
+
+    if [ $recovered -gt 0 ]; then
+        log "Recovered $recovered additional project(s) from registry into .env"
+    fi
+}
+
+#===============================================================================
 # Main Setup Flow
 #===============================================================================
 
@@ -1229,6 +1313,11 @@ run_setup() {
     echo ""
 
     check_prerequisites
+    echo ""
+
+    # Recover .env from registered_projects.json (survives Docker restarts)
+    # This must run BEFORE containers start so volume mounts are correct
+    recover_env_from_registry
     echo ""
 
     # Determine if this is the first project

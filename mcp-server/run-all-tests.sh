@@ -25,6 +25,37 @@
 #                       (e.g., development, staging, production, qa, regression)
 #                       URLs are read from environments.<name>.baseUrl and apiUrl
 #
+# Test-user credentials (written into tests/config/test-config.json before run):
+#   --login-email <email>     Override testCredentials.default.email. Useful
+#                             when a test flow actually sends mail (password
+#                             reset, email verification) and you need a real
+#                             deliverable mailbox. Without this flag the
+#                             existing config default is used.
+#   --login-password <pass>   Optional password to pair with --login-email.
+#                             If omitted, the existing config password is
+#                             preserved; if config has none, a default is
+#                             generated.
+#   --admin-email <email>     Override testCredentials.admin.email. Used by
+#                             Test MCP when an api_definition declares
+#                             requiresRole: ['admin'] — the admin user must
+#                             exist in DB with role='admin'.
+#   --admin-password <pass>   Optional password to pair with --admin-email.
+#                             Same precedence rules as --login-password.
+#
+# How auth works (behind the scenes, no manual steps needed):
+#   * Dev MCP reads testCredentials.default from test-config.json on every
+#     test run.
+#   * If the user exists in the DB with that password → login, skip register.
+#   * If the user doesn't exist → register with those creds. Persisted to
+#     tests/config/.auth-session.json for faster future runs.
+#   * If the user exists but the password is wrong (e.g. the app returns
+#     201-with-success:false on duplicate) → test-only DB password reset
+#     with a fresh bcrypt hash. Plaintext is logged in a banner so you can
+#     see what was set.
+#   * Safety rail: DB reset is ONLY applied to emails that look like test
+#     users (contain 'test', example.com, mailinator, or match the configured
+#     default). Production-looking emails are never touched.
+#
 # Examples:
 #   ./run-all-tests.sh ui                                    # All UI tests
 #   ./run-all-tests.sh ui lead-contact-management.feature   # Single feature
@@ -116,7 +147,13 @@ ensure_test_config() {
   "testCredentials": {
     "default": {
       "email": "default_test_user@example.com",
-      "password": "DefaultTestPass123!"
+      "password": "DefaultTestPass123!",
+      "description": "Fallback creds (role: user)"
+    },
+    "admin": {
+      "email": "REPLACE_ME_admin@example.com",
+      "password": "REPLACE_ME_AdminPass123!",
+      "description": "Admin user creds. Test MCP uses these when an api_definition declares requiresRole: ['admin']. The user must exist in DB with role='admin'. If your app doesn't allow self-registration as admin, either pre-seed in init scripts OR enable test-only DB role promotion. Override via --admin-email / --admin-password flags."
     },
     "registered": null
   },
@@ -139,6 +176,115 @@ TESTCONFIGEOF
     CONFIG_CREATED_THIS_RUN=true
     print_warning "New config created - please verify settings before running tests"
     print_warning "Config file: $CONFIG_FILE"
+}
+
+# Apply --login-email / --login-password / --admin-email / --admin-password
+# overrides to testCredentials.{default,admin}. Called after ensure_test_config
+# so the file always exists. Uses jq for atomic rewrite. Preserves existing
+# password if only the matching email flag is passed.
+#
+# The admin slot is what Test MCP reads when an api_definition declares
+# requiresRole: ['admin']. See api_test_runner.py _get_or_fetch_role_token.
+apply_login_overrides() {
+    if [ -z "${LOGIN_EMAIL_OVERRIDE:-}" ] && [ -z "${LOGIN_PASSWORD_OVERRIDE:-}" ] && \
+       [ -z "${ADMIN_EMAIL_OVERRIDE:-}" ] && [ -z "${ADMIN_PASSWORD_OVERRIDE:-}" ]; then
+        return 0
+    fi
+
+    if ! command -v jq >/dev/null 2>&1; then
+        print_error "jq is required for --login-email / --login-password / --admin-email / --admin-password. Install jq and retry."
+        exit 1
+    fi
+
+    local session_cleared=false
+
+    # --- default (regular user) slot -----------------------------------------
+    if [ -n "${LOGIN_EMAIL_OVERRIDE:-}" ] || [ -n "${LOGIN_PASSWORD_OVERRIDE:-}" ]; then
+        local current_email current_password new_email new_password tmp_file
+        current_email=$(jq -r '.testCredentials.default.email // ""' "$CONFIG_FILE" 2>/dev/null)
+        current_password=$(jq -r '.testCredentials.default.password // ""' "$CONFIG_FILE" 2>/dev/null)
+
+        new_email="${LOGIN_EMAIL_OVERRIDE:-$current_email}"
+        if [ -n "${LOGIN_PASSWORD_OVERRIDE:-}" ]; then
+            new_password="$LOGIN_PASSWORD_OVERRIDE"
+        elif [ -n "$current_password" ]; then
+            new_password="$current_password"
+        else
+            new_password="ProjexTest@1234!"
+            print_warning "No default password in config and none provided — using generated default"
+        fi
+
+        if [ "$new_email" = "$current_email" ] && [ "$new_password" = "$current_password" ]; then
+            echo "  Login credentials unchanged (already $current_email)"
+        else
+            tmp_file="${CONFIG_FILE}.tmp.$$"
+            jq --arg email "$new_email" --arg password "$new_password" \
+               '.testCredentials = (.testCredentials // {}) |
+                .testCredentials.default = (.testCredentials.default // {}) |
+                .testCredentials.default.email = $email |
+                .testCredentials.default.password = $password' \
+               "$CONFIG_FILE" > "$tmp_file"
+
+            if [ -s "$tmp_file" ]; then
+                mv "$tmp_file" "$CONFIG_FILE"
+                [ "$new_email" != "$current_email" ] && print_success "Login email override → $new_email"
+                [ "$new_password" != "$current_password" ] && print_success "Login password updated (source: --login-password flag)"
+                session_cleared=true
+            else
+                rm -f "$tmp_file"
+                print_error "Failed to write login overrides to $CONFIG_FILE"
+                exit 1
+            fi
+        fi
+    fi
+
+    # --- admin slot ----------------------------------------------------------
+    if [ -n "${ADMIN_EMAIL_OVERRIDE:-}" ] || [ -n "${ADMIN_PASSWORD_OVERRIDE:-}" ]; then
+        local admin_current_email admin_current_password admin_new_email admin_new_password admin_tmp_file
+        admin_current_email=$(jq -r '.testCredentials.admin.email // ""' "$CONFIG_FILE" 2>/dev/null)
+        admin_current_password=$(jq -r '.testCredentials.admin.password // ""' "$CONFIG_FILE" 2>/dev/null)
+
+        admin_new_email="${ADMIN_EMAIL_OVERRIDE:-$admin_current_email}"
+        if [ -n "${ADMIN_PASSWORD_OVERRIDE:-}" ]; then
+            admin_new_password="$ADMIN_PASSWORD_OVERRIDE"
+        elif [ -n "$admin_current_password" ]; then
+            admin_new_password="$admin_current_password"
+        else
+            admin_new_password="ProjexAdmin@1234!"
+            print_warning "No admin password in config and none provided — using generated default"
+        fi
+
+        if [ "$admin_new_email" = "$admin_current_email" ] && [ "$admin_new_password" = "$admin_current_password" ]; then
+            echo "  Admin credentials unchanged (already $admin_current_email)"
+        else
+            admin_tmp_file="${CONFIG_FILE}.tmp.admin.$$"
+            jq --arg email "$admin_new_email" --arg password "$admin_new_password" \
+               '.testCredentials = (.testCredentials // {}) |
+                .testCredentials.admin = (.testCredentials.admin // {"description": "Admin user creds. Test MCP uses these when an api_definition declares requiresRole: [\"admin\"]. The user must exist in DB with role=admin."}) |
+                .testCredentials.admin.email = $email |
+                .testCredentials.admin.password = $password' \
+               "$CONFIG_FILE" > "$admin_tmp_file"
+
+            if [ -s "$admin_tmp_file" ]; then
+                mv "$admin_tmp_file" "$CONFIG_FILE"
+                [ "$admin_new_email" != "$admin_current_email" ] && print_success "Admin email override → $admin_new_email"
+                [ "$admin_new_password" != "$admin_current_password" ] && print_success "Admin password updated (source: --admin-password flag)"
+                session_cleared=true
+            else
+                rm -f "$admin_tmp_file"
+                print_error "Failed to write admin overrides to $CONFIG_FILE"
+                exit 1
+            fi
+        fi
+    fi
+
+    # Delete stale sidecar once if any creds actually changed. MCP already
+    # ignores sidecar when email mismatches, but cleaning it up avoids
+    # confusion in logs/git status.
+    if [ "$session_cleared" = "true" ] && [ -f "${TESTS_DIR}/config/.auth-session.json" ]; then
+        rm -f "${TESTS_DIR}/config/.auth-session.json"
+        echo "  Cleared stale .auth-session.json"
+    fi
 }
 
 # Show hint to check config if tests fail and config was just created
@@ -236,9 +382,34 @@ load_test_config() {
             api_url=$(echo "$api_url" | sed 's|localhost|host.docker.internal|g')
         fi
 
-        # Export as environment variables (if not already set)
-        export UI_BASE_URL="${UI_BASE_URL:-$base_url}"
-        export API_BASE_URL="${API_BASE_URL:-$api_url}"
+        # Export as environment variables.
+        #
+        # Precedence rule:
+        #   - LOCAL mode (active env = development): test-config.json wins —
+        #     because auto-detect-ports.sh just updated it to match the live
+        #     running ports. Any stale API_BASE_URL / UI_BASE_URL inherited
+        #     from mcp-server/.env (e.g. a hardcoded :3005 from a previous
+        #     framework) must NOT override auto-detected reality, otherwise
+        #     every test errors with "Cannot connect to host…".
+        #   - REMOTE mode (staging/qa/production): the env var override is
+        #     respected, because the remote host isn't introspectable and
+        #     CI may inject a different URL than the one committed in
+        #     test-config.json.
+        if [ "$active_env" = "development" ]; then
+            # Warn if the dev is about to be rescued from a stale override
+            if [ -n "${API_BASE_URL:-}" ] && [ "$API_BASE_URL" != "$api_url" ]; then
+                print_warning "Ignoring stale API_BASE_URL=$API_BASE_URL from env — using auto-detected $api_url"
+            fi
+            if [ -n "${UI_BASE_URL:-}" ] && [ "$UI_BASE_URL" != "$base_url" ]; then
+                print_warning "Ignoring stale UI_BASE_URL=$UI_BASE_URL from env — using auto-detected $base_url"
+            fi
+            export UI_BASE_URL="$base_url"
+            export API_BASE_URL="$api_url"
+        else
+            # Remote env: env-var override wins (CI injection), else config wins
+            export UI_BASE_URL="${UI_BASE_URL:-$base_url}"
+            export API_BASE_URL="${API_BASE_URL:-$api_url}"
+        fi
 
         # Load browser settings
         export BROWSER_HEADLESS=$(jq -r '.browser.headless // true' "$CONFIG_FILE")
@@ -508,9 +679,133 @@ check_prerequisites() {
         print_warning "jq not installed - config file parsing will be limited"
     fi
 
+    # Auto-detect SUT ports from framework config files and update
+    # tests/config/test-config.json if they're stale. This removes the
+    # manual "edit baseUrl/apiUrl every time you change frameworks" step.
+    #
+    # Delegates to auto-detect-ports.sh which parses:
+    #   - server/.env, backend/.env, api/.env for PORT= (Node/Express/etc.)
+    #   - application.properties (Spring Boot)
+    #   - vite.config.ts|js, next.config.js, angular.json, nuxt.config.ts,
+    #     svelte.config.js, astro.config.mjs, package.json (CRA)
+    #
+    # Auto-detect ONLY runs for the 'development' environment, because
+    # staging/qa/production targets are REMOTE URLs (https://qa.example.com
+    # or a coworker's machine on the LAN) that can't be introspected from
+    # this machine's filesystem. For those environments, the values in
+    # test-config.json are authoritative — hand-edited by the dev team or
+    # set in CI, and the auto-detect would just clobber them.
+    #
+    # Disable with SUT_AUTO_CONFIG=false in the environment. The detection
+    # is soft — if a framework isn't recognized or ports aren't listening,
+    # the existing test-config.json values are left alone and the user can
+    # override via UI_BASE_URL / API_BASE_URL env vars.
+    if [ "${SUT_AUTO_CONFIG:-true}" = "true" ] && \
+       [ "${ENV_OVERRIDE:-development}" = "development" ]; then
+        local auto_script="$SCRIPT_DIR/auto-detect-ports.sh"
+        if [ -x "$auto_script" ]; then
+            "$auto_script" "$PROJECT_ROOT" || true
+        fi
+    elif [ -n "${ENV_OVERRIDE:-}" ] && [ "$ENV_OVERRIDE" != "development" ]; then
+        print_warning "Auto-detect skipped — targeting remote environment '$ENV_OVERRIDE'"
+        print_warning "  Remote URLs are read as-is from test-config.json. To update them,"
+        print_warning "  edit .environments.${ENV_OVERRIDE}.baseUrl / .apiUrl directly."
+    fi
+
     # Load test configuration
     print_header "Loading Test Configuration"
     load_test_config
+}
+
+# Pre-flight: verify the SUT (system under test) is reachable from the
+# host AND from inside the Test MCP container before running any tests.
+#
+# This catches the single most common cause of mass-test-failure with
+# "Cannot connect to host host.docker.internal:PORT" errors: your web
+# app is either not running, or it's bound to 127.0.0.1 (loopback only)
+# instead of 0.0.0.0 (all interfaces), which Docker containers cannot
+# reach even via host.docker.internal.
+#
+# We delegate to check-sut.sh (a shared helper), which runs the probe
+# and prints framework-specific guidance on failure, pointing users at
+# docs/SUT_SETUP_GUIDE.md for the full fix.
+#
+# Argument: "api" | "ui" | "both"
+#   - "api"  → probe only the API URL (API_BASE_URL — from test-config.json
+#              apiUrl, points to the backend, typically port 3005).
+#              Used by `run-all-tests.sh api`.
+#   - "ui"   → probe only the UI URL (UI_BASE_URL — from test-config.json
+#              baseUrl, points to the frontend dev server, typically port
+#              3000 for CRA/Next/Angular or 5173 for Vite).
+#              Used by `run-all-tests.sh ui`.
+#   - "both" → probe both. Used by `run-all-tests.sh unified` and `all`.
+#
+# IMPORTANT: this function MUST read UI_BASE_URL and API_BASE_URL, not
+# BASE_URL / API_URL. load_test_config() exports those exact names after
+# translating localhost → host.docker.internal. Reading BASE_URL here
+# silently falls back to a hardcoded default and would give false
+# failures on frameworks whose dev server runs on a non-3000 port.
+#
+# This mode-aware probing is intentional: running `api` tests does NOT
+# require the frontend dev server to be up. Probing port 3000 during an
+# API-only run would give a false failure whenever the UI is not
+# started, which is a common workflow (e.g. running API tests in a
+# terminal while a separate team owns the frontend).
+#
+# To skip this check entirely (e.g. in CI where the SUT runs elsewhere
+# and is already known-healthy), set SKIP_SUT_CHECK=true in the env.
+check_sut_connectivity() {
+    local mode="${1:-both}"
+
+    if [ "${SKIP_SUT_CHECK:-false}" = "true" ]; then
+        print_warning "SUT connectivity pre-flight skipped (SKIP_SUT_CHECK=true)"
+        return 0
+    fi
+
+    local check_script="$SCRIPT_DIR/check-sut.sh"
+    if [ ! -x "$check_script" ]; then
+        # check-sut.sh is shipped by CLI export alongside this script.
+        # If it's missing, something is wrong with the export — warn but
+        # don't block the run (the user might have customized their layout).
+        print_warning "check-sut.sh not found at $check_script — skipping SUT pre-flight"
+        print_warning "  If you see 'Cannot connect to host.docker.internal:PORT' errors,"
+        print_warning "  see docs/SUT_SETUP_GUIDE.md for how to bind your app to 0.0.0.0"
+        return 0
+    fi
+
+    # Resolve URLs based on mode. load_test_config has already populated
+    # UI_BASE_URL (from baseUrl) and API_BASE_URL (from apiUrl) in
+    # test-config.json, with localhost already translated to
+    # host.docker.internal for the Docker container path.
+    local probe_primary=""
+    local probe_secondary=""
+    case "$mode" in
+        api)
+            probe_primary="${API_BASE_URL:-http://host.docker.internal:3005}"
+            ;;
+        ui)
+            probe_primary="${UI_BASE_URL:-http://host.docker.internal:3000}"
+            ;;
+        both|*)
+            probe_primary="${UI_BASE_URL:-http://host.docker.internal:3000}"
+            probe_secondary="${API_BASE_URL:-}"
+            ;;
+    esac
+
+    SUT_BASE_URL="$probe_primary" \
+    SUT_API_URL="$probe_secondary" \
+    SUT_CONTAINER="${TEST_MCP_CONTAINER}" \
+        "$check_script"
+    local rc=$?
+
+    if [ $rc -ne 0 ]; then
+        print_error "SUT pre-flight check failed — aborting test run"
+        echo ""
+        echo "  Fix your SUT and re-run. To bypass this check (NOT recommended):"
+        echo "    SKIP_SUT_CHECK=true ./run-all-tests.sh $COMMAND"
+        echo ""
+        exit 78   # HOST_NOT_ACCESSIBLE_EXIT_CODE — reuses the existing code
+    fi
 }
 
 ensure_test_mcp() {
@@ -951,6 +1246,15 @@ show_usage() {
     echo "  status                 - Check Test MCP status"
     echo ""
     echo "Options:"
+    echo "  --login-email <email>  - Override test user email for this run"
+    echo "                           (written to testCredentials.default.email)"
+    echo "  --login-password <pw>  - Override test user password for this run"
+    echo "                           (written to testCredentials.default.password)"
+    echo "  --admin-email <email>  - Override admin user email for this run"
+    echo "                           (written to testCredentials.admin.email)"
+    echo "                           Required for endpoints gated by requiresRole:['admin']"
+    echo "  --admin-password <pw>  - Override admin user password for this run"
+    echo "                           (written to testCredentials.admin.password)"
     echo "  --env <name>           - Use specific environment from test-config.json"
     echo "                           (e.g., development, staging, production, qa, regression)"
     echo "  --feature-id <id>      - Feature ID to test"
@@ -976,6 +1280,12 @@ show_usage() {
     echo "  # Unified Tests (UI + API)"
     echo "  $0 unified                               # UI + API tests"
     echo "  $0 unified --env staging                # UI + API against staging"
+    echo "  $0 api --login-email projexlight@gmail.com"
+    echo "                                          # Use real mailbox for email-gated flows"
+    echo "  $0 api --login-email test1@example.com --login-password 'MyPass@1234'"
+    echo "                                          # Full override (email + password)"
+    echo "  $0 api --admin-email qa_admin@example.com --admin-password 'AdminPass@1234'"
+    echo "                                          # Set admin creds for role-gated endpoints"
     echo "  $0 unified --api-only                   # Only API via unified endpoint"
     echo "  $0 unified --ui-only                    # Only UI via unified endpoint"
     echo ""
@@ -1012,6 +1322,10 @@ FEATURE_OR_CATEGORY=""
 RUN_UI_TESTS="true"
 RUN_API_TESTS="true"
 ENV_OVERRIDE=""  # Environment override from --env argument
+LOGIN_EMAIL_OVERRIDE=""
+LOGIN_PASSWORD_OVERRIDE=""
+ADMIN_EMAIL_OVERRIDE=""
+ADMIN_PASSWORD_OVERRIDE=""
 
 # Parse options
 while [[ $# -gt 0 ]]; do
@@ -1026,6 +1340,38 @@ while [[ $# -gt 0 ]]; do
             ;;
         --env|--environment)
             ENV_OVERRIDE="$2"
+            shift 2
+            ;;
+        --login-email)
+            if [ -z "${2:-}" ]; then
+                print_error "--login-email requires an email address"
+                exit 1
+            fi
+            LOGIN_EMAIL_OVERRIDE="$2"
+            shift 2
+            ;;
+        --login-password)
+            if [ -z "${2:-}" ]; then
+                print_error "--login-password requires a value"
+                exit 1
+            fi
+            LOGIN_PASSWORD_OVERRIDE="$2"
+            shift 2
+            ;;
+        --admin-email)
+            if [ -z "${2:-}" ]; then
+                print_error "--admin-email requires an email address"
+                exit 1
+            fi
+            ADMIN_EMAIL_OVERRIDE="$2"
+            shift 2
+            ;;
+        --admin-password)
+            if [ -z "${2:-}" ]; then
+                print_error "--admin-password requires a value"
+                exit 1
+            fi
+            ADMIN_PASSWORD_OVERRIDE="$2"
             shift 2
             ;;
         --feature-id)
@@ -1062,24 +1408,33 @@ export ENV_OVERRIDE
 # Main
 check_prerequisites
 
+# Ensure config exists and apply any --login-email / --login-password overrides.
+# ensure_test_config is a no-op if the file already exists.
+ensure_test_config
+apply_login_overrides
+
 TEST_EXIT_CODE=0
 
 case "$COMMAND" in
     ui)
         ensure_test_mcp
+        check_sut_connectivity ui
         run_ui_tests "$FEATURE_OR_CATEGORY" || TEST_EXIT_CODE=$?
         ;;
     api)
         ensure_test_mcp
+        check_sut_connectivity api
         # API tests always use database mode (api_library table)
         run_api_tests || TEST_EXIT_CODE=$?
         ;;
     unified)
         ensure_test_mcp
+        check_sut_connectivity both
         run_unified_tests || TEST_EXIT_CODE=$?
         ;;
     all)
         ensure_test_mcp
+        check_sut_connectivity both
         run_all_tests || TEST_EXIT_CODE=$?
         ;;
     status)

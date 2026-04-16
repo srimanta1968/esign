@@ -1,39 +1,22 @@
 {
-  "endpoint": "/api/workflows/:id/sign",
+  "name": "PATCH /api/workflows/:id/sign - Sign workflow step",
+  "endpoint": "/api/workflows/{{cache:workflows.create.response.data.id}}/sign",
   "method": "PATCH",
-  "taskId": "145a31aa-6e9c-4834-b373-083839d339ac",
   "requiresAuth": true,
-  "priority": 34,
-  "dependsOn": ["POST /api/workflows/:id/start"],
+  "expectedStatus": 200,
+  "taskId": "f2e996a5-6c35-4899-8965-d5fd4afad095",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
   "testCases": [
     {
-      "name": "Sign workflow as current recipient",
-      "headers": {
-        "Authorization": "Bearer {{cache:auth.register.response.data.token}}",
-        "Content-Type": "application/json"
+      "name": "Sign the current workflow step",
+      "payload": {
+        "signature_data": "data:image/png;base64,iVBORw0KGgo="
       },
-      "urlParams": {
-        "id": "{{cache:workflows.create.response.data.workflow.id}}"
-      },
-      "payload": {},
       "expectedStatus": 200,
-      "expectedResponse": {
-        "success": true,
-        "data": {
-          "status": {
-            "workflow_id": "string",
-            "workflow_type": "string",
-            "status": "string",
-            "recipients": "array",
-            "progress": {
-              "total": "number",
-              "signed": "number",
-              "pending": "number",
-              "declined": "number"
-            }
-          }
-        }
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
       }
     }
-  ]
+  ],
+  "dependsOn": ["POST /api/auth/register", "POST /api/auth/login", "POST /api/workflows"]
 }

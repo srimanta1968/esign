@@ -1,0 +1,22 @@
+{
+  "name": "GET /api/auth/api-keys - List API keys",
+  "endpoint": "/api/auth/api-keys",
+  "method": "GET",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "taskId": "9927c6cb-2af2-438a-b9cd-f7f35ff9e6a2",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "testCases": [
+    {
+      "name": "List my API keys",
+      "expectedStatus": 200,
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      }
+    }
+  ],
+  "captureResponse": {
+    "auth.apiKey.list.response.data.keys[0].id": "data.keys[0].id"
+  },
+  "dependsOn": ["POST /api/auth/register", "POST /api/auth/login", "POST /api/auth/api-keys"]
+}

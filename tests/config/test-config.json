@@ -9,9 +9,9 @@
   },
   "environments": {
     "development": {
-      "baseUrl": "http://localhost:3000",
-      "apiUrl": "http://localhost:3000",
-      "description": "Local development - localhost URLs are auto-translated to host.docker.internal in Docker"
+      "baseUrl": "http://localhost:3002",
+      "apiUrl": "http://localhost:3002",
+      "description": "Local development - localhost URLs are auto-translated to host.docker.internal in Docker. baseUrl is the edocs frontend (Vite dev server on 3000); apiUrl is the edocs backend (Express on 3005)."
     },
     "staging": {
       "baseUrl": "https://staging.example.com",
@@ -47,9 +47,14 @@
   },
   "testCredentials": {
     "default": {
-      "email": "default_test_user@example.com",
-      "password": "DefaultTestPass123!",
-      "description": "Fallback credentials when registration fails or for login-only tests"
+      "email": "qa_test_1776316188@example.com",
+      "password": "QaTest1776316188!",
+      "description": "Fallback creds (role: user)"
+    },
+    "admin": {
+      "email": "qa_admin_1776299536@example.com",
+      "password": "QaAdmin1776299536!",
+      "description": "Admin user creds. Test MCP uses these when an api_definition declares requiresRole: ['admin']. The user must exist in DB with role='admin'. If your app doesn't allow self-registration as admin, either pre-seed in init scripts OR enable test-only DB role promotion."
     },
     "registered": null,
     "_usage": {

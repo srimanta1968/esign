@@ -1,40 +1,19 @@
 {
-  "endpoint": "/api/auth/sessions/:id",
+  "name": "DELETE /api/auth/sessions/:id - Revoke session",
+  "endpoint": "/api/auth/sessions/00000000-0000-0000-0000-000000000000",
   "method": "DELETE",
-  "taskId": "75c9b422-947c-4a41-b3d4-087cff1f0285",
   "requiresAuth": true,
-  "priority": 14,
-  "dependsOn": ["GET /api/auth/sessions"],
+  "expectedStatus": 404,
+  "taskId": "9927c6cb-2af2-438a-b9cd-f7f35ff9e6a2",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
   "testCases": [
     {
-      "name": "Revoke a session by ID",
-      "headers": {
-        "Authorization": "Bearer {{cache:auth.refreshToken.response.data.token}}"
-      },
-      "urlParams": {
-        "id": "{{cache:auth.refreshToken.response.data.session.id}}"
-      },
-      "expectedStatus": 200,
-      "expectedResponse": {
-        "success": true,
-        "data": {
-          "message": "Session revoked successfully"
-        }
-      }
-    },
-    {
-      "name": "Return 404 for non-existing session",
-      "headers": {
-        "Authorization": "Bearer {{cache:auth.refreshToken.response.data.token}}"
-      },
-      "urlParams": {
-        "id": "00000000-0000-0000-0000-000000000000"
-      },
+      "name": "Revoke non-existent session",
       "expectedStatus": 404,
-      "expectedResponse": {
-        "success": false,
-        "error": "Session not found"
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
       }
     }
-  ]
+  ],
+  "dependsOn": ["POST /api/auth/register", "POST /api/auth/login"]
 }

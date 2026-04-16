@@ -1,0 +1,23 @@
+{
+  "name": "POST /api/sign/:token/complete - Complete signing",
+  "endpoint": "/api/sign/:token/complete",
+  "method": "POST",
+  "requiresAuth": false,
+  "expectedStatus": 400,
+  "priority": 70,
+  "testCases": [
+    {
+      "name": "Invalid token \u2192 400",
+      "expectedStatus": 400,
+      "payload": {
+        "signatures": []
+      },
+      "pathParams": {
+        "token": "{{static:invalid-token}}"
+      }
+    }
+  ],
+  "dependsOn": [],
+  "taskId": "17b27375-6bbf-4ffb-b0af-47bfd86c64c5",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+}

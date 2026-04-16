@@ -28,7 +28,18 @@
       "mcp__projexlight__projexlight_clear_api_test_result",
       "Bash(docker rm:*)",
       "Bash(bash setup-all.sh --force)",
-      "Bash(tee /tmp/setup_all.log)"
+      "Bash(tee /tmp/setup_all.log)",
+      "Bash(git ls-tree *)",
+      "Bash(git checkout *)",
+      "Bash(rm -rf tests/api_definitions)",
+      "Bash(mkdir -p tests/api_definitions)",
+      "Bash(node scripts/gen-api-defs.js)",
+      "Bash(python .projexlight/gen-apidefs.py)",
+      "Bash(python -c \"import json,sys;d=json.load\\(sys.stdin\\);print\\('scripts:', list\\(d.get\\('scripts',{}\\).keys\\(\\)\\)\\)\")",
+      "Bash(python -c \"import json,sys;d=json.load\\(sys.stdin\\);print\\('status:',d.get\\('status'\\),'| progress:',d.get\\('progress'\\),'| totals:',d.get\\('totalTests'\\),'pass:',d.get\\('passed'\\),'fail:',d.get\\('failed'\\)\\)\")",
+      "Bash(python scripts/gen-api-defs.py)",
+      "Bash(python -c ' *)",
+      "Read(//c/Users/srima/projex_mcp/projex_dev_mcp/**)"
     ]
   },
   "enableAllProjectMcpServers": true,

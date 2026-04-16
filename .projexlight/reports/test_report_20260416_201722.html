@@ -1,0 +1,1348 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test Report - 2026-04-16T20:17:21.296102</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; }
+        .stats-card { border-left: 4px solid #667eea; }
+        .test-results { margin-top: 2rem; }
+        code { background: #f8f9fa; padding: 2px 6px; border-radius: 3px; }
+        .debug-section { background: #fff3cd; border-radius: 8px; padding: 1.5rem; margin-top: 2rem; }
+        .curl-command { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 6px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.85rem; overflow-x: auto; white-space: pre-wrap; word-break: break-all; }
+        .copy-btn { position: absolute; top: 8px; right: 8px; }
+        .curl-container { position: relative; margin-bottom: 1rem; }
+        .response-preview { background: #f8f9fa; padding: 1rem; border-radius: 6px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.85rem; max-height: 200px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>API Test Report</h1>
+            <p class="mb-0">Generated: 2026-04-16 20:17:22 UTC</p>
+            <p class="mb-0">Triggered by: manual</p>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <!-- Statistics -->
+        <div class="row">
+            <div class="col">
+                <div class="card stats-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Tests</h5>
+                        <h2 class="mb-0">99</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card stats-card" style="border-left-color: #28a745;">
+                    <div class="card-body">
+                        <h5 class="card-title">Passed</h5>
+                        <h2 class="mb-0 text-success">44</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card stats-card" style="border-left-color: #dc3545;">
+                    <div class="card-body">
+                        <h5 class="card-title">Failed</h5>
+                        <h2 class="mb-0 text-danger">1</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card stats-card" style="border-left-color: #6c757d;">
+                    <div class="card-body">
+                        <h5 class="card-title">Skipped</h5>
+                        <h2 class="mb-0 text-secondary">54</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card stats-card" style="border-left-color: #ffc107;">
+                    <div class="card-body">
+                        <h5 class="card-title">Pass Rate</h5>
+                        <h2 class="mb-0">44.4%</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <!-- Error Category Summary -->
+        <div class="mt-4">
+            <h5>📊 Error Categories Breakdown</h5>
+            <div class="d-flex flex-wrap align-items-center mt-2">
+                
+                <span class="badge me-2 mb-2" style="background-color: #dc3545; font-size: 0.9rem; padding: 0.5rem 0.75rem;">
+                    🔒 Permission Denied: 1
+                </span>
+            
+            </div>
+            <small class="text-muted">Click on a failed test below for detailed guidance on how to fix each error category.</small>
+        </div>
+        
+
+        
+
+        
+        <!-- Tests Requiring Manual Attention -->
+        <div class="card mt-4 border-warning">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">⚠️ Tests Requiring Manual Attention (5)</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">
+                    The following tests could not be fully automated. Review and fix manually:
+                </p>
+                
+                <div class="mb-3">
+                    <h6 class="text-secondary">🖐️ Manual Testing Required (5)</h6>
+                    <p class="small text-muted">These endpoints cannot be automated (OAuth callbacks, webhooks, etc.):</p>
+                    <ul class="list-group list-group-flush">
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/documents</strong>
+                        <br><small class="text-muted">Requires multipart/form-data file upload (multer) which is not supported by JSON-only regression runner. Downstream tests use setup fixture.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/documents/{{cache:auth.login.response.data.user.id}}/versions</strong>
+                        <br><small class="text-muted">Requires multipart upload + existing document id.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/billing/webhook</strong>
+                        <br><small class="text-muted">Webhook endpoint - requires Stripe signature header and raw body (MUST-15).</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>GET /api/auth/sso/callback</strong>
+                        <br><small class="text-muted">OAuth callback - requires real authorization code from provider (MUST-15).</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>GET /api/notifications/stream</strong>
+                        <br><small class="text-muted">Server-Sent Events stream keeps the connection open; not suitable for the request/response JSON runner.</small>
+                    </li>
+                </ul>
+                </div>
+            
+                
+            </div>
+        </div>
+        
+
+        <!-- Test Results -->
+        <div class="test-results">
+            <h3>Test Results</h3>
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Status</th>
+                        <th>Method</th>
+                        <th>Endpoint</th>
+                        <th>Code</th>
+                        <th>Time</th>
+                        <th>Setup</th>
+                        <th>Error Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/auth/register</code></td>
+                    <td>201</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/auth/login</code></td>
+                    <td>200</td>
+                    <td>57ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/auth/verify-email</code></td>
+                    <td>400</td>
+                    <td>6ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/auth/forgot-password</code></td>
+                    <td>200</td>
+                    <td>14ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/auth/resend-verification</code></td>
+                    <td>200</td>
+                    <td>257ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/auth/reset-password</code></td>
+                    <td>400</td>
+                    <td>8ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/auth/refresh-token</code></td>
+                    <td>200</td>
+                    <td>16ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/auth/api-keys</code></td>
+                    <td>201</td>
+                    <td>10ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/user-signatures</code></td>
+                    <td>201</td>
+                    <td>10ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/analytics/signature-event</code></td>
+                    <td>201</td>
+                    <td>10ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/notifications/send</code></td>
+                    <td>200</td>
+                    <td>15ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/documents</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires multipart/form-data file upload (multer) which is not supported by JSON-only regression runner. Downstream tests use setup fixture.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/organizations</code></td>
+                    <td>201</td>
+                    <td>14ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/teams</code></td>
+                    <td>500</td>
+                    <td>7ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/teams/{{cache:auth.register.response.data.user.id}}/invite</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/documents/templates</code></td>
+                    <td>400</td>
+                    <td>5ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/teams/join/{{static:invalid-invite-token}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['invalid']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/documents/templates/{{cache:auth.login.response.data.user.id}}/use</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/teams/{{cache:auth.register.response.data.user.id}}/leave</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/documents/{{cache:auth.login.response.data.user.id}}/versions</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires multipart upload + existing document id.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/documents/{{cache:auth.login.response.data.user.id}}/versions/{{cache:auth.login.response.data.user.id}}/revert</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth', 'auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/documents/{{cache:auth.login.response.data.user.id}}/tags</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/billing/checkout</code></td>
+                    <td>503</td>
+                    <td>6ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/billing/portal</code></td>
+                    <td>503</td>
+                    <td>5ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/compliance/alerts/config</code></td>
+                    <td>403</td>
+                    <td>7ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/billing/webhook</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Webhook endpoint - requires Stripe signature header and raw body (MUST-15).</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/compliance/esign-metadata</code></td>
+                    <td>500</td>
+                    <td>8ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/signatures</code></td>
+                    <td>201</td>
+                    <td>10ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/signatures/{{cache:auth.register.response.data.user.id}}/confirm</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-danger">✗ FAILED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/workflows</code></td>
+                    <td>403</td>
+                    <td>10ms</td>
+                    <td></td>
+                    <td class="small">Status 403 - Error: Plan limit reached</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/workflows/admin/process-completions</code></td>
+                    <td>200</td>
+                    <td>6ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/sign/{{static:invalid-token}}/started</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['invalid']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/sign/{{static:invalid-token}}/complete</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['invalid']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/workflows/{{cache:auth.register.response.data.user.id}}/start</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/workflows/{{cache:auth.register.response.data.user.id}}/cancel</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/workflows/{{cache:auth.register.response.data.user.id}}/remind</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/workflows/{{cache:auth.register.response.data.user.id}}/self-sign</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/auth/sso/callback</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">OAuth callback - requires real authorization code from provider (MUST-15).</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/auth/sso/google</code></td>
+                    <td>200</td>
+                    <td>5ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/auth/me</code></td>
+                    <td>200</td>
+                    <td>5ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/auth/profile</code></td>
+                    <td>200</td>
+                    <td>6ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/auth/sessions</code></td>
+                    <td>200</td>
+                    <td>6ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/users/roles</code></td>
+                    <td>403</td>
+                    <td>5ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/users</code></td>
+                    <td>403</td>
+                    <td>8ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/auth/api-keys</code></td>
+                    <td>200</td>
+                    <td>6ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/user-signatures</code></td>
+                    <td>200</td>
+                    <td>7ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/user-signatures/{{cache:userSignatures.create.response.data.userSignature.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['userSignatures']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/notifications</code></td>
+                    <td>200</td>
+                    <td>8ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/notifications/stream</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Server-Sent Events stream keeps the connection open; not suitable for the request/response JSON runner.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/notifications/preferences</code></td>
+                    <td>200</td>
+                    <td>6ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/organizations/{{cache:organizations.create.response.data.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['organizations']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/documents</code></td>
+                    <td>200</td>
+                    <td>5ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/documents/search?q=contract</code></td>
+                    <td>200</td>
+                    <td>6ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/documents/{{cache:auth.login.response.data.user.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/documents/{{cache:auth.login.response.data.user.id}}/download</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/documents/{{cache:auth.login.response.data.user.id}}/file</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/teams/mine</code></td>
+                    <td>404</td>
+                    <td>6ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/teams/{{cache:auth.register.response.data.user.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/teams/join/{{static:invalid-invite-token}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['invalid']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/documents/templates</code></td>
+                    <td>200</td>
+                    <td>6ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/documents/templates/{{cache:auth.login.response.data.user.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/documents/{{cache:auth.login.response.data.user.id}}/versions</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/documents/{{cache:auth.login.response.data.user.id}}/tags</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/audit-logs?page=1&limit=10</code></td>
+                    <td>403</td>
+                    <td>6ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/compliance/report?dateFrom=2024-01-01&dateTo=2024-12-31</code></td>
+                    <td>403</td>
+                    <td>6ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/billing/subscription</code></td>
+                    <td>200</td>
+                    <td>8ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/compliance/alerts</code></td>
+                    <td>403</td>
+                    <td>6ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/compliance/export?dateFrom=2024-01-01&dateTo=2024-12-31</code></td>
+                    <td>403</td>
+                    <td>7ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/compliance/esign-metadata/{{cache:auth.register.response.data.user.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/signatures/{{cache:auth.register.response.data.user.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/workflows</code></td>
+                    <td>200</td>
+                    <td>10ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/workflows/{{cache:auth.register.response.data.user.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/sign/{{static:invalid-token}}/document</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['invalid']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/sign/{{static:invalid-token}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['invalid']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/workflows/{{cache:auth.register.response.data.user.id}}/status</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/workflows/{{cache:auth.register.response.data.user.id}}/history</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/workflows/{{cache:auth.register.response.data.user.id}}/history/export?format=csv</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/workflows/{{cache:auth.register.response.data.user.id}}/downloads</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>PUT</code></td>
+                    <td><code>/api/auth/profile</code></td>
+                    <td>200</td>
+                    <td>8ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>PUT</code></td>
+                    <td><code>/api/users/language</code></td>
+                    <td>200</td>
+                    <td>9ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>PUT</code></td>
+                    <td><code>/api/users/{{cache:auth.register.response.data.user.id}}/role</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>PUT</code></td>
+                    <td><code>/api/user-signatures/{{cache:userSignatures.create.response.data.userSignature.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['userSignatures']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>PUT</code></td>
+                    <td><code>/api/notifications/preferences</code></td>
+                    <td>200</td>
+                    <td>10ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>PUT</code></td>
+                    <td><code>/api/workflows/{{cache:auth.register.response.data.user.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>PUT</code></td>
+                    <td><code>/api/workflows/{{cache:auth.register.response.data.user.id}}/reminders</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>PATCH</code></td>
+                    <td><code>/api/notifications/read</code></td>
+                    <td>200</td>
+                    <td>10ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>PATCH</code></td>
+                    <td><code>/api/teams/{{cache:auth.register.response.data.user.id}}/members/{{cache:auth.register.response.data.user.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth', 'auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>PATCH</code></td>
+                    <td><code>/api/signatures/{{cache:auth.register.response.data.user.id}}/sign</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>PATCH</code></td>
+                    <td><code>/api/workflows/{{cache:auth.register.response.data.user.id}}/sign</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>PATCH</code></td>
+                    <td><code>/api/workflows/{{cache:auth.register.response.data.user.id}}/decline</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>DELETE</code></td>
+                    <td><code>/api/teams/{{cache:auth.register.response.data.user.id}}/invites/{{cache:auth.register.response.data.user.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth', 'auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>DELETE</code></td>
+                    <td><code>/api/teams/{{cache:auth.register.response.data.user.id}}/members/{{cache:auth.register.response.data.user.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth', 'auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>DELETE</code></td>
+                    <td><code>/api/documents/{{cache:auth.login.response.data.user.id}}/tags/urgent</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>DELETE</code></td>
+                    <td><code>/api/documents/templates/{{cache:auth.login.response.data.user.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>DELETE</code></td>
+                    <td><code>/api/auth/sessions/{{cache:auth.login.response.data.user.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>DELETE</code></td>
+                    <td><code>/api/documents/{{cache:auth.login.response.data.user.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>DELETE</code></td>
+                    <td><code>/api/auth/api-keys/{{cache:auth.login.response.data.user.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>DELETE</code></td>
+                    <td><code>/api/teams/{{cache:auth.register.response.data.user.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>DELETE</code></td>
+                    <td><code>/api/user-signatures/{{cache:userSignatures.create.response.data.userSignature.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['userSignatures']</td>
+                </tr>
+            
+                </tbody>
+            </table>
+        </div>
+
+        
+        <!-- Failed Tests Debug Section -->
+        <div class="debug-section">
+            <h3 class="text-danger">🔍 Failed Tests - Debug Information</h3>
+            <p class="text-muted">Copy the curl commands below to reproduce the failed requests locally.</p>
+            
+            <div class="card mb-3 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <strong>❌ POST /api/workflows</strong>
+                    <span class="badge bg-dark ms-2">Status: 403</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Error:</strong> Status 403 - Error: Plan limit reached</p>
+                    <p><strong>Full URL:</strong> <code>http://localhost:3002/api/workflows</code></p>
+
+                    
+                    <div class="alert alert-warning mb-3">
+                        <h6 class="alert-heading">
+                            📊 Error Category: <strong>Permission Denied</strong>
+                            <span class="badge bg-warning ms-2">permission</span>
+                            
+                        </h6>
+                        <hr>
+                        <div class="small" style="white-space: pre-wrap;">The authenticated user doesn&#x27;t have permission for this endpoint.<br><br>**Possible causes:**<br>1. Endpoint requires specific role (admin, owner, etc.)<br>2. User doesn&#x27;t own the resource being accessed<br>3. Missing or invalid authentication token<br><br>**Recommended action:**<br>Add requiresRole to your API definition to document the required permissions:<br>```json<br>{<br>  &quot;endpoint&quot;: &quot;/api/workflows&quot;,<br>  &quot;method&quot;: &quot;POST&quot;,<br>  &quot;requiresRole&quot;: [&quot;admin&quot;],  // or [&quot;owner&quot;], [&quot;manager&quot;], etc.<br>  &quot;testability&quot;: &quot;manual&quot;,<br>  &quot;skipReason&quot;: &quot;Requires elevated permissions&quot;<br>}<br>```</div>
+                    </div>
+                
+
+                    <div class="mb-3">
+                        <strong>📋 Request Body:</strong>
+                        <pre class="response-preview mt-2">{
+  &quot;document_id&quot;: &quot;c78e3140-2642-469c-aa34-ac6eb02dc24c&quot;,
+  &quot;workflow_type&quot;: &quot;sequential&quot;,
+  &quot;recipients&quot;: [
+    {
+      &quot;signer_email&quot;: &quot;testuser_642282@example.com&quot;,
+      &quot;signer_name&quot;: &quot;Test User_642282&quot;,
+      &quot;signing_order&quot;: 1
+    }
+  ]
+}</pre>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>🔧 CURL Command (copy to debug locally):</strong>
+                        <div class="curl-container mt-2">
+                            <pre class="curl-command" id="curl_0">curl \
+  -X \
+  POST \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Accept: application/json&quot; \
+  -H &quot;Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjNzhlMzE0MC0yNjQyLTQ2OWMtYWEzNC1hYzZlYjAyZGMyNGMiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzcwNjQxLCJleHAiOjE3NzY5NzU0NDF9.tyraK8yasZtAy9yXe-E5GWwsa4VPqtZxG_q0Q5JS0iw&quot; \
+  -d &#x27;{
+  &quot;document_id&quot;: &quot;c78e3140-2642-469c-aa34-ac6eb02dc24c&quot;,
+  &quot;workflow_type&quot;: &quot;sequential&quot;,
+  &quot;recipients&quot;: [
+    {
+      &quot;signer_email&quot;: &quot;testuser_642282@example.com&quot;,
+      &quot;signer_name&quot;: &quot;Test User_642282&quot;,
+      &quot;signing_order&quot;: 1
+    }
+  ]
+}&#x27; \
+  &quot;http://localhost:3002/api/workflows&quot;</pre>
+                            <button class="btn btn-sm btn-outline-light copy-btn" onclick="copyToClipboard('curl_0')">📋 Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <strong>📄 Response Body:</strong>
+                        <pre class="response-preview mt-2">{&#x27;success&#x27;: False, &#x27;error&#x27;: &#x27;Plan limit reached&#x27;, &#x27;plan_limit_reached&#x27;: True, &#x27;current_plan&#x27;: &#x27;free&#x27;, &#x27;usage&#x27;: 3, &#x27;limit&#x27;: 3, &#x27;upgrade_url&#x27;: &#x27;/pricing&#x27;}</pre>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
+
+        <div class="mt-4 mb-4">
+            <p class="text-muted">
+                Report generated by ProjexLight MCP Server<br>
+                For feedback and fixes, check <code>.projexlight/feedback/</code> directory
+            </p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = event.target;
+                const originalText = btn.innerText;
+                btn.innerText = 'Copied!';
+                setTimeout(() => { btn.innerText = originalText; }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
+        

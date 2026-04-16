@@ -1,12 +1,12 @@
 {
-  "last_test_run": "2026-04-16T18:02:52.223979",
+  "last_test_run": "2026-04-16T21:03:34.944535",
   "tested_apis": {
     "POST:/api/analytics/signature-event": {
-      "lastTested": "2026-04-16T18:02:52.223991",
+      "lastTested": "2026-04-16T21:03:34.944548",
       "fileHash": null
     },
     "GET:/api/audit-logs": {
-      "lastTested": "2026-04-16T18:02:52.223995",
+      "lastTested": "2026-04-16T19:30:18.961920",
       "fileHash": null
     },
     "ALL:/api/*": {
@@ -14,111 +14,111 @@
       "fileHash": null
     },
     "DELETE:/api/auth/api-keys/:id": {
-      "lastTested": "2026-04-16T18:02:52.223998",
+      "lastTested": "2026-04-16T21:03:34.944561",
       "fileHash": null
     },
     "POST:/api/auth/api-keys": {
-      "lastTested": "2026-04-16T18:02:52.224000",
+      "lastTested": "2026-04-16T21:03:34.944564",
       "fileHash": null
     },
     "GET:/api/auth/api-keys": {
-      "lastTested": "2026-04-16T18:02:52.223996",
+      "lastTested": "2026-04-16T21:03:34.944558",
       "fileHash": null
     },
     "POST:/api/auth/forgot-password": {
-      "lastTested": "2026-04-16T18:02:52.224001",
+      "lastTested": "2026-04-16T21:03:34.944566",
       "fileHash": null
     },
     "POST:/api/auth/login": {
-      "lastTested": "2026-04-16T18:02:52.224003",
+      "lastTested": "2026-04-16T21:03:34.944568",
       "fileHash": null
     },
     "GET:/api/auth/me": {
-      "lastTested": "2026-04-16T18:02:52.224006",
+      "lastTested": "2026-04-16T21:03:34.944570",
       "fileHash": null
     },
     "PUT:/api/auth/profile": {
-      "lastTested": "2026-04-16T18:02:52.224010",
+      "lastTested": "2026-04-16T21:03:34.944575",
       "fileHash": null
     },
     "GET:/api/auth/profile": {
-      "lastTested": "2026-04-16T18:02:52.224008",
+      "lastTested": "2026-04-16T21:03:34.944572",
       "fileHash": null
     },
     "POST:/api/auth/refresh-token": {
-      "lastTested": "2026-04-16T18:02:52.224011",
+      "lastTested": "2026-04-16T21:03:34.944577",
       "fileHash": null
     },
     "POST:/api/auth/register": {
-      "lastTested": "2026-04-16T18:02:52.224013",
+      "lastTested": "2026-04-16T21:03:34.944579",
       "fileHash": null
     },
     "POST:/api/auth/resend-verification": {
-      "lastTested": "2026-04-16T18:02:52.224015",
+      "lastTested": "2026-04-16T21:03:34.944581",
       "fileHash": null
     },
     "POST:/api/auth/reset-password": {
-      "lastTested": "2026-04-16T18:02:52.224016",
+      "lastTested": "2026-04-16T21:03:34.944583",
       "fileHash": null
     },
     "DELETE:/api/auth/sessions/:id": {
-      "lastTested": "2026-04-16T18:02:52.224019",
+      "lastTested": "2026-04-16T21:03:34.944587",
       "fileHash": null
     },
     "GET:/api/auth/sessions": {
-      "lastTested": "2026-04-16T18:02:52.224018",
+      "lastTested": "2026-04-16T21:03:34.944585",
       "fileHash": null
     },
     "GET:/api/auth/sso/callback": {
-      "lastTested": "2026-04-16T18:02:52.224021",
+      "lastTested": "2026-04-16T21:03:34.944589",
       "fileHash": null
     },
     "GET:/api/auth/sso/:provider": {
-      "lastTested": "2026-04-16T18:02:52.224022",
+      "lastTested": "2026-04-16T21:03:34.944591",
       "fileHash": null
     },
     "POST:/api/auth/verify-email": {
-      "lastTested": "2026-04-16T18:02:52.224023",
+      "lastTested": "2026-04-16T21:03:34.944593",
       "fileHash": null
     },
     "POST:/api/billing/checkout": {
-      "lastTested": "2026-04-16T18:02:52.224024",
+      "lastTested": "2026-04-16T21:03:34.944596",
       "fileHash": null
     },
     "POST:/api/billing/portal": {
-      "lastTested": "2026-04-16T18:02:52.224025",
+      "lastTested": "2026-04-16T21:03:34.944598",
       "fileHash": null
     },
     "GET:/api/billing/subscription": {
-      "lastTested": "2026-04-16T18:02:52.224027",
+      "lastTested": "2026-04-16T21:03:34.944601",
       "fileHash": null
     },
     "POST:/api/billing/webhook": {
-      "lastTested": "2026-04-16T18:02:52.224028",
+      "lastTested": "2026-04-16T21:03:34.944603",
       "fileHash": null
     },
     "POST:/api/compliance/alerts/config": {
-      "lastTested": "2026-04-16T18:02:52.224029",
+      "lastTested": "2026-04-16T21:03:34.944605",
       "fileHash": null
     },
     "GET:/api/compliance/alerts": {
-      "lastTested": "2026-04-16T18:02:52.224030",
+      "lastTested": "2026-04-16T21:03:34.944607",
       "fileHash": null
     },
     "GET:/api/compliance/esign-metadata/:signatureId": {
-      "lastTested": "2026-04-16T18:02:52.224033",
+      "lastTested": "2026-04-16T21:03:34.944614",
       "fileHash": null
     },
     "GET:/api/compliance/export": {
-      "lastTested": "2026-04-16T18:02:52.224034",
+      "lastTested": "2026-04-16T19:30:18.961960",
       "fileHash": null
     },
     "GET:/api/compliance/report": {
-      "lastTested": "2026-04-16T18:02:52.224035",
+      "lastTested": "2026-04-16T19:30:18.961961",
       "fileHash": null
     },
     "DELETE:/api/documents/:id": {
-      "lastTested": "2026-04-16T18:02:52.224038",
+      "lastTested": "2026-04-16T21:03:34.944621",
       "fileHash": null
     },
     "GET:/api/documents/": {
@@ -126,47 +126,47 @@
       "fileHash": null
     },
     "GET:/api/documents/:id": {
-      "lastTested": "2026-04-16T18:02:52.224041",
+      "lastTested": "2026-04-16T21:03:34.944645",
       "fileHash": null
     },
     "GET:/api/documents/:id/download": {
-      "lastTested": "2026-04-16T18:02:52.224039",
+      "lastTested": "2026-04-16T21:03:34.944623",
       "fileHash": null
     },
     "GET:/api/documents/:id/file": {
-      "lastTested": "2026-04-16T18:02:52.224040",
+      "lastTested": "2026-04-16T21:03:34.944626",
       "fileHash": null
     },
     "POST:/api/documents/:id/tags": {
-      "lastTested": "2026-04-16T18:02:52.224044",
+      "lastTested": "2026-04-16T21:03:34.944651",
       "fileHash": null
     },
     "DELETE:/api/documents/:id/tags/:tag": {
-      "lastTested": "2026-04-16T18:02:52.224045",
+      "lastTested": "2026-04-16T21:03:34.944654",
       "fileHash": null
     },
     "GET:/api/documents/:id/tags": {
-      "lastTested": "2026-04-16T18:02:52.224042",
+      "lastTested": "2026-04-16T21:03:34.944649",
       "fileHash": null
     },
     "POST:/api/documents/:id/versions": {
-      "lastTested": "2026-04-16T18:02:52.224047",
+      "lastTested": "2026-04-16T21:03:34.944659",
       "fileHash": null
     },
     "POST:/api/documents/:id/versions/:versionId/revert": {
-      "lastTested": "2026-04-16T18:02:52.224048",
+      "lastTested": "2026-04-16T21:03:34.944661",
       "fileHash": null
     },
     "GET:/api/documents/:id/versions": {
-      "lastTested": "2026-04-16T18:02:52.224046",
+      "lastTested": "2026-04-16T21:03:34.944657",
       "fileHash": null
     },
     "GET:/api/documents": {
-      "lastTested": "2026-04-16T18:02:52.224036",
+      "lastTested": "2026-04-16T21:03:34.944664",
       "fileHash": null
     },
     "POST:/api/documents": {
-      "lastTested": "2026-04-16T18:02:52.224050",
+      "lastTested": "2026-04-16T21:03:34.944666",
       "fileHash": null
     },
     "GET:/api/documents/search": {
@@ -174,35 +174,35 @@
       "fileHash": null
     },
     "DELETE:/api/documents/templates/:id": {
-      "lastTested": "2026-04-16T18:02:52.224053",
+      "lastTested": "2026-04-16T21:03:34.944673",
       "fileHash": null
     },
     "POST:/api/documents/templates/:id/use": {
-      "lastTested": "2026-04-16T18:02:52.224056",
+      "lastTested": "2026-04-16T21:03:34.944678",
       "fileHash": null
     },
     "GET:/api/documents/templates/:id": {
-      "lastTested": "2026-04-16T18:02:52.224054",
+      "lastTested": "2026-04-16T21:03:34.944676",
       "fileHash": null
     },
     "POST:/api/documents/templates": {
-      "lastTested": "2026-04-16T18:02:52.224057",
+      "lastTested": "2026-04-16T21:03:34.944680",
       "fileHash": null
     },
     "PUT:/api/notifications/preferences": {
-      "lastTested": "2026-04-16T18:02:52.224060",
+      "lastTested": "2026-04-16T21:03:34.944687",
       "fileHash": null
     },
     "PATCH:/api/notifications/read": {
-      "lastTested": "2026-04-16T18:02:52.224062",
+      "lastTested": "2026-04-16T21:03:34.944689",
       "fileHash": null
     },
     "POST:/api/notifications/send": {
-      "lastTested": "2026-04-16T18:02:52.224063",
+      "lastTested": "2026-04-16T21:03:34.944692",
       "fileHash": null
     },
     "GET:/api/notifications/stream": {
-      "lastTested": "2026-04-16T18:02:52.224064",
+      "lastTested": "2026-04-16T21:03:34.944694",
       "fileHash": null
     },
     "GET:/api/notifications/": {
@@ -210,11 +210,11 @@
       "fileHash": null
     },
     "POST:/api/organizations": {
-      "lastTested": "2026-04-16T18:02:52.224067",
+      "lastTested": "2026-04-16T21:03:34.944699",
       "fileHash": null
     },
     "GET:/api/organizations/:id": {
-      "lastTested": "2026-04-16T18:02:52.224066",
+      "lastTested": "2026-04-16T21:03:34.944697",
       "fileHash": null
     },
     "GET:/api/*": {
@@ -222,63 +222,63 @@
       "fileHash": null
     },
     "POST:/api/sign/:token/started": {
-      "lastTested": "2026-04-16T18:02:52.224072",
+      "lastTested": "2026-04-16T21:03:34.944709",
       "fileHash": null
     },
     "POST:/api/signatures/:id/confirm": {
-      "lastTested": "2026-04-16T18:02:52.224076",
+      "lastTested": "2026-04-16T21:03:34.944714",
       "fileHash": null
     },
     "POST:/api/signatures": {
-      "lastTested": "2026-04-16T18:02:52.224078",
+      "lastTested": "2026-04-16T21:03:34.944718",
       "fileHash": null
     },
     "GET:/api/signatures/:documentId": {
-      "lastTested": "2026-04-16T18:02:52.224074",
+      "lastTested": "2026-04-16T21:03:34.944711",
       "fileHash": null
     },
     "PATCH:/api/signatures/:id/sign": {
-      "lastTested": "2026-04-16T18:02:52.224077",
+      "lastTested": "2026-04-16T21:03:34.944716",
       "fileHash": null
     },
     "DELETE:/api/teams/:id": {
-      "lastTested": "2026-04-16T18:02:52.224079",
+      "lastTested": "2026-04-16T21:03:34.944720",
       "fileHash": null
     },
     "POST:/api/teams/:id/invite": {
-      "lastTested": "2026-04-16T18:02:52.224081",
+      "lastTested": "2026-04-16T21:03:34.944725",
       "fileHash": null
     },
     "DELETE:/api/teams/:id/invites/:inviteId": {
-      "lastTested": "2026-04-16T18:02:52.224083",
+      "lastTested": "2026-04-16T21:03:34.944727",
       "fileHash": null
     },
     "POST:/api/teams/:id/leave": {
-      "lastTested": "2026-04-16T18:02:52.224084",
+      "lastTested": "2026-04-16T21:03:34.944729",
       "fileHash": null
     },
     "DELETE:/api/teams/:id/members/:userId": {
-      "lastTested": "2026-04-16T18:02:52.224085",
+      "lastTested": "2026-04-16T21:03:34.944732",
       "fileHash": null
     },
     "PATCH:/api/teams/:id/members/:userId": {
-      "lastTested": "2026-04-16T18:02:52.224086",
+      "lastTested": "2026-04-16T21:03:34.944734",
       "fileHash": null
     },
     "GET:/api/teams/:id": {
-      "lastTested": "2026-04-16T18:02:52.224080",
+      "lastTested": "2026-04-16T21:03:34.944722",
       "fileHash": null
     },
     "POST:/api/teams/join/:token": {
-      "lastTested": "2026-04-16T18:02:52.224088",
+      "lastTested": "2026-04-16T21:03:34.944741",
       "fileHash": null
     },
     "GET:/api/teams/join/:token": {
-      "lastTested": "2026-04-16T18:02:52.224087",
+      "lastTested": "2026-04-16T21:03:34.944738",
       "fileHash": null
     },
     "GET:/api/teams/mine": {
-      "lastTested": "2026-04-16T18:02:52.224089",
+      "lastTested": "2026-04-16T21:03:34.944743",
       "fileHash": null
     },
     "POST:/api/teams/": {
@@ -286,7 +286,7 @@
       "fileHash": null
     },
     "POST:/api/user-signatures": {
-      "lastTested": "2026-04-16T18:02:52.224096",
+      "lastTested": "2026-04-16T21:03:34.944753",
       "fileHash": null
     },
     "GET:/api/user-signatures/": {
@@ -294,63 +294,63 @@
       "fileHash": null
     },
     "GET:/api/user-signatures/:id": {
-      "lastTested": "2026-04-16T18:02:52.224094",
+      "lastTested": "2026-04-16T21:03:34.944748",
       "fileHash": null
     },
     "DELETE:/api/user-signatures/:id": {
-      "lastTested": "2026-04-16T18:02:52.224093",
+      "lastTested": "2026-04-16T21:03:34.944745",
       "fileHash": null
     },
     "PUT:/api/user-signatures/:id": {
-      "lastTested": "2026-04-16T18:02:52.224095",
+      "lastTested": "2026-04-16T21:03:34.944750",
       "fileHash": null
     },
     "GET:/api/user-signatures": {
-      "lastTested": "2026-04-16T18:02:52.224092",
+      "lastTested": "2026-04-16T21:03:34.944752",
       "fileHash": null
     },
     "PUT:/api/users/:id/role": {
-      "lastTested": "2026-04-16T18:02:52.224099",
+      "lastTested": "2026-04-16T21:03:34.944755",
       "fileHash": null
     },
     "PUT:/api/users/language": {
-      "lastTested": "2026-04-16T18:02:52.224100",
+      "lastTested": "2026-04-16T21:03:34.944760",
       "fileHash": null
     },
     "GET:/api/users": {
-      "lastTested": "2026-04-16T18:02:52.224097",
+      "lastTested": "2026-04-16T21:03:34.944757",
       "fileHash": null
     },
     "GET:/api/users/roles": {
-      "lastTested": "2026-04-16T18:02:52.224101",
+      "lastTested": "2026-04-16T21:03:34.944762",
       "fileHash": null
     },
     "POST:/api/workflows/admin/process-completions": {
-      "lastTested": "2026-04-16T18:02:52.224102",
+      "lastTested": "2026-04-16T21:03:34.944764",
       "fileHash": null
     },
     "POST:/api/workflows": {
-      "lastTested": "2026-04-16T18:02:52.224121",
+      "lastTested": "2026-04-16T21:03:34.944816",
       "fileHash": null
     },
     "GET:/api/workflows/:id": {
-      "lastTested": "2026-04-16T18:02:52.224108",
+      "lastTested": "2026-04-16T21:03:34.944772",
       "fileHash": null
     },
     "GET:/api/workflows/:id/history": {
-      "lastTested": "2026-04-16T18:02:52.224110",
+      "lastTested": "2026-04-16T21:03:34.944791",
       "fileHash": null
     },
     "POST:/api/workflows/:id/cancel": {
-      "lastTested": "2026-04-16T18:02:52.224104",
+      "lastTested": "2026-04-16T21:03:34.944766",
       "fileHash": null
     },
     "PATCH:/api/workflows/:id/decline": {
-      "lastTested": "2026-04-16T18:02:52.224105",
+      "lastTested": "2026-04-16T21:03:34.944768",
       "fileHash": null
     },
     "GET:/api/workflows/:id/downloads": {
-      "lastTested": "2026-04-16T18:02:52.224107",
+      "lastTested": "2026-04-16T21:03:34.944770",
       "fileHash": null
     },
     "GET:/api/workflows/:id/history/export": {
@@ -358,31 +358,31 @@
       "fileHash": null
     },
     "PUT:/api/workflows/:id": {
-      "lastTested": "2026-04-16T18:02:52.224111",
+      "lastTested": "2026-04-16T21:03:34.944795",
       "fileHash": null
     },
     "POST:/api/workflows/:id/remind": {
-      "lastTested": "2026-04-16T18:02:52.224113",
+      "lastTested": "2026-04-16T21:03:34.944799",
       "fileHash": null
     },
     "PUT:/api/workflows/:id/reminders": {
-      "lastTested": "2026-04-16T18:02:52.224114",
+      "lastTested": "2026-04-16T21:03:34.944802",
       "fileHash": null
     },
     "POST:/api/workflows/:id/self-sign": {
-      "lastTested": "2026-04-16T18:02:52.224115",
+      "lastTested": "2026-04-16T21:03:34.944805",
       "fileHash": null
     },
     "PATCH:/api/workflows/:id/sign": {
-      "lastTested": "2026-04-16T18:02:52.224117",
+      "lastTested": "2026-04-16T21:03:34.944807",
       "fileHash": null
     },
     "POST:/api/workflows/:id/start": {
-      "lastTested": "2026-04-16T18:02:52.224119",
+      "lastTested": "2026-04-16T21:03:34.944809",
       "fileHash": null
     },
     "GET:/api/workflows/:id/status": {
-      "lastTested": "2026-04-16T18:02:52.224120",
+      "lastTested": "2026-04-16T21:03:34.944811",
       "fileHash": null
     },
     "GET:/api/workflows/": {
@@ -390,39 +390,571 @@
       "fileHash": null
     },
     "POST:/api/compliance/esign-metadata": {
-      "lastTested": "2026-04-16T18:02:52.224032",
+      "lastTested": "2026-04-16T21:03:34.944610",
       "fileHash": null
     },
     "GET:/api/documents/templates": {
-      "lastTested": "2026-04-16T18:02:52.224052",
+      "lastTested": "2026-04-16T21:03:34.944671",
       "fileHash": null
     },
     "GET:/api/notifications": {
-      "lastTested": "2026-04-16T18:02:52.224058",
+      "lastTested": "2026-04-16T21:03:34.944683",
       "fileHash": null
     },
     "GET:/api/notifications/preferences": {
-      "lastTested": "2026-04-16T18:02:52.224059",
+      "lastTested": "2026-04-16T21:03:34.944685",
       "fileHash": null
     },
     "POST:/api/sign/:token/complete": {
-      "lastTested": "2026-04-16T18:02:52.224068",
+      "lastTested": "2026-04-16T21:03:34.944702",
       "fileHash": null
     },
     "GET:/api/sign/:token/document": {
-      "lastTested": "2026-04-16T18:02:52.224069",
+      "lastTested": "2026-04-16T21:03:34.944704",
       "fileHash": null
     },
     "GET:/api/sign/:token": {
-      "lastTested": "2026-04-16T18:02:52.224070",
+      "lastTested": "2026-04-16T21:03:34.944706",
       "fileHash": null
     },
     "POST:/api/teams": {
-      "lastTested": "2026-04-16T18:02:52.224091",
+      "lastTested": "2026-04-16T21:03:34.944736",
       "fileHash": null
     },
     "GET:/api/workflows": {
-      "lastTested": "2026-04-16T18:02:52.224103",
+      "lastTested": "2026-04-16T21:03:34.944813",
+      "fileHash": null
+    },
+    "GET:/api/audit-logs?page=1&limit=20": {
+      "lastTested": "2026-04-16T18:24:22.080865",
+      "fileHash": null
+    },
+    "DELETE:/api/auth/api-keys/{{cache:auth.apiKey.list.response.data.keys[0].id}}": {
+      "lastTested": "2026-04-16T18:24:22.080869",
+      "fileHash": null
+    },
+    "DELETE:/api/auth/sessions/00000000-0000-0000-0000-000000000000": {
+      "lastTested": "2026-04-16T19:30:18.961944",
+      "fileHash": null
+    },
+    "GET:/api/auth/sso/google": {
+      "lastTested": "2026-04-16T20:20:11.924397",
+      "fileHash": null
+    },
+    "GET:/api/compliance/esign-metadata/{{cache:signatures.create.response.data.id}}": {
+      "lastTested": "2026-04-16T19:30:18.961959",
+      "fileHash": null
+    },
+    "GET:/api/compliance/export?dateFrom=2026-01-01&dateTo=2026-12-31": {
+      "lastTested": "2026-04-16T18:24:22.080895",
+      "fileHash": null
+    },
+    "GET:/api/compliance/report?dateFrom=2026-01-01&dateTo=2026-12-31": {
+      "lastTested": "2026-04-16T18:24:22.080897",
+      "fileHash": null
+    },
+    "DELETE:/api/documents/{{cache:documents.upload.response.data.id}}": {
+      "lastTested": "2026-04-16T19:30:18.961962",
+      "fileHash": null
+    },
+    "GET:/api/documents/{{cache:documents.upload.response.data.id}}/download": {
+      "lastTested": "2026-04-16T19:30:18.961964",
+      "fileHash": null
+    },
+    "GET:/api/documents/{{cache:documents.upload.response.data.id}}/file": {
+      "lastTested": "2026-04-16T19:30:18.961965",
+      "fileHash": null
+    },
+    "GET:/api/documents/{{cache:documents.upload.response.data.id}}": {
+      "lastTested": "2026-04-16T19:30:18.961966",
+      "fileHash": null
+    },
+    "GET:/api/documents/search?q=test": {
+      "lastTested": "2026-04-16T19:30:18.961968",
+      "fileHash": null
+    },
+    "POST:/api/documents/{{cache:documents.upload.response.data.id}}/tags": {
+      "lastTested": "2026-04-16T19:30:18.961970",
+      "fileHash": null
+    },
+    "GET:/api/documents/{{cache:documents.upload.response.data.id}}/tags": {
+      "lastTested": "2026-04-16T19:30:18.961971",
+      "fileHash": null
+    },
+    "DELETE:/api/documents/{{cache:documents.upload.response.data.id}}/tags/important": {
+      "lastTested": "2026-04-16T18:24:22.080908",
+      "fileHash": null
+    },
+    "DELETE:/api/documents/templates/{{cache:documents.template.response.data.id}}": {
+      "lastTested": "2026-04-16T18:24:22.080910",
+      "fileHash": null
+    },
+    "GET:/api/documents/templates/{{cache:documents.template.response.data.id}}": {
+      "lastTested": "2026-04-16T18:24:22.080911",
+      "fileHash": null
+    },
+    "POST:/api/documents/templates/{{cache:documents.template.response.data.id}}/use": {
+      "lastTested": "2026-04-16T18:24:22.080914",
+      "fileHash": null
+    },
+    "POST:/api/documents/{{cache:documents.upload.response.data.id}}/versions": {
+      "lastTested": "2026-04-16T19:30:18.961981",
+      "fileHash": null
+    },
+    "GET:/api/documents/{{cache:documents.upload.response.data.id}}/versions": {
+      "lastTested": "2026-04-16T19:30:18.961982",
+      "fileHash": null
+    },
+    "POST:/api/documents/{{cache:documents.upload.response.data.id}}/versions/{{cache:documents.version.response.data.id}}/revert": {
+      "lastTested": "2026-04-16T18:24:22.080918",
+      "fileHash": null
+    },
+    "GET:/health": {
+      "lastTested": "2026-04-16T19:30:18.961985",
+      "fileHash": null
+    },
+    "GET:/api/organizations/{{cache:organizations.create.response.data.id}}": {
+      "lastTested": "2026-04-16T20:20:11.924460",
+      "fileHash": null
+    },
+    "POST:/api/sign/invalid-token-sample/complete": {
+      "lastTested": "2026-04-16T18:24:22.080930",
+      "fileHash": null
+    },
+    "GET:/api/sign/invalid-token-sample": {
+      "lastTested": "2026-04-16T18:24:22.080932",
+      "fileHash": null
+    },
+    "GET:/api/sign/invalid-token-sample/document": {
+      "lastTested": "2026-04-16T18:24:22.080933",
+      "fileHash": null
+    },
+    "POST:/api/sign/invalid-token-sample/started": {
+      "lastTested": "2026-04-16T18:24:22.080934",
+      "fileHash": null
+    },
+    "GET:/api/signatures/{{cache:documents.upload.response.data.id}}": {
+      "lastTested": "2026-04-16T19:30:18.962218",
+      "fileHash": null
+    },
+    "POST:/api/signatures/{{cache:signatures.create.response.data.id}}/confirm": {
+      "lastTested": "2026-04-16T19:30:18.962219",
+      "fileHash": null
+    },
+    "PATCH:/api/signatures/{{cache:signatures.create.response.data.id}}/sign": {
+      "lastTested": "2026-04-16T19:30:18.962222",
+      "fileHash": null
+    },
+    "DELETE:/api/teams/{{cache:teams.create.response.data.id}}": {
+      "lastTested": "2026-04-16T19:30:18.962225",
+      "fileHash": null
+    },
+    "GET:/api/teams/{{cache:teams.create.response.data.id}}": {
+      "lastTested": "2026-04-16T19:30:18.962226",
+      "fileHash": null
+    },
+    "DELETE:/api/teams/{{cache:teams.create.response.data.id}}/invites/00000000-0000-0000-0000-000000000000": {
+      "lastTested": "2026-04-16T18:24:22.080944",
+      "fileHash": null
+    },
+    "POST:/api/teams/{{cache:teams.create.response.data.id}}/invite": {
+      "lastTested": "2026-04-16T19:30:18.962228",
+      "fileHash": null
+    },
+    "POST:/api/teams/join/invalid-invite-token": {
+      "lastTested": "2026-04-16T18:24:22.080946",
+      "fileHash": null
+    },
+    "GET:/api/teams/join/invalid-invite-token": {
+      "lastTested": "2026-04-16T18:24:22.080947",
+      "fileHash": null
+    },
+    "POST:/api/teams/{{cache:teams.create.response.data.id}}/leave": {
+      "lastTested": "2026-04-16T19:30:18.962232",
+      "fileHash": null
+    },
+    "DELETE:/api/teams/{{cache:teams.create.response.data.id}}/members/00000000-0000-0000-0000-000000000000": {
+      "lastTested": "2026-04-16T18:24:22.080949",
+      "fileHash": null
+    },
+    "PATCH:/api/teams/{{cache:teams.create.response.data.id}}/members/00000000-0000-0000-0000-000000000000": {
+      "lastTested": "2026-04-16T18:24:22.080951",
+      "fileHash": null
+    },
+    "DELETE:/api/user-signatures/{{cache:userSignatures.create.response.data.id}}": {
+      "lastTested": "2026-04-16T19:30:18.962237",
+      "fileHash": null
+    },
+    "GET:/api/user-signatures/{{cache:userSignatures.create.response.data.id}}": {
+      "lastTested": "2026-04-16T19:30:18.962239",
+      "fileHash": null
+    },
+    "PUT:/api/user-signatures/{{cache:userSignatures.create.response.data.id}}": {
+      "lastTested": "2026-04-16T19:30:18.962241",
+      "fileHash": null
+    },
+    "PUT:/api/users/{{cache:auth.register.response.data.userId}}/role": {
+      "lastTested": "2026-04-16T18:24:22.080959",
+      "fileHash": null
+    },
+    "POST:/api/workflows/{{cache:workflows.create.response.data.id}}/cancel": {
+      "lastTested": "2026-04-16T19:30:18.962248",
+      "fileHash": null
+    },
+    "PATCH:/api/workflows/{{cache:workflows.create.response.data.id}}/decline": {
+      "lastTested": "2026-04-16T19:30:18.962250",
+      "fileHash": null
+    },
+    "GET:/api/workflows/{{cache:workflows.create.response.data.id}}/downloads": {
+      "lastTested": "2026-04-16T19:30:18.962252",
+      "fileHash": null
+    },
+    "GET:/api/workflows/{{cache:workflows.create.response.data.id}}": {
+      "lastTested": "2026-04-16T19:30:18.962253",
+      "fileHash": null
+    },
+    "GET:/api/workflows/{{cache:workflows.create.response.data.id}}/history/export?format=csv": {
+      "lastTested": "2026-04-16T19:30:18.962254",
+      "fileHash": null
+    },
+    "GET:/api/workflows/{{cache:workflows.create.response.data.id}}/history": {
+      "lastTested": "2026-04-16T19:30:18.962255",
+      "fileHash": null
+    },
+    "POST:/api/workflows/{{cache:workflows.create.response.data.id}}/remind": {
+      "lastTested": "2026-04-16T19:30:18.962257",
+      "fileHash": null
+    },
+    "PUT:/api/workflows/{{cache:workflows.create.response.data.id}}/reminders": {
+      "lastTested": "2026-04-16T19:30:18.962259",
+      "fileHash": null
+    },
+    "POST:/api/workflows/{{cache:workflows.create.response.data.id}}/self-sign": {
+      "lastTested": "2026-04-16T19:30:18.962260",
+      "fileHash": null
+    },
+    "PATCH:/api/workflows/{{cache:workflows.create.response.data.id}}/sign": {
+      "lastTested": "2026-04-16T19:30:18.962261",
+      "fileHash": null
+    },
+    "POST:/api/workflows/{{cache:workflows.create.response.data.id}}/start": {
+      "lastTested": "2026-04-16T19:30:18.962262",
+      "fileHash": null
+    },
+    "GET:/api/workflows/{{cache:workflows.create.response.data.id}}/status": {
+      "lastTested": "2026-04-16T19:30:18.962263",
+      "fileHash": null
+    },
+    "PUT:/api/workflows/{{cache:workflows.create.response.data.id}}": {
+      "lastTested": "2026-04-16T19:30:18.962264",
+      "fileHash": null
+    },
+    "DELETE:/api/auth/api-keys/{{cache:authApiKeys.create.response.data.id}}": {
+      "lastTested": "2026-04-16T19:30:18.961926",
+      "fileHash": null
+    },
+    "DELETE:/api/documents/{{cache:documents.upload.response.data.id}}/tags/contract": {
+      "lastTested": "2026-04-16T19:30:18.961972",
+      "fileHash": null
+    },
+    "DELETE:/api/documents/templates/{{cache:documentsTemplates.create.response.data.id}}": {
+      "lastTested": "2026-04-16T19:30:18.961974",
+      "fileHash": null
+    },
+    "GET:/api/documents/templates/{{cache:documentsTemplates.create.response.data.id}}": {
+      "lastTested": "2026-04-16T19:30:18.961975",
+      "fileHash": null
+    },
+    "POST:/api/documents/templates/{{cache:documentsTemplates.create.response.data.id}}/use": {
+      "lastTested": "2026-04-16T19:30:18.961978",
+      "fileHash": null
+    },
+    "POST:/api/documents/{{cache:documents.upload.response.data.id}}/versions/{{cache:documentsVersions.create.response.data.id}}/revert": {
+      "lastTested": "2026-04-16T19:30:18.961983",
+      "fileHash": null
+    },
+    "POST:/api/sign/invalid-token/complete": {
+      "lastTested": "2026-04-16T19:30:18.962010",
+      "fileHash": null
+    },
+    "GET:/api/sign/invalid-token": {
+      "lastTested": "2026-04-16T19:30:18.962012",
+      "fileHash": null
+    },
+    "GET:/api/sign/invalid-token/document": {
+      "lastTested": "2026-04-16T19:30:18.962014",
+      "fileHash": null
+    },
+    "POST:/api/sign/invalid-token/started": {
+      "lastTested": "2026-04-16T19:30:18.962216",
+      "fileHash": null
+    },
+    "DELETE:/api/teams/{{cache:teams.create.response.data.id}}/invites/{{cache:teamsInvite.response.data.id}}": {
+      "lastTested": "2026-04-16T19:30:18.962227",
+      "fileHash": null
+    },
+    "POST:/api/teams/join/invalid-token": {
+      "lastTested": "2026-04-16T19:30:18.962230",
+      "fileHash": null
+    },
+    "GET:/api/teams/join/invalid-token": {
+      "lastTested": "2026-04-16T19:30:18.962231",
+      "fileHash": null
+    },
+    "DELETE:/api/teams/{{cache:teams.create.response.data.id}}/members/{{cache:auth.login.response.data.userId}}": {
+      "lastTested": "2026-04-16T19:30:18.962233",
+      "fileHash": null
+    },
+    "PATCH:/api/teams/{{cache:teams.create.response.data.id}}/members/{{cache:auth.login.response.data.userId}}": {
+      "lastTested": "2026-04-16T19:30:18.962234",
+      "fileHash": null
+    },
+    "PUT:/api/users/{{cache:auth.login.response.data.userId}}/role": {
+      "lastTested": "2026-04-16T19:30:18.962242",
+      "fileHash": null
+    },
+    "GET:/api/audit-logs?page=1&limit=10": {
+      "lastTested": "2026-04-16T21:03:34.944555",
+      "fileHash": null
+    },
+    "DELETE:/api/auth/api-keys/{{cache:auth.login.response.data.user.id}}": {
+      "lastTested": "2026-04-16T20:20:11.924373",
+      "fileHash": null
+    },
+    "DELETE:/api/auth/sessions/{{cache:auth.login.response.data.user.id}}": {
+      "lastTested": "2026-04-16T20:20:11.924393",
+      "fileHash": null
+    },
+    "GET:/api/compliance/esign-metadata/{{cache:auth.register.response.data.user.id}}": {
+      "lastTested": "2026-04-16T20:20:11.924412",
+      "fileHash": null
+    },
+    "GET:/api/compliance/export?dateFrom=2024-01-01&dateTo=2024-12-31": {
+      "lastTested": "2026-04-16T21:03:34.944616",
+      "fileHash": null
+    },
+    "GET:/api/compliance/report?dateFrom=2024-01-01&dateTo=2024-12-31": {
+      "lastTested": "2026-04-16T21:03:34.944618",
+      "fileHash": null
+    },
+    "DELETE:/api/documents/{{cache:auth.login.response.data.user.id}}": {
+      "lastTested": "2026-04-16T20:20:11.924418",
+      "fileHash": null
+    },
+    "GET:/api/documents/{{cache:auth.login.response.data.user.id}}/download": {
+      "lastTested": "2026-04-16T20:20:11.924420",
+      "fileHash": null
+    },
+    "GET:/api/documents/{{cache:auth.login.response.data.user.id}}/file": {
+      "lastTested": "2026-04-16T20:20:11.924422",
+      "fileHash": null
+    },
+    "GET:/api/documents/{{cache:auth.login.response.data.user.id}}": {
+      "lastTested": "2026-04-16T20:20:11.924423",
+      "fileHash": null
+    },
+    "GET:/api/documents/search?q=contract": {
+      "lastTested": "2026-04-16T21:03:34.944668",
+      "fileHash": null
+    },
+    "POST:/api/documents/{{cache:auth.login.response.data.user.id}}/tags": {
+      "lastTested": "2026-04-16T20:20:11.924429",
+      "fileHash": null
+    },
+    "GET:/api/documents/{{cache:auth.login.response.data.user.id}}/tags": {
+      "lastTested": "2026-04-16T20:20:11.924431",
+      "fileHash": null
+    },
+    "DELETE:/api/documents/{{cache:auth.login.response.data.user.id}}/tags/urgent": {
+      "lastTested": "2026-04-16T20:20:11.924433",
+      "fileHash": null
+    },
+    "DELETE:/api/documents/templates/{{cache:auth.login.response.data.user.id}}": {
+      "lastTested": "2026-04-16T20:20:11.924436",
+      "fileHash": null
+    },
+    "GET:/api/documents/templates/{{cache:auth.login.response.data.user.id}}": {
+      "lastTested": "2026-04-16T20:20:11.924437",
+      "fileHash": null
+    },
+    "POST:/api/documents/templates/{{cache:auth.login.response.data.user.id}}/use": {
+      "lastTested": "2026-04-16T20:20:11.924441",
+      "fileHash": null
+    },
+    "POST:/api/documents/{{cache:auth.login.response.data.user.id}}/versions": {
+      "lastTested": "2026-04-16T20:20:11.924443",
+      "fileHash": null
+    },
+    "GET:/api/documents/{{cache:auth.login.response.data.user.id}}/versions": {
+      "lastTested": "2026-04-16T20:20:11.924445",
+      "fileHash": null
+    },
+    "POST:/api/documents/{{cache:auth.login.response.data.user.id}}/versions/{{cache:auth.login.response.data.user.id}}/revert": {
+      "lastTested": "2026-04-16T20:20:11.924447",
+      "fileHash": null
+    },
+    "POST:/api/sign/{{static:invalid-token}}/complete": {
+      "lastTested": "2026-04-16T20:20:11.924461",
+      "fileHash": null
+    },
+    "GET:/api/sign/{{static:invalid-token}}": {
+      "lastTested": "2026-04-16T20:20:11.924463",
+      "fileHash": null
+    },
+    "GET:/api/sign/{{static:invalid-token}}/document": {
+      "lastTested": "2026-04-16T20:20:11.924465",
+      "fileHash": null
+    },
+    "POST:/api/sign/{{static:invalid-token}}/started": {
+      "lastTested": "2026-04-16T20:20:11.924466",
+      "fileHash": null
+    },
+    "GET:/api/signatures/{{cache:auth.register.response.data.user.id}}": {
+      "lastTested": "2026-04-16T20:20:11.924468",
+      "fileHash": null
+    },
+    "POST:/api/signatures/{{cache:auth.register.response.data.user.id}}/confirm": {
+      "lastTested": "2026-04-16T20:20:11.924470",
+      "fileHash": null
+    },
+    "PATCH:/api/signatures/{{cache:auth.register.response.data.user.id}}/sign": {
+      "lastTested": "2026-04-16T20:20:11.924474",
+      "fileHash": null
+    },
+    "DELETE:/api/teams/{{cache:teams.create.response.team.id}}": {
+      "lastTested": "2026-04-16T19:58:51.385931",
+      "fileHash": null
+    },
+    "GET:/api/teams/{{cache:teams.create.response.team.id}}": {
+      "lastTested": "2026-04-16T19:58:51.385933",
+      "fileHash": null
+    },
+    "DELETE:/api/teams/{{cache:teams.create.response.team.id}}/invites/{{cache:auth.register.response.data.user.id}}": {
+      "lastTested": "2026-04-16T19:58:51.385935",
+      "fileHash": null
+    },
+    "POST:/api/teams/{{cache:teams.create.response.team.id}}/invite": {
+      "lastTested": "2026-04-16T19:58:51.385937",
+      "fileHash": null
+    },
+    "POST:/api/teams/join/{{static:invalid-invite-token}}": {
+      "lastTested": "2026-04-16T20:20:11.924483",
+      "fileHash": null
+    },
+    "GET:/api/teams/join/{{static:invalid-invite-token}}": {
+      "lastTested": "2026-04-16T20:20:11.924485",
+      "fileHash": null
+    },
+    "POST:/api/teams/{{cache:teams.create.response.team.id}}/leave": {
+      "lastTested": "2026-04-16T19:58:51.385942",
+      "fileHash": null
+    },
+    "DELETE:/api/teams/{{cache:teams.create.response.team.id}}/members/{{cache:auth.register.response.data.user.id}}": {
+      "lastTested": "2026-04-16T19:58:51.385944",
+      "fileHash": null
+    },
+    "PATCH:/api/teams/{{cache:teams.create.response.team.id}}/members/{{cache:auth.register.response.data.user.id}}": {
+      "lastTested": "2026-04-16T19:58:51.385945",
+      "fileHash": null
+    },
+    "DELETE:/api/user-signatures/{{cache:userSignatures.create.response.data.userSignature.id}}": {
+      "lastTested": "2026-04-16T20:20:11.924495",
+      "fileHash": null
+    },
+    "GET:/api/user-signatures/{{cache:userSignatures.create.response.data.userSignature.id}}": {
+      "lastTested": "2026-04-16T20:20:11.924497",
+      "fileHash": null
+    },
+    "PUT:/api/user-signatures/{{cache:userSignatures.create.response.data.userSignature.id}}": {
+      "lastTested": "2026-04-16T20:20:11.924500",
+      "fileHash": null
+    },
+    "PUT:/api/users/{{cache:auth.register.response.data.user.id}}/role": {
+      "lastTested": "2026-04-16T20:20:11.924502",
+      "fileHash": null
+    },
+    "POST:/api/workflows/{{cache:auth.register.response.data.user.id}}/cancel": {
+      "lastTested": "2026-04-16T20:20:11.924510",
+      "fileHash": null
+    },
+    "PATCH:/api/workflows/{{cache:auth.register.response.data.user.id}}/decline": {
+      "lastTested": "2026-04-16T20:20:11.924513",
+      "fileHash": null
+    },
+    "GET:/api/workflows/{{cache:auth.register.response.data.user.id}}/downloads": {
+      "lastTested": "2026-04-16T20:20:11.924515",
+      "fileHash": null
+    },
+    "GET:/api/workflows/{{cache:auth.register.response.data.user.id}}": {
+      "lastTested": "2026-04-16T20:20:11.924517",
+      "fileHash": null
+    },
+    "GET:/api/workflows/{{cache:auth.register.response.data.user.id}}/history/export?format=csv": {
+      "lastTested": "2026-04-16T20:20:11.924518",
+      "fileHash": null
+    },
+    "GET:/api/workflows/{{cache:auth.register.response.data.user.id}}/history": {
+      "lastTested": "2026-04-16T20:20:11.924520",
+      "fileHash": null
+    },
+    "POST:/api/workflows/{{cache:auth.register.response.data.user.id}}/remind": {
+      "lastTested": "2026-04-16T20:20:11.924523",
+      "fileHash": null
+    },
+    "PUT:/api/workflows/{{cache:auth.register.response.data.user.id}}/reminders": {
+      "lastTested": "2026-04-16T20:20:11.924525",
+      "fileHash": null
+    },
+    "POST:/api/workflows/{{cache:auth.register.response.data.user.id}}/self-sign": {
+      "lastTested": "2026-04-16T20:20:11.924527",
+      "fileHash": null
+    },
+    "PATCH:/api/workflows/{{cache:auth.register.response.data.user.id}}/sign": {
+      "lastTested": "2026-04-16T20:20:11.924528",
+      "fileHash": null
+    },
+    "POST:/api/workflows/{{cache:auth.register.response.data.user.id}}/start": {
+      "lastTested": "2026-04-16T20:20:11.924529",
+      "fileHash": null
+    },
+    "GET:/api/workflows/{{cache:auth.register.response.data.user.id}}/status": {
+      "lastTested": "2026-04-16T20:20:11.924531",
+      "fileHash": null
+    },
+    "PUT:/api/workflows/{{cache:auth.register.response.data.user.id}}": {
+      "lastTested": "2026-04-16T20:20:11.924532",
+      "fileHash": null
+    },
+    "DELETE:/api/teams/{{cache:auth.register.response.data.user.id}}": {
+      "lastTested": "2026-04-16T20:20:11.924477",
+      "fileHash": null
+    },
+    "GET:/api/teams/{{cache:auth.register.response.data.user.id}}": {
+      "lastTested": "2026-04-16T20:20:11.924478",
+      "fileHash": null
+    },
+    "DELETE:/api/teams/{{cache:auth.register.response.data.user.id}}/invites/{{cache:auth.register.response.data.user.id}}": {
+      "lastTested": "2026-04-16T20:20:11.924480",
+      "fileHash": null
+    },
+    "POST:/api/teams/{{cache:auth.register.response.data.user.id}}/invite": {
+      "lastTested": "2026-04-16T20:20:11.924482",
+      "fileHash": null
+    },
+    "POST:/api/teams/{{cache:auth.register.response.data.user.id}}/leave": {
+      "lastTested": "2026-04-16T20:20:11.924487",
+      "fileHash": null
+    },
+    "DELETE:/api/teams/{{cache:auth.register.response.data.user.id}}/members/{{cache:auth.register.response.data.user.id}}": {
+      "lastTested": "2026-04-16T20:20:11.924488",
+      "fileHash": null
+    },
+    "PATCH:/api/teams/{{cache:auth.register.response.data.user.id}}/members/{{cache:auth.register.response.data.user.id}}": {
+      "lastTested": "2026-04-16T20:20:11.924490",
+      "fileHash": null
+    },
+    "GET:/api/workflows/:id/history/export?format=csv": {
+      "lastTested": "2026-04-16T21:03:34.944786",
       "fileHash": null
     }
   }

@@ -1,0 +1,5201 @@
+{
+  "reportType": "api_test_failures",
+  "source": "pre-push",
+  "timestamp": "2026-04-16T18:24:50Z",
+  "priority": "immediate",
+  "blocking": false,
+  "description": "API tests failed during pre-push validation. These should be fixed before pushing.",
+  "summary": {
+    "total": 100,
+    "passed": 38,
+    "failed": 18,
+    "skipped": 44,
+    "duration_ms": 11320
+  },
+  "failed_tests": [
+    {
+      "apiId": null,
+      "endpoint": "/api/sign/invalid-token-sample/complete",
+      "method": "POST",
+      "status": "failed",
+      "statusCode": 400,
+      "responseTimeMs": 8,
+      "requestBody": {
+        "fields": []
+      },
+      "responseBody": {
+        "success": false,
+        "error": "signatures array is required and must not be empty"
+      },
+      "responseData": {
+        "success": false,
+        "error": "signatures array is required and must not be empty"
+      },
+      "errorMessage": "Status 400 - Error: signatures array is required and must not be empty",
+      "fullUrl": "http://localhost:3002/api/sign/invalid-token-sample/complete",
+      "requestHeaders": {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      "curlCommand": "curl \\\n  -X \\\n  POST \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json\" \\\n  -d '{\n  \"fields\": []\n}' \\\n  \"http://localhost:3002/api/sign/invalid-token-sample/complete\"",
+      "constraintInfo": null,
+      "testability": "auto",
+      "setupScript": null,
+      "setupScriptStatus": null,
+      "setupScriptError": null,
+      "errorCategory": {
+        "category": "validation",
+        "subcategory": "bad_request",
+        "severity": "warning",
+        "title": "Validation Error",
+        "description": "Server rejected the request as invalid. Response: Status 400 - Error: signatures array is required and must not be empty",
+        "guidance": "**Actual server response:** Status 400 - Error: signatures array is required and must not be empty\n\nFix the request payload to match whatever the server says is missing/invalid above. Common patterns:\n- If the server names specific required fields, add them to `testCases[0].payload` in this endpoint's api_definition JSON.\n- If the server says a field format is wrong, replace the literal with a `{{{{dynamic:<type>}}}}` placeholder (email, uuid, phone, date_future, etc.).\n- If a field must reference another endpoint's output, use `{{{{cache:<resource>.create.response.data.<field>}}}}` and add that endpoint to `dependsOn`.",
+        "isExpected": false
+      },
+      "requiresRole": [],
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": {
+        "fields": []
+      },
+      "sampleOutput": {
+        "success": false,
+        "error": "signatures array is required and must not be empty"
+      },
+      "dataSource": "verified",
+      "testCases": [
+        {
+          "name": "Invalid token returns 404",
+          "payload": {
+            "fields": []
+          },
+          "expectedStatus": 404
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [],
+      "dependencies": [],
+      "actualResponse": null,
+      "lastSuccessfulResponse": {
+        "success": false,
+        "error": "signatures array is required and must not be empty"
+      },
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "apiId": null,
+      "endpoint": "/api/sign/invalid-token-sample/started",
+      "method": "POST",
+      "status": "failed",
+      "statusCode": 401,
+      "responseTimeMs": 8,
+      "requestBody": {},
+      "responseBody": {
+        "success": false,
+        "error": "Invalid, expired, or already used signing token"
+      },
+      "responseData": {
+        "success": false,
+        "error": "Invalid, expired, or already used signing token"
+      },
+      "errorMessage": "Status 401 - Error: Invalid, expired, or already used signing token",
+      "fullUrl": "http://localhost:3002/api/sign/invalid-token-sample/started",
+      "requestHeaders": {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Y2FmNDVhNy0yY2FiLTQ3MTMtOGU0NC02ZmJkZTA0MDAwY2MiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzYzODQwLCJleHAiOjE3NzY5Njg2NDB9.PjKZ8E0sDFwj6I9p5dcM8svhVfSN55WqEIJZbUSc6SY"
+      },
+      "curlCommand": "curl \\\n  -X \\\n  POST \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json\" \\\n  -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Y2FmNDVhNy0yY2FiLTQ3MTMtOGU0NC02ZmJkZTA0MDAwY2MiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzYzODQwLCJleHAiOjE3NzY5Njg2NDB9.PjKZ8E0sDFwj6I9p5dcM8svhVfSN55WqEIJZbUSc6SY\" \\\n  \"http://localhost:3002/api/sign/invalid-token-sample/started\"",
+      "constraintInfo": null,
+      "testability": "auto",
+      "setupScript": null,
+      "setupScriptStatus": null,
+      "setupScriptError": null,
+      "errorCategory": {
+        "category": "authentication",
+        "subcategory": "unauthorized",
+        "severity": "error",
+        "title": "Authentication Required",
+        "description": "Server returned 401. Response body: Status 401 - Error: Invalid, expired, or already used signing token",
+        "guidance": "**Actual server response:** Status 401 - Error: Invalid, expired, or already used signing token\n\n**Likely cause:** The server explicitly mentions token/authorization in its response, so this IS a token problem.\n\n**Check:**\n1. Was obtain_auth_token() run before this test?\n2. Does the test define `requiresAuth: true`?\n3. Is the Authorization header making it to the server (see request_headers in the result JSON)?\n4. Does JWT_SECRET match between server .env and the token-issuing endpoint (for auto-generated JWTs)?",
+        "isExpected": false
+      },
+      "requiresRole": [],
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": {},
+      "sampleOutput": {
+        "success": false,
+        "error": "Invalid, expired, or already used signing token"
+      },
+      "dataSource": "partial",
+      "testCases": [
+        {
+          "name": "Invalid token returns 404",
+          "payload": {},
+          "expectedStatus": 404
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [],
+      "dependencies": [],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "apiId": null,
+      "endpoint": "/api/billing/webhook",
+      "method": "POST",
+      "status": "failed",
+      "statusCode": 503,
+      "responseTimeMs": 5,
+      "requestBody": {},
+      "responseBody": {
+        "error": "Stripe not configured"
+      },
+      "responseData": {
+        "error": "Stripe not configured"
+      },
+      "errorMessage": "Status 503 - Error: Stripe not configured",
+      "fullUrl": "http://localhost:3002/api/billing/webhook",
+      "requestHeaders": {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      "curlCommand": "curl \\\n  -X \\\n  POST \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json\" \\\n  \"http://localhost:3002/api/billing/webhook\"",
+      "constraintInfo": null,
+      "testability": "auto",
+      "setupScript": null,
+      "setupScriptStatus": null,
+      "setupScriptError": null,
+      "errorCategory": {
+        "category": "server_error",
+        "subcategory": "error_503",
+        "severity": "error",
+        "title": "Server Error (503)",
+        "description": "Server returned 503. Response: Status 503 - Error: Stripe not configured",
+        "guidance": "**Actual server response:** Status 503 - Error: Stripe not configured\n\nThis is a problem on the server side, not in the test. Read the message above for the specific cause (e.g. 'Stripe is not configured', 'plan does not support X', 'Database query failed: <sql error>'). Fix the server or mark the test as environment-dependent if the cause is missing infrastructure (Stripe keys, feature flags).",
+        "isExpected": false
+      },
+      "requiresRole": [],
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": {},
+      "sampleOutput": {
+        "error": "Stripe not configured"
+      },
+      "dataSource": "partial",
+      "testCases": [
+        {
+          "name": "Missing stripe-signature header returns 400",
+          "payload": {},
+          "expectedStatus": 400
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [],
+      "dependencies": [],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "apiId": null,
+      "endpoint": "/api/auth/refresh-token",
+      "method": "POST",
+      "status": "failed",
+      "statusCode": 400,
+      "responseTimeMs": 4,
+      "requestBody": {
+        "refreshToken": "invalid-refresh-token"
+      },
+      "responseBody": {
+        "success": false,
+        "error": "Current token is required"
+      },
+      "responseData": {
+        "success": false,
+        "error": "Current token is required"
+      },
+      "errorMessage": "Status 400 - Error: Current token is required",
+      "fullUrl": "http://localhost:3002/api/auth/refresh-token",
+      "requestHeaders": {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      "curlCommand": "curl \\\n  -X \\\n  POST \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json\" \\\n  -d '{\n  \"refreshToken\": \"invalid-refresh-token\"\n}' \\\n  \"http://localhost:3002/api/auth/refresh-token\"",
+      "constraintInfo": null,
+      "testability": "auto",
+      "setupScript": null,
+      "setupScriptStatus": null,
+      "setupScriptError": null,
+      "errorCategory": {
+        "category": "validation",
+        "subcategory": "bad_request",
+        "severity": "warning",
+        "title": "Validation Error",
+        "description": "Server rejected the request as invalid. Response: Status 400 - Error: Current token is required",
+        "guidance": "**Actual server response:** Status 400 - Error: Current token is required\n\nFix the request payload to match whatever the server says is missing/invalid above. Common patterns:\n- If the server names specific required fields, add them to `testCases[0].payload` in this endpoint's api_definition JSON.\n- If the server says a field format is wrong, replace the literal with a `{{{{dynamic:<type>}}}}` placeholder (email, uuid, phone, date_future, etc.).\n- If a field must reference another endpoint's output, use `{{{{cache:<resource>.create.response.data.<field>}}}}` and add that endpoint to `dependsOn`.",
+        "isExpected": false
+      },
+      "requiresRole": [],
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": {
+        "refreshToken": "invalid-refresh-token"
+      },
+      "sampleOutput": {
+        "success": false,
+        "error": "Current token is required"
+      },
+      "dataSource": "verified",
+      "testCases": [
+        {
+          "name": "Invalid refresh token",
+          "payload": {
+            "refreshToken": "invalid-refresh-token"
+          },
+          "expectedStatus": 401
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [],
+      "dependencies": [],
+      "actualResponse": null,
+      "lastSuccessfulResponse": {
+        "success": false,
+        "error": "Current token is required"
+      },
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "apiId": null,
+      "endpoint": "/api/billing/portal",
+      "method": "POST",
+      "status": "failed",
+      "statusCode": 503,
+      "responseTimeMs": 5,
+      "requestBody": {},
+      "responseBody": {
+        "success": false,
+        "error": "Stripe is not configured"
+      },
+      "responseData": {
+        "success": false,
+        "error": "Stripe is not configured"
+      },
+      "errorMessage": "Status 503 - Error: Stripe is not configured",
+      "fullUrl": "http://localhost:3002/api/billing/portal",
+      "requestHeaders": {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Y2FmNDVhNy0yY2FiLTQ3MTMtOGU0NC02ZmJkZTA0MDAwY2MiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzYzODQwLCJleHAiOjE3NzY5Njg2NDB9.PjKZ8E0sDFwj6I9p5dcM8svhVfSN55WqEIJZbUSc6SY"
+      },
+      "curlCommand": "curl \\\n  -X \\\n  POST \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json\" \\\n  -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Y2FmNDVhNy0yY2FiLTQ3MTMtOGU0NC02ZmJkZTA0MDAwY2MiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzYzODQwLCJleHAiOjE3NzY5Njg2NDB9.PjKZ8E0sDFwj6I9p5dcM8svhVfSN55WqEIJZbUSc6SY\" \\\n  \"http://localhost:3002/api/billing/portal\"",
+      "constraintInfo": null,
+      "testability": "auto",
+      "setupScript": null,
+      "setupScriptStatus": null,
+      "setupScriptError": null,
+      "errorCategory": {
+        "category": "server_error",
+        "subcategory": "error_503",
+        "severity": "error",
+        "title": "Server Error (503)",
+        "description": "Server returned 503. Response: Status 503 - Error: Stripe is not configured",
+        "guidance": "**Actual server response:** Status 503 - Error: Stripe is not configured\n\nThis is a problem on the server side, not in the test. Read the message above for the specific cause (e.g. 'Stripe is not configured', 'plan does not support X', 'Database query failed: <sql error>'). Fix the server or mark the test as environment-dependent if the cause is missing infrastructure (Stripe keys, feature flags).",
+        "isExpected": false
+      },
+      "requiresRole": [],
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": {},
+      "sampleOutput": {
+        "success": false,
+        "error": "Stripe is not configured"
+      },
+      "dataSource": "partial",
+      "testCases": [
+        {
+          "name": "No billing account returns 404 or 503 when stripe not configured",
+          "payload": {},
+          "expectedStatus": 404,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "apiId": null,
+      "endpoint": "/api/documents",
+      "method": "POST",
+      "status": "failed",
+      "statusCode": 400,
+      "responseTimeMs": 8,
+      "requestBody": {
+        "file": "@fixture:sample.pdf"
+      },
+      "responseBody": {
+        "success": false,
+        "error": "File is required"
+      },
+      "responseData": {
+        "success": false,
+        "error": "File is required"
+      },
+      "errorMessage": "Status 400 - Error: File is required",
+      "fullUrl": "http://localhost:3002/api/documents",
+      "requestHeaders": {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Y2FmNDVhNy0yY2FiLTQ3MTMtOGU0NC02ZmJkZTA0MDAwY2MiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzYzODQwLCJleHAiOjE3NzY5Njg2NDB9.PjKZ8E0sDFwj6I9p5dcM8svhVfSN55WqEIJZbUSc6SY"
+      },
+      "curlCommand": "curl \\\n  -X \\\n  POST \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json\" \\\n  -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Y2FmNDVhNy0yY2FiLTQ3MTMtOGU0NC02ZmJkZTA0MDAwY2MiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzYzODQwLCJleHAiOjE3NzY5Njg2NDB9.PjKZ8E0sDFwj6I9p5dcM8svhVfSN55WqEIJZbUSc6SY\" \\\n  -d '{\n  \"file\": \"@fixture:sample.pdf\"\n}' \\\n  \"http://localhost:3002/api/documents\"",
+      "constraintInfo": null,
+      "testability": "auto",
+      "setupScript": null,
+      "setupScriptStatus": null,
+      "setupScriptError": null,
+      "errorCategory": {
+        "category": "validation",
+        "subcategory": "bad_request",
+        "severity": "warning",
+        "title": "Validation Error",
+        "description": "Server rejected the request as invalid. Response: Status 400 - Error: File is required",
+        "guidance": "**Actual server response:** Status 400 - Error: File is required\n\nFix the request payload to match whatever the server says is missing/invalid above. Common patterns:\n- If the server names specific required fields, add them to `testCases[0].payload` in this endpoint's api_definition JSON.\n- If the server says a field format is wrong, replace the literal with a `{{{{dynamic:<type>}}}}` placeholder (email, uuid, phone, date_future, etc.).\n- If a field must reference another endpoint's output, use `{{{{cache:<resource>.create.response.data.<field>}}}}` and add that endpoint to `dependsOn`.",
+        "isExpected": false
+      },
+      "requiresRole": [],
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": {
+        "file": "@fixture:sample.pdf"
+      },
+      "sampleOutput": {
+        "success": false,
+        "error": "File is required"
+      },
+      "dataSource": "verified",
+      "testCases": [
+        {
+          "name": "Upload a PDF document",
+          "payload": {
+            "file": "@fixture:sample.pdf"
+          },
+          "expectedStatus": 201,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        },
+        {
+          "name": "Upload without file",
+          "expectedStatus": 400,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {
+        "documents.upload.response.data.id": "data.document.id"
+      },
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": {
+        "success": false,
+        "error": "File is required"
+      },
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "apiId": null,
+      "endpoint": "/api/notifications/send",
+      "method": "POST",
+      "status": "failed",
+      "statusCode": 400,
+      "responseTimeMs": 4,
+      "requestBody": {
+        "recipient_email": "recipient@example.com",
+        "subject": "Test notification",
+        "message": "Hello",
+        "channel": "email"
+      },
+      "responseBody": {
+        "success": false,
+        "error": "Missing required fields: userId, type, message, channels (array)"
+      },
+      "responseData": {
+        "success": false,
+        "error": "Missing required fields: userId, type, message, channels (array)"
+      },
+      "errorMessage": "Status 400 - Error: Missing required fields: userId, type, message, channels (array)",
+      "fullUrl": "http://localhost:3002/api/notifications/send",
+      "requestHeaders": {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Y2FmNDVhNy0yY2FiLTQ3MTMtOGU0NC02ZmJkZTA0MDAwY2MiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzYzODQwLCJleHAiOjE3NzY5Njg2NDB9.PjKZ8E0sDFwj6I9p5dcM8svhVfSN55WqEIJZbUSc6SY"
+      },
+      "curlCommand": "curl \\\n  -X \\\n  POST \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json\" \\\n  -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Y2FmNDVhNy0yY2FiLTQ3MTMtOGU0NC02ZmJkZTA0MDAwY2MiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzYzODQwLCJleHAiOjE3NzY5Njg2NDB9.PjKZ8E0sDFwj6I9p5dcM8svhVfSN55WqEIJZbUSc6SY\" \\\n  -d '{\n  \"recipient_email\": \"recipient@example.com\",\n  \"subject\": \"Test notification\",\n  \"message\": \"Hello\",\n  \"channel\": \"email\"\n}' \\\n  \"http://localhost:3002/api/notifications/send\"",
+      "constraintInfo": null,
+      "testability": "auto",
+      "setupScript": null,
+      "setupScriptStatus": null,
+      "setupScriptError": null,
+      "errorCategory": {
+        "category": "validation",
+        "subcategory": "bad_request",
+        "severity": "warning",
+        "title": "Validation Error",
+        "description": "Server rejected the request as invalid. Response: Status 400 - Error: Missing required fields: userId, type, message, channels (array)",
+        "guidance": "**Actual server response:** Status 400 - Error: Missing required fields: userId, type, message, channels (array)\n\nFix the request payload to match whatever the server says is missing/invalid above. Common patterns:\n- If the server names specific required fields, add them to `testCases[0].payload` in this endpoint's api_definition JSON.\n- If the server says a field format is wrong, replace the literal with a `{{{{dynamic:<type>}}}}` placeholder (email, uuid, phone, date_future, etc.).\n- If a field must reference another endpoint's output, use `{{{{cache:<resource>.create.response.data.<field>}}}}` and add that endpoint to `dependsOn`.",
+        "isExpected": false
+      },
+      "requiresRole": [],
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": {
+        "recipient_email": "recipient@example.com",
+        "subject": "Test notification",
+        "message": "Hello",
+        "channel": "email"
+      },
+      "sampleOutput": {
+        "success": false,
+        "error": "Missing required fields: userId, type, message, channels (array)"
+      },
+      "dataSource": "verified",
+      "testCases": [
+        {
+          "name": "Send a notification",
+          "payload": {
+            "recipient_email": "recipient@example.com",
+            "subject": "Test notification",
+            "message": "Hello",
+            "channel": "email"
+          },
+          "expectedStatus": 201,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": {
+        "success": false,
+        "error": "Missing required fields: userId, type, message, channels (array)"
+      },
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "apiId": null,
+      "endpoint": "/api/teams",
+      "method": "POST",
+      "status": "failed",
+      "statusCode": 500,
+      "responseTimeMs": 6,
+      "requestBody": {
+        "name": "Test Team {{timestamp}}",
+        "plan": "team"
+      },
+      "responseBody": {
+        "success": false,
+        "error": "Your current plan (free) does not support teams. Please upgrade to a Team or Scale plan first."
+      },
+      "responseData": {
+        "success": false,
+        "error": "Your current plan (free) does not support teams. Please upgrade to a Team or Scale plan first."
+      },
+      "errorMessage": "Status 500 - Error: Your current plan (free) does not support teams. Please upgrade to a Team or Scale plan first.",
+      "fullUrl": "http://localhost:3002/api/teams",
+      "requestHeaders": {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Y2FmNDVhNy0yY2FiLTQ3MTMtOGU0NC02ZmJkZTA0MDAwY2MiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzYzODQwLCJleHAiOjE3NzY5Njg2NDB9.PjKZ8E0sDFwj6I9p5dcM8svhVfSN55WqEIJZbUSc6SY"
+      },
+      "curlCommand": "curl \\\n  -X \\\n  POST \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json\" \\\n  -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Y2FmNDVhNy0yY2FiLTQ3MTMtOGU0NC02ZmJkZTA0MDAwY2MiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzYzODQwLCJleHAiOjE3NzY5Njg2NDB9.PjKZ8E0sDFwj6I9p5dcM8svhVfSN55WqEIJZbUSc6SY\" \\\n  -d '{\n  \"name\": \"Test Team {{timestamp}}\",\n  \"plan\": \"team\"\n}' \\\n  \"http://localhost:3002/api/teams\"",
+      "constraintInfo": null,
+      "testability": "auto",
+      "setupScript": null,
+      "setupScriptStatus": null,
+      "setupScriptError": null,
+      "errorCategory": {
+        "category": "server_error",
+        "subcategory": "error_500",
+        "severity": "error",
+        "title": "Server Error (500)",
+        "description": "Server returned 500. Response: Status 500 - Error: Your current plan (free) does not support teams. Please upgrade to a Team or Scale plan first.",
+        "guidance": "**Actual server response:** Status 500 - Error: Your current plan (free) does not support teams. Please upgrade to a Team or Scale plan first.\n\nThis is a problem on the server side, not in the test. Read the message above for the specific cause (e.g. 'Stripe is not configured', 'plan does not support X', 'Database query failed: <sql error>'). Fix the server or mark the test as environment-dependent if the cause is missing infrastructure (Stripe keys, feature flags).",
+        "isExpected": false
+      },
+      "requiresRole": [],
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": {
+        "name": "Test Team {{timestamp}}",
+        "plan": "team"
+      },
+      "sampleOutput": {
+        "success": false,
+        "error": "Your current plan (free) does not support teams. Please upgrade to a Team or Scale plan first."
+      },
+      "dataSource": "verified",
+      "testCases": [
+        {
+          "name": "Create a team",
+          "payload": {
+            "name": "Test Team {{timestamp}}",
+            "plan": "team"
+          },
+          "expectedStatus": 201,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        },
+        {
+          "name": "Missing name returns 400",
+          "payload": {},
+          "expectedStatus": 400,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {
+        "teams.create.response.data.id": "team.id"
+      },
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": {
+        "success": false,
+        "error": "Your current plan (free) does not support teams. Please upgrade to a Team or Scale plan first."
+      },
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "apiId": null,
+      "endpoint": "/api/user-signatures",
+      "method": "POST",
+      "status": "failed",
+      "statusCode": 400,
+      "responseTimeMs": 5,
+      "requestBody": {
+        "signature_data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==",
+        "type": "drawn"
+      },
+      "responseBody": {
+        "success": false,
+        "error": "signature_type is required"
+      },
+      "responseData": {
+        "success": false,
+        "error": "signature_type is required"
+      },
+      "errorMessage": "Status 400 - Error: signature_type is required",
+      "fullUrl": "http://localhost:3002/api/user-signatures",
+      "requestHeaders": {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Y2FmNDVhNy0yY2FiLTQ3MTMtOGU0NC02ZmJkZTA0MDAwY2MiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzYzODQwLCJleHAiOjE3NzY5Njg2NDB9.PjKZ8E0sDFwj6I9p5dcM8svhVfSN55WqEIJZbUSc6SY"
+      },
+      "curlCommand": "curl \\\n  -X \\\n  POST \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json\" \\\n  -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Y2FmNDVhNy0yY2FiLTQ3MTMtOGU0NC02ZmJkZTA0MDAwY2MiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzYzODQwLCJleHAiOjE3NzY5Njg2NDB9.PjKZ8E0sDFwj6I9p5dcM8svhVfSN55WqEIJZbUSc6SY\" \\\n  -d '{\n  \"signature_data\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==\",\n  \"type\": \"drawn\"\n}' \\\n  \"http://localhost:3002/api/user-signatures\"",
+      "constraintInfo": null,
+      "testability": "auto",
+      "setupScript": null,
+      "setupScriptStatus": null,
+      "setupScriptError": null,
+      "errorCategory": {
+        "category": "validation",
+        "subcategory": "bad_request",
+        "severity": "warning",
+        "title": "Validation Error",
+        "description": "Server rejected the request as invalid. Response: Status 400 - Error: signature_type is required",
+        "guidance": "**Actual server response:** Status 400 - Error: signature_type is required\n\nFix the request payload to match whatever the server says is missing/invalid above. Common patterns:\n- If the server names specific required fields, add them to `testCases[0].payload` in this endpoint's api_definition JSON.\n- If the server says a field format is wrong, replace the literal with a `{{{{dynamic:<type>}}}}` placeholder (email, uuid, phone, date_future, etc.).\n- If a field must reference another endpoint's output, use `{{{{cache:<resource>.create.response.data.<field>}}}}` and add that endpoint to `dependsOn`.",
+        "isExpected": false
+      },
+      "requiresRole": [],
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": {
+        "signature_data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==",
+        "type": "drawn"
+      },
+      "sampleOutput": {
+        "success": false,
+        "error": "signature_type is required"
+      },
+      "dataSource": "verified",
+      "testCases": [
+        {
+          "name": "Create user signature from data URL",
+          "payload": {
+            "signature_data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==",
+            "type": "drawn"
+          },
+          "expectedStatus": 201,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {
+        "userSignatures.create.response.data.id": "data.signature.id"
+      },
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": {
+        "success": false,
+        "error": "signature_type is required"
+      },
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "apiId": null,
+      "endpoint": "/api/documents/templates",
+      "method": "POST",
+      "status": "failed",
+      "statusCode": 404,
+      "responseTimeMs": 6,
+      "requestBody": {
+        "name": "Test Template",
+        "description": "A test template",
+        "document_id": "220a4a66-4b29-4654-a81a-417fd3b10926"
+      },
+      "responseBody": {
+        "success": false,
+        "error": "Source document not found"
+      },
+      "responseData": {
+        "success": false,
+        "error": "Source document not found"
+      },
+      "errorMessage": "Status 404 - Error: Source document not found",
+      "fullUrl": "http://localhost:3002/api/documents/templates",
+      "requestHeaders": {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Y2FmNDVhNy0yY2FiLTQ3MTMtOGU0NC02ZmJkZTA0MDAwY2MiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzYzODQwLCJleHAiOjE3NzY5Njg2NDB9.PjKZ8E0sDFwj6I9p5dcM8svhVfSN55WqEIJZbUSc6SY"
+      },
+      "curlCommand": "curl \\\n  -X \\\n  POST \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json\" \\\n  -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Y2FmNDVhNy0yY2FiLTQ3MTMtOGU0NC02ZmJkZTA0MDAwY2MiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzYzODQwLCJleHAiOjE3NzY5Njg2NDB9.PjKZ8E0sDFwj6I9p5dcM8svhVfSN55WqEIJZbUSc6SY\" \\\n  -d '{\n  \"name\": \"Test Template\",\n  \"description\": \"A test template\",\n  \"document_id\": \"220a4a66-4b29-4654-a81a-417fd3b10926\"\n}' \\\n  \"http://localhost:3002/api/documents/templates\"",
+      "constraintInfo": null,
+      "testability": "auto",
+      "setupScript": null,
+      "setupScriptStatus": null,
+      "setupScriptError": null,
+      "errorCategory": {
+        "category": "not_found",
+        "subcategory": "resource_missing",
+        "severity": "warning",
+        "title": "Resource Not Found",
+        "description": "Server returned 404. Response: Status 404 - Error: Source document not found",
+        "guidance": "**Actual server response:** Status 404 - Error: Source document not found\n\n**Request:** POST /api/documents/templates\n\nThe server says the resource or route doesn't exist. Interpret based on what the message actually says:\n- 'Document/User/Workflow not found' → a path-param id points to a record that doesn't exist in the DB. Check that the POST which creates this resource ran first and its id got captured via `captureResponse`.\n- 'Cannot GET /foo' (Express-style) → the route itself doesn't exist on the server. Check the endpoint path and the method are correct for the current code.",
+        "isExpected": false
+      },
+      "requiresRole": [],
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": {
+        "name": "Test Template",
+        "description": "A test template",
+        "document_id": "220a4a66-4b29-4654-a81a-417fd3b10926"
+      },
+      "sampleOutput": {
+        "success": false,
+        "error": "Source document not found"
+      },
+      "dataSource": "verified",
+      "testCases": [
+        {
+          "name": "Create template from existing document",
+          "payload": {
+            "name": "Test Template",
+            "description": "A test template",
+            "document_id": "{{cache:documents.upload.response.data.id}}"
+          },
+          "expectedStatus": 201,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        },
+        {
+          "name": "Missing template name",
+          "payload": {
+            "description": "no name"
+          },
+          "expectedStatus": 400,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {
+        "documents.template.response.data.id": "data.template.id"
+      },
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/documents"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/documents",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "documents",
+          "cacheKey": "documents.upload.response.data.id",
+          "variable": "documents.upload.response.data.id",
+          "injectInto": "document_id",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": {
+        "success": false,
+        "error": "Source document not found"
+      },
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "apiId": null,
+      "endpoint": "/api/workflows",
+      "method": "POST",
+      "status": "failed",
+      "statusCode": 400,
+      "responseTimeMs": 9,
+      "requestBody": {
+        "document_id": "b6519eda-2e50-446e-9ff4-de2f1cc9d891",
+        "name": "Contract Signing",
+        "mode": "sequential",
+        "recipients": [
+          {
+            "signer_email": "a_{{timestamp}}@example.com",
+            "signer_name": "Signer A",
+            "signing_order": 1,
+            "role": "signer"
+          }
+        ]
+      },
+      "responseBody": {
+        "success": false,
+        "error": "document_id, workflow_type, and at least one recipient are required"
+      },
+      "responseData": {
+        "success": false,
+        "error": "document_id, workflow_type, and at least one recipient are required"
+      },
+      "errorMessage": "Status 400 - Error: document_id, workflow_type, and at least one recipient are required",
+      "fullUrl": "http://localhost:3002/api/workflows",
+      "requestHeaders": {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Y2FmNDVhNy0yY2FiLTQ3MTMtOGU0NC02ZmJkZTA0MDAwY2MiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzYzODQwLCJleHAiOjE3NzY5Njg2NDB9.PjKZ8E0sDFwj6I9p5dcM8svhVfSN55WqEIJZbUSc6SY"
+      },
+      "curlCommand": "curl \\\n  -X \\\n  POST \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json\" \\\n  -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Y2FmNDVhNy0yY2FiLTQ3MTMtOGU0NC02ZmJkZTA0MDAwY2MiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzYzODQwLCJleHAiOjE3NzY5Njg2NDB9.PjKZ8E0sDFwj6I9p5dcM8svhVfSN55WqEIJZbUSc6SY\" \\\n  -d '{\n  \"document_id\": \"b6519eda-2e50-446e-9ff4-de2f1cc9d891\",\n  \"name\": \"Contract Signing\",\n  \"mode\": \"sequential\",\n  \"recipients\": [\n    {\n      \"signer_email\": \"a_{{timestamp}}@example.com\",\n      \"signer_name\": \"Signer A\",\n      \"signing_order\": 1,\n      \"role\": \"signer\"\n    }\n  ]\n}' \\\n  \"http://localhost:3002/api/workflows\"",
+      "constraintInfo": null,
+      "testability": "auto",
+      "setupScript": null,
+      "setupScriptStatus": null,
+      "setupScriptError": null,
+      "errorCategory": {
+        "category": "validation",
+        "subcategory": "bad_request",
+        "severity": "warning",
+        "title": "Validation Error",
+        "description": "Server rejected the request as invalid. Response: Status 400 - Error: document_id, workflow_type, and at least one recipient are required",
+        "guidance": "**Actual server response:** Status 400 - Error: document_id, workflow_type, and at least one recipient are required\n\nFix the request payload to match whatever the server says is missing/invalid above. Common patterns:\n- If the server names specific required fields, add them to `testCases[0].payload` in this endpoint's api_definition JSON.\n- If the server says a field format is wrong, replace the literal with a `{{{{dynamic:<type>}}}}` placeholder (email, uuid, phone, date_future, etc.).\n- If a field must reference another endpoint's output, use `{{{{cache:<resource>.create.response.data.<field>}}}}` and add that endpoint to `dependsOn`.",
+        "isExpected": false
+      },
+      "requiresRole": [],
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": {
+        "document_id": "b6519eda-2e50-446e-9ff4-de2f1cc9d891",
+        "name": "Contract Signing",
+        "mode": "sequential",
+        "recipients": [
+          {
+            "signer_email": "a_{{timestamp}}@example.com",
+            "signer_name": "Signer A",
+            "signing_order": 1,
+            "role": "signer"
+          }
+        ]
+      },
+      "sampleOutput": {
+        "success": false,
+        "error": "document_id, workflow_type, and at least one recipient are required"
+      },
+      "dataSource": "verified",
+      "testCases": [
+        {
+          "name": "Create a new workflow with recipients",
+          "payload": {
+            "document_id": "{{cache:documents.upload.response.data.id}}",
+            "name": "Contract Signing",
+            "mode": "sequential",
+            "recipients": [
+              {
+                "signer_email": "a_{{timestamp}}@example.com",
+                "signer_name": "Signer A",
+                "signing_order": 1,
+                "role": "signer"
+              }
+            ]
+          },
+          "expectedStatus": 201,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {
+        "workflows.create.response.data.id": "data.workflow.id"
+      },
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/documents"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/documents",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "documents",
+          "cacheKey": "documents.upload.response.data.id",
+          "variable": "documents.upload.response.data.id",
+          "injectInto": "document_id",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": {
+        "success": false,
+        "error": "document_id, workflow_type, and at least one recipient are required"
+      },
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "apiId": null,
+      "endpoint": "/api/compliance/esign-metadata",
+      "method": "POST",
+      "status": "failed",
+      "statusCode": 400,
+      "responseTimeMs": 5,
+      "requestBody": {
+        "signature_id": "e854f0fe-d941-4bdb-a9cb-9170662efe5a",
+        "consent_method": "click",
+        "intent_to_sign": true
+      },
+      "responseBody": {
+        "success": false,
+        "error": "consent_given (boolean) is required"
+      },
+      "responseData": {
+        "success": false,
+        "error": "consent_given (boolean) is required"
+      },
+      "errorMessage": "Status 400 - Error: consent_given (boolean) is required",
+      "fullUrl": "http://localhost:3002/api/compliance/esign-metadata",
+      "requestHeaders": {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Y2FmNDVhNy0yY2FiLTQ3MTMtOGU0NC02ZmJkZTA0MDAwY2MiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzYzODQwLCJleHAiOjE3NzY5Njg2NDB9.PjKZ8E0sDFwj6I9p5dcM8svhVfSN55WqEIJZbUSc6SY"
+      },
+      "curlCommand": "curl \\\n  -X \\\n  POST \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json\" \\\n  -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Y2FmNDVhNy0yY2FiLTQ3MTMtOGU0NC02ZmJkZTA0MDAwY2MiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzYzODQwLCJleHAiOjE3NzY5Njg2NDB9.PjKZ8E0sDFwj6I9p5dcM8svhVfSN55WqEIJZbUSc6SY\" \\\n  -d '{\n  \"signature_id\": \"e854f0fe-d941-4bdb-a9cb-9170662efe5a\",\n  \"consent_method\": \"click\",\n  \"intent_to_sign\": true\n}' \\\n  \"http://localhost:3002/api/compliance/esign-metadata\"",
+      "constraintInfo": null,
+      "testability": "auto",
+      "setupScript": null,
+      "setupScriptStatus": null,
+      "setupScriptError": null,
+      "errorCategory": {
+        "category": "validation",
+        "subcategory": "bad_request",
+        "severity": "warning",
+        "title": "Validation Error",
+        "description": "Server rejected the request as invalid. Response: Status 400 - Error: consent_given (boolean) is required",
+        "guidance": "**Actual server response:** Status 400 - Error: consent_given (boolean) is required\n\nFix the request payload to match whatever the server says is missing/invalid above. Common patterns:\n- If the server names specific required fields, add them to `testCases[0].payload` in this endpoint's api_definition JSON.\n- If the server says a field format is wrong, replace the literal with a `{{{{dynamic:<type>}}}}` placeholder (email, uuid, phone, date_future, etc.).\n- If a field must reference another endpoint's output, use `{{{{cache:<resource>.create.response.data.<field>}}}}` and add that endpoint to `dependsOn`.",
+        "isExpected": false
+      },
+      "requiresRole": [],
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": {
+        "signature_id": "e854f0fe-d941-4bdb-a9cb-9170662efe5a",
+        "consent_method": "click",
+        "intent_to_sign": true
+      },
+      "sampleOutput": {
+        "success": false,
+        "error": "consent_given (boolean) is required"
+      },
+      "dataSource": "verified",
+      "testCases": [
+        {
+          "name": "Create ESIGN/UETA compliance metadata",
+          "payload": {
+            "signature_id": "{{cache:signatures.create.response.data.id}}",
+            "consent_method": "click",
+            "intent_to_sign": true
+          },
+          "expectedStatus": 201,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/signatures"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/signatures",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "signatures",
+          "cacheKey": "signatures.create.response.data.id",
+          "variable": "signatures.create.response.data.id",
+          "injectInto": "signature_id",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": {
+        "success": false,
+        "error": "consent_given (boolean) is required"
+      },
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "apiId": null,
+      "endpoint": "/api/auth/sso/google",
+      "method": "GET",
+      "status": "failed",
+      "statusCode": 200,
+      "responseTimeMs": 4,
+      "requestBody": null,
+      "responseBody": {
+        "success": true,
+        "data": {
+          "url": "https://accounts.google.com/o/oauth2/v2/auth?client_id=792309415855-pdh7kncss4oe3e5965hoda8pb8o5bfg7.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A3002%2Fapi%2Fauth%2Fsso%2Fcallback&response_type=code&scope=email%20profile&state=google",
+          "provider": "google"
+        }
+      },
+      "responseData": {
+        "success": true,
+        "data": {
+          "url": "https://accounts.google.com/o/oauth2/v2/auth?client_id=792309415855-pdh7kncss4oe3e5965hoda8pb8o5bfg7.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A3002%2Fapi%2Fauth%2Fsso%2Fcallback&response_type=code&scope=email%20profile&state=google",
+          "provider": "google"
+        }
+      },
+      "errorMessage": "Status 200 - {'success': True, 'data': {'url': 'https://accounts.google.com/o/oauth2/v2/auth?client_id=792309415855-pdh7kncss4oe3e5965hoda8pb8o5bfg7.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3",
+      "fullUrl": "http://localhost:3002/api/auth/sso/google",
+      "requestHeaders": {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      "curlCommand": "curl \\\n  -X \\\n  GET \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json\" \\\n  \"http://localhost:3002/api/auth/sso/google\"",
+      "constraintInfo": null,
+      "testability": "auto",
+      "setupScript": null,
+      "setupScriptStatus": null,
+      "setupScriptError": null,
+      "errorCategory": {
+        "category": "other",
+        "subcategory": "status_200",
+        "severity": "info",
+        "title": "HTTP 200",
+        "description": "Server returned 200. Response: Status 200 - {'success': True, 'data': {'url': 'https://accounts.google.com/o/oauth2/v2/auth?client_id=792309415855-pdh7kncss4oe3e5965hoda8pb8o5bfg7.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3",
+        "guidance": "**Actual server response:** Status 200 - {'success': True, 'data': {'url': 'https://accounts.google.com/o/oauth2/v2/auth?client_id=792309415855-pdh7kncss4oe3e5965hoda8pb8o5bfg7.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3\n\nHTTP 200 on GET /api/auth/sso/google. The server message above should explain what it wants. If not, check server logs directly.",
+        "isExpected": false
+      },
+      "requiresRole": [],
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": {
+        "success": true,
+        "data": {
+          "url": "https://accounts.google.com/o/oauth2/v2/auth?client_id=792309415855-pdh7kncss4oe3e5965hoda8pb8o5bfg7.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A3002%2Fapi%2Fauth%2Fsso%2Fcallback&response_type=code&scope=email%20profile&state=google",
+          "provider": "google"
+        }
+      },
+      "dataSource": "partial",
+      "testCases": [
+        {
+          "name": "SSO redirect to google provider",
+          "expectedStatus": 302
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [],
+      "dependencies": [],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "apiId": null,
+      "endpoint": "/api/sign/invalid-token-sample/document",
+      "method": "GET",
+      "status": "failed",
+      "statusCode": 401,
+      "responseTimeMs": 5,
+      "requestBody": null,
+      "responseBody": {
+        "success": false,
+        "error": "Invalid, expired, or already used signing token"
+      },
+      "responseData": {
+        "success": false,
+        "error": "Invalid, expired, or already used signing token"
+      },
+      "errorMessage": "Status 401 - Error: Invalid, expired, or already used signing token",
+      "fullUrl": "http://localhost:3002/api/sign/invalid-token-sample/document",
+      "requestHeaders": {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Y2FmNDVhNy0yY2FiLTQ3MTMtOGU0NC02ZmJkZTA0MDAwY2MiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzYzODQwLCJleHAiOjE3NzY5Njg2NDB9.PjKZ8E0sDFwj6I9p5dcM8svhVfSN55WqEIJZbUSc6SY"
+      },
+      "curlCommand": "curl \\\n  -X \\\n  GET \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json\" \\\n  -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Y2FmNDVhNy0yY2FiLTQ3MTMtOGU0NC02ZmJkZTA0MDAwY2MiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzYzODQwLCJleHAiOjE3NzY5Njg2NDB9.PjKZ8E0sDFwj6I9p5dcM8svhVfSN55WqEIJZbUSc6SY\" \\\n  \"http://localhost:3002/api/sign/invalid-token-sample/document\"",
+      "constraintInfo": null,
+      "testability": "auto",
+      "setupScript": null,
+      "setupScriptStatus": null,
+      "setupScriptError": null,
+      "errorCategory": {
+        "category": "authentication",
+        "subcategory": "unauthorized",
+        "severity": "error",
+        "title": "Authentication Required",
+        "description": "Server returned 401. Response body: Status 401 - Error: Invalid, expired, or already used signing token",
+        "guidance": "**Actual server response:** Status 401 - Error: Invalid, expired, or already used signing token\n\n**Likely cause:** The server explicitly mentions token/authorization in its response, so this IS a token problem.\n\n**Check:**\n1. Was obtain_auth_token() run before this test?\n2. Does the test define `requiresAuth: true`?\n3. Is the Authorization header making it to the server (see request_headers in the result JSON)?\n4. Does JWT_SECRET match between server .env and the token-issuing endpoint (for auto-generated JWTs)?",
+        "isExpected": false
+      },
+      "requiresRole": [],
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": {
+        "success": false,
+        "error": "Invalid, expired, or already used signing token"
+      },
+      "dataSource": "partial",
+      "testCases": [
+        {
+          "name": "Invalid token returns 404",
+          "expectedStatus": 404
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [],
+      "dependencies": [],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "apiId": null,
+      "endpoint": "/api/sign/invalid-token-sample",
+      "method": "GET",
+      "status": "failed",
+      "statusCode": 401,
+      "responseTimeMs": 7,
+      "requestBody": null,
+      "responseBody": {
+        "success": false,
+        "error": "Invalid signing token"
+      },
+      "responseData": {
+        "success": false,
+        "error": "Invalid signing token"
+      },
+      "errorMessage": "Status 401 - Error: Invalid signing token",
+      "fullUrl": "http://localhost:3002/api/sign/invalid-token-sample",
+      "requestHeaders": {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Y2FmNDVhNy0yY2FiLTQ3MTMtOGU0NC02ZmJkZTA0MDAwY2MiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzYzODQwLCJleHAiOjE3NzY5Njg2NDB9.PjKZ8E0sDFwj6I9p5dcM8svhVfSN55WqEIJZbUSc6SY"
+      },
+      "curlCommand": "curl \\\n  -X \\\n  GET \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json\" \\\n  -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Y2FmNDVhNy0yY2FiLTQ3MTMtOGU0NC02ZmJkZTA0MDAwY2MiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzYzODQwLCJleHAiOjE3NzY5Njg2NDB9.PjKZ8E0sDFwj6I9p5dcM8svhVfSN55WqEIJZbUSc6SY\" \\\n  \"http://localhost:3002/api/sign/invalid-token-sample\"",
+      "constraintInfo": null,
+      "testability": "auto",
+      "setupScript": null,
+      "setupScriptStatus": null,
+      "setupScriptError": null,
+      "errorCategory": {
+        "category": "authentication",
+        "subcategory": "unauthorized",
+        "severity": "error",
+        "title": "Authentication Required",
+        "description": "Server returned 401. Response body: Status 401 - Error: Invalid signing token",
+        "guidance": "**Actual server response:** Status 401 - Error: Invalid signing token\n\n**Likely cause:** The server explicitly mentions token/authorization in its response, so this IS a token problem.\n\n**Check:**\n1. Was obtain_auth_token() run before this test?\n2. Does the test define `requiresAuth: true`?\n3. Is the Authorization header making it to the server (see request_headers in the result JSON)?\n4. Does JWT_SECRET match between server .env and the token-issuing endpoint (for auto-generated JWTs)?",
+        "isExpected": false
+      },
+      "requiresRole": [],
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": {
+        "success": false,
+        "error": "Invalid signing token"
+      },
+      "dataSource": "partial",
+      "testCases": [
+        {
+          "name": "Invalid token returns 404",
+          "expectedStatus": 404
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [],
+      "dependencies": [],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "apiId": null,
+      "endpoint": "/api/teams/mine",
+      "method": "GET",
+      "status": "failed",
+      "statusCode": 404,
+      "responseTimeMs": 6,
+      "requestBody": null,
+      "responseBody": {
+        "success": false,
+        "error": "You are not a member of any team"
+      },
+      "responseData": {
+        "success": false,
+        "error": "You are not a member of any team"
+      },
+      "errorMessage": "Status 404 - Error: You are not a member of any team",
+      "fullUrl": "http://localhost:3002/api/teams/mine",
+      "requestHeaders": {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Y2FmNDVhNy0yY2FiLTQ3MTMtOGU0NC02ZmJkZTA0MDAwY2MiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzYzODQwLCJleHAiOjE3NzY5Njg2NDB9.PjKZ8E0sDFwj6I9p5dcM8svhVfSN55WqEIJZbUSc6SY"
+      },
+      "curlCommand": "curl \\\n  -X \\\n  GET \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json\" \\\n  -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Y2FmNDVhNy0yY2FiLTQ3MTMtOGU0NC02ZmJkZTA0MDAwY2MiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzYzODQwLCJleHAiOjE3NzY5Njg2NDB9.PjKZ8E0sDFwj6I9p5dcM8svhVfSN55WqEIJZbUSc6SY\" \\\n  \"http://localhost:3002/api/teams/mine\"",
+      "constraintInfo": {
+        "type": "PREREQUISITE_REQUIRED",
+        "prerequisite": "must_join_first",
+        "endpoint": "/api/teams/mine",
+        "method": "GET",
+        "error_message": "Status 404 - Error: You are not a member of any team",
+        "solution": {
+          "constraint_type": "Prerequisite Action Required",
+          "description": "A prerequisite action must be completed first: must_join_first",
+          "prompt_for_llm": "## Business Logic Constraint: Prerequisite Required\n\nThe endpoint `GET /api/teams/mine` requires a prerequisite action to be completed first.\n\n### Problem\nPrerequisite not met: `must_join_first`\n\n### Solution: Define Test Dependencies\n\nUpdate your test definition to specify dependencies:\n\n```json\n{\n  \"endpoint\": \"/api/teams/mine\",\n  \"method\": \"GET\",\n  \"dependsOn\": [\"join\"],\n  \"testCases\": [...]\n}\n```\n\nThe MCP tester will ensure dependent tests run in the correct order.\n"
+        }
+      },
+      "testability": "auto",
+      "setupScript": null,
+      "setupScriptStatus": null,
+      "setupScriptError": null,
+      "errorCategory": {
+        "category": "not_found",
+        "subcategory": "resource_missing",
+        "severity": "warning",
+        "title": "Resource Not Found",
+        "description": "Server returned 404. Response: Status 404 - Error: You are not a member of any team",
+        "guidance": "**Actual server response:** Status 404 - Error: You are not a member of any team\n\n**Request:** GET /api/teams/mine\n\nThe server says the resource or route doesn't exist. Interpret based on what the message actually says:\n- 'Document/User/Workflow not found' → a path-param id points to a record that doesn't exist in the DB. Check that the POST which creates this resource ran first and its id got captured via `captureResponse`.\n- 'Cannot GET /foo' (Express-style) → the route itself doesn't exist on the server. Check the endpoint path and the method are correct for the current code.",
+        "isExpected": false
+      },
+      "requiresRole": [],
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": {
+        "success": false,
+        "error": "You are not a member of any team"
+      },
+      "dataSource": "partial",
+      "testCases": [
+        {
+          "name": "Get my team",
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/teams"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/teams",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "apiId": null,
+      "endpoint": "/api/notifications/preferences",
+      "method": "PUT",
+      "status": "failed",
+      "statusCode": 400,
+      "responseTimeMs": 9,
+      "requestBody": {
+        "email_enabled": true,
+        "in_app_enabled": true,
+        "sms_enabled": false
+      },
+      "responseBody": {
+        "success": false,
+        "error": "Missing required field: preferences (array)"
+      },
+      "responseData": {
+        "success": false,
+        "error": "Missing required field: preferences (array)"
+      },
+      "errorMessage": "Status 400 - Error: Missing required field: preferences (array)",
+      "fullUrl": "http://localhost:3002/api/notifications/preferences",
+      "requestHeaders": {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Y2FmNDVhNy0yY2FiLTQ3MTMtOGU0NC02ZmJkZTA0MDAwY2MiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzYzODQwLCJleHAiOjE3NzY5Njg2NDB9.PjKZ8E0sDFwj6I9p5dcM8svhVfSN55WqEIJZbUSc6SY"
+      },
+      "curlCommand": "curl \\\n  -X \\\n  PUT \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json\" \\\n  -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Y2FmNDVhNy0yY2FiLTQ3MTMtOGU0NC02ZmJkZTA0MDAwY2MiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzYzODQwLCJleHAiOjE3NzY5Njg2NDB9.PjKZ8E0sDFwj6I9p5dcM8svhVfSN55WqEIJZbUSc6SY\" \\\n  -d '{\n  \"email_enabled\": true,\n  \"in_app_enabled\": true,\n  \"sms_enabled\": false\n}' \\\n  \"http://localhost:3002/api/notifications/preferences\"",
+      "constraintInfo": null,
+      "testability": "auto",
+      "setupScript": null,
+      "setupScriptStatus": null,
+      "setupScriptError": null,
+      "errorCategory": {
+        "category": "validation",
+        "subcategory": "bad_request",
+        "severity": "warning",
+        "title": "Validation Error",
+        "description": "Server rejected the request as invalid. Response: Status 400 - Error: Missing required field: preferences (array)",
+        "guidance": "**Actual server response:** Status 400 - Error: Missing required field: preferences (array)\n\nFix the request payload to match whatever the server says is missing/invalid above. Common patterns:\n- If the server names specific required fields, add them to `testCases[0].payload` in this endpoint's api_definition JSON.\n- If the server says a field format is wrong, replace the literal with a `{{{{dynamic:<type>}}}}` placeholder (email, uuid, phone, date_future, etc.).\n- If a field must reference another endpoint's output, use `{{{{cache:<resource>.create.response.data.<field>}}}}` and add that endpoint to `dependsOn`.",
+        "isExpected": false
+      },
+      "requiresRole": [],
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": {
+        "email_enabled": true,
+        "in_app_enabled": true,
+        "sms_enabled": false
+      },
+      "sampleOutput": {
+        "success": false,
+        "error": "Missing required field: preferences (array)"
+      },
+      "dataSource": "verified",
+      "testCases": [
+        {
+          "name": "Update notification preferences",
+          "payload": {
+            "email_enabled": true,
+            "in_app_enabled": true,
+            "sms_enabled": false
+          },
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": {
+        "success": false,
+        "error": "Missing required field: preferences (array)"
+      },
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "apiId": null,
+      "endpoint": "/api/users/language",
+      "method": "PUT",
+      "status": "failed",
+      "statusCode": 400,
+      "responseTimeMs": 7,
+      "requestBody": {
+        "language": "es"
+      },
+      "responseBody": {
+        "success": false,
+        "error": "language_preference is required and must be a string"
+      },
+      "responseData": {
+        "success": false,
+        "error": "language_preference is required and must be a string"
+      },
+      "errorMessage": "Status 400 - Error: language_preference is required and must be a string",
+      "fullUrl": "http://localhost:3002/api/users/language",
+      "requestHeaders": {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Y2FmNDVhNy0yY2FiLTQ3MTMtOGU0NC02ZmJkZTA0MDAwY2MiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzYzODQwLCJleHAiOjE3NzY5Njg2NDB9.PjKZ8E0sDFwj6I9p5dcM8svhVfSN55WqEIJZbUSc6SY"
+      },
+      "curlCommand": "curl \\\n  -X \\\n  PUT \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json\" \\\n  -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Y2FmNDVhNy0yY2FiLTQ3MTMtOGU0NC02ZmJkZTA0MDAwY2MiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzYzODQwLCJleHAiOjE3NzY5Njg2NDB9.PjKZ8E0sDFwj6I9p5dcM8svhVfSN55WqEIJZbUSc6SY\" \\\n  -d '{\n  \"language\": \"es\"\n}' \\\n  \"http://localhost:3002/api/users/language\"",
+      "constraintInfo": null,
+      "testability": "auto",
+      "setupScript": null,
+      "setupScriptStatus": null,
+      "setupScriptError": null,
+      "errorCategory": {
+        "category": "validation",
+        "subcategory": "bad_request",
+        "severity": "warning",
+        "title": "Validation Error",
+        "description": "Server rejected the request as invalid. Response: Status 400 - Error: language_preference is required and must be a string",
+        "guidance": "**Actual server response:** Status 400 - Error: language_preference is required and must be a string\n\nFix the request payload to match whatever the server says is missing/invalid above. Common patterns:\n- If the server names specific required fields, add them to `testCases[0].payload` in this endpoint's api_definition JSON.\n- If the server says a field format is wrong, replace the literal with a `{{{{dynamic:<type>}}}}` placeholder (email, uuid, phone, date_future, etc.).\n- If a field must reference another endpoint's output, use `{{{{cache:<resource>.create.response.data.<field>}}}}` and add that endpoint to `dependsOn`.",
+        "isExpected": false
+      },
+      "requiresRole": [],
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": {
+        "language": "es"
+      },
+      "sampleOutput": {
+        "success": false,
+        "error": "language_preference is required and must be a string"
+      },
+      "dataSource": "verified",
+      "testCases": [
+        {
+          "name": "Set language to es",
+          "payload": {
+            "language": "es"
+          },
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": {
+        "success": false,
+        "error": "language_preference is required and must be a string"
+      },
+      "testAssertions": [],
+      "parameters": {}
+    }
+  ],
+  "skipped_tests": [
+    {
+      "endpoint": "/api/documents/{{cache:documents.upload.response.data.id}}/tags",
+      "method": "POST",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['documents']",
+      "dataSource": "seed",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": {
+        "tags": [
+          "important",
+          "legal"
+        ]
+      },
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Add tags to document",
+          "payload": {
+            "tags": [
+              "important",
+              "legal"
+            ]
+          },
+          "expectedStatus": 201,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        },
+        {
+          "name": "Empty tags array",
+          "payload": {
+            "tags": []
+          },
+          "expectedStatus": 400,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/documents"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/documents",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/documents/{{cache:documents.upload.response.data.id}}/versions",
+      "method": "POST",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['documents']",
+      "dataSource": "seed",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": {
+        "file": "@fixture:sample.pdf"
+      },
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Upload a new version of a document",
+          "payload": {
+            "file": "@fixture:sample.pdf"
+          },
+          "expectedStatus": 201,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {
+        "documents.version.response.data.id": "data.version.id"
+      },
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/documents"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/documents",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/documents/{{cache:documents.upload.response.data.id}}/versions/{{cache:documents.version.response.data.id}}/revert",
+      "method": "POST",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['documents', 'documents']",
+      "dataSource": "none",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Revert document to previous version",
+          "payload": {},
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/documents",
+        "POST /api/documents/:id/versions"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/documents",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/documents/:id/versions",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/teams/{{cache:teams.create.response.data.id}}/invite",
+      "method": "POST",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['teams']",
+      "dataSource": "seed",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": {
+        "emails": [
+          "invitee_{{timestamp}}@example.com"
+        ]
+      },
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Invite new member emails",
+          "payload": {
+            "emails": [
+              "invitee_{{timestamp}}@example.com"
+            ]
+          },
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        },
+        {
+          "name": "Missing emails returns 400",
+          "payload": {},
+          "expectedStatus": 400,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/teams"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/teams",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/teams/{{cache:teams.create.response.data.id}}/leave",
+      "method": "POST",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['teams']",
+      "dataSource": "none",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Owner cannot leave team (must delete)",
+          "payload": {},
+          "expectedStatus": 403,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/teams"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/teams",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/documents/templates/{{cache:documents.template.response.data.id}}/use",
+      "method": "POST",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['documents']",
+      "dataSource": "none",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Create new document from template",
+          "payload": {},
+          "expectedStatus": 201,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/documents/templates"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/documents/templates",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/signatures/{{cache:signatures.create.response.data.id}}/confirm",
+      "method": "POST",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['signatures']",
+      "dataSource": "seed",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": {
+        "intent": true,
+        "consent": true
+      },
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Confirm signature intent",
+          "payload": {
+            "intent": true,
+            "consent": true
+          },
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/documents",
+        "POST /api/signatures"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/documents",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/signatures",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/workflows/{{cache:workflows.create.response.data.id}}/cancel",
+      "method": "POST",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['workflows']",
+      "dataSource": "seed",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": {
+        "reason": "No longer needed"
+      },
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Cancel an active workflow",
+          "payload": {
+            "reason": "No longer needed"
+          },
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/workflows"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/workflows",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/workflows/{{cache:workflows.create.response.data.id}}/remind",
+      "method": "POST",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['workflows']",
+      "dataSource": "none",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Send reminder to pending recipients",
+          "payload": {},
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/workflows"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/workflows",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/workflows/{{cache:workflows.create.response.data.id}}/self-sign",
+      "method": "POST",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['workflows']",
+      "dataSource": "seed",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": {
+        "fields": []
+      },
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Creator self-signs their fields",
+          "payload": {
+            "fields": []
+          },
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/workflows"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/workflows",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/workflows/{{cache:workflows.create.response.data.id}}/start",
+      "method": "POST",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['workflows']",
+      "dataSource": "none",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Start a draft workflow",
+          "payload": {},
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/workflows"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/workflows",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "apiId": null,
+      "endpoint": "/api/notifications/stream",
+      "method": "GET",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "errorMessage": "Server not reachable",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": null,
+      "dataSource": "none",
+      "testCases": [
+        {
+          "name": "Open SSE notification stream",
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}",
+            "Accept": "text/event-stream"
+          },
+          "timeout": 3000
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/documents/{{cache:documents.upload.response.data.id}}/download",
+      "method": "GET",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['documents']",
+      "dataSource": "none",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Download a document file",
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/documents"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/documents",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/documents/{{cache:documents.upload.response.data.id}}/file",
+      "method": "GET",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['documents']",
+      "dataSource": "none",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Serve document file for viewing",
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/documents"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/documents",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/documents/{{cache:documents.upload.response.data.id}}",
+      "method": "GET",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['documents']",
+      "dataSource": "none",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Get existing document",
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/documents"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/documents",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/documents/{{cache:documents.upload.response.data.id}}/tags",
+      "method": "GET",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['documents']",
+      "dataSource": "none",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "List tags on a document",
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/documents"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/documents",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/documents/{{cache:documents.upload.response.data.id}}/versions",
+      "method": "GET",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['documents']",
+      "dataSource": "none",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "List all versions of a document",
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/documents"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/documents",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/organizations/{{cache:organizations.create.response.data.id}}",
+      "method": "GET",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['organizations']",
+      "dataSource": "none",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Get existing organization",
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/organizations"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/organizations",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/teams/{{cache:teams.create.response.data.id}}",
+      "method": "GET",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['teams']",
+      "dataSource": "none",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Member gets team details",
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/teams"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/teams",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/user-signatures/{{cache:userSignatures.create.response.data.id}}",
+      "method": "GET",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['userSignatures']",
+      "dataSource": "none",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Get a specific user signature",
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/user-signatures"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/user-signatures",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/documents/templates/{{cache:documents.template.response.data.id}}",
+      "method": "GET",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['documents']",
+      "dataSource": "none",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Get existing template",
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/documents/templates"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/documents/templates",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/compliance/esign-metadata/{{cache:signatures.create.response.data.id}}",
+      "method": "GET",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['signatures']",
+      "dataSource": "none",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Get ESIGN/UETA metadata for signature",
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/signatures"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/signatures",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/signatures/{{cache:documents.upload.response.data.id}}",
+      "method": "GET",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['documents']",
+      "dataSource": "none",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "List signatures for a document",
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/documents",
+        "POST /api/signatures"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/documents",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/signatures",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/workflows/{{cache:workflows.create.response.data.id}}/downloads",
+      "method": "GET",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['workflows']",
+      "dataSource": "none",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Not-yet-completed workflow returns 400",
+          "expectedStatus": 400,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/workflows"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/workflows",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/workflows/{{cache:workflows.create.response.data.id}}",
+      "method": "GET",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['workflows']",
+      "dataSource": "none",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Get existing workflow",
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/workflows"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/workflows",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/workflows/{{cache:workflows.create.response.data.id}}/history/export?format=csv",
+      "method": "GET",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['workflows']",
+      "dataSource": "none",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Export workflow history as CSV",
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/workflows"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/workflows",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/workflows/{{cache:workflows.create.response.data.id}}/history",
+      "method": "GET",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['workflows']",
+      "dataSource": "none",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Get workflow action history",
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/workflows"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/workflows",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/workflows/{{cache:workflows.create.response.data.id}}/status",
+      "method": "GET",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['workflows']",
+      "dataSource": "none",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Get workflow status",
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/workflows"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/workflows",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/users/{{cache:auth.register.response.data.userId}}/role",
+      "method": "PUT",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['auth']",
+      "dataSource": "seed",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": {
+        "role": "user"
+      },
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Non-admin cannot assign role",
+          "payload": {
+            "role": "user"
+          },
+          "expectedStatus": 403,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/user-signatures/{{cache:userSignatures.create.response.data.id}}",
+      "method": "PUT",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['userSignatures']",
+      "dataSource": "seed",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": {
+        "is_default": true
+      },
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Update saved signature",
+          "payload": {
+            "is_default": true
+          },
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/user-signatures"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/user-signatures",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/workflows/{{cache:workflows.create.response.data.id}}/reminders",
+      "method": "PUT",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['workflows']",
+      "dataSource": "seed",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": {
+        "reminder_interval_days": 3,
+        "reminder_enabled": true
+      },
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Configure reminder schedule",
+          "payload": {
+            "reminder_interval_days": 3,
+            "reminder_enabled": true
+          },
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/workflows"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/workflows",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/workflows/{{cache:workflows.create.response.data.id}}",
+      "method": "PUT",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['workflows']",
+      "dataSource": "seed",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": {
+        "name": "Updated Contract"
+      },
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Update workflow name",
+          "payload": {
+            "name": "Updated Contract"
+          },
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/workflows"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/workflows",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/teams/{{cache:teams.create.response.data.id}}/members/00000000-0000-0000-0000-000000000000",
+      "method": "PATCH",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['teams']",
+      "dataSource": "none",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Missing role returns 400",
+          "payload": {},
+          "expectedStatus": 400,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/teams"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/teams",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/signatures/{{cache:signatures.create.response.data.id}}/sign",
+      "method": "PATCH",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['signatures']",
+      "dataSource": "seed",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": {
+        "signature_data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+      },
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Sign a signature request",
+          "payload": {
+            "signature_data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+          },
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/documents",
+        "POST /api/signatures"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/documents",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/signatures",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/workflows/{{cache:workflows.create.response.data.id}}/decline",
+      "method": "PATCH",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['workflows']",
+      "dataSource": "seed",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": {
+        "reason": "Not applicable"
+      },
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Decline to sign workflow",
+          "payload": {
+            "reason": "Not applicable"
+          },
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/workflows"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/workflows",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/workflows/{{cache:workflows.create.response.data.id}}/sign",
+      "method": "PATCH",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['workflows']",
+      "dataSource": "seed",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": {
+        "signature_data": "data:image/png;base64,iVBORw0KGgo="
+      },
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Sign the current workflow step",
+          "payload": {
+            "signature_data": "data:image/png;base64,iVBORw0KGgo="
+          },
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/workflows"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/workflows",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/documents/{{cache:documents.upload.response.data.id}}",
+      "method": "DELETE",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['documents']",
+      "dataSource": "none",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Delete a document",
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/documents"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/documents",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/documents/{{cache:documents.upload.response.data.id}}/tags/important",
+      "method": "DELETE",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['documents']",
+      "dataSource": "none",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Remove a tag from a document",
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/documents",
+        "POST /api/documents/:id/tags"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/documents",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/documents/:id/tags",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/teams/{{cache:teams.create.response.data.id}}",
+      "method": "DELETE",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['teams']",
+      "dataSource": "none",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Owner deletes team",
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/teams"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/teams",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/teams/{{cache:teams.create.response.data.id}}/invites/00000000-0000-0000-0000-000000000000",
+      "method": "DELETE",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['teams']",
+      "dataSource": "none",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Non-existent invite returns 400",
+          "expectedStatus": 400,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/teams"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/teams",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/teams/{{cache:teams.create.response.data.id}}/members/00000000-0000-0000-0000-000000000000",
+      "method": "DELETE",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['teams']",
+      "dataSource": "none",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Remove non-existent member",
+          "expectedStatus": 500,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/teams"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/teams",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/user-signatures/{{cache:userSignatures.create.response.data.id}}",
+      "method": "DELETE",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['userSignatures']",
+      "dataSource": "none",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Delete a saved signature",
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/user-signatures"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/user-signatures",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/documents/templates/{{cache:documents.template.response.data.id}}",
+      "method": "DELETE",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['documents']",
+      "dataSource": "none",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Delete a template",
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/documents/templates"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/documents/templates",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    },
+    {
+      "endpoint": "/api/auth/api-keys/{{cache:auth.apiKey.list.response.data.keys[0].id}}",
+      "method": "DELETE",
+      "status": "skipped",
+      "statusCode": null,
+      "responseTimeMs": 0,
+      "requestBody": null,
+      "responseBody": null,
+      "responseData": null,
+      "errorMessage": "Skipped - no captured values for path params: ['auth']",
+      "dataSource": "none",
+      "routeFilePath": null,
+      "lineNumber": null,
+      "purpose": null,
+      "sprintId": null,
+      "cliExportId": null,
+      "classification": null,
+      "existingApiId": null,
+      "requestBodyTemplate": null,
+      "responseSchema": null,
+      "sampleInput": null,
+      "sampleOutput": null,
+      "testCases": [
+        {
+          "name": "Revoke an existing API key",
+          "expectedStatus": 200,
+          "headers": {
+            "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+          }
+        }
+      ],
+      "captureResponse": {},
+      "dependsOn": [
+        "POST /api/auth/register",
+        "POST /api/auth/login",
+        "POST /api/auth/api-keys",
+        "GET /api/auth/api-keys"
+      ],
+      "dependencies": [
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/register",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/login",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "POST /api/auth/api-keys",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "explicit",
+          "source": "GET /api/auth/api-keys",
+          "variable": "",
+          "injectInto": "",
+          "captureFrom": ""
+        },
+        {
+          "type": "cache_reference",
+          "source": "auth",
+          "cacheKey": "auth.login.response.data.token",
+          "variable": "auth.login.response.data.token",
+          "injectInto": "Authorization",
+          "captureFrom": ""
+        }
+      ],
+      "actualResponse": null,
+      "lastSuccessfulResponse": null,
+      "testAssertions": [],
+      "parameters": {}
+    }
+  ],
+  "llm_prompt": "Please analyze and fix the 18 failed API test(s). For each failure: 1) Read the error message to understand what went wrong, 2) Check the API implementation in the route file, 3) Verify test data in api_definitions is valid, 4) Fix the API code or test data as needed. Also check .projexlight/feedback/ for detailed error information.",
+  "investigation_paths": [
+    "C:/Users/srima/edocs/.projexlight/feedback/",
+    "C:/Users/srima/edocs/.projexlight/reports/",
+    "C:/Users/srima/edocs/tests/api_definitions/"
+  ],
+  "commands": {
+    "view_logs": "docker logs projexlight-mcp",
+    "rerun_tests": "curl -X POST http://localhost:8766/api/test -H 'Content-Type: application/json' -d '{\"projectPath\": \"/c/Users/srima/edocs\", \"api_test_mode\": \"full\"}'"
+  }
+}

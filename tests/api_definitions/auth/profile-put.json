@@ -1,0 +1,27 @@
+{
+  "name": "PUT /api/auth/profile - Update user profile",
+  "endpoint": "/api/auth/profile",
+  "method": "PUT",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "priority": 4,
+  "testCases": [
+    {
+      "name": "Update name and language",
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      },
+      "payload": {
+        "name": "{{dynamic:name}}",
+        "language": "{{static:en}}"
+      },
+      "expectedStatus": 200
+    }
+  ],
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/auth/login"
+  ],
+  "taskId": "17b27375-6bbf-4ffb-b0af-47bfd86c64c5",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+}

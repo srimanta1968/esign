@@ -1,0 +1,30 @@
+{
+  "name": "POST /api/signatures - Create signature request",
+  "endpoint": "/api/signatures",
+  "method": "POST",
+  "requiresAuth": true,
+  "expectedStatus": 201,
+  "priority": 60,
+  "testCases": [
+    {
+      "name": "Create request with synthetic document_id",
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      },
+      "payload": {
+        "document_id": "{{cache:auth.register.response.data.user.id}}",
+        "signer_email": "{{dynamic:email}}"
+      },
+      "expectedStatus": 201
+    }
+  ],
+  "captureResponse": {
+    "signatures.create.response.data.signature.id": "data.signature.id"
+  },
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/auth/login"
+  ],
+  "taskId": "17b27375-6bbf-4ffb-b0af-47bfd86c64c5",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+}

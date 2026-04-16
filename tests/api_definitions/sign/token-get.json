@@ -1,0 +1,20 @@
+{
+  "name": "GET /api/sign/:token - Get signing context",
+  "endpoint": "/api/sign/:token",
+  "method": "GET",
+  "requiresAuth": false,
+  "expectedStatus": 401,
+  "priority": 70,
+  "testCases": [
+    {
+      "name": "Invalid token \u2192 401",
+      "expectedStatus": 401,
+      "pathParams": {
+        "token": "{{static:invalid-token}}"
+      }
+    }
+  ],
+  "dependsOn": [],
+  "taskId": "17b27375-6bbf-4ffb-b0af-47bfd86c64c5",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+}

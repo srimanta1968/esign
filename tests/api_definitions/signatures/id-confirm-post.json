@@ -1,0 +1,31 @@
+{
+  "name": "POST /api/signatures/:id/confirm - Confirm signature",
+  "endpoint": "/api/signatures/:id/confirm",
+  "method": "POST",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "priority": 63,
+  "testCases": [
+    {
+      "name": "Confirm captured signature id",
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      },
+      "payload": {
+        "confirmation_status": "{{static:confirmed}}"
+      },
+      "expectedStatus": 200,
+      "pathParams": {
+        "id": "{{cache:signatures.create.response.data.signature.id}}"
+      }
+    }
+  ],
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/auth/login",
+    "POST /api/signatures",
+    "PATCH /api/signatures/:id/sign"
+  ],
+  "taskId": "17b27375-6bbf-4ffb-b0af-47bfd86c64c5",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+}

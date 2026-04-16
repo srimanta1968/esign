@@ -1,0 +1,1897 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test Report - 2026-04-16T19:58:40.033941</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; }
+        .stats-card { border-left: 4px solid #667eea; }
+        .test-results { margin-top: 2rem; }
+        code { background: #f8f9fa; padding: 2px 6px; border-radius: 3px; }
+        .debug-section { background: #fff3cd; border-radius: 8px; padding: 1.5rem; margin-top: 2rem; }
+        .curl-command { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 6px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.85rem; overflow-x: auto; white-space: pre-wrap; word-break: break-all; }
+        .copy-btn { position: absolute; top: 8px; right: 8px; }
+        .curl-container { position: relative; margin-bottom: 1rem; }
+        .response-preview { background: #f8f9fa; padding: 1rem; border-radius: 6px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.85rem; max-height: 200px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>API Test Report</h1>
+            <p class="mb-0">Generated: 2026-04-16 19:58:41 UTC</p>
+            <p class="mb-0">Triggered by: manual</p>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <!-- Statistics -->
+        <div class="row">
+            <div class="col">
+                <div class="card stats-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Tests</h5>
+                        <h2 class="mb-0">99</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card stats-card" style="border-left-color: #28a745;">
+                    <div class="card-body">
+                        <h5 class="card-title">Passed</h5>
+                        <h2 class="mb-0 text-success">24</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card stats-card" style="border-left-color: #dc3545;">
+                    <div class="card-body">
+                        <h5 class="card-title">Failed</h5>
+                        <h2 class="mb-0 text-danger">6</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card stats-card" style="border-left-color: #6c757d;">
+                    <div class="card-body">
+                        <h5 class="card-title">Skipped</h5>
+                        <h2 class="mb-0 text-secondary">69</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card stats-card" style="border-left-color: #ffc107;">
+                    <div class="card-body">
+                        <h5 class="card-title">Pass Rate</h5>
+                        <h2 class="mb-0">24.2%</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <!-- Error Category Summary -->
+        <div class="mt-4">
+            <h5>📊 Error Categories Breakdown</h5>
+            <div class="d-flex flex-wrap align-items-center mt-2">
+                
+                <span class="badge me-2 mb-2" style="background-color: #ffc107; font-size: 0.9rem; padding: 0.5rem 0.75rem;">
+                    ⚠️ Validation Error: 4
+                </span>
+            
+                <span class="badge me-2 mb-2" style="background-color: #343a40; font-size: 0.9rem; padding: 0.5rem 0.75rem;">
+                    🔥 Server Error (500): 1
+                </span>
+            
+                <span class="badge me-2 mb-2" style="background-color: #17a2b8; font-size: 0.9rem; padding: 0.5rem 0.75rem;">
+                    🔍 Resource Not Found: 1
+                </span>
+            
+            </div>
+            <small class="text-muted">Click on a failed test below for detailed guidance on how to fix each error category.</small>
+        </div>
+        
+
+        
+
+        
+        <!-- Tests Requiring Manual Attention -->
+        <div class="card mt-4 border-warning">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">⚠️ Tests Requiring Manual Attention (61)</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">
+                    The following tests could not be fully automated. Review and fix manually:
+                </p>
+                
+                <div class="mb-3">
+                    <h6 class="text-secondary">🖐️ Manual Testing Required (61)</h6>
+                    <p class="small text-muted">These endpoints cannot be automated (OAuth callbacks, webhooks, etc.):</p>
+                    <ul class="list-group list-group-flush">
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/auth/verify-email</strong>
+                        <br><small class="text-muted">Requires valid 6-digit verification code sent via email; cannot obtain without mail server access.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/auth/reset-password</strong>
+                        <br><small class="text-muted">Requires valid reset token delivered via email; cannot obtain in automated tests.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/documents</strong>
+                        <br><small class="text-muted">Requires multipart/form-data file upload (multer) which is not supported by JSON-only regression runner. Downstream tests use setup fixture.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/documents/templates</strong>
+                        <br><small class="text-muted">Requires either document_id (from multipart upload) or an existing file_path. Both are not available to the JSON runner.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/teams/join/{{static:invalid-invite-token}}</strong>
+                        <br><small class="text-muted">Requires a real invite token emailed to the invitee.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/documents/templates/{{cache:auth.login.response.data.user.id}}/use</strong>
+                        <br><small class="text-muted">Template creation blocked upstream.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/teams/{{cache:teams.create.response.team.id}}/leave</strong>
+                        <br><small class="text-muted">Owner cannot leave their own team; test verifies the guard fires.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/documents/{{cache:auth.login.response.data.user.id}}/versions</strong>
+                        <br><small class="text-muted">Requires multipart upload + existing document id.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/documents/{{cache:auth.login.response.data.user.id}}/versions/{{cache:auth.login.response.data.user.id}}/revert</strong>
+                        <br><small class="text-muted">Requires existing document + version ids.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/documents/{{cache:auth.login.response.data.user.id}}/tags</strong>
+                        <br><small class="text-muted">Requires existing document id.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/billing/checkout</strong>
+                        <br><small class="text-muted">Requires Stripe API credentials; returns 503 when not configured (MUST-15 external integration).</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/billing/portal</strong>
+                        <br><small class="text-muted">Requires Stripe API credentials (MUST-15 external integration).</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/compliance/alerts/config</strong>
+                        <br><small class="text-muted">Admin-only endpoint; default test user has role='user'.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/billing/webhook</strong>
+                        <br><small class="text-muted">Webhook endpoint - requires Stripe signature header and raw body (MUST-15).</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/signatures</strong>
+                        <br><small class="text-muted">Requires a valid document_id; document upload is multipart-only. Test verifies handler wiring with synthetic id.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/signatures/{{cache:auth.register.response.data.user.id}}/confirm</strong>
+                        <br><small class="text-muted">Requires an existing signature id.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/workflows</strong>
+                        <br><small class="text-muted">Requires a valid uploaded document_id (multipart upload not available to runner). 500 = handler invoked correctly with synthetic id.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/sign/{{static:invalid-token}}/started</strong>
+                        <br><small class="text-muted">Public token-based endpoint - requires signing token generated by workflow email delivery.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/sign/{{static:invalid-token}}/complete</strong>
+                        <br><small class="text-muted">Public token-based endpoint - requires signing token generated by workflow email delivery.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/workflows/{{cache:auth.register.response.data.user.id}}/start</strong>
+                        <br><small class="text-muted">Workflow creation requires an uploaded document (multipart); chain not available to JSON runner.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/workflows/{{cache:auth.register.response.data.user.id}}/cancel</strong>
+                        <br><small class="text-muted">Workflow creation requires an uploaded document (multipart); chain not available to JSON runner.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/workflows/{{cache:auth.register.response.data.user.id}}/remind</strong>
+                        <br><small class="text-muted">Workflow creation requires an uploaded document (multipart); chain not available to JSON runner.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>POST /api/workflows/{{cache:auth.register.response.data.user.id}}/self-sign</strong>
+                        <br><small class="text-muted">Workflow creation requires an uploaded document (multipart); chain not available to JSON runner.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>GET /api/auth/sso/callback</strong>
+                        <br><small class="text-muted">OAuth callback - requires real authorization code from provider (MUST-15).</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>GET /api/auth/sso/google</strong>
+                        <br><small class="text-muted">Depends on GOOGLE_CLIENT_ID env var; returns 500 when not configured in CI.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>GET /api/users/roles</strong>
+                        <br><small class="text-muted">Admin-only endpoint.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>GET /api/users</strong>
+                        <br><small class="text-muted">Admin-only endpoint.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>GET /api/notifications/stream</strong>
+                        <br><small class="text-muted">Server-Sent Events stream keeps the connection open; not suitable for the request/response JSON runner.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>GET /api/documents/{{cache:auth.login.response.data.user.id}}</strong>
+                        <br><small class="text-muted">Document upload requires multipart/form-data; no cache-able document id. Uses user id as path placeholder to prove 404.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>GET /api/documents/{{cache:auth.login.response.data.user.id}}/download</strong>
+                        <br><small class="text-muted">Depends on document upload (multipart) not available to JSON runner.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>GET /api/documents/{{cache:auth.login.response.data.user.id}}/file</strong>
+                        <br><small class="text-muted">Depends on document upload (multipart) not available to JSON runner.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>GET /api/teams/join/{{static:invalid-invite-token}}</strong>
+                        <br><small class="text-muted">Requires a real invite token emailed to the invitee; cannot extract from outbound email in runner.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>GET /api/documents/templates/{{cache:auth.login.response.data.user.id}}</strong>
+                        <br><small class="text-muted">Template creation blocked (requires document_id from multipart upload).</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>GET /api/documents/{{cache:auth.login.response.data.user.id}}/versions</strong>
+                        <br><small class="text-muted">Requires existing document id (document upload is multipart).</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>GET /api/documents/{{cache:auth.login.response.data.user.id}}/tags</strong>
+                        <br><small class="text-muted">Requires existing document id.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>GET /api/audit-logs?page=1&limit=10</strong>
+                        <br><small class="text-muted">Admin-only endpoint; default test user has role='user'.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>GET /api/compliance/report?dateFrom=2024-01-01&dateTo=2024-12-31</strong>
+                        <br><small class="text-muted">Admin-only endpoint; default test user has role='user'. Returns 403.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>GET /api/compliance/alerts</strong>
+                        <br><small class="text-muted">Admin-only endpoint.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>GET /api/compliance/export?dateFrom=2024-01-01&dateTo=2024-12-31</strong>
+                        <br><small class="text-muted">Admin-only endpoint; returns text/csv (non-JSON body).</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>GET /api/compliance/esign-metadata/{{cache:auth.register.response.data.user.id}}</strong>
+                        <br><small class="text-muted">Metadata is keyed by real signature_id; uses user id placeholder to prove 404 path.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>GET /api/workflows/{{cache:auth.register.response.data.user.id}}</strong>
+                        <br><small class="text-muted">Workflow creation requires an uploaded document (multipart); chain not available to JSON runner.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>GET /api/sign/{{static:invalid-token}}/document</strong>
+                        <br><small class="text-muted">Public token-based endpoint - requires signing token generated by workflow email delivery.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>GET /api/sign/{{static:invalid-token}}</strong>
+                        <br><small class="text-muted">Public token-based endpoint - requires signing token generated by workflow email delivery.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>GET /api/workflows/{{cache:auth.register.response.data.user.id}}/status</strong>
+                        <br><small class="text-muted">Workflow creation requires an uploaded document (multipart); chain not available to JSON runner.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>GET /api/workflows/{{cache:auth.register.response.data.user.id}}/history</strong>
+                        <br><small class="text-muted">Workflow creation requires an uploaded document (multipart); chain not available to JSON runner.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>GET /api/workflows/{{cache:auth.register.response.data.user.id}}/history/export?format=csv</strong>
+                        <br><small class="text-muted">Returns text/csv non-JSON body; also requires existing workflow.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>GET /api/workflows/{{cache:auth.register.response.data.user.id}}/downloads</strong>
+                        <br><small class="text-muted">Workflow creation requires an uploaded document (multipart); chain not available to JSON runner.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>PUT /api/users/{{cache:auth.register.response.data.user.id}}/role</strong>
+                        <br><small class="text-muted">Admin-only endpoint.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>PUT /api/workflows/{{cache:auth.register.response.data.user.id}}</strong>
+                        <br><small class="text-muted">Workflow creation requires an uploaded document (multipart); chain not available to JSON runner.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>PUT /api/workflows/{{cache:auth.register.response.data.user.id}}/reminders</strong>
+                        <br><small class="text-muted">Workflow creation requires an uploaded document (multipart); chain not available to JSON runner.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>PATCH /api/teams/{{cache:teams.create.response.team.id}}/members/{{cache:auth.register.response.data.user.id}}</strong>
+                        <br><small class="text-muted">Requires a second member in the team (invite acceptance flow). Owner cannot change their own role.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>PATCH /api/signatures/{{cache:auth.register.response.data.user.id}}/sign</strong>
+                        <br><small class="text-muted">Requires an existing signature request id.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>PATCH /api/workflows/{{cache:auth.register.response.data.user.id}}/sign</strong>
+                        <br><small class="text-muted">Workflow creation requires an uploaded document (multipart); chain not available to JSON runner.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>PATCH /api/workflows/{{cache:auth.register.response.data.user.id}}/decline</strong>
+                        <br><small class="text-muted">Workflow creation requires an uploaded document (multipart); chain not available to JSON runner.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>DELETE /api/teams/{{cache:teams.create.response.team.id}}/invites/{{cache:auth.register.response.data.user.id}}</strong>
+                        <br><small class="text-muted">Invite id is not returned by POST invite; cannot build cache chain for the inviteId path param.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>DELETE /api/teams/{{cache:teams.create.response.team.id}}/members/{{cache:auth.register.response.data.user.id}}</strong>
+                        <br><small class="text-muted">Requires a second member (invite acceptance). Owner cannot remove themselves.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>DELETE /api/documents/{{cache:auth.login.response.data.user.id}}/tags/urgent</strong>
+                        <br><small class="text-muted">Requires existing document id.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>DELETE /api/documents/templates/{{cache:auth.login.response.data.user.id}}</strong>
+                        <br><small class="text-muted">Template creation blocked upstream.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>DELETE /api/auth/sessions/{{cache:auth.login.response.data.user.id}}</strong>
+                        <br><small class="text-muted">Requires session id from sessions table; revoking current session would break downstream tests.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>DELETE /api/documents/{{cache:auth.login.response.data.user.id}}</strong>
+                        <br><small class="text-muted">Depends on document upload (multipart) not available to JSON runner.</small>
+                    </li>
+                
+                    <li class="list-group-item list-group-item-secondary">
+                        <strong>DELETE /api/auth/api-keys/{{cache:auth.login.response.data.user.id}}</strong>
+                        <br><small class="text-muted">API key id is not returned by POST /api/auth/api-keys (only prefix is); cannot build cache chain for this DELETE.</small>
+                    </li>
+                </ul>
+                </div>
+            
+                
+            </div>
+        </div>
+        
+
+        <!-- Test Results -->
+        <div class="test-results">
+            <h3>Test Results</h3>
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Status</th>
+                        <th>Method</th>
+                        <th>Endpoint</th>
+                        <th>Code</th>
+                        <th>Time</th>
+                        <th>Setup</th>
+                        <th>Error Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/auth/register</code></td>
+                    <td>201</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/auth/login</code></td>
+                    <td>200</td>
+                    <td>56ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/auth/verify-email</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires valid 6-digit verification code sent via email; cannot obtain without mail server access.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/auth/forgot-password</code></td>
+                    <td>200</td>
+                    <td>19ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/auth/resend-verification</code></td>
+                    <td>200</td>
+                    <td>259ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/auth/reset-password</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires valid reset token delivered via email; cannot obtain in automated tests.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/auth/refresh-token</code></td>
+                    <td>200</td>
+                    <td>24ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/auth/api-keys</code></td>
+                    <td>201</td>
+                    <td>14ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/user-signatures</code></td>
+                    <td>201</td>
+                    <td>10ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/analytics/signature-event</code></td>
+                    <td>201</td>
+                    <td>13ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-danger">✗ FAILED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/notifications/send</code></td>
+                    <td>400</td>
+                    <td>5ms</td>
+                    <td></td>
+                    <td class="small">Status 400 - Error: Missing required fields: userId, type, message, channels (array)</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/documents</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires multipart/form-data file upload (multer) which is not supported by JSON-only regression runner. Downstream tests use setup fixture.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/organizations</code></td>
+                    <td>201</td>
+                    <td>15ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-danger">✗ FAILED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/teams</code></td>
+                    <td>500</td>
+                    <td>9ms</td>
+                    <td></td>
+                    <td class="small">Status 500 - Error: Your current plan (free) does not support teams. Please upgrade to a Team or Scale plan first.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/teams/{{cache:teams.create.response.team.id}}/invite</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['teams']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/documents/templates</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires either document_id (from multipart upload) or an existing file_path. Both are not available to the JSON runner.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/teams/join/{{static:invalid-invite-token}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires a real invite token emailed to the invitee.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/documents/templates/{{cache:auth.login.response.data.user.id}}/use</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Template creation blocked upstream.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/teams/{{cache:teams.create.response.team.id}}/leave</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Owner cannot leave their own team; test verifies the guard fires.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/documents/{{cache:auth.login.response.data.user.id}}/versions</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires multipart upload + existing document id.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/documents/{{cache:auth.login.response.data.user.id}}/versions/{{cache:auth.login.response.data.user.id}}/revert</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires existing document + version ids.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/documents/{{cache:auth.login.response.data.user.id}}/tags</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires existing document id.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/billing/checkout</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires Stripe API credentials; returns 503 when not configured (MUST-15 external integration).</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/billing/portal</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires Stripe API credentials (MUST-15 external integration).</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/compliance/alerts/config</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Admin-only endpoint; default test user has role='user'.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/billing/webhook</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Webhook endpoint - requires Stripe signature header and raw body (MUST-15).</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-danger">✗ FAILED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/compliance/esign-metadata</code></td>
+                    <td>400</td>
+                    <td>7ms</td>
+                    <td></td>
+                    <td class="small">Status 400 - Error: consent_given (boolean) is required</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/signatures</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires a valid document_id; document upload is multipart-only. Test verifies handler wiring with synthetic id.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/signatures/{{cache:auth.register.response.data.user.id}}/confirm</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires an existing signature id.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/workflows</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires a valid uploaded document_id (multipart upload not available to runner). 500 = handler invoked correctly with synthetic id.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/workflows/admin/process-completions</code></td>
+                    <td>200</td>
+                    <td>9ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/sign/{{static:invalid-token}}/started</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Public token-based endpoint - requires signing token generated by workflow email delivery.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/sign/{{static:invalid-token}}/complete</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Public token-based endpoint - requires signing token generated by workflow email delivery.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/workflows/{{cache:auth.register.response.data.user.id}}/start</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Workflow creation requires an uploaded document (multipart); chain not available to JSON runner.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/workflows/{{cache:auth.register.response.data.user.id}}/cancel</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Workflow creation requires an uploaded document (multipart); chain not available to JSON runner.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/workflows/{{cache:auth.register.response.data.user.id}}/remind</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Workflow creation requires an uploaded document (multipart); chain not available to JSON runner.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>POST</code></td>
+                    <td><code>/api/workflows/{{cache:auth.register.response.data.user.id}}/self-sign</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Workflow creation requires an uploaded document (multipart); chain not available to JSON runner.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/auth/sso/callback</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">OAuth callback - requires real authorization code from provider (MUST-15).</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/auth/sso/google</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Depends on GOOGLE_CLIENT_ID env var; returns 500 when not configured in CI.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/auth/me</code></td>
+                    <td>200</td>
+                    <td>5ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/auth/profile</code></td>
+                    <td>200</td>
+                    <td>6ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/auth/sessions</code></td>
+                    <td>200</td>
+                    <td>6ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/users/roles</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Admin-only endpoint.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/users</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Admin-only endpoint.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/auth/api-keys</code></td>
+                    <td>200</td>
+                    <td>9ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/user-signatures</code></td>
+                    <td>200</td>
+                    <td>10ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/user-signatures/{{cache:userSignatures.create.response.data.userSignature.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['userSignatures']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/notifications</code></td>
+                    <td>200</td>
+                    <td>10ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/notifications/stream</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Server-Sent Events stream keeps the connection open; not suitable for the request/response JSON runner.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/notifications/preferences</code></td>
+                    <td>200</td>
+                    <td>9ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/organizations/{{cache:organizations.create.response.data.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['organizations']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/documents</code></td>
+                    <td>200</td>
+                    <td>9ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/documents/search?q=contract</code></td>
+                    <td>200</td>
+                    <td>9ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/documents/{{cache:auth.login.response.data.user.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Document upload requires multipart/form-data; no cache-able document id. Uses user id as path placeholder to prove 404.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/documents/{{cache:auth.login.response.data.user.id}}/download</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Depends on document upload (multipart) not available to JSON runner.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/documents/{{cache:auth.login.response.data.user.id}}/file</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Depends on document upload (multipart) not available to JSON runner.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-danger">✗ FAILED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/teams/mine</code></td>
+                    <td>404</td>
+                    <td>7ms</td>
+                    <td></td>
+                    <td class="small">Status 404 - Error: You are not a member of any team</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/teams/{{cache:teams.create.response.team.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['teams']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/teams/join/{{static:invalid-invite-token}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires a real invite token emailed to the invitee; cannot extract from outbound email in runner.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/documents/templates</code></td>
+                    <td>200</td>
+                    <td>7ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/documents/templates/{{cache:auth.login.response.data.user.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Template creation blocked (requires document_id from multipart upload).</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/documents/{{cache:auth.login.response.data.user.id}}/versions</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires existing document id (document upload is multipart).</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/documents/{{cache:auth.login.response.data.user.id}}/tags</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires existing document id.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/audit-logs?page=1&limit=10</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Admin-only endpoint; default test user has role='user'.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/compliance/report?dateFrom=2024-01-01&dateTo=2024-12-31</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Admin-only endpoint; default test user has role='user'. Returns 403.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/billing/subscription</code></td>
+                    <td>200</td>
+                    <td>9ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/compliance/alerts</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Admin-only endpoint.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/compliance/export?dateFrom=2024-01-01&dateTo=2024-12-31</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Admin-only endpoint; returns text/csv (non-JSON body).</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/compliance/esign-metadata/{{cache:auth.register.response.data.user.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Metadata is keyed by real signature_id; uses user id placeholder to prove 404 path.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/signatures/{{cache:auth.register.response.data.user.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['auth']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/workflows</code></td>
+                    <td>200</td>
+                    <td>13ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/workflows/{{cache:auth.register.response.data.user.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Workflow creation requires an uploaded document (multipart); chain not available to JSON runner.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/sign/{{static:invalid-token}}/document</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Public token-based endpoint - requires signing token generated by workflow email delivery.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/sign/{{static:invalid-token}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Public token-based endpoint - requires signing token generated by workflow email delivery.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/workflows/{{cache:auth.register.response.data.user.id}}/status</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Workflow creation requires an uploaded document (multipart); chain not available to JSON runner.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/workflows/{{cache:auth.register.response.data.user.id}}/history</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Workflow creation requires an uploaded document (multipart); chain not available to JSON runner.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/workflows/{{cache:auth.register.response.data.user.id}}/history/export?format=csv</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Returns text/csv non-JSON body; also requires existing workflow.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>GET</code></td>
+                    <td><code>/api/workflows/{{cache:auth.register.response.data.user.id}}/downloads</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Workflow creation requires an uploaded document (multipart); chain not available to JSON runner.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>PUT</code></td>
+                    <td><code>/api/auth/profile</code></td>
+                    <td>200</td>
+                    <td>9ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-danger">✗ FAILED</span></td>
+                    <td><code>PUT</code></td>
+                    <td><code>/api/users/language</code></td>
+                    <td>400</td>
+                    <td>5ms</td>
+                    <td></td>
+                    <td class="small">Status 400 - Error: language_preference is required and must be a string</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>PUT</code></td>
+                    <td><code>/api/users/{{cache:auth.register.response.data.user.id}}/role</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Admin-only endpoint.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>PUT</code></td>
+                    <td><code>/api/user-signatures/{{cache:userSignatures.create.response.data.userSignature.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['userSignatures']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-danger">✗ FAILED</span></td>
+                    <td><code>PUT</code></td>
+                    <td><code>/api/notifications/preferences</code></td>
+                    <td>400</td>
+                    <td>4ms</td>
+                    <td></td>
+                    <td class="small">Status 400 - Error: Missing required field: preferences (array)</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>PUT</code></td>
+                    <td><code>/api/workflows/{{cache:auth.register.response.data.user.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Workflow creation requires an uploaded document (multipart); chain not available to JSON runner.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>PUT</code></td>
+                    <td><code>/api/workflows/{{cache:auth.register.response.data.user.id}}/reminders</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Workflow creation requires an uploaded document (multipart); chain not available to JSON runner.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-success">✓ PASSED</span></td>
+                    <td><code>PATCH</code></td>
+                    <td><code>/api/notifications/read</code></td>
+                    <td>200</td>
+                    <td>5ms</td>
+                    <td></td>
+                    <td class="small">None</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>PATCH</code></td>
+                    <td><code>/api/teams/{{cache:teams.create.response.team.id}}/members/{{cache:auth.register.response.data.user.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires a second member in the team (invite acceptance flow). Owner cannot change their own role.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>PATCH</code></td>
+                    <td><code>/api/signatures/{{cache:auth.register.response.data.user.id}}/sign</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires an existing signature request id.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>PATCH</code></td>
+                    <td><code>/api/workflows/{{cache:auth.register.response.data.user.id}}/sign</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Workflow creation requires an uploaded document (multipart); chain not available to JSON runner.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>PATCH</code></td>
+                    <td><code>/api/workflows/{{cache:auth.register.response.data.user.id}}/decline</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Workflow creation requires an uploaded document (multipart); chain not available to JSON runner.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>DELETE</code></td>
+                    <td><code>/api/teams/{{cache:teams.create.response.team.id}}/invites/{{cache:auth.register.response.data.user.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Invite id is not returned by POST invite; cannot build cache chain for the inviteId path param.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>DELETE</code></td>
+                    <td><code>/api/teams/{{cache:teams.create.response.team.id}}/members/{{cache:auth.register.response.data.user.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires a second member (invite acceptance). Owner cannot remove themselves.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>DELETE</code></td>
+                    <td><code>/api/documents/{{cache:auth.login.response.data.user.id}}/tags/urgent</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires existing document id.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>DELETE</code></td>
+                    <td><code>/api/documents/templates/{{cache:auth.login.response.data.user.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Template creation blocked upstream.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>DELETE</code></td>
+                    <td><code>/api/auth/sessions/{{cache:auth.login.response.data.user.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Requires session id from sessions table; revoking current session would break downstream tests.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>DELETE</code></td>
+                    <td><code>/api/documents/{{cache:auth.login.response.data.user.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Depends on document upload (multipart) not available to JSON runner.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>DELETE</code></td>
+                    <td><code>/api/auth/api-keys/{{cache:auth.login.response.data.user.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">API key id is not returned by POST /api/auth/api-keys (only prefix is); cannot build cache chain for this DELETE.</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>DELETE</code></td>
+                    <td><code>/api/teams/{{cache:teams.create.response.team.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['teams']</td>
+                </tr>
+            
+
+                <tr>
+                    <td><span class="badge bg-warning">⏭ SKIPPED</span></td>
+                    <td><code>DELETE</code></td>
+                    <td><code>/api/user-signatures/{{cache:userSignatures.create.response.data.userSignature.id}}</code></td>
+                    <td>None</td>
+                    <td>0ms</td>
+                    <td></td>
+                    <td class="small">Skipped - no captured values for path params: ['userSignatures']</td>
+                </tr>
+            
+                </tbody>
+            </table>
+        </div>
+
+        
+        <!-- Failed Tests Debug Section -->
+        <div class="debug-section">
+            <h3 class="text-danger">🔍 Failed Tests - Debug Information</h3>
+            <p class="text-muted">Copy the curl commands below to reproduce the failed requests locally.</p>
+            
+            <div class="card mb-3 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <strong>❌ POST /api/notifications/send</strong>
+                    <span class="badge bg-dark ms-2">Status: 400</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Error:</strong> Status 400 - Error: Missing required fields: userId, type, message, channels (array)</p>
+                    <p><strong>Full URL:</strong> <code>http://localhost:3002/api/notifications/send</code></p>
+
+                    
+                    <div class="alert alert-warning mb-3">
+                        <h6 class="alert-heading">
+                            📊 Error Category: <strong>Validation Error</strong>
+                            <span class="badge bg-warning ms-2">validation</span>
+                            
+                        </h6>
+                        <hr>
+                        <div class="small" style="white-space: pre-wrap;">**Actual server response:** Status 400 - Error: Missing required fields: userId, type, message, channels (array)<br><br>Fix the request payload to match whatever the server says is missing/invalid above. Common patterns:<br>- If the server names specific required fields, add them to `testCases[0].payload` in this endpoint&#x27;s api_definition JSON.<br>- If the server says a field format is wrong, replace the literal with a `{{{{dynamic:&lt;type&gt;}}}}` placeholder (email, uuid, phone, date_future, etc.).<br>- If a field must reference another endpoint&#x27;s output, use `{{{{cache:&lt;resource&gt;.create.response.data.&lt;field&gt;}}}}` and add that endpoint to `dependsOn`.</div>
+                    </div>
+                
+
+                    <div class="mb-3">
+                        <strong>📋 Request Body:</strong>
+                        <pre class="response-preview mt-2">{
+  &quot;user_id&quot;: &quot;c78e3140-2642-469c-aa34-ac6eb02dc24c&quot;,
+  &quot;type&quot;: &quot;info&quot;,
+  &quot;channel&quot;: &quot;in_app&quot;,
+  &quot;title&quot;: &quot;Test User_520922&quot;,
+  &quot;message&quot;: &quot;text_520922&quot;
+}</pre>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>🔧 CURL Command (copy to debug locally):</strong>
+                        <div class="curl-container mt-2">
+                            <pre class="curl-command" id="curl_0">curl \
+  -X \
+  POST \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Accept: application/json&quot; \
+  -H &quot;Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjNzhlMzE0MC0yNjQyLTQ2OWMtYWEzNC1hYzZlYjAyZGMyNGMiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzY5NTIwLCJleHAiOjE3NzY5NzQzMjB9.sp7njp0s20NTA9_BLvGLOPcvNDkW5YSE0R3Y6jv5iWY&quot; \
+  -d &#x27;{
+  &quot;user_id&quot;: &quot;c78e3140-2642-469c-aa34-ac6eb02dc24c&quot;,
+  &quot;type&quot;: &quot;info&quot;,
+  &quot;channel&quot;: &quot;in_app&quot;,
+  &quot;title&quot;: &quot;Test User_520922&quot;,
+  &quot;message&quot;: &quot;text_520922&quot;
+}&#x27; \
+  &quot;http://localhost:3002/api/notifications/send&quot;</pre>
+                            <button class="btn btn-sm btn-outline-light copy-btn" onclick="copyToClipboard('curl_0')">📋 Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <strong>📄 Response Body:</strong>
+                        <pre class="response-preview mt-2">{&#x27;success&#x27;: False, &#x27;error&#x27;: &#x27;Missing required fields: userId, type, message, channels (array)&#x27;}</pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-3 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <strong>❌ POST /api/teams</strong>
+                    <span class="badge bg-dark ms-2">Status: 500</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Error:</strong> Status 500 - Error: Your current plan (free) does not support teams. Please upgrade to a Team or Scale plan first.</p>
+                    <p><strong>Full URL:</strong> <code>http://localhost:3002/api/teams</code></p>
+
+                    
+                    <div class="alert alert-danger mb-3">
+                        <h6 class="alert-heading">
+                            📊 Error Category: <strong>Server Error (500)</strong>
+                            <span class="badge bg-danger ms-2">server_error</span>
+                            
+                        </h6>
+                        <hr>
+                        <div class="small" style="white-space: pre-wrap;">**Actual server response:** Status 500 - Error: Your current plan (free) does not support teams. Please upgrade to a Team or Scale plan first.<br><br>This is a problem on the server side, not in the test. Read the message above for the specific cause (e.g. &#x27;Stripe is not configured&#x27;, &#x27;plan does not support X&#x27;, &#x27;Database query failed: &lt;sql error&gt;&#x27;). Fix the server or mark the test as environment-dependent if the cause is missing infrastructure (Stripe keys, feature flags).</div>
+                    </div>
+                
+
+                    <div class="mb-3">
+                        <strong>📋 Request Body:</strong>
+                        <pre class="response-preview mt-2">{
+  &quot;name&quot;: &quot;Test User_520944&quot;,
+  &quot;plan&quot;: &quot;team&quot;
+}</pre>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>🔧 CURL Command (copy to debug locally):</strong>
+                        <div class="curl-container mt-2">
+                            <pre class="curl-command" id="curl_1">curl \
+  -X \
+  POST \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Accept: application/json&quot; \
+  -H &quot;Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjNzhlMzE0MC0yNjQyLTQ2OWMtYWEzNC1hYzZlYjAyZGMyNGMiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzY5NTIwLCJleHAiOjE3NzY5NzQzMjB9.sp7njp0s20NTA9_BLvGLOPcvNDkW5YSE0R3Y6jv5iWY&quot; \
+  -d &#x27;{
+  &quot;name&quot;: &quot;Test User_520944&quot;,
+  &quot;plan&quot;: &quot;team&quot;
+}&#x27; \
+  &quot;http://localhost:3002/api/teams&quot;</pre>
+                            <button class="btn btn-sm btn-outline-light copy-btn" onclick="copyToClipboard('curl_1')">📋 Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <strong>📄 Response Body:</strong>
+                        <pre class="response-preview mt-2">{&#x27;success&#x27;: False, &#x27;error&#x27;: &#x27;Your current plan (free) does not support teams. Please upgrade to a Team or Scale plan first.&#x27;}</pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-3 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <strong>❌ POST /api/compliance/esign-metadata</strong>
+                    <span class="badge bg-dark ms-2">Status: 400</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Error:</strong> Status 400 - Error: consent_given (boolean) is required</p>
+                    <p><strong>Full URL:</strong> <code>http://localhost:3002/api/compliance/esign-metadata</code></p>
+
+                    
+                    <div class="alert alert-warning mb-3">
+                        <h6 class="alert-heading">
+                            📊 Error Category: <strong>Validation Error</strong>
+                            <span class="badge bg-warning ms-2">validation</span>
+                            
+                        </h6>
+                        <hr>
+                        <div class="small" style="white-space: pre-wrap;">**Actual server response:** Status 400 - Error: consent_given (boolean) is required<br><br>Fix the request payload to match whatever the server says is missing/invalid above. Common patterns:<br>- If the server names specific required fields, add them to `testCases[0].payload` in this endpoint&#x27;s api_definition JSON.<br>- If the server says a field format is wrong, replace the literal with a `{{{{dynamic:&lt;type&gt;}}}}` placeholder (email, uuid, phone, date_future, etc.).<br>- If a field must reference another endpoint&#x27;s output, use `{{{{cache:&lt;resource&gt;.create.response.data.&lt;field&gt;}}}}` and add that endpoint to `dependsOn`.</div>
+                    </div>
+                
+
+                    <div class="mb-3">
+                        <strong>📋 Request Body:</strong>
+                        <pre class="response-preview mt-2">{
+  &quot;signature_id&quot;: &quot;c78e3140-2642-469c-aa34-ac6eb02dc24c&quot;,
+  &quot;consent_timestamp&quot;: &quot;2026-04-16T19:58:40.956465&quot;,
+  &quot;ip_address&quot;: &quot;127.0.0.1&quot;,
+  &quot;user_agent&quot;: &quot;regression-runner&quot;,
+  &quot;language&quot;: &quot;en&quot;
+}</pre>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>🔧 CURL Command (copy to debug locally):</strong>
+                        <div class="curl-container mt-2">
+                            <pre class="curl-command" id="curl_2">curl \
+  -X \
+  POST \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Accept: application/json&quot; \
+  -H &quot;Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjNzhlMzE0MC0yNjQyLTQ2OWMtYWEzNC1hYzZlYjAyZGMyNGMiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzY5NTIwLCJleHAiOjE3NzY5NzQzMjB9.sp7njp0s20NTA9_BLvGLOPcvNDkW5YSE0R3Y6jv5iWY&quot; \
+  -d &#x27;{
+  &quot;signature_id&quot;: &quot;c78e3140-2642-469c-aa34-ac6eb02dc24c&quot;,
+  &quot;consent_timestamp&quot;: &quot;2026-04-16T19:58:40.956465&quot;,
+  &quot;ip_address&quot;: &quot;127.0.0.1&quot;,
+  &quot;user_agent&quot;: &quot;regression-runner&quot;,
+  &quot;language&quot;: &quot;en&quot;
+}&#x27; \
+  &quot;http://localhost:3002/api/compliance/esign-metadata&quot;</pre>
+                            <button class="btn btn-sm btn-outline-light copy-btn" onclick="copyToClipboard('curl_2')">📋 Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <strong>📄 Response Body:</strong>
+                        <pre class="response-preview mt-2">{&#x27;success&#x27;: False, &#x27;error&#x27;: &#x27;consent_given (boolean) is required&#x27;}</pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-3 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <strong>❌ GET /api/teams/mine</strong>
+                    <span class="badge bg-dark ms-2">Status: 404</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Error:</strong> Status 404 - Error: You are not a member of any team</p>
+                    <p><strong>Full URL:</strong> <code>http://localhost:3002/api/teams/mine</code></p>
+
+                    
+                    <div class="alert alert-warning mb-3">
+                        <h6 class="alert-heading">
+                            📊 Error Category: <strong>Resource Not Found</strong>
+                            <span class="badge bg-warning ms-2">not_found</span>
+                            
+                        </h6>
+                        <hr>
+                        <div class="small" style="white-space: pre-wrap;">**Actual server response:** Status 404 - Error: You are not a member of any team<br><br>**Request:** GET /api/teams/mine<br><br>The server says the resource or route doesn&#x27;t exist. Interpret based on what the message actually says:<br>- &#x27;Document/User/Workflow not found&#x27; → a path-param id points to a record that doesn&#x27;t exist in the DB. Check that the POST which creates this resource ran first and its id got captured via `captureResponse`.<br>- &#x27;Cannot GET /foo&#x27; (Express-style) → the route itself doesn&#x27;t exist on the server. Check the endpoint path and the method are correct for the current code.</div>
+                    </div>
+                
+
+                    <div class="mb-3">
+                        <strong>📋 Request Body:</strong>
+                        <pre class="response-preview mt-2">No request body</pre>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>🔧 CURL Command (copy to debug locally):</strong>
+                        <div class="curl-container mt-2">
+                            <pre class="curl-command" id="curl_3">curl \
+  -X \
+  GET \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Accept: application/json&quot; \
+  -H &quot;Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjNzhlMzE0MC0yNjQyLTQ2OWMtYWEzNC1hYzZlYjAyZGMyNGMiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzY5NTIwLCJleHAiOjE3NzY5NzQzMjB9.sp7njp0s20NTA9_BLvGLOPcvNDkW5YSE0R3Y6jv5iWY&quot; \
+  &quot;http://localhost:3002/api/teams/mine&quot;</pre>
+                            <button class="btn btn-sm btn-outline-light copy-btn" onclick="copyToClipboard('curl_3')">📋 Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <strong>📄 Response Body:</strong>
+                        <pre class="response-preview mt-2">{&#x27;success&#x27;: False, &#x27;error&#x27;: &#x27;You are not a member of any team&#x27;}</pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-3 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <strong>❌ PUT /api/users/language</strong>
+                    <span class="badge bg-dark ms-2">Status: 400</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Error:</strong> Status 400 - Error: language_preference is required and must be a string</p>
+                    <p><strong>Full URL:</strong> <code>http://localhost:3002/api/users/language</code></p>
+
+                    
+                    <div class="alert alert-warning mb-3">
+                        <h6 class="alert-heading">
+                            📊 Error Category: <strong>Validation Error</strong>
+                            <span class="badge bg-warning ms-2">validation</span>
+                            
+                        </h6>
+                        <hr>
+                        <div class="small" style="white-space: pre-wrap;">**Actual server response:** Status 400 - Error: language_preference is required and must be a string<br><br>Fix the request payload to match whatever the server says is missing/invalid above. Common patterns:<br>- If the server names specific required fields, add them to `testCases[0].payload` in this endpoint&#x27;s api_definition JSON.<br>- If the server says a field format is wrong, replace the literal with a `{{{{dynamic:&lt;type&gt;}}}}` placeholder (email, uuid, phone, date_future, etc.).<br>- If a field must reference another endpoint&#x27;s output, use `{{{{cache:&lt;resource&gt;.create.response.data.&lt;field&gt;}}}}` and add that endpoint to `dependsOn`.</div>
+                    </div>
+                
+
+                    <div class="mb-3">
+                        <strong>📋 Request Body:</strong>
+                        <pre class="response-preview mt-2">{
+  &quot;language&quot;: &quot;en&quot;
+}</pre>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>🔧 CURL Command (copy to debug locally):</strong>
+                        <div class="curl-container mt-2">
+                            <pre class="curl-command" id="curl_4">curl \
+  -X \
+  PUT \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Accept: application/json&quot; \
+  -H &quot;Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjNzhlMzE0MC0yNjQyLTQ2OWMtYWEzNC1hYzZlYjAyZGMyNGMiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzY5NTIwLCJleHAiOjE3NzY5NzQzMjB9.sp7njp0s20NTA9_BLvGLOPcvNDkW5YSE0R3Y6jv5iWY&quot; \
+  -d &#x27;{
+  &quot;language&quot;: &quot;en&quot;
+}&#x27; \
+  &quot;http://localhost:3002/api/users/language&quot;</pre>
+                            <button class="btn btn-sm btn-outline-light copy-btn" onclick="copyToClipboard('curl_4')">📋 Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <strong>📄 Response Body:</strong>
+                        <pre class="response-preview mt-2">{&#x27;success&#x27;: False, &#x27;error&#x27;: &#x27;language_preference is required and must be a string&#x27;}</pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-3 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <strong>❌ PUT /api/notifications/preferences</strong>
+                    <span class="badge bg-dark ms-2">Status: 400</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Error:</strong> Status 400 - Error: Missing required field: preferences (array)</p>
+                    <p><strong>Full URL:</strong> <code>http://localhost:3002/api/notifications/preferences</code></p>
+
+                    
+                    <div class="alert alert-warning mb-3">
+                        <h6 class="alert-heading">
+                            📊 Error Category: <strong>Validation Error</strong>
+                            <span class="badge bg-warning ms-2">validation</span>
+                            
+                        </h6>
+                        <hr>
+                        <div class="small" style="white-space: pre-wrap;">**Actual server response:** Status 400 - Error: Missing required field: preferences (array)<br><br>Fix the request payload to match whatever the server says is missing/invalid above. Common patterns:<br>- If the server names specific required fields, add them to `testCases[0].payload` in this endpoint&#x27;s api_definition JSON.<br>- If the server says a field format is wrong, replace the literal with a `{{{{dynamic:&lt;type&gt;}}}}` placeholder (email, uuid, phone, date_future, etc.).<br>- If a field must reference another endpoint&#x27;s output, use `{{{{cache:&lt;resource&gt;.create.response.data.&lt;field&gt;}}}}` and add that endpoint to `dependsOn`.</div>
+                    </div>
+                
+
+                    <div class="mb-3">
+                        <strong>📋 Request Body:</strong>
+                        <pre class="response-preview mt-2">{
+  &quot;email_enabled&quot;: true,
+  &quot;sms_enabled&quot;: false,
+  &quot;in_app_enabled&quot;: true
+}</pre>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>🔧 CURL Command (copy to debug locally):</strong>
+                        <div class="curl-container mt-2">
+                            <pre class="curl-command" id="curl_5">curl \
+  -X \
+  PUT \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Accept: application/json&quot; \
+  -H &quot;Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjNzhlMzE0MC0yNjQyLTQ2OWMtYWEzNC1hYzZlYjAyZGMyNGMiLCJlbWFpbCI6InFhX3Rlc3RfMTc3NjMxNjE4OEBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc2MzY5NTIwLCJleHAiOjE3NzY5NzQzMjB9.sp7njp0s20NTA9_BLvGLOPcvNDkW5YSE0R3Y6jv5iWY&quot; \
+  -d &#x27;{
+  &quot;email_enabled&quot;: true,
+  &quot;sms_enabled&quot;: false,
+  &quot;in_app_enabled&quot;: true
+}&#x27; \
+  &quot;http://localhost:3002/api/notifications/preferences&quot;</pre>
+                            <button class="btn btn-sm btn-outline-light copy-btn" onclick="copyToClipboard('curl_5')">📋 Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <strong>📄 Response Body:</strong>
+                        <pre class="response-preview mt-2">{&#x27;success&#x27;: False, &#x27;error&#x27;: &#x27;Missing required field: preferences (array)&#x27;}</pre>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
+
+        <div class="mt-4 mb-4">
+            <p class="text-muted">
+                Report generated by ProjexLight MCP Server<br>
+                For feedback and fixes, check <code>.projexlight/feedback/</code> directory
+            </p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = event.target;
+                const originalText = btn.innerText;
+                btn.innerText = 'Copied!';
+                setTimeout(() => { btn.innerText = originalText; }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
+        

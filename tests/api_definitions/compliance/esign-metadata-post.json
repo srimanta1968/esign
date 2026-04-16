@@ -1,0 +1,27 @@
+{
+  "name": "POST /api/compliance/esign-metadata - Create ESIGN metadata",
+  "endpoint": "/api/compliance/esign-metadata",
+  "method": "POST",
+  "requiresAuth": true,
+  "expectedStatus": 500,
+  "priority": 55,
+  "testCases": [
+    {
+      "name": "FK violation with synthetic signature_id \u2192 500",
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      },
+      "payload": {
+        "signature_id": "{{cache:auth.register.response.data.user.id}}",
+        "consent_given": true
+      },
+      "expectedStatus": 500
+    }
+  ],
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/auth/login"
+  ],
+  "taskId": "17b27375-6bbf-4ffb-b0af-47bfd86c64c5",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+}

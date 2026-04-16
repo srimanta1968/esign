@@ -1,0 +1,29 @@
+{
+  "name": "POST /api/workflows/:id/self-sign - Self-sign workflow",
+  "endpoint": "/api/workflows/:id/self-sign",
+  "method": "POST",
+  "requiresAuth": true,
+  "expectedStatus": 400,
+  "priority": 79,
+  "testCases": [
+    {
+      "name": "POST non-existent workflow \u2192 400",
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      },
+      "expectedStatus": 400,
+      "payload": {
+        "signatures": []
+      },
+      "pathParams": {
+        "id": "{{cache:auth.register.response.data.user.id}}"
+      }
+    }
+  ],
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/auth/login"
+  ],
+  "taskId": "17b27375-6bbf-4ffb-b0af-47bfd86c64c5",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+}

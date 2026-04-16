@@ -1,0 +1,20 @@
+{
+  "name": "GET /api/auth/sso/:provider - SSO redirect URL",
+  "endpoint": "/api/auth/sso/:provider",
+  "method": "GET",
+  "requiresAuth": false,
+  "expectedStatus": 200,
+  "priority": 3,
+  "testCases": [
+    {
+      "name": "Get Google SSO redirect URL",
+      "expectedStatus": 200,
+      "pathParams": {
+        "provider": "{{static:google}}"
+      }
+    }
+  ],
+  "dependsOn": [],
+  "taskId": "17b27375-6bbf-4ffb-b0af-47bfd86c64c5",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+}

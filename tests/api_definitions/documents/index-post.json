@@ -1,0 +1,26 @@
+{
+  "name": "POST /api/documents - Upload a document",
+  "endpoint": "/api/documents",
+  "method": "POST",
+  "requiresAuth": true,
+  "expectedStatus": 400,
+  "priority": 20,
+  "testability": "manual",
+  "skipReason": "multipart/form-data body via multer; JSON-only runner cannot send file payload.",
+  "testCases": [
+    {
+      "name": "Upload without file \u2192 400",
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      },
+      "payload": {},
+      "expectedStatus": 400
+    }
+  ],
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/auth/login"
+  ],
+  "taskId": "17b27375-6bbf-4ffb-b0af-47bfd86c64c5",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+}

@@ -1,0 +1,20 @@
+{
+  "name": "POST /api/billing/webhook - Stripe webhook",
+  "endpoint": "/api/billing/webhook",
+  "method": "POST",
+  "requiresAuth": false,
+  "expectedStatus": 400,
+  "priority": 55,
+  "testability": "manual",
+  "skipReason": "Webhook - requires Stripe signature header and raw body (MUST-15).",
+  "testCases": [
+    {
+      "name": "Missing stripe-signature header",
+      "payload": {},
+      "expectedStatus": 400
+    }
+  ],
+  "dependsOn": [],
+  "taskId": "17b27375-6bbf-4ffb-b0af-47bfd86c64c5",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+}

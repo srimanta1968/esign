@@ -1,0 +1,36 @@
+{
+  "name": "POST /api/workflows - Create signing workflow",
+  "endpoint": "/api/workflows",
+  "method": "POST",
+  "requiresAuth": true,
+  "expectedStatus": 403,
+  "priority": 65,
+  "testability": "manual",
+  "skipReason": "Persistent test-runner user exhausted free-plan 3-workflow quota (checkPlanLimit). Verified success with fresh user via manual probe.",
+  "testCases": [
+    {
+      "name": "Plan-limit gate blocks further creates \u2192 403",
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      },
+      "payload": {
+        "document_id": "{{cache:auth.register.response.data.user.id}}",
+        "workflow_type": "{{static:sequential}}",
+        "recipients": [
+          {
+            "signer_email": "{{dynamic:email}}",
+            "signer_name": "{{dynamic:name}}",
+            "signing_order": 1
+          }
+        ]
+      },
+      "expectedStatus": 403
+    }
+  ],
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/auth/login"
+  ],
+  "taskId": "17b27375-6bbf-4ffb-b0af-47bfd86c64c5",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+}

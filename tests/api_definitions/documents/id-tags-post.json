@@ -1,0 +1,32 @@
+{
+  "name": "POST /api/documents/:id/tags - Add tags",
+  "endpoint": "/api/documents/:id/tags",
+  "method": "POST",
+  "requiresAuth": true,
+  "expectedStatus": 404,
+  "priority": 40,
+  "testCases": [
+    {
+      "name": "Tags on non-existent document \u2192 404",
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      },
+      "payload": {
+        "tags": [
+          "contract",
+          "urgent"
+        ]
+      },
+      "expectedStatus": 404,
+      "pathParams": {
+        "id": "{{cache:auth.register.response.data.user.id}}"
+      }
+    }
+  ],
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/auth/login"
+  ],
+  "taskId": "17b27375-6bbf-4ffb-b0af-47bfd86c64c5",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+}

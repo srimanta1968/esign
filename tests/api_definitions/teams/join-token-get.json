@@ -1,0 +1,20 @@
+{
+  "name": "GET /api/teams/join/:token - Invite info (public)",
+  "endpoint": "/api/teams/join/:token",
+  "method": "GET",
+  "requiresAuth": false,
+  "expectedStatus": 404,
+  "priority": 29,
+  "testCases": [
+    {
+      "name": "Invalid invite token \u2192 404",
+      "expectedStatus": 404,
+      "pathParams": {
+        "token": "{{static:invalid-invite-token}}"
+      }
+    }
+  ],
+  "dependsOn": [],
+  "taskId": "17b27375-6bbf-4ffb-b0af-47bfd86c64c5",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "PATCH /api/signatures/:id/sign - Record signature",
+  "endpoint": "/api/signatures/:id/sign",
+  "method": "PATCH",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "priority": 62,
+  "testCases": [
+    {
+      "name": "Sign captured signature id",
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      },
+      "payload": {
+        "signature_data": "{{static:data:image/png;base64,iVBORw0KG}}"
+      },
+      "expectedStatus": 200,
+      "pathParams": {
+        "id": "{{cache:signatures.create.response.data.signature.id}}"
+      }
+    }
+  ],
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/auth/login",
+    "POST /api/signatures"
+  ],
+  "taskId": "17b27375-6bbf-4ffb-b0af-47bfd86c64c5",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+}

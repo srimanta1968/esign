@@ -1,0 +1,30 @@
+{
+  "name": "DELETE /api/user-signatures/:id - Delete signature",
+  "endpoint": "/api/user-signatures/:id",
+  "method": "DELETE",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "priority": 99,
+  "testCases": [
+    {
+      "name": "Delete my signature",
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      },
+      "expectedStatus": 200,
+      "pathParams": {
+        "id": "{{cache:userSignatures.create.response.data.userSignature.id}}"
+      }
+    }
+  ],
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/auth/login",
+    "POST /api/user-signatures",
+    "GET /api/user-signatures",
+    "GET /api/user-signatures/:id",
+    "PUT /api/user-signatures/:id"
+  ],
+  "taskId": "17b27375-6bbf-4ffb-b0af-47bfd86c64c5",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+}

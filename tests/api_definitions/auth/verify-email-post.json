@@ -1,0 +1,23 @@
+{
+  "name": "POST /api/auth/verify-email - Verify email with code",
+  "endpoint": "/api/auth/verify-email",
+  "method": "POST",
+  "requiresAuth": false,
+  "expectedStatus": 400,
+  "priority": 3,
+  "testCases": [
+    {
+      "name": "Invalid verification code",
+      "payload": {
+        "email": "{{cache:auth.register.response.data.user.email}}",
+        "code": "{{static:000000}}"
+      },
+      "expectedStatus": 400
+    }
+  ],
+  "dependsOn": [
+    "POST /api/auth/register"
+  ],
+  "taskId": "17b27375-6bbf-4ffb-b0af-47bfd86c64c5",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+}

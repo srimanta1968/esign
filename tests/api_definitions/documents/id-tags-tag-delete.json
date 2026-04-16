@@ -1,0 +1,27 @@
+{
+  "name": "DELETE /api/documents/:id/tags/:tag - Remove tag",
+  "endpoint": "/api/documents/:id/tags/:tag",
+  "method": "DELETE",
+  "requiresAuth": true,
+  "expectedStatus": 404,
+  "priority": 42,
+  "testCases": [
+    {
+      "name": "Remove tag from non-existent document \u2192 404",
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.login.response.data.token}}"
+      },
+      "expectedStatus": 404,
+      "pathParams": {
+        "id": "{{cache:auth.register.response.data.user.id}}",
+        "tag": "{{static:urgent}}"
+      }
+    }
+  ],
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/auth/login"
+  ],
+  "taskId": "17b27375-6bbf-4ffb-b0af-47bfd86c64c5",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+}

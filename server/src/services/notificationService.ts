@@ -80,13 +80,15 @@ export class NotificationService {
   }
 
   /**
-   * Get all notifications for a user.
+   * Get the latest notifications for a user. Caps at 10 — older notifications
+   * are visible only via the dedicated history page (none today) and are
+   * auto-pruned by pruneOldNotifications().
    */
   static async getByUserId(userId: string): Promise<NotificationResponse[]> {
     try {
       await NotificationService.ensureSchema();
       const notifications = await DataService.queryAll<Notification>(
-        'SELECT id, user_id, type, message, is_read, action_url, created_at FROM notifications WHERE user_id = $1 ORDER BY created_at DESC LIMIT 50',
+        'SELECT id, user_id, type, message, is_read, action_url, created_at FROM notifications WHERE user_id = $1 ORDER BY created_at DESC LIMIT 10',
         [userId]
       );
 
@@ -116,6 +118,51 @@ export class NotificationService {
     } catch (error: unknown) {
       throw new Error(`Failed to mark notifications: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
+  }
+
+  /**
+   * Prune notifications to keep the table bounded:
+   *   1. Delete read notifications older than `ttlDays` (default 30).
+   *   2. Per-user cap: keep only the most recent `maxPerUser` (default 50).
+   * Called once on startup and daily by the scheduler in app.ts.
+   */
+  static async pruneOldNotifications(
+    ttlDays: number = 30,
+    maxPerUser: number = 50
+  ): Promise<{ deletedByTtl: number; deletedByCap: number }> {
+    let deletedByTtl = 0;
+    let deletedByCap = 0;
+
+    try {
+      const ttlResult = await DataService.query(
+        `DELETE FROM notifications
+         WHERE is_read = true
+           AND created_at < NOW() - ($1::int || ' days')::interval`,
+        [ttlDays]
+      );
+      deletedByTtl = ttlResult.rowCount ?? 0;
+    } catch (err) {
+      console.warn('Notification TTL prune failed:', err instanceof Error ? err.message : err);
+    }
+
+    try {
+      const capResult = await DataService.query(
+        `DELETE FROM notifications n
+          USING (
+            SELECT id FROM (
+              SELECT id, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY created_at DESC) AS rn
+              FROM notifications
+            ) ranked WHERE ranked.rn > $1
+          ) excess
+          WHERE n.id = excess.id`,
+        [maxPerUser]
+      );
+      deletedByCap = capResult.rowCount ?? 0;
+    } catch (err) {
+      console.warn('Notification per-user cap prune failed:', err instanceof Error ? err.message : err);
+    }
+
+    return { deletedByTtl, deletedByCap };
   }
 
   // ============================================================

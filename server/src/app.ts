@@ -92,6 +92,23 @@ MigrationService.runMigrations().then(() => {
     setTimeout(runReminderTick, 30 * 1000);
     setInterval(runReminderTick, REMINDER_POLL_MS);
   });
+
+  // Notification cleanup: prune read notifications older than 30 days and
+  // cap each user at the most recent 50. Runs once on startup, then daily.
+  import('./services/notificationService').then(({ NotificationService }) => {
+    const NOTIFICATION_PRUNE_MS = 24 * 60 * 60 * 1000;
+    const runPruneTick = (): void => {
+      NotificationService.pruneOldNotifications()
+        .then(({ deletedByTtl, deletedByCap }) => {
+          if (deletedByTtl || deletedByCap) {
+            console.log(`Notification prune: ttl=${deletedByTtl} cap=${deletedByCap}`);
+          }
+        })
+        .catch(err => console.error('Notification prune error:', err?.message || err));
+    };
+    setTimeout(runPruneTick, 60 * 1000);
+    setInterval(runPruneTick, NOTIFICATION_PRUNE_MS);
+  });
 }).catch((err) => {
   console.error('Migration failed, starting server anyway:', err);
   app.listen(PORT, () => {

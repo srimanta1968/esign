@@ -364,11 +364,12 @@ export class SigningController {
 
       const downloadName = document.original_name || 'document';
       const mimeType = document.mime_type || SigningController.detectMimeType(document.original_name || document.file_path);
+      const disposition = req.query.download === '1' ? 'attachment' : 'inline';
 
       try {
         const fileBuffer = await StorageService.getFile(document.file_path);
         res.setHeader('Content-Type', mimeType);
-        res.setHeader('Content-Disposition', `inline; filename="${downloadName}"`);
+        res.setHeader('Content-Disposition', `${disposition}; filename="${downloadName}"`);
         res.send(fileBuffer);
       } catch (fileErr) {
         console.error('Document serve error:', fileErr);

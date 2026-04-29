@@ -137,6 +137,12 @@ LINKEDIN_REDIRECT_URI=https://${DOMAIN}/api/auth/sso/callback
 # AWS S3
 AWS_REGION=us-east-1
 S3_REGION=us-east-1
+
+# Email (SendGrid). Set EMAIL_FROM to a verified sender on your authenticated
+# domain in SendGrid. EMAIL_FROM controls the visible "From" address on every
+# transactional email (signing requests, reminders, completion notices).
+SENDGRID_API_KEY=
+EMAIL_FROM=edocsign@projexlight.com
 ENVEOF
   echo -e "  ${YELLOW}IMPORTANT: Edit server/.env to add OAuth & DB credentials${NC}"
 else

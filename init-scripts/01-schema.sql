@@ -308,7 +308,7 @@ CREATE TABLE IF NOT EXISTS subscriptions (
 CREATE TABLE IF NOT EXISTS usage_tracking (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  month_year VARCHAR(7) NOT NULL,
+  month_year VARCHAR(50) NOT NULL,
   documents_sent INTEGER DEFAULT 0,
   documents_limit INTEGER DEFAULT 3,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),

@@ -38,6 +38,7 @@ function PublicSignPage() {
   const [alreadySigned, setAlreadySigned] = useState<{ name: string; email: string; signed_at: string | null; document_name: string } | null>(null);
   const [cancelledInfo, setCancelledInfo] = useState<{ name: string; email: string; document_name: string } | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [welcomeOpen, setWelcomeOpen] = useState<boolean>(true);
 
   // Modal input states
   const [textValue, setTextValue] = useState<string>('');
@@ -187,6 +188,7 @@ function PublicSignPage() {
 
   const handleJumpToNext = useCallback(() => {
     if (!nextField) return;
+    setWelcomeOpen(false);
     if (nextField.page !== currentPage) setCurrentPage(nextField.page);
     // Allow the page to render before scrolling/opening the modal.
     setTimeout(() => {
@@ -195,6 +197,16 @@ function PublicSignPage() {
       handleFieldClick(nextField);
     }, nextField.page !== currentPage ? 250 : 0);
   }, [nextField, currentPage, handleFieldClick]);
+
+  const handleJumpToField = useCallback((field: SignatureField) => {
+    setWelcomeOpen(false);
+    if (field.page !== currentPage) setCurrentPage(field.page);
+    setTimeout(() => {
+      const el = document.querySelector<HTMLElement>(`[data-field-id="${field.id}"]`);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (!field.completed) handleFieldClick(field);
+    }, field.page !== currentPage ? 250 : 0);
+  }, [currentPage, handleFieldClick]);
 
   const renderOverlay = useCallback((pageNumber: number, dimensions: { width: number; height: number }) => {
     return (
@@ -205,10 +217,14 @@ function PublicSignPage() {
         mode="sign"
         recipients={[]}
         currentSignerIndex={0}
+        nextFieldId={nextField?.id ?? null}
         onFieldClick={handleFieldClick}
       />
     );
-  }, [fields, context, handleFieldClick]);
+  }, [fields, nextField, handleFieldClick]);
+
+  const downloadUrl = `/api/sign/${token}/document?download=1`;
+  const viewUrl = `/api/sign/${token}/document`;
 
   if (loading) {
     return (
@@ -356,7 +372,7 @@ function PublicSignPage() {
       </header>
 
       {/* Signing progress bar */}
-      <div className="bg-white border-b border-gray-200 px-4 py-3">
+      <div className="bg-white border-b border-gray-200 px-4 py-3 sticky top-[52px] z-40 shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-3">
           <div>
             <h2 className="text-lg font-semibold text-gray-900">{context?.document?.name}</h2>
@@ -364,13 +380,35 @@ function PublicSignPage() {
               {completedCount} of {fields.length} fields completed
             </p>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 flex-wrap">
             <div className="w-32 bg-gray-200 rounded-full h-2">
               <div
                 className="bg-indigo-600 h-2 rounded-full transition-all duration-500"
                 style={{ width: `${fields.length > 0 ? (completedCount / fields.length) * 100 : 0}%` }}
               />
             </div>
+            <a
+              href={downloadUrl}
+              className="inline-flex items-center gap-1.5 text-sm text-gray-700 hover:text-indigo-600 border border-gray-300 hover:border-indigo-400 rounded-lg px-3 py-2 font-medium transition-colors"
+              title="Download the document to review before signing"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" />
+              </svg>
+              Download
+            </a>
+            {nextField && (
+              <button
+                onClick={handleJumpToNext}
+                className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 px-5 py-2 rounded-lg font-semibold text-sm transition-colors inline-flex items-center gap-1.5 shadow-sm"
+                title={completedCount === 0 ? 'Begin signing this document' : 'Jump to the next field that needs your input'}
+              >
+                {nextButtonLabel}
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            )}
             <button
               onClick={handleCompleteSigning}
               disabled={!allRequiredDone || submitting}
@@ -392,7 +430,7 @@ function PublicSignPage() {
       <div className="flex-1 p-4">
         <div className="max-w-5xl mx-auto">
           <DocumentViewer
-            pdfUrl={`/api/sign/${token}/document`}
+            pdfUrl={viewUrl}
             currentPage={currentPage}
             onPageChange={setCurrentPage}
             renderOverlay={renderOverlay}
@@ -401,19 +439,92 @@ function PublicSignPage() {
         </div>
       </div>
 
-      {/* Floating Next-Field button */}
-      {nextField && !activeField && (
-        <button
-          type="button"
-          onClick={handleJumpToNext}
-          className="fixed right-6 bottom-6 z-40 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold px-5 py-3 rounded-full shadow-lg flex items-center gap-2 transition-colors"
-          title={`${nextButtonLabel}: go to next ${nextField.type} field`}
-        >
-          <span>{nextButtonLabel}</span>
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
+      {/* Welcome / pre-sign summary card */}
+      {welcomeOpen && context && fields.length > 0 && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-1">You've been asked to sign a document</h3>
+              <p className="text-sm text-gray-500 mb-4">
+                Review the document on the next screen, then sign at the highlighted fields.
+                You can download a copy first if you'd like to read it offline.
+              </p>
+
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4 space-y-2 text-sm">
+                <div className="flex justify-between gap-4">
+                  <span className="text-gray-500 shrink-0">Document</span>
+                  <span className="font-medium text-gray-900 text-right truncate">{context.document?.name}</span>
+                </div>
+                {context.sender && (
+                  <div className="flex justify-between gap-4">
+                    <span className="text-gray-500 shrink-0">From</span>
+                    <span className="font-medium text-gray-900 text-right truncate">
+                      {context.sender.name}
+                      {context.sender.email ? ` (${context.sender.email})` : ''}
+                    </span>
+                  </div>
+                )}
+                <div className="flex justify-between gap-4">
+                  <span className="text-gray-500 shrink-0">Signing as</span>
+                  <span className="font-medium text-gray-900 text-right truncate">{context.recipient.name || context.recipient.email}</span>
+                </div>
+                <div className="flex justify-between gap-4">
+                  <span className="text-gray-500 shrink-0">Fields to sign</span>
+                  <span className="font-medium text-gray-900">{fields.length}</span>
+                </div>
+              </div>
+
+              {fields.length > 0 && (
+                <div className="mb-4">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">Fields</p>
+                  <ul className="border border-gray-200 rounded-lg divide-y divide-gray-100 max-h-48 overflow-y-auto">
+                    {fields.map((f, idx) => (
+                      <li key={f.id}>
+                        <button
+                          type="button"
+                          onClick={() => handleJumpToField(f)}
+                          className="w-full flex items-center justify-between px-3 py-2 text-sm hover:bg-gray-50 text-left"
+                        >
+                          <span className="text-gray-900">
+                            {idx + 1}. {f.type === 'text' && f.label ? f.label : FIELD_TYPE_LABELS[f.type]}
+                            {f.required && <span className="ml-1.5 text-[10px] text-red-600 font-semibold">REQUIRED</span>}
+                          </span>
+                          <span className="text-xs text-gray-500">Page {f.page}</span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              <div className="flex flex-col sm:flex-row gap-2">
+                <a
+                  href={downloadUrl}
+                  className="flex-1 inline-flex items-center justify-center gap-1.5 border border-gray-300 hover:border-indigo-400 text-gray-700 hover:text-indigo-600 rounded-lg px-4 py-2.5 font-medium text-sm transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" />
+                  </svg>
+                  Download to review
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setWelcomeOpen(false)}
+                  className="flex-1 border border-gray-300 hover:border-gray-400 text-gray-700 rounded-lg px-4 py-2.5 font-medium text-sm transition-colors"
+                >
+                  Browse document
+                </button>
+                <button
+                  type="button"
+                  onClick={handleJumpToNext}
+                  className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2.5 font-semibold text-sm transition-colors"
+                >
+                  Start signing
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Signing Modal */}

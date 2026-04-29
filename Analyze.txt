@@ -1,86 +1,185 @@
-                                                                                                                                                                                                 
-  Current state — how credentials flow today                                                                                                                                                     
-                                                                                                                                                                                                 
-  Two separate systems, no bridge:                                                                                                                                                               
-                                                                                                                                                                                                 
-  1. UI/BDD tests — .feature files can resolve ${login:email} / ${registered:email} / ${default:email} from tests/config/test-config.json:48-63 (testCredentials.default,                        
-  testCredentials.registered). Documented at mcp-server/docs/TEST_MCP.md:598-648.                                                                                                                
-  2. API tests (the ones pre-push runs, served by http://localhost:8766) — read only tests/api_definitions/*.json. They support three placeholder systems:                                       
-    - {{dynamic:email}} — random per run                                                                                                                                                         
-    - {{cache:…}} — value captured from a prior test's response (captureResponse)                                                                                                                
-    - Hard-coded literals like "password": "TestPass@1234"
-                                                                                                                                                                                                 
-  What they don't support: ${default:email} / ${registered:email} / ${login:email} inside api_definitions/*.json. The bridge never happens. test-config.json.testCredentials is effectively      
-  ignored by the API runner.                                                                                                                                                                     
-
-  OAuth: test-config.json:114-121 has authentication.oauth.tokens.{accessToken,refreshToken,idToken} slots. They're placeholders only — no code reads them, no flow captures them. Manual-paste
-  instructions exist in TEST_MCP.md:694-719 but there's no auto-capture / write-back.
-
-  Pre-flight check: none. mcp-server/run-all-tests.sh:81-160 creates a config if missing but never validates testCredentials.default against the running app. The pre-push hook
-  (mcp-server/templates/pre-push:630-655) POSTs directly to /api/test/start with zero user readiness checks. Result: login test fails → 9 dependents cascade with "User not found", and the user
-  sees a generic red report.
-
-  The gap
-
-  Four missing pieces — in priority order:
-
-  1. API-definition payloads cannot reference test-config.json. Even if creds are there, the runner doesn't resolve ${default:email} in api_definitions/*.json.
-  2. No pre-flight "is the test user real?" check. The runner never tries POST /api/auth/login with the configured default before firing the suite.
-  3. No self-heal. If the default user doesn't exist in the target DB, nothing registers one, persists the generated credentials back to testCredentials.registered, and continues.
-  4. No OAuth bootstrap. bypassEnabled: false and empty tokens mean OAuth-gated APIs silently 401. No "launch browser, capture token, write back" step.
-
-  Concrete change list (no code yet — confirm scope first)
-
-  Two layers to touch: the bash wrappers you own (here in edocs/mcp-server/) and the MCP runner (in projex_dev_mcp/src/).
-
-  In this repo (edocs) — we can change these directly:
-
-  ┌─────────────────────────────────────────────┬────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │                    File                     │                                                                   Change                                                                   │
-  ├─────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-  │ mcp-server/run-all-tests.sh (~L81           │ Add validate_or_seed_test_user(): read testCredentials.default, try POST /api/auth/login; if fails, POST /api/auth/register with {email:   │
-  │ ensure_test_config)                         │ "edocs_test_<timestamp>@example.com", password: "<generated>"}, then jq-write the result into testCredentials.registered and flush the     │
-  │                                             │ file.                                                                                                                                      │
-  ├─────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-  │ mcp-server/templates/pre-push (before       │ Call the same seed function. Abort with a clear "please populate testCredentials.default in tests/config/test-config.json" message if      │
-  │ /api/test/start)                            │ seeding also fails (DB down).                                                                                                              │
-  ├─────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-  │ New: mcp-server/capture-oauth-token.sh      │ Interactive helper: opens Google/SSO URL in browser, pauses, prompts user to paste the token from DevTools, writes it into                 │
-  │                                             │ authentication.oauth.tokens.accessToken + computed expiresAt. Optional trigger bash mcp-server/capture-oauth-token.sh.                     │
-  ├─────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-  │ tests/api_definitions/auth-login.json       │ Short-term bandaid: pin email to "{{config:testCredentials.default.email}}" and password to "{{config:testCredentials.default.password}}"  │
-  │                                             │ (requires resolver support — see next). If resolver not available, hard-code the default credentials so login is deterministic.            │
-  └─────────────────────────────────────────────┴────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-
-  In projex_dev_mcp/src/ (the MCP server that actually executes the tests):
-
-  ┌─────────────────────────────┬────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-  │            Area             │                                                                           Change                                                                           │
-  ├─────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-  │ Config loader               │ Add loadTestConfig(projectPath) that reads tests/config/test-config.json at the start of each test run and keeps testCredentials +                         │
-  │                             │ authentication.oauth.tokens in the runner context.                                                                                                         │
-  ├─────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-  │ Placeholder resolver        │ Extend the resolver to understand {{config:path.to.field}} (and/or the UI-style ${default:email} / ${registered:email}) so api_definitions/*.json can      │
-  │                             │ finally reference configured creds.                                                                                                                        │
-  ├─────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-  │ Test orchestrator (where    │ Before running the suite: call POST {apiUrl}/api/auth/login with default creds; if 401, call POST /api/auth/register, capture response, patch              │
-  │ /api/test/start fires)      │ testCredentials.registered back to disk, continue. Emit a structured warning into failed_tests_latest.json if neither works: "test_user_unconfigured":     │
-  │                             │ true, "remediation": "<instructions>".                                                                                                                     │
-  ├─────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-  │                             │ If authentication.oauth.bypassEnabled: true and tokens.accessToken is empty/expired, emit a pre-run error with the exact DevTools steps + a link to        │
-  │ OAuth bootstrap             │ capture-oauth-token.sh. If token is present, inject Authorization: Bearer <accessToken> into any test that has "requiresOAuth": true in its                │
-  │                             │ api_definition.                                                                                                                                            │
-  ├─────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-  │ Reporting                   │ In the pre-push summary, add a top banner when cascade is detected (e.g. "9 of 22 failures cascade from POST /api/auth/login — likely a credential/config  │
-  │                             │ issue, see tests/config/test-config.json").                                                                                                                │
-  └─────────────────────────────┴────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-
-  Recommended order
-
-  1. Ship the bash-side seed + validate first (no MCP runner changes) — gets you 90% of the value for pre-push and is reversible. Fails fast with a helpful message instead of 9 confusing
-  cascades.
-  2. Then in projex_dev_mcp, add config resolver + self-heal orchestration so the behavior works regardless of which entry point (run-all-tests.sh vs. direct MCP call) triggered tests.
-  3. OAuth capture helper last — it's the least common path and needs a browser in the loop.
-
-  Want me to start with step 1 (bash-side validate_or_seed_test_user in run-all-tests.sh + pre-push hook) right now? That alone would turn your 22-failure pre-push into a green run (or a single
-   clear actionable error) without touching the MCP runner source.
+Processed at	Message ID	Recipient email	Subject line	Status	Response
+April 29, 2026 01:47:07 AM
+E-jmohHPTcmpU3rzPGpmnw.recvd-57b698b956-vw8sh-1-69F1631B-C.0	testuser_945316@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:07 AM
+ReSyIokKQDWQPY5bY8inXw.recvd-6d75975858-8xhz2-1-69F1631B-5.0	testuser_945316@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:07 AM
+fRD1MRqpT7iHcSePm9ARpg.recvd-6d75975858-z5f98-1-69F1631B-3.0	testuser_3927@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:07 AM
+r4s5jsMvR_SAVbskMTGxbQ.recvd-6d75975858-f7z6r-1-69F1631B-2F.0	test_1776360375942_3bca8107_0@example.com	Reminder: Test User needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:07 AM
+jTUWFm6VTfyD1uQMkv3oxA.recvd-57b698b956-l4gqw-1-69F1631B-C.0	testuser_3927@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:07 AM
+ua9NNCugRkSX-yUBCvwZMw.recvd-6d75975858-8pn2v-1-69F1631B-20.0	test_1776360375942_3bca8107_1@example.com	Reminder: Test User needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:06 AM
+WhhpWf98ScOQjVd_0rbj7Q.recvd-canary-69c6b45b96-rxfx5-1-69F1631A-7.0	testuser_614193@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:06 AM
+wcbWTAm9R0yNR_H8szKcEQ.recvd-5b4fcf68c-kgrws-1-69F1631A-15.0	testuser_217855@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:06 AM
+rgb7o9DvQFu8eRpWwVniaA.recvd-6d75975858-z5f98-1-69F1631A-2A.0	testuser_792134@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:06 AM
+GBjjzMgRTOKSSBcBlFG64A.recvd-6d75975858-8pn2v-1-69F1631A-1A.0	testuser_614193@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:06 AM
+j1sKbAfhQwaGxDL_ZOTTGg.recvd-6575d5864f-n4cdv-1-69F1631A-20.0	testuser_217854@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:06 AM
+MXEnKwojTPmxa63rpeGkLw.recvd-5b4fcf68c-67xnx-1-69F1631A-47.0	testuser_803602@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:06 AM
+qfhl77xLQRWkA6pfzIPPxg.recvd-57b698b956-l4gqw-1-69F1631A-35.0	testuser_803602@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:06 AM
+0-HVltBlRoSZ2TIJBmZmbw.recvd-57b698b956-l4gqw-1-69F1631A-20.0	testuser_792133@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:05 AM
+P_he4UB7TiadO24Vn7x6VA.recvd-6575d5864f-cvv66-1-69F16319-39.0	testuser_407099@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:05 AM
+Ccs91rq1TVa7BMzSEDn04w.recvd-6575d5864f-gn9np-1-69F16319-30.0	testuser_407099@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:05 AM
+XAqnjsNNTXWT3XwZ07nTHg.recvd-57b698b956-vw8sh-1-69F16319-6.0	testuser_130314@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:05 AM
+T_RzT0hdTEKXuqHfKoLCoA.recvd-6d75975858-f7z6r-1-69F16319-4.0	testuser_931325@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:05 AM
+gqes4btVRC-L2Z-iIDysqg.recvd-6575d5864f-vmrnp-1-69F16319-6.0	testuser_130314@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:05 AM
+x2JWruk0RXirJ-ew9P4YjQ.recvd-5b4fcf68c-rxzhb-1-69F16319-13.0	testuser_833111@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:05 AM
+_NDzSqitRVmZrGuf0pX6xg.recvd-57b698b956-qhcrj-1-69F16319-E.0	testuser_305535@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:05 AM
+C-ocYde6QaKL2v4JYhEDfg.recvd-57b698b956-t65kn-1-69F16319-1B.0	testuser_305535@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:05 AM
+9C04dPbYS9OsycDeC9BujQ.recvd-6d75975858-z5f98-1-69F16319-1D.0	testuser_833111@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:05 AM
+BxP-GCb0TjKBXwZvHfeaaw.recvd-6575d5864f-cvv66-1-69F16319-A.0	testuser_587882@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:05 AM
+bzC-n2YnT6KEKX7mhSjLjg.recvd-6d75975858-8xhz2-1-69F16319-1.0	testuser_587882@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:04 AM
+ITmNt4doQq20BjMRccs2-g.recvd-6575d5864f-vmrnp-1-69F16318-1C.0	testuser_289757@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:04 AM
+Pl2ZzQfmTguXFxZuvtAHpA.recvd-6575d5864f-gn9np-1-69F16318-1D.0	testuser_506859@example.com	Reminder: Someone needs your signature on "stub-{{dynamic:text}}.pdf"	
+Dropped
+Invalid
+April 29, 2026 01:47:04 AM
+FZhKBWxERam_fkUfjfDB6A.recvd-57b698b956-t65kn-1-69F16318-56.0	testuser_931325@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:04 AM
+DnfloI81ShyQ1UxsWr0uZQ.recvd-57b698b956-kcscj-1-69F16318-10.0	testuser_769698@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:04 AM
+a2-bgZp3RRCa2ma2i1xtqA.recvd-57b698b956-kcscj-1-69F16318-2D.0	testuser_755193@example.com	Reminder: Someone needs your signature on "stub-{{dynamic:text}}.pdf"	
+Dropped
+Invalid
+April 29, 2026 01:47:04 AM
+v9SVXV5gRJCRdlfMdPPPBQ.recvd-6575d5864f-zxsqq-1-69F16318-E.0	testuser_755193@example.com	Reminder: Someone needs your signature on "stub-{{dynamic:text}}.pdf"	
+Dropped
+Invalid
+April 29, 2026 01:47:04 AM
+R_FaFJCnQtiLtZ0pt0gZEQ.recvd-6d75975858-c2psf-1-69F16318-6.0	testuser_769698@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:04 AM
+vA0biuAUQYWDtjoCotLiQQ.recvd-6d75975858-8xhz2-1-69F16318-8.0	testuser_506859@example.com	Reminder: Someone needs your signature on "stub-{{dynamic:text}}.pdf"	
+Dropped
+Invalid
+April 29, 2026 01:47:04 AM
+ndmya3hlRCGP5D6UUDLwVA.recvd-6d75975858-2b9z8-1-69F16318-19.0	testuser_289757@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:03 AM
+Yfh6CApBQHmdNXj8ZerAUA.recvd-6575d5864f-629vs-1-69F16317-8.0	testuser_806130@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:03 AM
+RYO0y0VJS2qiM3pTIbGe0A.recvd-6575d5864f-q75xm-1-69F16317-6.0	testuser_642309@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:03 AM
+pE2xa1XCSoagHDpbQWYiGw.recvd-5b4fcf68c-dpljl-1-69F16317-4.0	testuser_642309@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:03 AM
+enDocOvsRMGqKEWWroOD2A.recvd-canary-5659bbd88c-52kpj-1-69F16317-46.0	testuser_375016@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:03 AM
+Onng9APeRzW7vwZBEmnyeg.recvd-5b4fcf68c-6x4md-1-69F16317-13.0	testuser_375016@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:03 AM
+L8E66s_BTn2ICBsU2N4WNQ.recvd-6575d5864f-vmrnp-1-69F16317-A.0	testuser_336591@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:03 AM
+UI0D7sO1QKqJ_lXsUBOZIg.recvd-canary-5659bbd88c-52kpj-1-69F16317-28.0	testuser_336591@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:03 AM
+B_jjFRqcQLyDWaZvP1zWXg.recvd-6575d5864f-cvv66-1-69F16317-3.0	testuser_964972@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:03 AM
+i1CYKCgFS5-Vvw5pjAwluA.recvd-57b698b956-qhcrj-1-69F16317-9.0	testuser_958460@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:03 AM
+WLFwjTLrQES5y4HiOtD_6A.recvd-6575d5864f-gn9np-1-69F16317-39.0	testuser_958460@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:03 AM
+ZlEgiHf3T0OcE3fxRd4NzA.recvd-6575d5864f-zxsqq-1-69F16317-F.0	testuser_806131@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid
+April 29, 2026 01:47:02 AM
+c1nrCdprRNGy4RruQrKyTQ.recvd-57b698b956-l4gqw-1-69F16316-34.0	testuser_964972@example.com	Reminder: Someone needs your signature on "Document"	
+Dropped
+Invalid

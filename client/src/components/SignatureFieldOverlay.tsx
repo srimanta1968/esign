@@ -20,6 +20,8 @@ interface SignatureFieldOverlayProps {
   recipients?: Recipient[];
   /** Index of current signer (sign mode) */
   currentSignerIndex?: number;
+  /** ID of the field to spotlight as "next to sign" */
+  nextFieldId?: string | null;
   onFieldUpdate?: (id: string, updates: Partial<SignatureField>) => void;
   onFieldDelete?: (id: string) => void;
   onFieldClick?: (field: SignatureField) => void;
@@ -32,6 +34,7 @@ function SignatureFieldOverlay({
   mode,
   recipients = [],
   currentSignerIndex,
+  nextFieldId,
   onFieldUpdate,
   onFieldDelete,
   onFieldClick,
@@ -48,6 +51,7 @@ function SignatureFieldOverlay({
           mode={mode}
           recipients={recipients}
           currentSignerIndex={currentSignerIndex}
+          isNextField={mode === 'sign' && nextFieldId === field.id}
           onUpdate={onFieldUpdate}
           onDelete={onFieldDelete}
           onClick={onFieldClick}
@@ -63,6 +67,7 @@ interface FieldBoxProps {
   mode: 'edit' | 'sign';
   recipients: Recipient[];
   currentSignerIndex?: number;
+  isNextField?: boolean;
   onUpdate?: (id: string, updates: Partial<SignatureField>) => void;
   onDelete?: (id: string) => void;
   onClick?: (field: SignatureField) => void;
@@ -74,6 +79,7 @@ function FieldBox({
   mode,
   recipients,
   currentSignerIndex,
+  isNextField = false,
   onUpdate,
   onDelete,
   onClick,
@@ -169,8 +175,14 @@ function FieldBox({
     if (isCompleted) {
       borderStyle = 'border-2 border-solid border-green-400';
       bgStyle = 'bg-green-50 bg-opacity-60';
+    } else if (isNextField && isCurrentSigner) {
+      // Spotlight the next field — bold yellow ring + pulse so signer can't miss it.
+      borderStyle = 'border-2 border-solid border-yellow-500 ring-4 ring-yellow-300 ring-opacity-70 shadow-lg animate-pulse';
+      bgStyle = 'bg-yellow-50 bg-opacity-80';
+      cursorStyle = 'cursor-pointer';
     } else if (isCurrentSigner) {
-      borderStyle = `border-2 border-solid ${colors.border} animate-pulse`;
+      borderStyle = `border-2 border-dashed ${colors.border}`;
+      bgStyle = `${colors.bg} bg-opacity-30`;
       cursorStyle = 'cursor-pointer';
     } else {
       borderStyle = 'border-2 border-dashed border-gray-300';
@@ -233,7 +245,13 @@ function FieldBox({
 
       {/* Sign mode: recipient tag */}
       {mode === 'sign' && !isCompleted && isCurrentSigner && (
-        <div className={`absolute -top-5 left-0 ${colors.bg} ${colors.text} text-[10px] font-medium px-1.5 py-0.5 rounded-t whitespace-nowrap`}>
+        <div
+          className={`absolute -top-6 left-0 whitespace-nowrap rounded-t shadow-sm ${
+            isNextField
+              ? 'bg-yellow-400 text-gray-900 text-xs font-bold px-2 py-1'
+              : `${colors.bg} ${colors.text} text-[10px] font-medium px-1.5 py-0.5`
+          }`}
+        >
           {field.type === 'text' && field.label
             ? `Click to enter ${field.label}`
             : `Click to ${field.type === 'signature' ? 'sign' : field.type === 'initials' ? 'initial' : 'fill'}`}

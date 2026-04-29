@@ -1,307 +1,6 @@
 {
-  "last_scan": "2026-04-16T18:22:27.830613Z",
+  "last_scan": "2026-04-16T21:08:28.595800Z",
   "scanned_files": {
-    "tests/api_definitions/analytics-signature-event.json": {
-      "hash": "74425d11cb0cb7e1e2b3f0f8b7a9e71f6c5ac02656e02e311a560b6e83de10c6",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:18.864177Z",
-      "linesOfCode": 26
-    },
-    "tests/api_definitions/audit-logs-search.json": {
-      "hash": "e1c61fa264a8de9e64570017116c84e153e17ff170b5701da687bdc794491b04",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:18.894719Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/auth-forgot-password.json": {
-      "hash": "3ebeb966f14d937243c6e288ca4d18d2ae8c116e5de110016749053bb46c617f",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:18.966300Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/auth-login.json": {
-      "hash": "5635d99ec044d4cbe02eba10843bf241ee43c9da2b823da0a437c0b4041a5edf",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:18.991124Z",
-      "linesOfCode": 32
-    },
-    "tests/api_definitions/auth-me.json": {
-      "hash": "876e74ab68f2d0ebb9f9d87a1026c05adc07d2cbf0f85c142f369275be05799a",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.018982Z",
-      "linesOfCode": 23
-    },
-    "tests/api_definitions/auth-refresh-token.json": {
-      "hash": "e2efb9d1473f1ace9db134fce5c933eb72bae1b04e7bf9ebcc3689b155d71aee",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.094030Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/auth-register.json": {
-      "hash": "86e6d55167d0cdc1d77b5cdf97dc612fb2bffa7ccf1bede3aaf371e58624b523",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.117924Z",
-      "linesOfCode": 32
-    },
-    "tests/api_definitions/auth-reset-password.json": {
-      "hash": "83bb5c7d03beec5b6f5e55d545318e2d4c57152de714025e3589f446e2160d51",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.163592Z",
-      "linesOfCode": 20
-    },
-    "tests/api_definitions/auth-sessions-list.json": {
-      "hash": "a727a8849c41e650e820c4acefbbe6d199fe2b7a81cc58c6ce1bab65145944c3",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.187821Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/auth-sessions-revoke.json": {
-      "hash": "03efd464c8d3bc64659fee4d1e14d989a3b0b347e65f7fa716767f96d7e7febd",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.215129Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/auth-sso-callback.json": {
-      "hash": "f05530b65b2f78b80fd98f2f5d7d0aed45f22f41b922edda1057d4aeb5417987",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.237813Z",
-      "linesOfCode": 16
-    },
-    "tests/api_definitions/auth-sso-redirect.json": {
-      "hash": "2aac800e7c9257c3bcd7d34294eac5a666fd3b303ab82fd2bc7bf96ec813e92d",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.260502Z",
-      "linesOfCode": 16
-    },
-    "tests/api_definitions/billing-subscription.json": {
-      "hash": "d91b48c91d30c9b32b447023eeb00d362b0d6f4fdf9d0cdd0f5849560e046325",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.368247Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/compliance-alerts-config.json": {
-      "hash": "42c6fd7c016924828d6462e3c48362b60121562fddf915c6d4fd2e3accce9fb6",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.420044Z",
-      "linesOfCode": 24
-    },
-    "tests/api_definitions/compliance-export.json": {
-      "hash": "2a827175da8f5fed9d96d746e7d986e36e166f2257678ee758d85a2bab5e16f9",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.532371Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/compliance-report.json": {
-      "hash": "95ccc3c90daa6befadc9dcdaa2ffaa58845c8fa07dbc9349e0d95f2f72b0b869",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.560019Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/documents-delete.json": {
-      "hash": "d970edc39e85afc4213f96ddaddef7ebadaed5c128b64d3de376051ac2ce5cd6",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.583593Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/documents-list.json": {
-      "hash": "9c5f5fb02b5bfa5960188c1dd4b29614c425c27da2bc0c3044b3cf03448964ec",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.691032Z",
-      "linesOfCode": 23
-    },
-    "tests/api_definitions/documents-search.json": {
-      "hash": "6f5384f0f74c126ed8a672618a531f355f124b844fde4c090bb98b53f6cbcc3d",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.715769Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/documents-upload.json": {
-      "hash": "e759673f4a7908f5d7ae32b0898f75bc12c512bc657ec4428841217ca0ab2d34",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.969314Z",
-      "linesOfCode": 33
-    },
-    "tests/api_definitions/notifications-stream.json": {
-      "hash": "2700c193172ee9aaf41c2b14bf67efb671166cc10991ba766ea76ea4c51d85a3",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.204862Z",
-      "linesOfCode": 21
-    },
-    "tests/api_definitions/organizations-create.json": {
-      "hash": "b6b46ce211b54c5c006c920e980d9b768aa1b8ce5daf270bb758c9bd591e75ec",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.229096Z",
-      "linesOfCode": 25
-    },
-    "tests/api_definitions/organizations-get.json": {
-      "hash": "f8d0859c644a9cfba57c9d1e94f701f4e3606f00dc62990514ae390d975c193b",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.249674Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/signatures-confirm.json": {
-      "hash": "59aaefd0dac40d3c3472705823756096144e643f6e19d93fc33d6e887e21d38b",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.405854Z",
-      "linesOfCode": 23
-    },
-    "tests/api_definitions/signatures-create.json": {
-      "hash": "6ab7e7a1bd5cdb6427cb5a349b1ed957fcd657f4e501d494ab8757e9d6c76e66",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.432573Z",
-      "linesOfCode": 37
-    },
-    "tests/api_definitions/signatures-sign.json": {
-      "hash": "0c0185354b18083944bb678103b5c0199bb2a958711fc7c9d82627d722c2199d",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.457835Z",
-      "linesOfCode": 22
-    },
-    "tests/api_definitions/teams-mine.json": {
-      "hash": "fc78132d3e9f010879a7a30f9a86b7a424486badefe2d3f7a1d5eedd4de20715",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.743332Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/user-signatures-create.json": {
-      "hash": "7b8946f358269a302dd6ccf0e2e039c2800d5de7483add22f83b09b45368bf41",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.775743Z",
-      "linesOfCode": 26
-    },
-    "tests/api_definitions/user-signatures-get.json": {
-      "hash": "625a2c2e23d708fd6cf52191283e0371be9830e71abff8821e3b1b7866f8b291",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.833166Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/user-signatures-list.json": {
-      "hash": "1056ab44f63181dfeaff0ab53eb565c600353f79b68bdd096596ca6ac39e4d91",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.858756Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/users-assign-role.json": {
-      "hash": "a97a3e9696893c206dee1c47231bc2a76954f73b0dcbe727ffdee564b399b1f4",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.911920Z",
-      "linesOfCode": 22
-    },
-    "tests/api_definitions/users-language.json": {
-      "hash": "01a1bbd2e175abbb04d82f198f0531683886742f3b590a9fd8021e4d9fea2e9a",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.936837Z",
-      "linesOfCode": 22
-    },
-    "tests/api_definitions/users-list.json": {
-      "hash": "046739d671baf341eba4b222c145e7f2f183f55b00174a2e6c2971ada6dac4db",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.962358Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/users-roles.json": {
-      "hash": "0a2557b2ce3f306d87cd19460f226f30942cb0c3c0036a274ba58bdca0a673fc",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.986999Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/workflows-create.json": {
-      "hash": "7ea748a42ca14a6034b46817d11b23268ebcf9193691ecf866745c8115b0ce86",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:21.068063Z",
-      "linesOfCode": 35
-    },
-    "tests/api_definitions/workflows-get.json": {
-      "hash": "3a3038e011f67f532ca2bf3efeda1bc53e1deee5695220a67c364cff449d6e06",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:21.139643Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/workflows-history.json": {
-      "hash": "0fa6c4fec703ce32f92cec1e674bd784a6750ed2ece7751a32173839e26a1343",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:21.195154Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/workflows-remind.json": {
-      "hash": "4275a1a598d0ad416d3d915c662e620cb1249c1d2c7b1e95b1d0a99841bf8a64",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:21.249463Z",
-      "linesOfCode": 20
-    },
-    "tests/api_definitions/workflows-reminders-configure.json": {
-      "hash": "f5cf0fc7f7c99e027042f61b270a119bb1fe135adb7a3b452d5ca14d082431ab",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:21.276275Z",
-      "linesOfCode": 23
-    },
-    "tests/api_definitions/workflows-sign.json": {
-      "hash": "1b99abea8b93e814d8aa088db8d3e02671368b14db619c7193295b82a2f10a67",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:21.329779Z",
-      "linesOfCode": 22
-    },
-    "tests/api_definitions/workflows-start.json": {
-      "hash": "321360023d389698e49a0c437fdd8c539d090aec197cf868582dab993ce48015",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:21.352085Z",
-      "linesOfCode": 20
-    },
-    "tests/api_definitions/workflows-status.json": {
-      "hash": "b653c35ac3c3bef55c8b63377e40c4c89c8f3bf5627e9c9b3934f6565136df5f",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:21.379568Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/workflows-update.json": {
-      "hash": "a83fe8631e1ed7359e0a33303a8cceb40f56000e031dd095ac60e2b621e3ee1c",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:21.404016Z",
-      "linesOfCode": 22
-    },
     "server/src/routes/analyticsRoutes.ts": {
       "hash": "dfd4f7d9965fd389f41e158b99855dc37a0168e7a2bcc82bae96fcc631196611",
       "compliance": 100,
@@ -489,32 +188,32 @@
       "linesOfCode": 255
     },
     ".claude/settings.local.json": {
-      "hash": "c03ca3f70a7b4d33f04ae0e44c3d60ff08b4c6f7aaddf3dbbeb06cae73090bbf",
+      "hash": "b90c2ed9360d334307eefc00dabdca4e174ce9217719e8176f5e581192835050",
       "compliance": 100,
       "violations": [],
-      "timestamp": "2026-04-16T18:19:16.185303Z",
-      "linesOfCode": 38
+      "timestamp": "2026-04-16T21:07:36.283783Z",
+      "linesOfCode": 49
     },
     ".mcp-cache/api_test_cache.json": {
-      "hash": "4ef3f99c01cdf3a70f18e175c7c203dfa902738f70f1ee2ac04205f51c2ca57d",
+      "hash": "9e681fba3d79f3693a45189b407a56f6ddd7328a215b2174a55f55ac243294d8",
       "compliance": 100,
       "violations": [],
-      "timestamp": "2026-04-16T18:19:16.215682Z",
-      "linesOfCode": 429
+      "timestamp": "2026-04-16T21:07:36.406053Z",
+      "linesOfCode": 961
     },
     ".mcp-cache/pre_commit_cache.json": {
-      "hash": "954c1f8f80969e957d7d2fec4a9bb9da483d71b4347063e89804473c2ef83c0a",
+      "hash": "4909176003376bbbcc009a9b78d09cc02e5bd43ae22676ee2606a2d4a9f30b86",
       "compliance": 100,
       "violations": [],
-      "timestamp": "2026-04-16T18:21:45.980227Z",
+      "timestamp": "2026-04-16T21:07:36.543274Z",
       "linesOfCode": 1492
     },
     ".mcp-cache/test_failures_latest.json": {
-      "hash": "654d98c34865c9f7979ae55dcb77f8f28000d3bc209aa15e00d1f938a8505d44",
+      "hash": "d7ed2b4399dc20104d55f1967fbc40e91348cffe2e3ee29765b65257ebdfa933",
       "compliance": 100,
       "violations": [],
-      "timestamp": "2026-04-16T18:19:16.312456Z",
-      "linesOfCode": 6032
+      "timestamp": "2026-04-16T21:07:36.648661Z",
+      "linesOfCode": 1838
     },
     ".mcp-cache/violations_latest.json": {
       "hash": "48ea84854560df453fe258cb576ff34d80130671e9cfb2c18af4aab8023dfc76",
@@ -698,397 +397,715 @@
       "timestamp": "2026-04-16T18:19:18.834500Z",
       "linesOfCode": 1
     },
-    "tests/api_definitions/auth-api-keys-list.json": {
-      "hash": "c891beeb06023b67d10494b0c98461b75adc4b09fab246453267e910b181f4a6",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:18.917687Z",
-      "linesOfCode": 22
-    },
-    "tests/api_definitions/auth-api-keys-revoke.json": {
-      "hash": "2ae121ce85f4712bcd01598592e89a146df93c93ae5d025fea00b502b16410a9",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:18.942197Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/auth-profile-get.json": {
-      "hash": "68349cb1198bd6bfb19f1c3e8d41b4ed932faa5852b1abfddc3f048821da53e3",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.044224Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/auth-profile-update.json": {
-      "hash": "ca1beed4181b1da561b9cab2cb19a3aed6caa9000a3e4544ed5447665219ee54",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.069476Z",
-      "linesOfCode": 23
-    },
-    "tests/api_definitions/auth-resend-verification.json": {
-      "hash": "6015ec5352b5f4a8e7980332d76a759f6fd37cc66406eeb273dd677ca6628d00",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.139629Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/auth-verify-email.json": {
-      "hash": "53764cbb53ed040a29c773f5dccd7e513f29b00e05e8435e8e4f1591f40c70f5",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.284541Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/billing-checkout.json": {
-      "hash": "d2c2a107e8c8aa3b79621ba82adcd0d5bf7b626a4af8a7a7b69cd4e33a23cc31",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.313324Z",
-      "linesOfCode": 20
-    },
-    "tests/api_definitions/billing-portal.json": {
-      "hash": "0c9420b3c7bdef48f54e748528ca871b7a225595eafaa04009aaeef122cc110d",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.341454Z",
-      "linesOfCode": 20
-    },
-    "tests/api_definitions/billing-webhook.json": {
-      "hash": "6e17faaf7b9bdf35e72ba20cf1edc7d0254b56c0e105d3603fed48400b85a528",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.395195Z",
-      "linesOfCode": 17
-    },
-    "tests/api_definitions/compliance-alerts-list.json": {
-      "hash": "02543afbb363146996d5131ef467de07bf5b1c3babae6509aced899d7f56dff4",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.446284Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/compliance-esign-metadata-create.json": {
-      "hash": "592b883face83f2bd75c0dcd6d0469312eb65885d7f672e6eb8c0e2c677c03f2",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.476555Z",
-      "linesOfCode": 24
-    },
-    "tests/api_definitions/compliance-esign-metadata-get.json": {
-      "hash": "31ef96a31a6054623ac2882ad5f54925ad96061ca161585c1e3399eee822b0fa",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.507438Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/documents-download.json": {
-      "hash": "a1d5e9856fbd81ef51fcdea07c8377dd3ea520f69a34b71c9e259b36098a296b",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.612221Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/documents-file.json": {
-      "hash": "a8aae9ba3447a3d6b86cbe524f4a2510f021495a00bb7d015ae4d95eff5f9ce3",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.639801Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/documents-get.json": {
-      "hash": "493cd50f07e8fa9a9aa74d87933b4894166e63c848f9671d14263b227d7e4028",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.665445Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/documents-tags-add.json": {
-      "hash": "06bae5bff1d2302f20a2bee8b85e33664b4b8757aeb34607ff2aea0ca37085e3",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.742114Z",
-      "linesOfCode": 32
-    },
-    "tests/api_definitions/documents-tags-list.json": {
-      "hash": "70f9e30f8920f553b39e98067d37db91dc614b443377d3f73873b390989322ff",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.767672Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/documents-tags-remove.json": {
-      "hash": "59582c4c9da08ef184ec8d21bfe86a78660353f65e7a3a6c3659b9e33924cab1",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.792986Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/documents-templates-create.json": {
-      "hash": "0654e85f1fd337fa7fb8a9d0924a4db17cfbf8a60816efd19313885853f5b7d7",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.831236Z",
-      "linesOfCode": 37
-    },
-    "tests/api_definitions/documents-templates-delete.json": {
-      "hash": "7ae66ad9193a51c50e18ed55a40c26b21f54c01a79399bf350d9ea58e1f3e9c1",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.857478Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/documents-templates-get.json": {
-      "hash": "273d1849edc3bba74f381092dccd9a39b23c916b11db7cffc5bd2d1727c5d63b",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.885251Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/documents-templates-list.json": {
-      "hash": "41d7d0ae1a5fd53c3d05f5644ec24ba34891e5acc2d0bcbe83551b90b6e27a6d",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.911188Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/documents-templates-use.json": {
-      "hash": "ca4f3d3b7ca307594c13a343c50e1a6f2e6d334d2b73d57c592a37f824fe4982",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.939870Z",
-      "linesOfCode": 20
-    },
-    "tests/api_definitions/documents-versions-create.json": {
-      "hash": "f26b46fef879cb1f0d2df2b846d8c39619166f7054467d09731943fd5ddf2d8c",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:19.994447Z",
-      "linesOfCode": 26
-    },
-    "tests/api_definitions/documents-versions-list.json": {
-      "hash": "6d36963a86d82ac71afb7b157336bdc7d98732039a87ce210a29f94f3c0154c5",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.023186Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/documents-versions-revert.json": {
-      "hash": "f936cbf6f54bdceed94eee6bc5346c9fa82915727495e563c0d328b1873ce674",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.050501Z",
-      "linesOfCode": 20
-    },
-    "tests/api_definitions/health.json": {
-      "hash": "9ab7ca8ef6399109c87e9b94158a56932053105708851fe283bd7b2f04d55c77",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.077878Z",
-      "linesOfCode": 16
-    },
-    "tests/api_definitions/notifications-list.json": {
-      "hash": "cbd5b03eb6e1a54aae0d06362e754a9c06886df0309f2cad5b4dde0f593884ee",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.101895Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/notifications-preferences-get.json": {
-      "hash": "83b5d4c1624eaab1c36811f522d75d3a3d9cac60eea38fa2e4f15d6412413f55",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.128960Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/notifications-preferences-update.json": {
-      "hash": "889ab4e34b9a7ff5566cc89be1a3d2e3d5da4dbe06834ae58dc60327b546887c",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.152934Z",
-      "linesOfCode": 24
-    },
-    "tests/api_definitions/notifications-send.json": {
-      "hash": "509b1155ab566740914a51db17bc27cfa443157a81f54b0e8640c64f06d5e8ca",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.178512Z",
-      "linesOfCode": 25
-    },
-    "tests/api_definitions/sign-complete.json": {
-      "hash": "860e2c2c00e9304414a4397403e46939777e73cb5dbbd20f2732550e18c25da7",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.275269Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/sign-context.json": {
-      "hash": "03503e75d7b5a0c2f76ff230ed8daf709c417c536a863f9746051d44e03d2797",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.298033Z",
-      "linesOfCode": 16
-    },
-    "tests/api_definitions/sign-document.json": {
-      "hash": "16c3506c523b95ad906ba1300c3d85a074eac4d47165e28c56048eb62888b0e2",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.324040Z",
-      "linesOfCode": 16
-    },
-    "tests/api_definitions/sign-started.json": {
-      "hash": "41e18d302ebb8f816e782819a1a51c357121aadacad9788eff10799800e626bb",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.351515Z",
-      "linesOfCode": 17
-    },
-    "tests/api_definitions/signatures-by-document.json": {
-      "hash": "973594b9b65a0e3c3c1f638e1b06c9912c09245cc946034ebb5070f677ace2a3",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.382417Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/teams-create.json": {
-      "hash": "dd01703959f14a0cebe5f3620f70b26e97312ff1a22bf5556c8d8fe7db1062ef",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.484143Z",
-      "linesOfCode": 34
-    },
-    "tests/api_definitions/teams-delete.json": {
-      "hash": "102e758e3b62f80f3dfe3f5d59e54120703de9572261afa963c4afe5230fc3a1",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.513982Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/teams-get.json": {
-      "hash": "553b54e5b00be0d2af11aa2a6ae906934afc5a7390b30f1219c905f6e0522eac",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.540993Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/teams-invite-delete.json": {
-      "hash": "1bcf4e744060e0ec6dd7aba10b7711ecd7c3190fb2b1a84743d150beb2a6e4cd",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.563239Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/teams-invite.json": {
-      "hash": "f9cf34ff7353848e050eca1eafc986a53410d42f9d588e52a87387deca62617b",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.587697Z",
-      "linesOfCode": 30
-    },
-    "tests/api_definitions/teams-join-accept.json": {
-      "hash": "402a85afa5339f25e44addb4d9dab17c21e7e778a41e7ff92abafa816bf32010",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.611999Z",
-      "linesOfCode": 20
-    },
-    "tests/api_definitions/teams-join-info.json": {
-      "hash": "aa00afedb77b82c3b882f0e4c51e7222ce7425052eeea0c68ff1eee808c53fc2",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.637739Z",
-      "linesOfCode": 16
-    },
-    "tests/api_definitions/teams-leave.json": {
-      "hash": "cf5a595d589fb743d95a9fd3b77524de988c3c9333b9457c0a89ed4294f50105",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.666876Z",
-      "linesOfCode": 20
-    },
-    "tests/api_definitions/teams-member-remove.json": {
-      "hash": "115b78a94abacc2891f2e0c8e62673047c81557eacfa92e008280e8d4149a87c",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.691829Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/teams-member-update-role.json": {
-      "hash": "b5e994d4f249369f9370a81b62126d6389c52c3d330ac0d35b4293a4f1058a36",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.719153Z",
-      "linesOfCode": 20
-    },
-    "tests/api_definitions/user-signatures-delete.json": {
-      "hash": "e7f9bfc5cc5fa9d39530a1444fdf5cca4dfdd99e6b757a54904c73ad3eb9d2fd",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.808240Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/user-signatures-update.json": {
-      "hash": "61a148e321c857cf4d8248389bf9b6248575ac2c17429d6bbb05eea79f6a66d8",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:20.885235Z",
-      "linesOfCode": 22
-    },
-    "tests/api_definitions/workflows-admin-process-completions.json": {
-      "hash": "0a79d0f9b546b672be1d5947e57fa701e5130462fc7bac69e00ee54c624b1f0e",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:21.010114Z",
-      "linesOfCode": 20
-    },
-    "tests/api_definitions/workflows-cancel.json": {
-      "hash": "8585946663616a3ed22903b15abc9821ec79a6132f0ddf08fd534669560cc5e1",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:21.037353Z",
-      "linesOfCode": 22
-    },
-    "tests/api_definitions/workflows-decline.json": {
-      "hash": "dad5c6cf285af37927eedd09de5e21fc94cb1080477fc11163c531ec3033e1cc",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:21.093040Z",
-      "linesOfCode": 22
-    },
-    "tests/api_definitions/workflows-downloads.json": {
-      "hash": "65109ea2bc2967f02dff570cad38528d2b4436363c1410cabedfc3d262206518",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:21.117338Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/workflows-history-export.json": {
-      "hash": "c2e2fd016b3a80fdfc843fb65eb1c5d66c4876dbe55bd33a001ffdeb1321beec",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:21.164365Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/workflows-list.json": {
-      "hash": "c30f5f537ed287dee3e20c3f871d45a1d845fe736c85e426609d6db2fbd7b0bf",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:21.225329Z",
-      "linesOfCode": 19
-    },
-    "tests/api_definitions/workflows-self-sign.json": {
-      "hash": "fdbadd769e661036fcfc6bc64802bfbceee923eab44ff3f04b917c0a53e1b2e6",
-      "compliance": 100,
-      "violations": [],
-      "timestamp": "2026-04-16T18:19:21.302704Z",
-      "linesOfCode": 22
-    },
     "tests/config/test-config.json": {
       "hash": "dfebaf865d0ea1ef0a232de4cca9b9fddc5253dc35d7bf4a673af807a66106df",
       "compliance": 100,
       "violations": [],
       "timestamp": "2026-04-16T18:21:47.708382Z",
       "linesOfCode": 191
+    },
+    "scripts/gen-api-defs.js": {
+      "hash": "03c17668fa5620912a8a8c962b4a25e4d0f48743ee10b0eb1177d6ccd7a1f8ec",
+      "compliance": 75,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-12",
+          "description": "Potential hardcoded secrets detected",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "scripts/gen-api-defs.js"
+        }
+      ],
+      "timestamp": "2026-04-16T21:07:36.842901Z",
+      "linesOfCode": 1176
+    },
+    "scripts/gen-api-defs.py": {
+      "hash": "7b1c2e82a462d610a1227a1817a6cfd28c77a25ac3ed696b8bee7d3b2578e457",
+      "compliance": 92,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-05",
+          "description": "Missing Python type hints",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "scripts/gen-api-defs.py"
+        },
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-07",
+          "description": "Missing Docstrings for public functions",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "scripts/gen-api-defs.py"
+        }
+      ],
+      "timestamp": "2026-04-16T21:07:36.988668Z",
+      "linesOfCode": 1390
+    },
+    "tests/api_definitions/analytics/signature-event-post.json": {
+      "hash": "4fbafbe056639ceafd031e70e9733563457e6090c45023f45767a7b85c23c962",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:37.110724Z",
+      "linesOfCode": 29
+    },
+    "tests/api_definitions/audit-logs/index-get.json": {
+      "hash": "bca8c97b24df1ae8ceef2e7d3390d89cf00334becddbf46adc71efef4f6cd14c",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:37.215097Z",
+      "linesOfCode": 23
+    },
+    "tests/api_definitions/auth/api-keys-get.json": {
+      "hash": "c2c41f02b3ba61c0ba3166dde91c981869b3a31f8f41df54d2df1c8f8a32eeeb",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:37.316907Z",
+      "linesOfCode": 24
+    },
+    "tests/api_definitions/auth/api-keys-id-delete.json": {
+      "hash": "bf26dd884ff96a9f76cecb8c2eb545d74264f700ab9ef7d8c5dc3804c81d7a27",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:37.421703Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/auth/api-keys-post.json": {
+      "hash": "b11d9cdd1541685532f583928d10f944b44605cf66763dd71b4e93ab54c22a3f",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:37.535816Z",
+      "linesOfCode": 30
+    },
+    "tests/api_definitions/auth/forgot-password-post.json": {
+      "hash": "1e4d9b437e8cc98868d9564346e2c520bae7ab55c5cb035b3437aab4e3714ee7",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:37.638573Z",
+      "linesOfCode": 22
+    },
+    "tests/api_definitions/auth/login-post.json": {
+      "hash": "d1933a918bf04ce3d127a19aa03b4fa12512fbe938fe59b3b6e605c282f58e7d",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:37.742837Z",
+      "linesOfCode": 33
+    },
+    "tests/api_definitions/auth/me-get.json": {
+      "hash": "5ea61fa0a67adac3f93246ed57c2b5545cdaa9c0a27265ba021d672560f3af3f",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:37.839289Z",
+      "linesOfCode": 23
+    },
+    "tests/api_definitions/auth/profile-put.json": {
+      "hash": "1b1cd01da2215d5133bc807217ec14f7b2cbde0b7b181e15eb0e00b30094cff2",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:37.950044Z",
+      "linesOfCode": 27
+    },
+    "tests/api_definitions/auth/refresh-token-post.json": {
+      "hash": "072721187c9fbfb2d9a66a87199f7873d34e3f1c1f3daf67de7f96920b131cd6",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:38.047946Z",
+      "linesOfCode": 24
+    },
+    "tests/api_definitions/auth/register-post.json": {
+      "hash": "cebd8d4fc827a51b0df3742261890160bce65b0cef7b66483e6286b1d963ecf7",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:38.157047Z",
+      "linesOfCode": 33
+    },
+    "tests/api_definitions/auth/resend-verification-post.json": {
+      "hash": "30ce888815936619597f2650bc4f904be8585cf247b32670e848dd424e6499ed",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:38.255068Z",
+      "linesOfCode": 22
+    },
+    "tests/api_definitions/auth/sessions-id-delete.json": {
+      "hash": "a2685ff8ea0b8d6f2346ab1833e8d2f7d49412a53edf9196f3c5e719b4672bbb",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:38.381124Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/auth/sso-callback-get.json": {
+      "hash": "e1d4df5baa838d8c3cee1fcd24106f2a80ae69dbf13c5e02b747ca6772f97193",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:38.490072Z",
+      "linesOfCode": 19
+    },
+    "tests/api_definitions/auth/sso-provider-get.json": {
+      "hash": "ee0a4d38b369b7eab8d3260f8f0c99c7e1daaff0441993418a2dd0e43f90832b",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:38.614372Z",
+      "linesOfCode": 20
+    },
+    "tests/api_definitions/auth/verify-email-post.json": {
+      "hash": "b6e9a45b1e7d76843b9a024ee2ed8d4f391ea1e849d20babf0d97434b1d0b2cf",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:38.717965Z",
+      "linesOfCode": 23
+    },
+    "tests/api_definitions/billing/checkout-post.json": {
+      "hash": "15067e050306345af0f3e5d5c6eedb8260644a48d8cda9ea260c6b1916fd359e",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:38.827656Z",
+      "linesOfCode": 27
+    },
+    "tests/api_definitions/billing/portal-post.json": {
+      "hash": "9694abacdd2f7adc04e83b123765410b1e513140af8bb2e610a6e6fa40128375",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:38.924885Z",
+      "linesOfCode": 24
+    },
+    "tests/api_definitions/billing/subscription-get.json": {
+      "hash": "44b87457adac4f318dd4ac50e7a48e43e547e4fff53067abbd9de0c7044567f5",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:39.052744Z",
+      "linesOfCode": 23
+    },
+    "tests/api_definitions/billing/webhook-post.json": {
+      "hash": "af6691bb7a780a09ad95be572c421037e4a5427ba675994e17bc380ae8c05eb0",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:39.154316Z",
+      "linesOfCode": 20
+    },
+    "tests/api_definitions/compliance/alerts-config-post.json": {
+      "hash": "2868ea03454ef0c6aed4ce7f48b6fd86fe51f54bca082e0fc3b6587a41a6bb94",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:39.253130Z",
+      "linesOfCode": 28
+    },
+    "tests/api_definitions/compliance/alerts-get.json": {
+      "hash": "f7970761baccb9aabb21d86d7291d8bc60c51f84749b755c5f61affa0fcdeb65",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:39.364633Z",
+      "linesOfCode": 23
+    },
+    "tests/api_definitions/compliance/esign-metadata-post.json": {
+      "hash": "7c8b238708981906ede9f419454a4dae8c87652bf7a07de736cdf691ffb3d42d",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:39.472180Z",
+      "linesOfCode": 27
+    },
+    "tests/api_definitions/compliance/esign-metadata-signatureId-get.json": {
+      "hash": "ebe772087727b5f97f3954495674e8fd7aebdaf54de3e90e93ce4cab26ed7393",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:39.573911Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/compliance/export-get.json": {
+      "hash": "9ebd416fa661eee8254f7a204f769c39c788d571d0365132f435b4931f1257ef",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:39.682614Z",
+      "linesOfCode": 23
+    },
+    "tests/api_definitions/compliance/report-get.json": {
+      "hash": "b11d4a9e5fd3ef610f0e139eec1992900b3c02357cbe909c951825e5451b80c9",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:39.785640Z",
+      "linesOfCode": 23
+    },
+    "tests/api_definitions/documents/id-delete.json": {
+      "hash": "b364be918553953ca70d9f68115ef2b86382a93a44dc6ac35caf16bdd10ac54a",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:39.894612Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/documents/id-download-get.json": {
+      "hash": "bafeb46619d95d29212703d3c5588f2f4ceae2d87e1ee94ff475c1a532e3c046",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:40.009043Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/documents/id-file-get.json": {
+      "hash": "522090bbb3967f17446a305309f3f9b19b9ea949041e14a6cea286c5f47c7a50",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:40.114392Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/documents/id-get.json": {
+      "hash": "0c66e03e413ba19ae59d18127b028b596e23b27381c512e45f722d9d388ca95a",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:40.227694Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/documents/id-tags-get.json": {
+      "hash": "f7d8138ff0ea53f5a4fbfe98147818195290500bf3ee173bdc11c4a6e72d6475",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:40.327831Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/documents/id-tags-post.json": {
+      "hash": "0a8b7b01c34c11fae15b4a2e227fa46c125eeac88217df116a2c518e5ea5f58d",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:40.433211Z",
+      "linesOfCode": 32
+    },
+    "tests/api_definitions/documents/id-tags-tag-delete.json": {
+      "hash": "080e668d2a04132187943cfa14aa68b1959c74a5e4e3a062620b264557441305",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:40.538162Z",
+      "linesOfCode": 27
+    },
+    "tests/api_definitions/documents/id-versions-get.json": {
+      "hash": "ebd534c27c3a38f7b2444934ab264ad672bf2e638c2f6927447f901231f623bb",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:40.638385Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/documents/id-versions-post.json": {
+      "hash": "3187a2d213bf8b0b171005f916ffbd20915b93919dfff2b07618e993d5457308",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:40.733451Z",
+      "linesOfCode": 29
+    },
+    "tests/api_definitions/documents/id-versions-versionId-revert-post.json": {
+      "hash": "93f321989073b9c298f47ec11abdbbed1fe7c57d263fbc950a711fd190ba0c3b",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:40.838746Z",
+      "linesOfCode": 28
+    },
+    "tests/api_definitions/documents/index-get.json": {
+      "hash": "c2f82190550f36714eba33b376e54f75e15e9c737624f19ea403334bfa85ee38",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:40.959090Z",
+      "linesOfCode": 23
+    },
+    "tests/api_definitions/documents/index-post.json": {
+      "hash": "48d86823dd3daea1d696b47da962791a54975a7ece738fda3b1354788bfb0281",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:41.065915Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/documents/search-get.json": {
+      "hash": "e583e94b212f415a5364e88ea3f0c135362da740b45c4cd9bd5c6b4eac083283",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:41.192952Z",
+      "linesOfCode": 23
+    },
+    "tests/api_definitions/documents/templates-id-delete.json": {
+      "hash": "2c2657c8704b913e8add28e9b614a06252e68edf4879de0c6a688ab2ce5bef4e",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:41.284079Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/documents/templates-id-get.json": {
+      "hash": "7c6ca4f3bb5b0e5dd97941655b4a08a7a3020195b66b787607f788cf4b96d8eb",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:41.387586Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/documents/templates-id-use-post.json": {
+      "hash": "3b15230a9431a04828e2db183ff65e73a14da1290acc807f7bf676d25c374d66",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:41.498371Z",
+      "linesOfCode": 27
+    },
+    "tests/api_definitions/documents/templates-post.json": {
+      "hash": "38e4845e96636ed040434ffca65151a77450f9207e9df9c34aac05d809487032",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:41.602056Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/notifications/preferences-get.json": {
+      "hash": "714bfc303099340d88695c2298e6c81ad6c6b031106bb9c97025ef3610c011e2",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:41.711086Z",
+      "linesOfCode": 23
+    },
+    "tests/api_definitions/notifications/preferences-put.json": {
+      "hash": "d8584c32df55f08994c48cf09d8878d85deeab49df48cc8bd1115fbaa8c38f0b",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:41.805703Z",
+      "linesOfCode": 33
+    },
+    "tests/api_definitions/notifications/read-patch.json": {
+      "hash": "e51992995d2575db4d3a17766fec82418d32170351ff7b8274b51c9aa0739c6f",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:41.909294Z",
+      "linesOfCode": 24
+    },
+    "tests/api_definitions/notifications/send-post.json": {
+      "hash": "b092cd2b13835db58c6287e1b43445d5efc8b8bcc82f86c9b4fd3d9948a10a23",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:42.012569Z",
+      "linesOfCode": 31
+    },
+    "tests/api_definitions/notifications/stream-get.json": {
+      "hash": "8e90dd91cd48847a95f8499cc5993e7c7dd0bbf2fb43852b924a403629566b4e",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:42.113651Z",
+      "linesOfCode": 25
+    },
+    "tests/api_definitions/organizations/id-get.json": {
+      "hash": "975ee7b624a4968e705ad8dbe372a77d8542ab15b81af6bbc3b9349d01be53eb",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:42.215846Z",
+      "linesOfCode": 27
+    },
+    "tests/api_definitions/organizations/index-post.json": {
+      "hash": "4c346a62c101d505fe43f079e88d794828be5a1926cc41cd4708980ed5cc0c07",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:42.318045Z",
+      "linesOfCode": 29
+    },
+    "tests/api_definitions/sign/token-complete-post.json": {
+      "hash": "9a434896494d0dd388399bc888562b64053cf8684ac27e80862168cf8c2c60fd",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:42.427846Z",
+      "linesOfCode": 23
+    },
+    "tests/api_definitions/sign/token-document-get.json": {
+      "hash": "4755290c9c7ab5a3fb7d12292d2d80441d21b80511387907023d0f11410e7680",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:42.542229Z",
+      "linesOfCode": 20
+    },
+    "tests/api_definitions/sign/token-get.json": {
+      "hash": "0a2e600da2eb8bfeff48e171d2ef1a8447cf4402059911f46f41e2a66b89f24d",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:42.644614Z",
+      "linesOfCode": 20
+    },
+    "tests/api_definitions/sign/token-started-post.json": {
+      "hash": "9c6c863909a3f3f8d07973e2b796d94de9232b7f7f6d672f257629d8097fe538",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:42.755027Z",
+      "linesOfCode": 21
+    },
+    "tests/api_definitions/signatures/documentId-get.json": {
+      "hash": "5c0ec777bc1e2b835be305279d80936cb43345d305ebccd9943d2d8b1d203c60",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:42.858557Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/signatures/id-confirm-post.json": {
+      "hash": "b89863e74b40d6802f67e3c7f2addc4591f488811d956676416346f890a044c0",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:42.973141Z",
+      "linesOfCode": 31
+    },
+    "tests/api_definitions/signatures/id-sign-patch.json": {
+      "hash": "8c013aa00f997f898fda04ac7ec631c5f574c76ca4bac2f23fe29895283c2aa9",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:43.075906Z",
+      "linesOfCode": 30
+    },
+    "tests/api_definitions/signatures/index-post.json": {
+      "hash": "ca76b641dc9c424012ebd609f03c1790dcd513aeb147f5a6e29d702d57ebece0",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:43.181667Z",
+      "linesOfCode": 30
+    },
+    "tests/api_definitions/teams/id-delete.json": {
+      "hash": "8aaf24483ed796445b379652f98727ff9d08a9998abed9d36d33cde84d674a4a",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:43.276047Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/teams/id-get.json": {
+      "hash": "e71ef68909b92006d065e8003da37475b6ce24e8e2906ec904f320454c1491fa",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:43.379982Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/teams/id-invite-post.json": {
+      "hash": "76931b1e7192e37ea77f806ea0024c2cb837b5a83e916cc597d5d807cd65a13a",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:43.473122Z",
+      "linesOfCode": 31
+    },
+    "tests/api_definitions/teams/id-invites-inviteId-delete.json": {
+      "hash": "b417b023225eedb5d80f9afe4e0450826242e6c7c3d39453d6e72583c06c6b76",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:43.577382Z",
+      "linesOfCode": 27
+    },
+    "tests/api_definitions/teams/id-leave-post.json": {
+      "hash": "e51ec969174b96fbaba5625a25343db5b8db3d6a7c2a501aaf7907e2116bc461",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:43.673977Z",
+      "linesOfCode": 27
+    },
+    "tests/api_definitions/teams/id-members-userId-delete.json": {
+      "hash": "d0355a9de2a9b4f2e8bc5191aa673f14e3f632ad1ea24ff23ffd8d1e1b3efa1d",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:43.771795Z",
+      "linesOfCode": 27
+    },
+    "tests/api_definitions/teams/id-members-userId-patch.json": {
+      "hash": "d948c58d846228230cc55b277c2eb5ac7abd14ce6f633946750b5e5706d8a4f4",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:43.869177Z",
+      "linesOfCode": 30
+    },
+    "tests/api_definitions/teams/index-post.json": {
+      "hash": "738798db20f96824a377d126b17bb87a9dd7dae6ef4354538e01ac68e489c4f6",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:43.964245Z",
+      "linesOfCode": 27
+    },
+    "tests/api_definitions/teams/join-token-get.json": {
+      "hash": "c6e3294d781fef2e4392f49acaf8087f051ed6f445dbd8fbbc2bda3f91dc03d5",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:44.069110Z",
+      "linesOfCode": 20
+    },
+    "tests/api_definitions/teams/join-token-post.json": {
+      "hash": "865d9955e4d356972dcc907278e766d9965a7ebe3f0345147293d48138be6c1c",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:44.185444Z",
+      "linesOfCode": 27
+    },
+    "tests/api_definitions/teams/mine-get.json": {
+      "hash": "cc260d24cc560dc28efd8efcc040931fda805b141793d977fdfabd5c770defb9",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:44.296864Z",
+      "linesOfCode": 23
+    },
+    "tests/api_definitions/user-signatures/id-delete.json": {
+      "hash": "2f376ede375c595a8f95e25f51e8969c3196b30c4b8cbc87c4f9d4884d2d2c1c",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:44.396555Z",
+      "linesOfCode": 30
+    },
+    "tests/api_definitions/user-signatures/id-get.json": {
+      "hash": "6b5e25b39e542eee0f7fa31163c176393eb3ff022a9c73cd1718d82757a8ad54",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:44.492225Z",
+      "linesOfCode": 27
+    },
+    "tests/api_definitions/user-signatures/id-put.json": {
+      "hash": "efddc97cd49ec16ac81f5bb09c46676038991643588576c9984889cba184c621",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:44.596581Z",
+      "linesOfCode": 30
+    },
+    "tests/api_definitions/user-signatures/index-get.json": {
+      "hash": "4fc74e8a47dd141141b971646ecaa14134f8c40273ea2e71b4a1f2c931a9c709",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:44.703891Z",
+      "linesOfCode": 24
+    },
+    "tests/api_definitions/user-signatures/index-post.json": {
+      "hash": "ca4b5655c6bf33c44aac5fe0a5011d23a35e31b8215e7cff3a6e6882db20eef4",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:44.816056Z",
+      "linesOfCode": 31
+    },
+    "tests/api_definitions/users/id-role-put.json": {
+      "hash": "9c60990320f625d657c0eb8c8c32adb6f58494fd2d8d71293a1bb265bbb80389",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:44.920324Z",
+      "linesOfCode": 29
+    },
+    "tests/api_definitions/users/index-get.json": {
+      "hash": "c468daf3f105b798e5dfe7ee9b209d7d3921c7fb8f9a78d1d49841ef9b1af75f",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:45.042393Z",
+      "linesOfCode": 23
+    },
+    "tests/api_definitions/users/language-put.json": {
+      "hash": "8f2310c2fa344416dd268f40af0989889102a4968ee1b6dd6261746ede9a6006",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:45.172774Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/users/roles-get.json": {
+      "hash": "518d261525c9831d904e84b77623f6d423de76056f35f6e38eb255169c4f65f1",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:45.292385Z",
+      "linesOfCode": 23
+    },
+    "tests/api_definitions/workflows/admin-process-completions-post.json": {
+      "hash": "22f19aa31b2b9514c285deb91aabc43dc19be5ef5862f662000312a59a167f0f",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:45.417053Z",
+      "linesOfCode": 24
+    },
+    "tests/api_definitions/workflows/id-cancel-post.json": {
+      "hash": "23cd8d27cdd83bd1c6611c1ac39437787c4c23898e61d91aa3540c5254e512d1",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:45.520102Z",
+      "linesOfCode": 27
+    },
+    "tests/api_definitions/workflows/id-decline-patch.json": {
+      "hash": "e57e1f1db44dfba76d6e1a864d180242202323179292ec36b5e3a0491ee5d919",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:45.618242Z",
+      "linesOfCode": 29
+    },
+    "tests/api_definitions/workflows/id-downloads-get.json": {
+      "hash": "37968097dcd29b79d73fa2e4285fc6bff89595e173d4a955f08d7973af641fad",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:45.714722Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/workflows/id-get.json": {
+      "hash": "345bef10261e5f153d191f27dc52ca5634b41cc28e81f4bb4ba3767d4b1d160d",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:45.820257Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/workflows/id-history-export-get.json": {
+      "hash": "6361a8d043dd519cfc1f71ed44109a724d725f7d2cc984e9a2227b3335dbc0d9",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:45.920057Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/workflows/id-history-get.json": {
+      "hash": "8ad1a79d7a303da40cc0cf8af3ba8a51bc9cb508ce431b17d0dda740be3080c4",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:46.028010Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/workflows/id-put.json": {
+      "hash": "a32e3e5ae94b4af53e227b41f72e13b93cbc0ebe3c6545cb321faef01b6938e9",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:46.136466Z",
+      "linesOfCode": 29
+    },
+    "tests/api_definitions/workflows/id-remind-post.json": {
+      "hash": "cf3c2b835d4d6b8315ea755ead3b5ccb065117bb17a0cd4f2a31d2787320f986",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:46.230072Z",
+      "linesOfCode": 27
+    },
+    "tests/api_definitions/workflows/id-reminders-put.json": {
+      "hash": "776b8b8e0d659790e08c4f29e297eef2c484f1a3830d32e5123f6e1e2c41c6df",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:46.337911Z",
+      "linesOfCode": 30
+    },
+    "tests/api_definitions/workflows/id-self-sign-post.json": {
+      "hash": "8299f3e1a43bb309ca95e7e66049c181c4162b19637844de496fbe2888468fa8",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:46.429038Z",
+      "linesOfCode": 29
+    },
+    "tests/api_definitions/workflows/id-sign-patch.json": {
+      "hash": "439497693139b228a31a71e7da4846050758373c72da4529de5721ac38f3eee7",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:46.532361Z",
+      "linesOfCode": 30
+    },
+    "tests/api_definitions/workflows/id-start-post.json": {
+      "hash": "ef63824db2667d9e84d56958529425cfe89093b762d2f507cff3e833f9243721",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:46.629970Z",
+      "linesOfCode": 27
+    },
+    "tests/api_definitions/workflows/id-status-get.json": {
+      "hash": "35b0ba74282cd3e2c90a57fa07b28989b8315a62b358431479f814e6a6e0f4e3",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:46.738185Z",
+      "linesOfCode": 26
+    },
+    "tests/api_definitions/workflows/index-post.json": {
+      "hash": "1ffeb90e93f13cc78b7260781b0b63d6470a24c24b3c45b89ef6ef7fb109aac6",
+      "compliance": 100,
+      "violations": [],
+      "timestamp": "2026-04-16T21:07:46.840754Z",
+      "linesOfCode": 36
     }
   },
   "registered_apis": {

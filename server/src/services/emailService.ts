@@ -29,6 +29,31 @@ const REPLY_TO = {
   name: 'eDocSign Support',
 };
 
+// RFC 2606 reserved + common test fixture domains. Any send to one of these
+// hard-bounces and damages SendGrid sender reputation, so we drop the message
+// before it ever leaves the server. Catches stray test data that ends up in
+// any environment (including prod).
+const BLOCKED_EMAIL_DOMAINS = new Set([
+  'example.com',
+  'example.org',
+  'example.net',
+  'test',
+  'test.com',
+  'invalid',
+  'localhost',
+  'localhost.localdomain',
+]);
+const BLOCKED_EMAIL_TLDS = ['.test', '.invalid', '.localhost', '.example', '.local'];
+
+function isBlockedRecipient(address: string): boolean {
+  const at = address.lastIndexOf('@');
+  if (at < 0) return true; // malformed addresses can't deliver — drop
+  const domain = address.slice(at + 1).toLowerCase().trim();
+  if (!domain) return true;
+  if (BLOCKED_EMAIL_DOMAINS.has(domain)) return true;
+  return BLOCKED_EMAIL_TLDS.some((tld) => domain === tld.slice(1) || domain.endsWith(tld));
+}
+
 const EMAIL_FOOTER = `
   <div style="margin-top: 32px; padding-top: 16px; border-top: 1px solid #e2e8f0; text-align: center;">
     <p style="margin: 0 0 8px 0;"><a href="https://esign.projexlight.com" style="color: #4f46e5; font-size: 14px; font-weight: 600; text-decoration: none;">esign.projexlight.com</a></p>
@@ -43,6 +68,14 @@ export class EmailService {
    * Send an email via SendGrid (if configured), nodemailer (fallback), or console (dev).
    */
   static async send(to: string, subject: string, body: string): Promise<{ success: boolean; messageId?: string; previewUrl?: string | false; error?: string }> {
+    if (isBlockedRecipient(to)) {
+      // Hard-bounce protection: reserved/test domains never accept mail.
+      // Sending would damage SendGrid sender reputation, so we drop silently
+      // and report success so callers (e.g., the reminder scheduler) keep moving.
+      console.log(`Email skipped (reserved/test domain): ${to}`);
+      return { success: true, messageId: `skipped-${Date.now()}` };
+    }
+
     // Try SendGrid first
     if (sgMail && process.env.SENDGRID_API_KEY) {
       try {

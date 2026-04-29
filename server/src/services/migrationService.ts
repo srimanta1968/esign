@@ -434,7 +434,7 @@ export class MigrationService {
       CREATE TABLE IF NOT EXISTS usage_tracking (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-        month_year VARCHAR(7) NOT NULL,
+        month_year VARCHAR(50) NOT NULL,
         documents_sent INTEGER DEFAULT 0,
         documents_limit INTEGER DEFAULT 3,
         created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -521,6 +521,14 @@ export class MigrationService {
     for (const [table, col, typedef] of dependentAlters) {
       await this.run(`${table}.${col}`, `ALTER TABLE ${table} ADD COLUMN IF NOT EXISTS ${col} ${typedef}`);
     }
+
+    // Widen usage_tracking.month_year so it can also hold team-scoped keys
+    // (`team-<uuid>`, ~41 chars) used by SubscriptionService for team plans.
+    // The original VARCHAR(7) only fit the YYYY-MM format used by individual users.
+    await this.run(
+      'usage_tracking.month_year_width',
+      `ALTER TABLE usage_tracking ALTER COLUMN month_year TYPE VARCHAR(50)`
+    );
 
     // Add FK from users.team_id → teams(id) if not already present
     await this.run('users.team_id_fk', `

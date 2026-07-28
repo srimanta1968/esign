@@ -6,6 +6,7 @@ import { AdminAuthService, AdminTokenClaims } from '../services/adminAuthService
 import { AdminAccountService } from '../services/adminAccountService';
 import { AdminBillingService } from '../services/adminBillingService';
 import { CreditService } from '../services/creditService';
+import { AdminMessagingService } from '../services/adminMessagingService';
 import { AuditService } from '../services/auditService';
 import { requireStepUp } from '../middleware/requireStepUp';
 import { getClientIp } from '../middleware/auditMiddleware';
@@ -29,6 +30,12 @@ const TRIALABLE_PLANS: string[] = ['solo', 'team', 'scale'];
 
 /** Upper bound on a comped trial, so a typo cannot grant one for years. */
 const MAX_TRIAL_DAYS = 180;
+
+/** Deliverable channels. No SMS — users stores no phone number. */
+const MESSAGE_CHANNELS: string[] = ['email', 'in_app'];
+
+/** Above this, a segment send needs a second explicit confirmation. */
+const LARGE_SEGMENT_THRESHOLD = 50;
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -751,6 +758,257 @@ router.delete(
     }
   }) as RequestHandler
 );
+
+// ─────────────────────────────────────────────────────────────
+// MESSAGING
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * Message templates and the variables an author may reference. Read-only.
+ */
+router.get('/message-templates', (async (_req: PlatformAdminRequest, res: Response): Promise<void> => {
+  try {
+    const templates = await AdminMessagingService.listTemplates();
+
+    res.json({
+      success: true,
+      data: { templates, variables: AdminMessagingService.availableVariables() },
+    });
+  } catch {
+    res.status(500).json({ success: false, error: 'Failed to load templates' });
+  }
+}) as RequestHandler);
+
+/**
+ * Create or update a template. Mutating — requires step-up.
+ */
+router.post(
+  '/message-templates',
+  requireStepUp as RequestHandler,
+  (async (req: PlatformAdminRequest, res: Response): Promise<void> => {
+    try {
+      const { key, name, channel, subject, body, is_active } = req.body as {
+        key?: string; name?: string; channel?: string;
+        subject?: string; body?: string; is_active?: boolean;
+      };
+
+      if (!key || !name || !body) {
+        res.status(400).json({ success: false, error: 'key, name and body are required' });
+        return;
+      }
+
+      if (channel && !MESSAGE_CHANNELS.includes(channel)) {
+        res.status(400).json({
+          success: false,
+          error: `channel must be one of ${MESSAGE_CHANNELS.join(', ')}`,
+        });
+        return;
+      }
+
+      const template = await AdminMessagingService.upsertTemplate({
+        key,
+        name,
+        channel: (channel as 'email' | 'in_app') || 'email',
+        subject: subject || '',
+        body,
+        isActive: is_active !== false,
+        adminId: req.adminId as string,
+      });
+
+      await AuditService.logAdminAction({
+        adminId: req.adminId as string,
+        targetUserId: null,
+        action: 'admin.template.save',
+        after: { key: template.key, channel: template.channel, is_active: template.is_active },
+        reason: `Template "${template.key}" saved`,
+        ipAddress: getClientIp(req),
+        userAgent: req.headers['user-agent'] || '',
+      });
+
+      res.json({ success: true, data: template });
+    } catch (error: unknown) {
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to save template',
+      });
+    }
+  }) as RequestHandler
+);
+
+/**
+ * Render a template against one account WITHOUT sending it.
+ */
+router.post('/messages/preview', (async (req: PlatformAdminRequest, res: Response): Promise<void> => {
+  try {
+    const { template_key, user_id } = req.body as { template_key?: string; user_id?: string };
+
+    if (!template_key) {
+      res.status(400).json({ success: false, error: 'template_key is required' });
+      return;
+    }
+
+    const template = await AdminMessagingService.getTemplateByKey(template_key);
+
+    if (!template) {
+      res.status(404).json({ success: false, error: 'Template not found' });
+      return;
+    }
+
+    // Sample context when no account is given, so an author can preview copy
+    // before choosing a recipient.
+    const context = { name: 'Alex', email: 'alex@example.com', plan: 'team', documents_limit: '200' };
+
+    res.json({
+      success: true,
+      data: {
+        channel: template.channel,
+        subject: AdminMessagingService.render(template.subject || '', context),
+        body: AdminMessagingService.render(template.body, context),
+        rendered_for: user_id || 'sample',
+      },
+    });
+  } catch (error: unknown) {
+    res.status(400).json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to render template',
+    });
+  }
+}) as RequestHandler);
+
+/**
+ * Send a template to a single account. Mutating — requires step-up.
+ */
+router.post(
+  '/messages/send',
+  requireStepUp as RequestHandler,
+  (async (req: PlatformAdminRequest, res: Response): Promise<void> => {
+    try {
+      const { template_key, user_id } = req.body as { template_key?: string; user_id?: string };
+
+      if (!template_key || !user_id || !isUuid(user_id)) {
+        res.status(400).json({ success: false, error: 'template_key and a valid user_id are required' });
+        return;
+      }
+
+      const outcome = await AdminMessagingService.sendToUser(
+        template_key,
+        user_id,
+        req.adminId as string
+      );
+
+      await AuditService.logAdminAction({
+        adminId: req.adminId as string,
+        targetUserId: user_id,
+        action: 'admin.message.send',
+        after: { template: template_key, status: outcome.status },
+        reason: `Sent "${template_key}"`,
+        ipAddress: getClientIp(req),
+        userAgent: req.headers['user-agent'] || '',
+      });
+
+      res.json({ success: true, data: outcome });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Failed to send message';
+      res.status(message.includes('not found') ? 404 : 500).json({ success: false, error: message });
+    }
+  }) as RequestHandler
+);
+
+/**
+ * Send to a filtered segment, or dry-run to count recipients first.
+ *
+ * Mutating when actually sending — requires step-up. The dry run reports the
+ * blast radius before anything leaves the building.
+ */
+router.post(
+  '/messages/send-segment',
+  requireStepUp as RequestHandler,
+  (async (req: PlatformAdminRequest, res: Response): Promise<void> => {
+    try {
+      const { template_key, filters, dry_run, confirm_large } = req.body as {
+        template_key?: string;
+        filters?: Record<string, unknown>;
+        dry_run?: boolean;
+        confirm_large?: boolean;
+      };
+
+      if (!template_key) {
+        res.status(400).json({ success: false, error: 'template_key is required' });
+        return;
+      }
+
+      const segment = (filters || {}) as Parameters<typeof AdminMessagingService.resolveSegment>[0];
+      const recipients = await AdminMessagingService.resolveSegment(segment);
+
+      if (dry_run) {
+        res.json({
+          success: true,
+          data: { dry_run: true, recipientCount: recipients.length },
+        });
+        return;
+      }
+
+      // A large send needs a second, explicit confirmation — a mis-built
+      // segment should not reach thousands of customers on one click.
+      if (recipients.length > LARGE_SEGMENT_THRESHOLD && !confirm_large) {
+        res.status(409).json({
+          success: false,
+          error: `This segment matches ${recipients.length} accounts. Re-send with confirm_large to proceed.`,
+          code: 'LARGE_SEGMENT',
+          recipientCount: recipients.length,
+        });
+        return;
+      }
+
+      const result = await AdminMessagingService.sendToSegment(
+        template_key,
+        segment,
+        req.adminId as string
+      );
+
+      await AuditService.logAdminAction({
+        adminId: req.adminId as string,
+        targetUserId: null,
+        action: 'admin.message.send_segment',
+        after: { template: template_key, sent: result.sent, skipped: result.skipped, failed: result.failed },
+        reason: `Segment send of "${template_key}"`,
+        ipAddress: getClientIp(req),
+        userAgent: req.headers['user-agent'] || '',
+      });
+
+      res.json({ success: true, data: result });
+    } catch (error: unknown) {
+      res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to send to segment',
+      });
+    }
+  }) as RequestHandler
+);
+
+/**
+ * Message history for one account. Read-only.
+ */
+router.get('/accounts/:id/messages', (async (req: PlatformAdminRequest, res: Response): Promise<void> => {
+  try {
+    if (!isUuid(req.params.id)) {
+      res.status(400).json({ success: false, error: 'Invalid account id' });
+      return;
+    }
+
+    const { page, limit } = req.query as Record<string, string>;
+
+    const history = await AdminMessagingService.getSendHistory(
+      req.params.id,
+      page ? parseInt(page, 10) : 1,
+      limit ? parseInt(limit, 10) : undefined
+    );
+
+    res.json({ success: true, data: history });
+  } catch {
+    res.status(500).json({ success: false, error: 'Failed to load message history' });
+  }
+}) as RequestHandler);
 
 // ─────────────────────────────────────────────────────────────
 // METRICS & ACTIVITY

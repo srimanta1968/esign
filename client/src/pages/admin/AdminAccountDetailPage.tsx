@@ -4,6 +4,7 @@ import { AdminApiService } from '../../services/adminApi';
 import ConfirmActionDialog from '../../components/admin/ConfirmActionDialog';
 import AdminAccountBillingTab from './AdminAccountBillingTab';
 import AdminAccountCreditsTab from './AdminAccountCreditsTab';
+import AdminAccountMessagesTab from './AdminAccountMessagesTab';
 
 interface AccountDetail {
   account: {
@@ -58,15 +59,6 @@ const ACTION_COPY: Record<AccessAction, { title: string; description: string; la
 
 const TABS = ['Overview', 'Billing', 'Credits & Trial', 'Messages'] as const;
 type Tab = (typeof TABS)[number];
-
-/** Placeholder for a tab whose feature has not been built yet. */
-function PendingTab({ name }: { name: string }) {
-  return (
-    <div className="bg-slate-900 border border-slate-800 border-dashed rounded-xl p-8 text-center">
-      <p className="text-sm text-slate-500">{name} lands with its own feature.</p>
-    </div>
-  );
-}
 
 /**
  * Full detail for one account, and the place access is suspended, revoked or
@@ -258,7 +250,7 @@ function AdminAccountDetailPage() {
           }}
         />
       )}
-      {tab === 'Messages' && <PendingTab name="Message history" />}
+      {tab === 'Messages' && id && <AdminAccountMessagesTab accountId={id} />}
 
       {pendingAction && (
         <ConfirmActionDialog

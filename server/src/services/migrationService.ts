@@ -503,6 +503,44 @@ export class MigrationService {
       )
     `);
 
+    // Templated welcome / follow-up messages sent from the admin portal.
+    await this.run('message_templates', `
+      CREATE TABLE IF NOT EXISTS message_templates (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        key VARCHAR(100) NOT NULL UNIQUE,
+        name VARCHAR(255) NOT NULL,
+        -- No 'sms': users has no phone column, so an SMS template could never
+        -- be delivered. Add the channel when a phone number is stored.
+        channel VARCHAR(20) NOT NULL DEFAULT 'email'
+          CHECK (channel IN ('email', 'in_app')),
+        subject VARCHAR(255) DEFAULT '',
+        body TEXT NOT NULL DEFAULT '',
+        is_active BOOLEAN DEFAULT true,
+        created_by UUID REFERENCES users(id),
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+      )
+    `);
+
+    // One row per send ATTEMPT, including skipped and failed ones — a message
+    // that was never delivered is exactly what an operator needs to see.
+    await this.run('admin_message_sends', `
+      CREATE TABLE IF NOT EXISTS admin_message_sends (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        template_id UUID REFERENCES message_templates(id) ON DELETE SET NULL,
+        template_key VARCHAR(100) DEFAULT '',
+        user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        sent_by UUID REFERENCES users(id),
+        channel VARCHAR(20) NOT NULL DEFAULT 'email',
+        status VARCHAR(20) NOT NULL DEFAULT 'queued'
+          CHECK (status IN ('queued', 'sent', 'failed', 'skipped')),
+        skip_reason TEXT DEFAULT NULL,
+        error TEXT DEFAULT NULL,
+        sent_at TIMESTAMP WITH TIME ZONE,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+      )
+    `);
+
     // Append-only ledger of bonus document credits granted by platform admins.
     // Never UPDATEd or DELETEd — a correction is a new offsetting row, so the
     // history of who granted what and why stays intact.
@@ -686,6 +724,8 @@ export class MigrationService {
       ['idx_credit_ledger_user_id', 'credit_ledger', 'user_id'],
       ['idx_credit_ledger_created_at', 'credit_ledger', 'created_at'],
       ['idx_subscriptions_trial_ends_at', 'subscriptions', 'trial_ends_at'],
+      ['idx_admin_message_sends_user_id', 'admin_message_sends', 'user_id'],
+      ['idx_admin_message_sends_created_at', 'admin_message_sends', 'created_at'],
     ];
 
     for (const [name, table, col] of indexes) {
@@ -724,6 +764,37 @@ export class MigrationService {
         AND signed_pdf_path IS NOT NULL AND signed_pdf_path != ''
         AND certificate_pdf_path IS NOT NULL AND certificate_pdf_path != ''
         AND completion_email_sent_at IS NULL
+    `);
+
+    // Default message templates. Seeded only when absent, so an operator's
+    // edits to the copy are never overwritten on restart.
+    await this.run('seed:message_templates', `
+      INSERT INTO message_templates (key, name, channel, subject, body, is_active)
+      SELECT * FROM (VALUES
+        (
+          'welcome',
+          'Welcome message',
+          'email',
+          'Welcome to eDocSign',
+          'Hi {{name}},' || chr(10) || chr(10) ||
+          'Welcome to eDocSign. Your account is ready — upload a document and send it for signature whenever you are.' || chr(10) || chr(10) ||
+          'Your plan: {{plan}}' || chr(10) ||
+          'Documents included each month: {{documents_limit}}' || chr(10) || chr(10) ||
+          'If you need a hand, just reply to this email.',
+          true
+        ),
+        (
+          'followup_day7',
+          'Day 7 follow-up',
+          'email',
+          'Getting started with eDocSign',
+          'Hi {{name}},' || chr(10) || chr(10) ||
+          'You signed up a week ago and have not sent a document yet. If anything is in the way, reply and we will help.' || chr(10) || chr(10) ||
+          'Your plan: {{plan}}',
+          true
+        )
+      ) AS v(key, name, channel, subject, body, is_active)
+      WHERE NOT EXISTS (SELECT 1 FROM message_templates LIMIT 1)
     `);
 
     // Default compliance alert rules

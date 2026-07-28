@@ -6,6 +6,7 @@ const NAV_ITEMS: { to: string; label: string }[] = [
   { to: '/admin-portal', label: 'Dashboard' },
   { to: '/admin-portal/accounts', label: 'Accounts' },
   { to: '/admin-portal/revenue', label: 'Revenue' },
+  { to: '/admin-portal/messages', label: 'Messages' },
   { to: '/admin-portal/activity', label: 'Activity' },
 ];
 

@@ -44,6 +44,8 @@ import AdminAccountsPage from './pages/admin/AdminAccountsPage';
 import AdminAccountDetailPage from './pages/admin/AdminAccountDetailPage';
 import AdminActivityLogPage from './pages/admin/AdminActivityLogPage';
 import AdminRevenueDashboardPage from './pages/admin/AdminRevenueDashboardPage';
+import AdminMessageTemplatesPage from './pages/admin/AdminMessageTemplatesPage';
+import AdminSendMessagePage from './pages/admin/AdminSendMessagePage';
 
 function App() {
   return (
@@ -73,6 +75,8 @@ function App() {
                           <Route path="/accounts" element={<AdminAccountsPage />} />
                           <Route path="/accounts/:id" element={<AdminAccountDetailPage />} />
                           <Route path="/revenue" element={<AdminRevenueDashboardPage />} />
+                          <Route path="/messages" element={<AdminSendMessagePage />} />
+                          <Route path="/messages/templates" element={<AdminMessageTemplatesPage />} />
                           <Route path="/activity" element={<AdminActivityLogPage />} />
                         </Routes>
                       </AdminLayout>

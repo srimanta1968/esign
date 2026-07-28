@@ -37,6 +37,20 @@ export class AuthController {
         console.error('Failed to send verification email:', err);
       }
 
+      // Welcome message, if an active 'welcome' template exists. Fired without
+      // awaiting so a messaging outage can never fail or slow registration —
+      // the send is recorded in admin_message_sends either way.
+      import('../services/adminMessagingService')
+        .then(({ AdminMessagingService }) =>
+          AdminMessagingService.sendToUser('welcome', result.user.id, null)
+        )
+        .catch((err: unknown) => {
+          console.error(
+            'Welcome message failed:',
+            err instanceof Error ? err.message : err
+          );
+        });
+
       res.status(201).json({
         success: true,
         data: { ...result, emailVerified: false },

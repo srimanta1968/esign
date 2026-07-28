@@ -674,6 +674,36 @@ export class MigrationService {
       `ALTER TABLE usage_tracking ALTER COLUMN month_year TYPE VARCHAR(50)`
     );
 
+    // Actor references (who suspended an account, who granted an override or
+    // credit) must not pin the referenced staff account in place forever.
+    // Recreate them as ON DELETE SET NULL so a departed admin can be removed
+    // while the historical record survives with a null actor.
+    const actorForeignKeys: [string, string, string][] = [
+      ['users', 'access_changed_by', 'users_access_changed_by_fkey'],
+      ['subscriptions', 'override_by', 'subscriptions_override_by_fkey'],
+      ['credit_ledger', 'granted_by', 'credit_ledger_granted_by_fkey'],
+      ['message_templates', 'created_by', 'message_templates_created_by_fkey'],
+      ['admin_message_sends', 'sent_by', 'admin_message_sends_sent_by_fkey'],
+    ];
+
+    for (const [table, column, constraint] of actorForeignKeys) {
+      await this.run(`${constraint}.on_delete_set_null`, `
+        DO $$ BEGIN
+          IF EXISTS (
+            SELECT 1 FROM information_schema.table_constraints
+            WHERE constraint_name = '${constraint}' AND table_name = '${table}'
+          ) THEN
+            BEGIN
+              ALTER TABLE ${table} DROP CONSTRAINT ${constraint};
+              ALTER TABLE ${table} ADD CONSTRAINT ${constraint}
+                FOREIGN KEY (${column}) REFERENCES users(id) ON DELETE SET NULL;
+            EXCEPTION WHEN OTHERS THEN NULL;
+            END;
+          END IF;
+        END $$
+      `);
+    }
+
     // Add FK from users.team_id → teams(id) if not already present
     await this.run('users.team_id_fk', `
       DO $$ BEGIN

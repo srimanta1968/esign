@@ -88,9 +88,13 @@ export class AdminAccountService {
     const limit = Math.min(MAX_PAGE_SIZE, Math.max(1, filters.limit || DEFAULT_PAGE_SIZE));
     const offset = (page - 1) * limit;
 
+    // Filter placeholders are numbered from $1 and the month/limit/offset are
+    // appended AFTER them. Numbering the month first meant the COUNT query —
+    // which does not take it — received mismatched placeholders as soon as any
+    // filter was applied.
     const conditions: string[] = [];
-    const values: unknown[] = [currentMonthYear()];
-    let paramIndex = 2;
+    const values: unknown[] = [];
+    let paramIndex = 1;
 
     if (filters.search) {
       conditions.push(`(u.name ILIKE $${paramIndex} OR u.email ILIKE $${paramIndex})`);
@@ -120,7 +124,7 @@ export class AdminAccountService {
        FROM users u
        LEFT JOIN subscriptions s ON s.user_id = u.id
        ${whereClause}`,
-      values.slice(1)
+      values
     );
     const total = parseInt(countRow?.count || '0', 10);
 
@@ -142,7 +146,7 @@ export class AdminAccountService {
          sess.last_login
        FROM users u
        LEFT JOIN subscriptions s ON s.user_id = u.id
-       LEFT JOIN usage_tracking ut ON ut.user_id = u.id AND ut.month_year = $1
+       LEFT JOIN usage_tracking ut ON ut.user_id = u.id AND ut.month_year = $${paramIndex}
        LEFT JOIN teams t ON t.id = u.team_id
        LEFT JOIN (
          SELECT user_id, COUNT(*)::int AS document_count FROM documents GROUP BY user_id
@@ -152,8 +156,8 @@ export class AdminAccountService {
        ) sess ON sess.user_id = u.id
        ${whereClause}
        ORDER BY u.created_at DESC
-       LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`,
-      [...values, limit, offset]
+       LIMIT $${paramIndex + 1} OFFSET $${paramIndex + 2}`,
+      [...values, currentMonthYear(), limit, offset]
     );
 
     return {

@@ -70,8 +70,19 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 
 const PORT: number = config.port || 3000;
 
+/**
+ * Under test the app is imported for its routes only — supertest binds its own
+ * ephemeral port. Binding PORT here would collide across test files and the
+ * background schedulers would keep the run alive after the assertions finish.
+ */
+const IS_TEST = process.env.NODE_ENV === 'test';
+
 // Run migrations on startup then start server
 MigrationService.runMigrations().then(() => {
+  if (IS_TEST) {
+    return;
+  }
+
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
@@ -132,9 +143,11 @@ MigrationService.runMigrations().then(() => {
   });
 }).catch((err) => {
   console.error('Migration failed, starting server anyway:', err);
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
+  if (!IS_TEST) {
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  }
 });
 
 export default app;

@@ -1,0 +1,48 @@
+{
+  "name": "POST /api/admin/accounts/:id/access - Grant, suspend or revoke account access",
+  "endpoint": "/api/admin/accounts/:id/access",
+  "method": "POST",
+  "description": "Changes an account's access state. MUTATING, so it requires a step-up elevated token, not just an admin session — the Authorization header here carries the step-up token, NOT the login token. Suspending or revoking also expires the target's live sessions so the block takes effect immediately. Reason is mandatory and stored. An admin cannot change their own access.\n\nThe happy path deliberately uses 'restore' rather than 'suspend': the registered fixture user's token is consumed by many other tests in this suite, and suspending them mid-run would 403 every subsequent request that uses it. The suspend and revoke branches are covered by the integration tests for this feature, which own their own fixtures.",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "priority": 24,
+  "testCases": [
+    {
+      "name": "Restore account access",
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.step-up.response.data.token}}"
+      },
+      "pathParams": {
+        "id": "{{cache:auth.register.response.data.user.id}}"
+      },
+      "payload": {
+        "action": "restore",
+        "reason": "{{dynamic:text}}"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "access_status": "active"
+        }
+      }
+    }
+  ],
+  "fieldEnums": {
+    "action": ["suspend", "revoke", "restore"],
+    "access_status": ["active", "suspended", "revoked"]
+  },
+  "statusTransitions": {
+    "active -> suspended": "POST /api/admin/accounts/:id/access with action=suspend",
+    "active -> revoked": "POST /api/admin/accounts/:id/access with action=revoke",
+    "suspended -> active": "POST /api/admin/accounts/:id/access with action=restore",
+    "revoked -> active": "POST /api/admin/accounts/:id/access with action=restore"
+  },
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/admin/auth/login",
+    "POST /api/admin/auth/step-up"
+  ],
+  "taskId": "c4f27a63-d521-48bb-9c8c-bc6fdcf756c8",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+}

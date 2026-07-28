@@ -1,0 +1,35 @@
+{
+  "name": "GET /api/admin/accounts/:id - Full account detail",
+  "endpoint": "/api/admin/accounts/:id",
+  "method": "GET",
+  "description": "Aggregate view of one account: profile, access state with reason and who changed it, subscription, trailing usage, team membership, document and workflow counts, and recent admin actions taken against it. password_hash is never selected. Read-only, so no step-up elevation required.",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "priority": 22,
+  "testCases": [
+    {
+      "name": "Get detail for a registered account",
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.login.response.data.token}}"
+      },
+      "pathParams": {
+        "id": "{{cache:auth.register.response.data.user.id}}"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "account": {
+            "access_status": "active"
+          }
+        }
+      }
+    }
+  ],
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/admin/auth/login"
+  ],
+  "taskId": "4a3858c6-8029-4874-8811-e9785fd1756e",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+}

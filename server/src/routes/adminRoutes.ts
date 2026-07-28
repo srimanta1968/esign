@@ -3,7 +3,31 @@ import jwt from 'jsonwebtoken';
 import { authenticateToken } from '../middleware/auth';
 import { requirePlatformAdmin, PlatformAdminRequest } from '../middleware/requirePlatformAdmin';
 import { AdminAuthService, AdminTokenClaims } from '../services/adminAuthService';
+import { AdminAccountService } from '../services/adminAccountService';
+import { AuditService } from '../services/auditService';
+import { requireStepUp } from '../middleware/requireStepUp';
+import { getClientIp } from '../middleware/auditMiddleware';
+import { AccessStatus } from '../types/user';
 import { config } from '../config/env';
+
+/** Access actions an administrator may take, mapped to the resulting state. */
+type AccessAction = 'suspend' | 'revoke' | 'restore';
+
+const ACCESS_ACTIONS: Record<AccessAction, AccessStatus> = {
+  suspend: 'suspended',
+  revoke: 'revoked',
+  restore: 'active',
+};
+
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * Account ids reach Postgres as uuid, so a malformed value raises a cast error
+ * and would surface as a 500. Reject it as a client error instead.
+ */
+function isUuid(value: string): boolean {
+  return UUID_PATTERN.test(value);
+}
 
 /**
  * Platform admin portal routes, mounted at /api/admin.
@@ -158,7 +182,167 @@ router.post('/auth/logout', (async (req: PlatformAdminRequest, res: Response): P
   }
 }) as RequestHandler);
 
-// Account, billing, credit and messaging endpoints are registered below by
-// their own tasks. Every one of them inherits the guards above.
+// ─────────────────────────────────────────────────────────────
+// ACCOUNTS
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * List every account on the platform. Read-only — no step-up required.
+ */
+router.get('/accounts', (async (req: PlatformAdminRequest, res: Response): Promise<void> => {
+  try {
+    const { search, plan, status, access_status, page, limit } = req.query as Record<string, string>;
+
+    const result = await AdminAccountService.listAccounts({
+      search: search || undefined,
+      plan: plan || undefined,
+      status: status || undefined,
+      accessStatus: access_status || undefined,
+      page: page ? parseInt(page, 10) : undefined,
+      limit: limit ? parseInt(limit, 10) : undefined,
+    });
+
+    res.json({
+      success: true,
+      data: result,
+    });
+  } catch {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to list accounts',
+    });
+  }
+}) as RequestHandler);
+
+/**
+ * Full detail for one account. Read-only — no step-up required.
+ */
+router.get('/accounts/:id', (async (req: PlatformAdminRequest, res: Response): Promise<void> => {
+  try {
+    if (!isUuid(req.params.id)) {
+      res.status(400).json({
+        success: false,
+        error: 'Invalid account id',
+      });
+      return;
+    }
+
+    const detail = await AdminAccountService.getAccountDetail(req.params.id);
+
+    if (!detail) {
+      res.status(404).json({
+        success: false,
+        error: 'Account not found',
+      });
+      return;
+    }
+
+    res.json({
+      success: true,
+      data: detail,
+    });
+  } catch {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to load account detail',
+    });
+  }
+}) as RequestHandler);
+
+/**
+ * Suspend, revoke or restore an account's access.
+ *
+ * Mutating, so it additionally requires a step-up elevated token.
+ */
+router.post(
+  '/accounts/:id/access',
+  requireStepUp as RequestHandler,
+  (async (req: PlatformAdminRequest, res: Response): Promise<void> => {
+    try {
+      const { action, reason } = req.body as { action?: string; reason?: string };
+      const targetUserId = req.params.id;
+
+      if (!isUuid(targetUserId)) {
+        res.status(400).json({
+          success: false,
+          error: 'Invalid account id',
+        });
+        return;
+      }
+
+      if (!action || !ACCESS_ACTIONS[action as AccessAction]) {
+        res.status(400).json({
+          success: false,
+          error: "action must be one of 'suspend', 'revoke' or 'restore'",
+        });
+        return;
+      }
+
+      if (!reason || !reason.trim()) {
+        res.status(400).json({
+          success: false,
+          error: 'A reason is required and is recorded in the audit log',
+        });
+        return;
+      }
+
+      // An admin locking themselves out would leave the portal unreachable if
+      // they were the only active platform admin.
+      if (targetUserId === req.adminId) {
+        res.status(400).json({
+          success: false,
+          error: 'You cannot change your own account access',
+        });
+        return;
+      }
+
+      const nextStatus = ACCESS_ACTIONS[action as AccessAction];
+
+      const result = await AdminAccountService.setAccessStatus(
+        targetUserId,
+        nextStatus,
+        reason.trim(),
+        req.adminId as string
+      );
+
+      await AuditService.logAdminAction({
+        adminId: req.adminId as string,
+        targetUserId,
+        action: `admin.account.${action}`,
+        before: { access_status: result.before },
+        after: { access_status: result.after },
+        reason: reason.trim(),
+        ipAddress: getClientIp(req),
+        userAgent: req.headers['user-agent'] || '',
+      });
+
+      res.json({
+        success: true,
+        data: {
+          id: targetUserId,
+          access_status: result.after,
+          previous_access_status: result.before,
+          sessionsEnded: result.sessionsEnded,
+        },
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error && error.message === 'Account not found') {
+        res.status(404).json({
+          success: false,
+          error: 'Account not found',
+        });
+        return;
+      }
+
+      res.status(500).json({
+        success: false,
+        error: 'Failed to change account access',
+      });
+    }
+  }) as RequestHandler
+);
+
+// Billing, credit and messaging endpoints are registered below by their own
+// tasks. Every one of them inherits the guards above.
 
 export default router;

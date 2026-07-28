@@ -235,6 +235,18 @@ export class AuthController {
         return;
       }
 
+      // Distinct from a bad password so the UI can explain that access was
+      // withdrawn by an administrator rather than prompting for the password
+      // again.
+      if (error.message === 'Account access revoked') {
+        res.status(403).json({
+          success: false,
+          error: 'Your account access has been revoked. Please contact support.',
+          code: 'ACCESS_REVOKED',
+        });
+        return;
+      }
+
       console.error('Login error:', error);
       res.status(500).json({
         success: false,

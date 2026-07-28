@@ -19,8 +19,11 @@ function sanitizeBody(body: Record<string, any> | undefined): Record<string, any
 
 /**
  * Extract the client IP address from the request.
+ *
+ * Exported so admin routes record the same IP the audit middleware would,
+ * rather than each caller re-deriving it slightly differently.
  */
-function getClientIp(req: AuthenticatedRequest): string {
+export function getClientIp(req: AuthenticatedRequest): string {
   const forwarded = req.headers['x-forwarded-for'];
   if (typeof forwarded === 'string') {
     return forwarded.split(',')[0].trim();

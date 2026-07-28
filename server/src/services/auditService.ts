@@ -10,10 +10,62 @@ import {
 } from '../types/audit';
 
 /**
+ * resource_type used for every privileged platform-admin action, so the admin
+ * activity log can be filtered apart from ordinary user activity.
+ */
+export const ADMIN_ACTION_RESOURCE_TYPE = 'admin_action';
+
+/**
+ * A privileged action taken by a platform administrator against a customer
+ * account. Recorded with before/after values so a change is reviewable.
+ */
+export interface AdminActionParams {
+  /** The platform administrator performing the action. */
+  adminId: string;
+  /** The account the action was performed against, if any. */
+  targetUserId: string | null;
+  /** Dotted action name, e.g. 'admin.account.revoke' or 'admin.plan.override'. */
+  action: string;
+  /** State before the change. Omit for read or non-mutating actions. */
+  before?: Record<string, unknown> | null;
+  /** State after the change. */
+  after?: Record<string, unknown> | null;
+  /** Operator-supplied justification. Required by the mutating endpoints. */
+  reason?: string | null;
+  ipAddress: string;
+  userAgent: string;
+}
+
+/**
  * AuditService handles all audit log and compliance operations.
  * Audit logs are immutable - no update or delete operations are exposed.
  */
 export class AuditService {
+  /**
+   * Record a privileged platform-admin action.
+   *
+   * Writes to the same immutable audit_logs table as ordinary events, but
+   * always under resource_type 'admin_action' and with the acting admin in
+   * user_id, so "who changed this customer's account, when, and why" is
+   * answerable from one query.
+   */
+  static async logAdminAction(params: AdminActionParams): Promise<AuditLog> {
+    return AuditService.logEvent({
+      userId: params.adminId,
+      action: params.action,
+      resourceType: ADMIN_ACTION_RESOURCE_TYPE,
+      resourceId: params.targetUserId,
+      ipAddress: params.ipAddress,
+      userAgent: params.userAgent,
+      metadata: {
+        targetUserId: params.targetUserId,
+        before: params.before ?? null,
+        after: params.after ?? null,
+        reason: params.reason ?? null,
+      },
+    });
+  }
+
   /**
    * Log an audit event. This is the primary write method for audit entries.
    */

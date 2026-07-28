@@ -116,8 +116,8 @@ export class AuthService {
    */
   static async login(email: string, password: string): Promise<{ token: string; user: UserResponse }> {
     try {
-      const user = await DataService.queryOne<User>(
-        'SELECT id, email, password_hash, name, role, organization_id, created_at FROM users WHERE email = $1',
+      const user = await DataService.queryOne<User & { access_status: string | null }>(
+        'SELECT id, email, password_hash, name, role, organization_id, access_status, created_at FROM users WHERE email = $1',
         [email]
       );
 
@@ -129,6 +129,14 @@ export class AuthService {
 
       if (!isValidPassword) {
         throw new Error('Invalid credentials');
+      }
+
+      // An account suspended or revoked by a platform admin cannot sign in.
+      // Checked AFTER the password so this cannot be used to probe which
+      // accounts exist, and thrown as a distinct error so the client can show
+      // the real reason rather than "wrong password".
+      if (user.access_status && user.access_status !== 'active') {
+        throw new Error('Account access revoked');
       }
 
       const token: string = jwt.sign(
@@ -149,7 +157,10 @@ export class AuthService {
         },
       };
     } catch (error: unknown) {
-      if (error instanceof Error && error.message === 'Invalid credentials') {
+      if (error instanceof Error && (
+        error.message === 'Invalid credentials' ||
+        error.message === 'Account access revoked'
+      )) {
         throw error;
       }
       throw new Error(`Login failed: ${error instanceof Error ? error.message : 'Unknown error'}`);

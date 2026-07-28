@@ -23,6 +23,49 @@
           "stepUp": true
         }
       }
+    },
+    {
+      "name": "400 PASSWORD_REQUIRED — password is absent from the body",
+      "testType": "negative",
+      "coversErrorCase": "400|password_required",
+      "expectedStatus": 400,
+      "expectedError": {
+        "code": "PASSWORD_REQUIRED"
+      },
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.login.response.data.token}}"
+      },
+      "payload": {}
+    },
+    {
+      "name": "401 CONFIRMATION_FAILED — The supplied password does not match",
+      "testType": "negative",
+      "coversErrorCase": "401|confirmation_failed",
+      "expectedStatus": 401,
+      "expectedError": {
+        "code": "CONFIRMATION_FAILED"
+      },
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.login.response.data.token}}"
+      },
+      "payload": {
+        "password": "{{static:WrongPassword123!}}"
+      }
+    },
+    {
+      "name": "403 NOT_PLATFORM_ADMIN — The caller is authenticated but is not a platform_admin (a tenant-level admin is refused here)",
+      "testType": "negative",
+      "coversErrorCase": "403|not_platform_admin",
+      "expectedStatus": 403,
+      "expectedError": {
+        "code": "NOT_PLATFORM_ADMIN"
+      },
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
+      },
+      "payload": {
+        "password": "{{var:platform_admin_password}}"
+      }
     }
   ],
   "captureResponse": {
@@ -58,7 +101,9 @@
       "status": 403,
       "code": "ACCESS_REVOKED",
       "message": "Platform administrator access has been revoked",
-      "when": "The admin's own access_status is suspended or revoked"
+      "when": "The admin's own access_status is suspended or revoked",
+      "reproducible": false,
+      "notReproducibleReason": "Requires revoking the acting administrator's own access, which would break every subsequent admin test in the run. Covered by the adminAuthBoundary integration test, which owns its own fixture."
     },
     {
       "status": 500,

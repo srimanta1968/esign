@@ -19,6 +19,27 @@
           "accountsPastDue": "number"
         }
       }
+    },
+    {
+      "name": "401 AUTH_REQUIRED — No Authorization header is present",
+      "testType": "negative",
+      "coversErrorCase": "401|auth_required",
+      "expectedStatus": 401,
+      "expectedError": {
+        "code": "AUTH_REQUIRED"
+      }
+    },
+    {
+      "name": "403 NOT_PLATFORM_ADMIN — The caller is authenticated but is not a platform_admin (a tenant-level admin is refused here)",
+      "testType": "negative",
+      "coversErrorCase": "403|not_platform_admin",
+      "expectedStatus": 403,
+      "expectedError": {
+        "code": "NOT_PLATFORM_ADMIN"
+      },
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
+      }
     }
   ],
   "dependsOn": [
@@ -45,7 +66,9 @@
       "status": 403,
       "code": "ACCESS_REVOKED",
       "message": "Platform administrator access has been revoked",
-      "when": "The admin's own access_status is suspended or revoked"
+      "when": "The admin's own access_status is suspended or revoked",
+      "reproducible": false,
+      "notReproducibleReason": "Requires revoking the acting administrator's own access, which would break every subsequent admin test in the run. Covered by the adminAuthBoundary integration test, which owns its own fixture."
     },
     {
       "status": 500,

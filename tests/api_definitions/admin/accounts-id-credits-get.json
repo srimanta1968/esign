@@ -26,6 +26,48 @@
           "balance": "number"
         }
       }
+    },
+    {
+      "name": "400 INVALID_ACCOUNT_ID — The :id path parameter is not a valid UUID",
+      "testType": "negative",
+      "coversErrorCase": "400|invalid_account_id",
+      "expectedStatus": 400,
+      "expectedError": {
+        "code": "INVALID_ACCOUNT_ID"
+      },
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.login.response.data.token}}"
+      },
+      "pathParams": {
+        "id": "{{static:not-a-uuid}}"
+      }
+    },
+    {
+      "name": "401 AUTH_REQUIRED — No Authorization header is present",
+      "testType": "negative",
+      "coversErrorCase": "401|auth_required",
+      "expectedStatus": 401,
+      "expectedError": {
+        "code": "AUTH_REQUIRED"
+      },
+      "pathParams": {
+        "id": "{{cache:auth.register.response.data.user.id}}"
+      }
+    },
+    {
+      "name": "403 NOT_PLATFORM_ADMIN — The caller is authenticated but is not a platform_admin (a tenant-level admin is refused here)",
+      "testType": "negative",
+      "coversErrorCase": "403|not_platform_admin",
+      "expectedStatus": 403,
+      "expectedError": {
+        "code": "NOT_PLATFORM_ADMIN"
+      },
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
+      },
+      "pathParams": {
+        "id": "{{cache:auth.register.response.data.user.id}}"
+      }
     }
   ],
   "dependsOn": [
@@ -59,7 +101,9 @@
       "status": 403,
       "code": "ACCESS_REVOKED",
       "message": "Platform administrator access has been revoked",
-      "when": "The admin's own access_status is suspended or revoked"
+      "when": "The admin's own access_status is suspended or revoked",
+      "reproducible": false,
+      "notReproducibleReason": "Requires revoking the acting administrator's own access, which would break every subsequent admin test in the run. Covered by the adminAuthBoundary integration test, which owns its own fixture."
     },
     {
       "status": 500,

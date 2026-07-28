@@ -24,6 +24,31 @@
           }
         }
       }
+    },
+    {
+      "name": "400 MISSING_CREDENTIALS — email or password is absent from the body",
+      "testType": "negative",
+      "coversErrorCase": "400|missing_credentials",
+      "expectedStatus": 400,
+      "expectedError": {
+        "code": "MISSING_CREDENTIALS"
+      },
+      "payload": {
+        "email": "{{var:platform_admin_email}}"
+      }
+    },
+    {
+      "name": "401 INVALID_CREDENTIALS — Wrong password, unknown email, OR a valid non-platform_admin account — deliberately identical so staff accounts cannot be enumerated",
+      "testType": "negative",
+      "coversErrorCase": "401|invalid_credentials",
+      "expectedStatus": 401,
+      "expectedError": {
+        "code": "INVALID_CREDENTIALS"
+      },
+      "payload": {
+        "email": "{{var:platform_admin_email}}",
+        "password": "{{static:WrongPassword123!}}"
+      }
     }
   ],
   "captureResponse": {

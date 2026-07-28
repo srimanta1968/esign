@@ -26,6 +26,119 @@
           "access_status": "active"
         }
       }
+    },
+    {
+      "name": "400 INVALID_ACCOUNT_ID — The :id path parameter is not a valid UUID",
+      "testType": "negative",
+      "coversErrorCase": "400|invalid_account_id",
+      "expectedStatus": 400,
+      "expectedError": {
+        "code": "INVALID_ACCOUNT_ID"
+      },
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.step-up.response.data.token}}"
+      },
+      "pathParams": {
+        "id": "{{static:not-a-uuid}}"
+      },
+      "payload": {
+        "action": "restore",
+        "reason": "{{dynamic:text}}"
+      }
+    },
+    {
+      "name": "400 INVALID_ACTION — action is missing or not a recognised value",
+      "testType": "negative",
+      "coversErrorCase": "400|invalid_action",
+      "expectedStatus": 400,
+      "expectedError": {
+        "code": "INVALID_ACTION"
+      },
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.step-up.response.data.token}}"
+      },
+      "pathParams": {
+        "id": "{{cache:auth.register.response.data.user.id}}"
+      },
+      "payload": {
+        "action": "{{static:not_a_real_action}}",
+        "reason": "{{dynamic:text}}"
+      }
+    },
+    {
+      "name": "400 REASON_REQUIRED — reason is missing or blank",
+      "testType": "negative",
+      "coversErrorCase": "400|reason_required",
+      "expectedStatus": 400,
+      "expectedError": {
+        "code": "REASON_REQUIRED"
+      },
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.step-up.response.data.token}}"
+      },
+      "pathParams": {
+        "id": "{{cache:auth.register.response.data.user.id}}"
+      },
+      "payload": {
+        "action": "restore"
+      }
+    },
+    {
+      "name": "400 SELF_ACCESS_CHANGE — The target account is the acting administrator",
+      "testType": "negative",
+      "coversErrorCase": "400|self_access_change",
+      "expectedStatus": 400,
+      "expectedError": {
+        "code": "SELF_ACCESS_CHANGE"
+      },
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.step-up.response.data.token}}"
+      },
+      "pathParams": {
+        "id": "{{cache:admin.auth.login.response.data.admin.id}}"
+      },
+      "payload": {
+        "action": "{{static:revoke}}",
+        "reason": "{{dynamic:text}}"
+      }
+    },
+    {
+      "name": "403 STEP_UP_REQUIRED — The Authorization header carries a plain admin session token rather than an elevated step-up token",
+      "testType": "negative",
+      "coversErrorCase": "403|step_up_required",
+      "expectedStatus": 403,
+      "expectedError": {
+        "code": "STEP_UP_REQUIRED"
+      },
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.login.response.data.token}}"
+      },
+      "pathParams": {
+        "id": "{{cache:auth.register.response.data.user.id}}"
+      },
+      "payload": {
+        "action": "restore",
+        "reason": "{{dynamic:text}}"
+      }
+    },
+    {
+      "name": "404 ACCOUNT_NOT_FOUND — No account exists with that id",
+      "testType": "negative",
+      "coversErrorCase": "404|account_not_found",
+      "expectedStatus": 404,
+      "expectedError": {
+        "code": "ACCOUNT_NOT_FOUND"
+      },
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.step-up.response.data.token}}"
+      },
+      "pathParams": {
+        "id": "{{static:11111111-1111-1111-1111-111111111111}}"
+      },
+      "payload": {
+        "action": "restore",
+        "reason": "{{dynamic:text}}"
+      }
     }
   ],
   "fieldEnums": {

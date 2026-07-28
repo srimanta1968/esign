@@ -36,6 +36,19 @@ export interface AdminActionParams {
   userAgent: string;
 }
 
+/** One row of the admin activity log, with both parties' emails resolved. */
+export interface AdminActionLogRow {
+  id: string;
+  action: string;
+  created_at: Date;
+  ip_address: string;
+  metadata: Record<string, unknown>;
+  admin_id: string | null;
+  admin_email: string | null;
+  target_user_id: string | null;
+  target_email: string | null;
+}
+
 /**
  * AuditService handles all audit log and compliance operations.
  * Audit logs are immutable - no update or delete operations are exposed.
@@ -93,6 +106,68 @@ export class AuditService {
       ]
     );
     return result!;
+  }
+
+  /**
+   * Privileged admin actions only, newest first, with the acting admin's and
+   * target account's email resolved.
+   *
+   * Distinct from getAuditLogs, which returns all platform activity — this is
+   * the oversight surface for the admin portal itself.
+   */
+  static async getAdminActions(params: {
+    adminId?: string;
+    targetUserId?: string;
+    action?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<{ items: AdminActionLogRow[]; total: number; page: number; totalPages: number }> {
+    const page = Math.max(1, params.page || 1);
+    const limit = Math.min(200, Math.max(1, params.limit || 50));
+    const offset = (page - 1) * limit;
+
+    const conditions: string[] = ['a.resource_type = $1'];
+    const values: unknown[] = [ADMIN_ACTION_RESOURCE_TYPE];
+    let paramIndex = 2;
+
+    if (params.adminId) {
+      conditions.push(`a.user_id = $${paramIndex}`);
+      values.push(params.adminId);
+      paramIndex++;
+    }
+    if (params.targetUserId) {
+      conditions.push(`a.resource_id = $${paramIndex}`);
+      values.push(params.targetUserId);
+      paramIndex++;
+    }
+    if (params.action) {
+      conditions.push(`a.action ILIKE $${paramIndex}`);
+      values.push(`%${params.action}%`);
+      paramIndex++;
+    }
+
+    const whereClause = `WHERE ${conditions.join(' AND ')}`;
+
+    const countRow = await DataService.queryOne<{ count: string }>(
+      `SELECT COUNT(*) AS count FROM audit_logs a ${whereClause}`,
+      values
+    );
+    const total = parseInt(countRow?.count || '0', 10);
+
+    const items = await DataService.queryAll<AdminActionLogRow>(
+      `SELECT a.id, a.action, a.created_at, a.ip_address, a.metadata,
+              a.user_id AS admin_id, admin_user.email AS admin_email,
+              a.resource_id AS target_user_id, target_user.email AS target_email
+       FROM audit_logs a
+       LEFT JOIN users admin_user ON admin_user.id = a.user_id
+       LEFT JOIN users target_user ON target_user.id = a.resource_id
+       ${whereClause}
+       ORDER BY a.created_at DESC
+       LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`,
+      [...values, limit, offset]
+    );
+
+    return { items, total, page, totalPages: Math.ceil(total / limit) || 1 };
   }
 
   /**

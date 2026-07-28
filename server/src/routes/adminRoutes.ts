@@ -342,6 +342,56 @@ router.post(
   }) as RequestHandler
 );
 
+// ─────────────────────────────────────────────────────────────
+// METRICS & ACTIVITY
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * Aggregate counts backing the portal dashboard.
+ */
+router.get('/metrics/overview', (async (_req: PlatformAdminRequest, res: Response): Promise<void> => {
+  try {
+    const metrics = await AdminAccountService.getOverviewMetrics();
+
+    res.json({
+      success: true,
+      data: metrics,
+    });
+  } catch {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to load overview metrics',
+    });
+  }
+}) as RequestHandler);
+
+/**
+ * Privileged admin actions, for the portal's own oversight view.
+ */
+router.get('/activity', (async (req: PlatformAdminRequest, res: Response): Promise<void> => {
+  try {
+    const { admin_id, target_user_id, action, page, limit } = req.query as Record<string, string>;
+
+    const result = await AuditService.getAdminActions({
+      adminId: admin_id && isUuid(admin_id) ? admin_id : undefined,
+      targetUserId: target_user_id && isUuid(target_user_id) ? target_user_id : undefined,
+      action: action || undefined,
+      page: page ? parseInt(page, 10) : undefined,
+      limit: limit ? parseInt(limit, 10) : undefined,
+    });
+
+    res.json({
+      success: true,
+      data: result,
+    });
+  } catch {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to load admin activity',
+    });
+  }
+}) as RequestHandler);
+
 // Billing, credit and messaging endpoints are registered below by their own
 // tasks. Every one of them inherits the guards above.
 

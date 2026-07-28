@@ -1,0 +1,29 @@
+{
+  "name": "GET /api/admin/metrics/overview - Portal dashboard metrics",
+  "endpoint": "/api/admin/metrics/overview",
+  "method": "GET",
+  "description": "Aggregate counts backing the admin dashboard: accounts by access status, by plan, by subscription status, new accounts this month and documents sent this month. Computed with SQL GROUP BY rather than by fetching rows, so it stays cheap as the platform grows. Read-only, so no step-up elevation required.",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "priority": 26,
+  "testCases": [
+    {
+      "name": "Load overview metrics",
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.login.response.data.token}}"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "totalAccounts": "number"
+        }
+      }
+    }
+  ],
+  "dependsOn": [
+    "POST /api/admin/auth/login"
+  ],
+  "taskId": "1789d2dc-c935-4410-8ef1-0b7cdbbb058c",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+}

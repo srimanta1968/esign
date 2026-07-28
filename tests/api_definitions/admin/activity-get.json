@@ -1,0 +1,33 @@
+{
+  "name": "GET /api/admin/activity - Admin activity log",
+  "endpoint": "/api/admin/activity",
+  "method": "GET",
+  "description": "Privileged platform-admin actions only (audit_logs rows with resource_type 'admin_action'), newest first, with acting-admin and target-account emails resolved. This is the oversight surface for the portal itself and is distinct from the tenant-facing /api/audit-logs. Read-only, so no step-up elevation required.",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "priority": 28,
+  "testCases": [
+    {
+      "name": "List recent admin actions",
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.login.response.data.token}}"
+      },
+      "queryParams": {
+        "page": 1,
+        "limit": 25
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "page": 1
+        }
+      }
+    }
+  ],
+  "dependsOn": [
+    "POST /api/admin/auth/login"
+  ],
+  "taskId": "b341541d-55a1-44dc-b6c1-4bf36800f84f",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+}

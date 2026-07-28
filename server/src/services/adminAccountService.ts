@@ -282,6 +282,70 @@ export class AdminAccountService {
   }
 
   /**
+   * Aggregate counts for the portal dashboard.
+   *
+   * Every figure is computed in SQL rather than by fetching rows and counting
+   * in JS, so this stays cheap as the account count grows.
+   *
+   * Payment-failure and trial-expiry tiles are added by the billing and credit
+   * tasks — those columns do not exist yet, and querying them here would break
+   * the dashboard until those migrations land.
+   */
+  static async getOverviewMetrics(): Promise<{
+    totalAccounts: number;
+    byAccessStatus: Record<string, number>;
+    byPlan: Record<string, number>;
+    bySubscriptionStatus: Record<string, number>;
+    newAccountsThisMonth: number;
+    documentsSentThisMonth: number;
+  }> {
+    const [accessRows, planRows, statusRows, newRow, usageRow] = await Promise.all([
+      DataService.queryAll<{ key: string; count: string }>(
+        `SELECT COALESCE(access_status, 'active') AS key, COUNT(*) AS count
+         FROM users GROUP BY COALESCE(access_status, 'active')`
+      ),
+      DataService.queryAll<{ key: string; count: string }>(
+        `SELECT COALESCE(s.plan, u.plan, 'free') AS key, COUNT(*) AS count
+         FROM users u LEFT JOIN subscriptions s ON s.user_id = u.id
+         GROUP BY COALESCE(s.plan, u.plan, 'free')`
+      ),
+      DataService.queryAll<{ key: string; count: string }>(
+        `SELECT COALESCE(s.status, 'active') AS key, COUNT(*) AS count
+         FROM users u LEFT JOIN subscriptions s ON s.user_id = u.id
+         GROUP BY COALESCE(s.status, 'active')`
+      ),
+      DataService.queryOne<{ count: string }>(
+        `SELECT COUNT(*) AS count FROM users
+         WHERE created_at >= date_trunc('month', NOW())`
+      ),
+      DataService.queryOne<{ total: string }>(
+        'SELECT COALESCE(SUM(documents_sent), 0) AS total FROM usage_tracking WHERE month_year = $1',
+        [currentMonthYear()]
+      ),
+    ]);
+
+    const toMap = (rows: { key: string; count: string }[]): Record<string, number> => {
+      const map: Record<string, number> = {};
+      for (const row of rows) {
+        map[row.key] = parseInt(row.count, 10);
+      }
+      return map;
+    };
+
+    const byAccessStatus = toMap(accessRows);
+    const totalAccounts = Object.values(byAccessStatus).reduce((sum, n) => sum + n, 0);
+
+    return {
+      totalAccounts,
+      byAccessStatus,
+      byPlan: toMap(planRows),
+      bySubscriptionStatus: toMap(statusRows),
+      newAccountsThisMonth: parseInt(newRow?.count || '0', 10),
+      documentsSentThisMonth: parseInt(usageRow?.total || '0', 10),
+    };
+  }
+
+  /**
    * Plan document limits, exposed so the portal can show a plan's ceiling
    * without duplicating the billing constants.
    */

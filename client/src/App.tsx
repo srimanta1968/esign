@@ -36,6 +36,13 @@ import GuidePage from './pages/GuidePage';
 import ApiKeysPage from './pages/ApiKeysPage';
 import TeamPage from './pages/TeamPage';
 import TeamJoinPage from './pages/TeamJoinPage';
+import { AdminAuthProvider } from './context/AdminAuthContext';
+import AdminLayout from './layouts/AdminLayout';
+import AdminLoginPage from './pages/admin/AdminLoginPage';
+import AdminDashboardPage from './pages/admin/AdminDashboardPage';
+import AdminAccountsPage from './pages/admin/AdminAccountsPage';
+import AdminAccountDetailPage from './pages/admin/AdminAccountDetailPage';
+import AdminActivityLogPage from './pages/admin/AdminActivityLogPage';
 
 function App() {
   return (
@@ -44,6 +51,35 @@ function App() {
         <Routes>
           {/* Public signing page - NO Layout wrapper */}
           <Route path="/sign-document/:token" element={<PublicSignPage />} />
+
+          {/*
+            Platform admin portal - its own session, its own shell, NO customer
+            Layout. Kept separate from the tenant-level /admin/* pages, which
+            stay inside the customer app.
+          */}
+          <Route
+            path="/admin-portal/*"
+            element={
+              <AdminAuthProvider>
+                <Routes>
+                  <Route path="/login" element={<AdminLoginPage />} />
+                  <Route
+                    path="*"
+                    element={
+                      <AdminLayout>
+                        <Routes>
+                          <Route path="/" element={<AdminDashboardPage />} />
+                          <Route path="/accounts" element={<AdminAccountsPage />} />
+                          <Route path="/accounts/:id" element={<AdminAccountDetailPage />} />
+                          <Route path="/activity" element={<AdminActivityLogPage />} />
+                        </Routes>
+                      </AdminLayout>
+                    }
+                  />
+                </Routes>
+              </AdminAuthProvider>
+            }
+          />
 
           {/* All other routes wrapped in Layout */}
           <Route

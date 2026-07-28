@@ -64,6 +64,7 @@ export async function requirePlatformAdmin(
       res.status(403).json({
         success: false,
         error: 'Platform administrator access required',
+        code: 'NOT_PLATFORM_ADMIN',
       });
       return;
     }
@@ -73,6 +74,7 @@ export async function requirePlatformAdmin(
       res.status(403).json({
         success: false,
         error: 'Platform administrator access has been revoked',
+        code: 'ACCESS_REVOKED',
       });
       return;
     }

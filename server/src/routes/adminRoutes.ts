@@ -71,6 +71,7 @@ router.post('/auth/login', (async (req: Request, res: Response): Promise<void> =
       res.status(400).json({
         success: false,
         error: 'Email and password are required',
+        code: 'MISSING_CREDENTIALS'
       });
       return;
     }
@@ -89,6 +90,7 @@ router.post('/auth/login', (async (req: Request, res: Response): Promise<void> =
       res.status(401).json({
         success: false,
         error: 'Invalid credentials',
+        code: 'INVALID_CREDENTIALS'
       });
       return;
     }
@@ -96,6 +98,7 @@ router.post('/auth/login', (async (req: Request, res: Response): Promise<void> =
     res.status(500).json({
       success: false,
       error: 'Admin login failed',
+        code: 'LOGIN_FAILED'
     });
   }
 }) as RequestHandler);
@@ -144,6 +147,7 @@ router.post('/auth/step-up', (async (req: PlatformAdminRequest, res: Response): 
       res.status(400).json({
         success: false,
         error: 'Password is required to complete step-up verification',
+        code: 'PASSWORD_REQUIRED'
       });
       return;
     }
@@ -152,6 +156,7 @@ router.post('/auth/step-up', (async (req: PlatformAdminRequest, res: Response): 
       res.status(401).json({
         success: false,
         error: 'Authentication required',
+        code: 'AUTH_REQUIRED'
       });
       return;
     }
@@ -170,6 +175,7 @@ router.post('/auth/step-up', (async (req: PlatformAdminRequest, res: Response): 
       res.status(401).json({
         success: false,
         error: 'Password confirmation failed',
+        code: 'CONFIRMATION_FAILED'
       });
       return;
     }
@@ -177,6 +183,7 @@ router.post('/auth/step-up', (async (req: PlatformAdminRequest, res: Response): 
     res.status(500).json({
       success: false,
       error: 'Step-up verification failed',
+        code: 'STEP_UP_FAILED'
     });
   }
 }) as RequestHandler);
@@ -196,6 +203,7 @@ router.post('/auth/logout', (async (req: PlatformAdminRequest, res: Response): P
     res.status(500).json({
       success: false,
       error: 'Admin logout failed',
+        code: 'LOGOUT_FAILED'
     });
   }
 }) as RequestHandler);
@@ -228,6 +236,7 @@ router.get('/accounts', (async (req: PlatformAdminRequest, res: Response): Promi
     res.status(500).json({
       success: false,
       error: 'Failed to list accounts',
+        code: 'LIST_FAILED'
     });
   }
 }) as RequestHandler);
@@ -241,6 +250,7 @@ router.get('/accounts/:id', (async (req: PlatformAdminRequest, res: Response): P
       res.status(400).json({
         success: false,
         error: 'Invalid account id',
+        code: 'INVALID_ACCOUNT_ID'
       });
       return;
     }
@@ -251,6 +261,7 @@ router.get('/accounts/:id', (async (req: PlatformAdminRequest, res: Response): P
       res.status(404).json({
         success: false,
         error: 'Account not found',
+        code: 'ACCOUNT_NOT_FOUND'
       });
       return;
     }
@@ -263,6 +274,7 @@ router.get('/accounts/:id', (async (req: PlatformAdminRequest, res: Response): P
     res.status(500).json({
       success: false,
       error: 'Failed to load account detail',
+        code: 'DETAIL_FAILED'
     });
   }
 }) as RequestHandler);
@@ -284,6 +296,7 @@ router.post(
         res.status(400).json({
           success: false,
           error: 'Invalid account id',
+        code: 'INVALID_ACCOUNT_ID'
         });
         return;
       }
@@ -292,6 +305,7 @@ router.post(
         res.status(400).json({
           success: false,
           error: "action must be one of 'suspend', 'revoke' or 'restore'",
+          code: 'INVALID_ACTION',
         });
         return;
       }
@@ -300,6 +314,7 @@ router.post(
         res.status(400).json({
           success: false,
           error: 'A reason is required and is recorded in the audit log',
+        code: 'REASON_REQUIRED'
         });
         return;
       }
@@ -310,6 +325,7 @@ router.post(
         res.status(400).json({
           success: false,
           error: 'You cannot change your own account access',
+        code: 'SELF_ACCESS_CHANGE'
         });
         return;
       }
@@ -348,6 +364,7 @@ router.post(
         res.status(404).json({
           success: false,
           error: 'Account not found',
+        code: 'ACCOUNT_NOT_FOUND'
         });
         return;
       }
@@ -355,6 +372,7 @@ router.post(
       res.status(500).json({
         success: false,
         error: 'Failed to change account access',
+        code: 'ACCESS_CHANGE_FAILED'
       });
     }
   }) as RequestHandler
@@ -373,6 +391,7 @@ router.get('/accounts/:id/billing', (async (req: PlatformAdminRequest, res: Resp
       res.status(400).json({
         success: false,
         error: 'Invalid account id',
+        code: 'INVALID_ACCOUNT_ID'
       });
       return;
     }
@@ -393,6 +412,7 @@ router.get('/accounts/:id/billing', (async (req: PlatformAdminRequest, res: Resp
     res.status(500).json({
       success: false,
       error: 'Failed to load billing detail',
+        code: 'BILLING_FAILED'
     });
   }
 }) as RequestHandler);
@@ -412,6 +432,7 @@ router.post(
         res.status(400).json({
           success: false,
           error: 'Invalid account id',
+        code: 'INVALID_ACCOUNT_ID'
         });
         return;
       }
@@ -420,6 +441,7 @@ router.post(
         res.status(400).json({
           success: false,
           error: `plan must be one of ${VALID_PLANS.join(', ')}`,
+        code: 'INVALID_PLAN'
         });
         return;
       }
@@ -428,6 +450,7 @@ router.post(
         res.status(400).json({
           success: false,
           error: 'A reason is required and is recorded in the audit log',
+        code: 'REASON_REQUIRED'
         });
         return;
       }
@@ -438,6 +461,7 @@ router.post(
         res.status(404).json({
           success: false,
           error: 'Account not found',
+        code: 'ACCOUNT_NOT_FOUND'
         });
         return;
       }
@@ -478,6 +502,7 @@ router.post(
       res.status(500).json({
         success: false,
         error: 'Failed to override plan',
+        code: 'OVERRIDE_FAILED'
       });
     }
   }) as RequestHandler
@@ -493,7 +518,8 @@ router.post(
 router.get('/accounts/:id/credits', (async (req: PlatformAdminRequest, res: Response): Promise<void> => {
   try {
     if (!isUuid(req.params.id)) {
-      res.status(400).json({ success: false, error: 'Invalid account id' });
+      res.status(400).json({ success: false, error: 'Invalid account id',
+        code: 'INVALID_ACCOUNT_ID' });
       return;
     }
 
@@ -513,7 +539,8 @@ router.get('/accounts/:id/credits', (async (req: PlatformAdminRequest, res: Resp
       data: { balance, ledger },
     });
   } catch {
-    res.status(500).json({ success: false, error: 'Failed to load credits' });
+    res.status(500).json({ success: false, error: 'Failed to load credits',
+        code: 'CREDITS_FAILED' });
   }
 }) as RequestHandler);
 
@@ -534,12 +561,17 @@ router.post(
       const targetUserId = req.params.id;
 
       if (!isUuid(targetUserId)) {
-        res.status(400).json({ success: false, error: 'Invalid account id' });
+        res.status(400).json({ success: false, error: 'Invalid account id',
+        code: 'INVALID_ACCOUNT_ID' });
         return;
       }
 
       if (action !== 'grant' && action !== 'revoke') {
-        res.status(400).json({ success: false, error: "action must be 'grant' or 'revoke'" });
+        res.status(400).json({
+          success: false,
+          error: "action must be 'grant' or 'revoke'",
+          code: 'INVALID_ACTION',
+        });
         return;
       }
 
@@ -547,6 +579,7 @@ router.post(
         res.status(400).json({
           success: false,
           error: 'A reason is required and is recorded in the credit ledger',
+        code: 'REASON_REQUIRED'
         });
         return;
       }
@@ -554,7 +587,8 @@ router.post(
       const account = await AdminAccountService.getAccountDetail(targetUserId);
 
       if (!account) {
-        res.status(404).json({ success: false, error: 'Account not found' });
+        res.status(404).json({ success: false, error: 'Account not found',
+        code: 'ACCOUNT_NOT_FOUND' });
         return;
       }
 
@@ -562,7 +596,8 @@ router.post(
         const expiresAt = expires_at ? new Date(expires_at) : null;
 
         if (expiresAt && Number.isNaN(expiresAt.getTime())) {
-          res.status(400).json({ success: false, error: 'expires_at must be a valid date' });
+          res.status(400).json({ success: false, error: 'expires_at must be a valid date',
+        code: 'INVALID_EXPIRY' });
           return;
         }
 
@@ -616,11 +651,12 @@ router.post(
       });
     } catch (error: unknown) {
       if (error instanceof Error && error.message.includes('positive whole number')) {
-        res.status(400).json({ success: false, error: error.message });
+        res.status(400).json({ success: false, error: error.message, code: 'INVALID_AMOUNT' });
         return;
       }
 
-      res.status(500).json({ success: false, error: 'Failed to change credits' });
+      res.status(500).json({ success: false, error: 'Failed to change credits',
+        code: 'CREDITS_CHANGE_FAILED' });
     }
   }) as RequestHandler
 );
@@ -641,7 +677,8 @@ router.post(
       const targetUserId = req.params.id;
 
       if (!isUuid(targetUserId)) {
-        res.status(400).json({ success: false, error: 'Invalid account id' });
+        res.status(400).json({ success: false, error: 'Invalid account id',
+        code: 'INVALID_ACCOUNT_ID' });
         return;
       }
 
@@ -649,6 +686,7 @@ router.post(
         res.status(400).json({
           success: false,
           error: `plan must be one of ${TRIALABLE_PLANS.join(', ')}`,
+        code: 'INVALID_PLAN'
         });
         return;
       }
@@ -659,6 +697,7 @@ router.post(
         res.status(400).json({
           success: false,
           error: `duration_days must be a whole number between 1 and ${MAX_TRIAL_DAYS}`,
+        code: 'INVALID_DURATION'
         });
         return;
       }
@@ -667,6 +706,7 @@ router.post(
         res.status(400).json({
           success: false,
           error: 'A reason is required and is recorded in the audit log',
+        code: 'REASON_REQUIRED'
         });
         return;
       }
@@ -674,7 +714,8 @@ router.post(
       const account = await AdminAccountService.getAccountDetail(targetUserId);
 
       if (!account) {
-        res.status(404).json({ success: false, error: 'Account not found' });
+        res.status(404).json({ success: false, error: 'Account not found',
+        code: 'ACCOUNT_NOT_FOUND' });
         return;
       }
 
@@ -710,11 +751,13 @@ router.post(
         res.status(409).json({
           success: false,
           error: 'This account already has an active paid subscription, so a trial would downgrade it on expiry',
+        code: 'ACTIVE_PAID_SUBSCRIPTION'
         });
         return;
       }
 
-      res.status(500).json({ success: false, error: 'Failed to grant trial' });
+      res.status(500).json({ success: false, error: 'Failed to grant trial',
+        code: 'TRIAL_FAILED' });
     }
   }) as RequestHandler
 );
@@ -730,7 +773,8 @@ router.delete(
       const targetUserId = req.params.id;
 
       if (!isUuid(targetUserId)) {
-        res.status(400).json({ success: false, error: 'Invalid account id' });
+        res.status(400).json({ success: false, error: 'Invalid account id',
+        code: 'INVALID_ACCOUNT_ID' });
         return;
       }
 
@@ -750,11 +794,13 @@ router.delete(
       res.json({ success: true, data: { plan: result.plan, status: 'active' } });
     } catch (error: unknown) {
       if (error instanceof Error && error.message === 'No active trial') {
-        res.status(404).json({ success: false, error: 'This account has no active trial' });
+        res.status(404).json({ success: false, error: 'This account has no active trial',
+        code: 'NO_ACTIVE_TRIAL' });
         return;
       }
 
-      res.status(500).json({ success: false, error: 'Failed to cancel trial' });
+      res.status(500).json({ success: false, error: 'Failed to cancel trial',
+        code: 'TRIAL_CANCEL_FAILED' });
     }
   }) as RequestHandler
 );
@@ -775,7 +821,8 @@ router.get('/message-templates', (async (_req: PlatformAdminRequest, res: Respon
       data: { templates, variables: AdminMessagingService.availableVariables() },
     });
   } catch {
-    res.status(500).json({ success: false, error: 'Failed to load templates' });
+    res.status(500).json({ success: false, error: 'Failed to load templates',
+        code: 'TEMPLATES_FAILED' });
   }
 }) as RequestHandler);
 
@@ -793,7 +840,8 @@ router.post(
       };
 
       if (!key || !name || !body) {
-        res.status(400).json({ success: false, error: 'key, name and body are required' });
+        res.status(400).json({ success: false, error: 'key, name and body are required',
+        code: 'INVALID_TEMPLATE' });
         return;
       }
 
@@ -801,6 +849,7 @@ router.post(
         res.status(400).json({
           success: false,
           error: `channel must be one of ${MESSAGE_CHANNELS.join(', ')}`,
+        code: 'INVALID_CHANNEL'
         });
         return;
       }
@@ -843,14 +892,16 @@ router.post('/messages/preview', (async (req: PlatformAdminRequest, res: Respons
     const { template_key, user_id } = req.body as { template_key?: string; user_id?: string };
 
     if (!template_key) {
-      res.status(400).json({ success: false, error: 'template_key is required' });
+      res.status(400).json({ success: false, error: 'template_key is required',
+        code: 'TEMPLATE_KEY_REQUIRED' });
       return;
     }
 
     const template = await AdminMessagingService.getTemplateByKey(template_key);
 
     if (!template) {
-      res.status(404).json({ success: false, error: 'Template not found' });
+      res.status(404).json({ success: false, error: 'Template not found',
+        code: 'TEMPLATE_NOT_FOUND' });
       return;
     }
 
@@ -886,7 +937,8 @@ router.post(
       const { template_key, user_id } = req.body as { template_key?: string; user_id?: string };
 
       if (!template_key || !user_id || !isUuid(user_id)) {
-        res.status(400).json({ success: false, error: 'template_key and a valid user_id are required' });
+        res.status(400).json({ success: false, error: 'template_key and a valid user_id are required',
+        code: 'INVALID_SEND_REQUEST' });
         return;
       }
 
@@ -933,7 +985,8 @@ router.post(
       };
 
       if (!template_key) {
-        res.status(400).json({ success: false, error: 'template_key is required' });
+        res.status(400).json({ success: false, error: 'template_key is required',
+        code: 'TEMPLATE_KEY_REQUIRED' });
         return;
       }
 
@@ -992,7 +1045,8 @@ router.post(
 router.get('/accounts/:id/messages', (async (req: PlatformAdminRequest, res: Response): Promise<void> => {
   try {
     if (!isUuid(req.params.id)) {
-      res.status(400).json({ success: false, error: 'Invalid account id' });
+      res.status(400).json({ success: false, error: 'Invalid account id',
+        code: 'INVALID_ACCOUNT_ID' });
       return;
     }
 
@@ -1006,7 +1060,8 @@ router.get('/accounts/:id/messages', (async (req: PlatformAdminRequest, res: Res
 
     res.json({ success: true, data: history });
   } catch {
-    res.status(500).json({ success: false, error: 'Failed to load message history' });
+    res.status(500).json({ success: false, error: 'Failed to load message history',
+        code: 'MESSAGE_HISTORY_FAILED' });
   }
 }) as RequestHandler);
 
@@ -1029,6 +1084,7 @@ router.get('/metrics/revenue', (async (_req: PlatformAdminRequest, res: Response
     res.status(500).json({
       success: false,
       error: 'Failed to load revenue metrics',
+        code: 'METRICS_FAILED'
     });
   }
 }) as RequestHandler);
@@ -1048,6 +1104,7 @@ router.get('/metrics/overview', (async (_req: PlatformAdminRequest, res: Respons
     res.status(500).json({
       success: false,
       error: 'Failed to load overview metrics',
+        code: 'METRICS_FAILED'
     });
   }
 }) as RequestHandler);
@@ -1075,6 +1132,7 @@ router.get('/activity', (async (req: PlatformAdminRequest, res: Response): Promi
     res.status(500).json({
       success: false,
       error: 'Failed to load admin activity',
+        code: 'ACTIVITY_FAILED'
     });
   }
 }) as RequestHandler);

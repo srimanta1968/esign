@@ -1,5 +1,5 @@
 # Coding Standards Violations Report
-Generated: 2026-07-28 06:21:46 UTC
+Generated: 2026-07-28 04:19:47 UTC
 
 ## Summary
 | Metric | Value |
@@ -9,14 +9,14 @@ Generated: 2026-07-28 06:21:46 UTC
 | 🟠 Major | 0 |
 | 🟡 Minor | 1 |
 | Files Affected | 1 |
-| Files Scanned | 1 |
-| Avg Compliance | 75.0% |
+| Files Scanned | 5 |
+| Avg Compliance | 99.0% |
 
 ## Violations by File
 
-### 📁 server/src/__tests__/adminMessaging.test.ts
+### 📁 server/src/routes/adminRoutes.ts
 
-#### 🟡 [MINOR] SC-11
+#### 🟡 [MINOR] SC-05
 - **Line:** 0
 - **Issue:** 
 
@@ -28,8 +28,8 @@ Generated: 2026-07-28 06:21:46 UTC
 Please fix the following 1 coding standard violation(s) in my codebase:
 
 
-📁 File: server/src/__tests__/adminMessaging.test.ts
-   - Line 0: SC-11 - 
+📁 File: server/src/routes/adminRoutes.ts
+   - Line 0: SC-05 - 
 
 Please:
 1. Open each file and navigate to the specified line numbers

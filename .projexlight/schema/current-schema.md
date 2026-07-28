@@ -1,0 +1,578 @@
+# Project Reference Schema (READ-ONLY)
+
+_Mirror of ProjexLight — pulled 2026-07-28T05:31:23, hash `None`._
+
+> **MUST:** Before creating or altering any table/column, compare against this file. Reuse an existing table/column (possibly created by another developer), align names/types, and only add genuinely new structures. Do not duplicate or diverge. This is NOT applied to your local DB.
+
+## `postgres.public` (36 tables)
+- **IF** _(origin: code_migration)_
+- **_schema_version** _(origin: introspected)_
+    - `id` string PK NOT NULL
+    - `schema_hash` string NOT NULL
+    - `version` integer
+    - `applied_at` timestamp
+    - `source` string
+- **analytics_events** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `event_type` string NOT NULL
+    - `user_id` uuid NOT NULL
+    - `metadata` json
+    - `created_at` timestamp
+- **api_keys** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `user_id` uuid NOT NULL
+    - `label` string
+    - `last_used_at` timestamp
+    - `created_at` timestamp
+    - `revoked_at` timestamp
+- **audit_logs** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `user_id` uuid
+    - `action` string NOT NULL
+    - `resource_type` string NOT NULL
+    - `resource_id` uuid
+    - `ip_address` string
+    - `user_agent` text
+    - `metadata` json
+    - `created_at` timestamp
+- **compliance_alert_rules** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `rule_type` string NOT NULL
+    - `threshold` integer NOT NULL
+    - `enabled` boolean
+    - `created_at` timestamp
+- **compliance_alerts** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `rule_id` uuid NOT NULL
+    - `triggered_at` timestamp
+    - `details` json
+    - `acknowledged` boolean
+    - `acknowledged_by` uuid
+- **compliance_metadata** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `signature_id` uuid NOT NULL
+    - `signer_ip` string NOT NULL
+    - `user_agent` text NOT NULL
+    - `consent_given` boolean NOT NULL
+    - `consent_timestamp` timestamp
+    - `esign_compliant` boolean NOT NULL
+    - `created_at` timestamp
+- **credit_ledger** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `user_id` uuid NOT NULL
+    - `delta` integer NOT NULL
+    - `balance_after` integer NOT NULL
+    - `reason` text NOT NULL
+    - `granted_by` uuid
+    - `expires_at` timestamp
+    - `source` string NOT NULL
+    - `related_document_id` uuid
+    - `created_at` timestamp
+    - `the` string
+- **document_tags** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `document_id` uuid NOT NULL
+    - `tag` string NOT NULL
+    - `created_at` timestamp
+- **document_templates** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `user_id` uuid NOT NULL
+    - `name` string NOT NULL
+    - `description` text
+    - `file_path` string NOT NULL
+    - `created_at` timestamp
+    - `updated_at` timestamp
+- **document_versions** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `document_id` uuid NOT NULL
+    - `version_number` integer NOT NULL
+    - `file_path` string NOT NULL
+    - `file_size` integer
+    - `created_by` uuid NOT NULL
+    - `created_at` timestamp
+- **documents** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `user_id` uuid
+    - `file_path` string
+    - `uploaded_at` timestamp
+    - `created_at` timestamp
+    - `updated_at` timestamp
+- **email_verification_codes** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `user_id` uuid NOT NULL
+    - `code` string NOT NULL
+    - `expires_at` string NOT NULL
+    - `used` boolean
+    - `created_at` string
+- **notification_delivery_log** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `notification_id` uuid NOT NULL
+    - `channel` string NOT NULL
+    - `recipient` string NOT NULL
+    - `status` string NOT NULL
+    - `sent_at` timestamp
+    - `error_message` text
+    - `created_at` timestamp
+- **notification_preferences** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `user_id` uuid NOT NULL
+    - `notification_type` string NOT NULL
+    - `email_enabled` boolean
+    - `sms_enabled` boolean
+    - `in_app_enabled` boolean
+    - `created_at` timestamp
+    - `updated_at` timestamp
+- **notifications** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `user_id` uuid NOT NULL
+    - `type` string NOT NULL
+    - `message` text
+    - `is_read` boolean
+    - `created_at` timestamp
+    - `action_url` text
+    - `title` string
+    - `read` boolean
+- **organizations** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `name` string NOT NULL
+    - `slug` string NOT NULL
+    - `created_at` timestamp
+- **password_reset_tokens** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `user_id` uuid NOT NULL
+    - `token` string NOT NULL
+    - `expires_at` timestamp NOT NULL
+    - `used` boolean
+    - `created_at` timestamp
+- **payments** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `user_id` uuid NOT NULL
+    - `stripe_invoice_id` string
+    - `stripe_charge_id` string
+    - `amount_cents` integer NOT NULL
+    - `currency` string NOT NULL
+    - `status` string NOT NULL
+    - `description` text
+    - `invoice_pdf_url` text
+    - `hosted_invoice_url` text
+    - `period_start` timestamp
+    - `period_end` timestamp
+    - `paid_at` timestamp
+    - `created_at` timestamp
+    - `updated_at` timestamp
+- **sessions** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `user_id` uuid NOT NULL
+    - `token` text NOT NULL
+    - `ip_address` string
+    - `user_agent` text
+    - `expires_at` timestamp NOT NULL
+    - `created_at` timestamp
+- **signature_fields** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `workflow_id` uuid NOT NULL
+    - `recipient_id` uuid NOT NULL
+    - `field_type` string NOT NULL
+    - `page` integer NOT NULL
+    - `x` float NOT NULL
+    - `y` float NOT NULL
+    - `width` float NOT NULL
+    - `height` float NOT NULL
+    - `required` boolean
+    - `signature_data` text
+    - `signature_type` string
+    - `signed_at` timestamp
+- **signatures** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `document_id` uuid
+    - `signer_email` string
+    - `status` string
+    - `created_at` timestamp
+    - `updated_at` timestamp
+- **signing_certificates** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `workflow_id` uuid NOT NULL
+    - `certificate_id` uuid NOT NULL
+    - `document_hash` string NOT NULL
+    - `generated_at` timestamp
+    - `pdf_path` string
+- **signing_tokens** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `workflow_id` uuid NOT NULL
+    - `recipient_id` uuid NOT NULL
+    - `token` string NOT NULL
+    - `expires_at` timestamp NOT NULL
+    - `used` boolean
+    - `created_at` timestamp
+- **signing_workflows** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `document_id` uuid NOT NULL
+    - `creator_id` uuid NOT NULL
+    - `workflow_type` string NOT NULL
+    - `status` string NOT NULL
+    - `created_at` timestamp
+    - `updated_at` timestamp
+    - `signed_pdf_path` string
+    - `certificate_pdf_path` string
+    - `completed_at` timestamp
+    - `completion_email_sent_at` string
+    - `document_name` string
+- **subscriptions** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `user_id` uuid NOT NULL
+    - `stripe_customer_id` string
+    - `stripe_subscription_id` string
+    - `plan` string NOT NULL
+    - `status` string NOT NULL
+    - `current_period_start` timestamp
+    - `current_period_end` timestamp
+    - `seats` integer
+    - `created_at` timestamp
+    - `updated_at` timestamp
+    - `is_manual_override` boolean
+    - `override_reason` text
+    - `override_by` uuid
+    - `override_at` timestamp
+    - `trial_ends_at` timestamp
+- **team_invites** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `team_id` uuid NOT NULL
+    - `email` string NOT NULL
+    - `invited_by` uuid NOT NULL
+    - `token` string NOT NULL
+    - `status` string
+    - `created_at` timestamp
+    - `expires_at` timestamp
+- **team_members** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `team_id` uuid NOT NULL
+    - `user_id` uuid NOT NULL
+    - `role` string
+    - `joined_at` timestamp
+- **teams** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `name` string NOT NULL
+    - `owner_id` uuid NOT NULL
+    - `plan` string
+    - `stripe_subscription_id` string
+    - `document_limit` integer
+    - `created_at` timestamp
+    - `updated_at` timestamp
+- **usage_tracking** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `user_id` uuid NOT NULL
+    - `month_year` string NOT NULL
+    - `documents_sent` integer
+    - `documents_limit` integer
+    - `created_at` timestamp
+    - `updated_at` timestamp
+- **user_signatures** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `user_id` uuid
+    - `signature_type` string
+    - `created_at` timestamp
+    - `updated_at` timestamp
+- **users** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `email` string
+    - `password_hash` string
+    - `created_at` timestamp
+    - `updated_at` timestamp
+    - `email_verified` boolean
+- **workflow_history** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `workflow_id` uuid NOT NULL
+    - `action` string NOT NULL
+    - `actor_email` string NOT NULL
+    - `actor_ip` string NOT NULL
+    - `metadata` json
+    - `created_at` timestamp
+- **workflow_recipients** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `workflow_id` uuid NOT NULL
+    - `signer_email` string NOT NULL
+    - `signer_name` string NOT NULL
+    - `signing_order` integer NOT NULL
+    - `status` string NOT NULL
+    - `signed_at` timestamp
+- **workflow_reminders** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `workflow_id` uuid NOT NULL
+    - `recipient_id` uuid NOT NULL
+    - `reminder_interval_hours` integer NOT NULL
+    - `last_sent_at` timestamp
+    - `next_send_at` timestamp
+
+## `postgresql.public` (32 tables)
+- **_schema_version** _(origin: introspected)_
+    - `id` integer PK NOT NULL
+    - `schema_hash` string NOT NULL
+    - `version` integer
+    - `applied_at` string
+    - `source` string
+- **analytics_events** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `event_type` string NOT NULL
+    - `user_id` uuid NOT NULL
+    - `metadata` json
+    - `created_at` string
+- **api_keys** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `user_id` uuid NOT NULL
+    - `key_hash` string NOT NULL
+    - `key_prefix` string NOT NULL
+    - `label` string
+    - `last_used_at` string
+    - `created_at` string
+    - `revoked_at` string
+- **audit_logs** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `user_id` uuid
+    - `action` string NOT NULL
+    - `resource_type` string NOT NULL
+    - `resource_id` uuid
+    - `ip_address` string
+    - `user_agent` text
+    - `metadata` json
+    - `created_at` string
+- **compliance_alert_rules** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `rule_type` string NOT NULL
+    - `threshold` integer NOT NULL
+    - `enabled` boolean
+    - `created_at` string
+- **compliance_alerts** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `rule_id` uuid NOT NULL
+    - `triggered_at` string
+    - `details` json
+    - `acknowledged` boolean
+    - `acknowledged_by` uuid
+- **compliance_metadata** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `signature_id` uuid NOT NULL
+    - `signer_ip` string NOT NULL
+    - `user_agent` text NOT NULL
+    - `consent_given` boolean NOT NULL
+    - `consent_timestamp` string
+    - `esign_compliant` boolean NOT NULL
+    - `created_at` string
+- **document_tags** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `document_id` uuid NOT NULL
+    - `tag` string NOT NULL
+    - `created_at` string
+- **document_templates** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `user_id` uuid NOT NULL
+    - `name` string NOT NULL
+    - `description` text
+    - `file_path` string NOT NULL
+    - `created_at` string
+    - `updated_at` string
+- **document_versions** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `document_id` uuid NOT NULL
+    - `version_number` integer NOT NULL
+    - `file_path` string NOT NULL
+    - `file_size` integer
+    - `created_by` uuid NOT NULL
+    - `created_at` string
+- **documents** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `user_id` uuid
+    - `file_path` string
+    - `original_name` string
+    - `title` string
+    - `description` text
+    - `status` string
+    - `mime_type` string
+    - `file_type` string
+    - `file_size` integer
+    - `uploaded_at` string
+    - `created_at` string
+    - `updated_at` string
+- **notification_delivery_log** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `notification_id` uuid NOT NULL
+    - `channel` string NOT NULL
+    - `recipient` string NOT NULL
+    - `status` string NOT NULL
+    - `sent_at` string
+    - `error_message` text
+    - `created_at` string
+- **notification_preferences** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `user_id` uuid NOT NULL
+    - `notification_type` string NOT NULL
+    - `email_enabled` boolean
+    - `sms_enabled` boolean
+    - `in_app_enabled` boolean
+    - `created_at` string
+    - `updated_at` string
+- **notifications** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `user_id` uuid NOT NULL
+    - `type` string NOT NULL
+    - `title` string
+    - `message` text
+    - `is_read` boolean
+    - `read` boolean
+    - `action_url` text
+    - `created_at` string
+- **organizations** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `name` string NOT NULL
+    - `slug` string NOT NULL
+    - `created_at` string
+- **password_reset_tokens** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `user_id` uuid NOT NULL
+    - `token` string NOT NULL
+    - `expires_at` string NOT NULL
+    - `used` boolean
+    - `created_at` string
+- **sessions** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `user_id` uuid NOT NULL
+    - `token` text NOT NULL
+    - `ip_address` string
+    - `user_agent` text
+    - `expires_at` string NOT NULL
+    - `created_at` string
+- **signature_fields** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `workflow_id` uuid NOT NULL
+    - `recipient_id` uuid NOT NULL
+    - `field_type` string NOT NULL
+    - `page` integer NOT NULL
+    - `x` float NOT NULL
+    - `y` float NOT NULL
+    - `width` float NOT NULL
+    - `height` float NOT NULL
+    - `required` boolean
+    - `signature_data` text
+    - `signature_type` string
+    - `signed_at` string
+- **signatures** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `document_id` uuid
+    - `signer_email` string
+    - `status` string
+    - `confirmation_status` string
+    - `created_at` string
+    - `updated_at` string
+- **signing_certificates** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `workflow_id` uuid NOT NULL
+    - `certificate_id` uuid NOT NULL
+    - `document_hash` string NOT NULL
+    - `generated_at` string
+    - `pdf_path` string
+- **signing_tokens** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `workflow_id` uuid NOT NULL
+    - `recipient_id` uuid NOT NULL
+    - `token` string NOT NULL
+    - `expires_at` string NOT NULL
+    - `used` boolean
+    - `created_at` string
+- **signing_workflows** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `document_id` uuid NOT NULL
+    - `creator_id` uuid NOT NULL
+    - `workflow_type` string NOT NULL
+    - `status` string NOT NULL
+    - `signed_pdf_path` string
+    - `certificate_pdf_path` string
+    - `completed_at` string
+    - `created_at` string
+    - `updated_at` string
+- **subscriptions** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `user_id` uuid NOT NULL
+    - `stripe_customer_id` string
+    - `stripe_subscription_id` string
+    - `plan` string NOT NULL
+    - `status` string NOT NULL
+    - `current_period_start` string
+    - `current_period_end` string
+    - `seats` integer
+    - `created_at` string
+    - `updated_at` string
+- **team_invites** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `team_id` uuid NOT NULL
+    - `email` string NOT NULL
+    - `invited_by` uuid NOT NULL
+    - `token` string NOT NULL
+    - `status` string
+    - `created_at` string
+    - `expires_at` string
+- **team_members** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `team_id` uuid NOT NULL
+    - `user_id` uuid NOT NULL
+    - `role` string
+    - `joined_at` string
+- **teams** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `name` string NOT NULL
+    - `owner_id` uuid NOT NULL
+    - `plan` string
+    - `stripe_subscription_id` string
+    - `document_limit` integer
+    - `created_at` string
+    - `updated_at` string
+- **usage_tracking** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `user_id` uuid NOT NULL
+    - `month_year` string NOT NULL
+    - `documents_sent` integer
+    - `documents_limit` integer
+    - `created_at` string
+    - `updated_at` string
+- **user_signatures** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `user_id` uuid
+    - `signature_type` string
+    - `signature_data` text
+    - `signature_image_path` string
+    - `font_family` string
+    - `created_at` string
+    - `updated_at` string
+- **users** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `email` string NOT NULL
+    - `password_hash` string
+    - `name` string
+    - `role` string
+    - `organization_id` uuid
+    - `language_preference` string
+    - `plan` string
+    - `team_id` uuid
+    - `created_at` string
+    - `updated_at` string
+- **workflow_history** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `workflow_id` uuid NOT NULL
+    - `action` string NOT NULL
+    - `actor_email` string NOT NULL
+    - `actor_ip` string NOT NULL
+    - `metadata` json
+    - `created_at` string
+- **workflow_recipients** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `workflow_id` uuid NOT NULL
+    - `signer_email` string NOT NULL
+    - `signer_name` string NOT NULL
+    - `signing_order` integer NOT NULL
+    - `status` string NOT NULL
+    - `signed_at` string
+- **workflow_reminders** _(origin: introspected)_
+    - `id` uuid PK NOT NULL
+    - `workflow_id` uuid NOT NULL
+    - `recipient_id` uuid NOT NULL
+    - `reminder_interval_hours` integer NOT NULL
+    - `last_sent_at` string
+    - `next_send_at` string

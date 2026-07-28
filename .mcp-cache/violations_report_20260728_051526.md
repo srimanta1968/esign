@@ -1,0 +1,119 @@
+# Coding Standards Violations Report
+Generated: 2026-07-28 05:15:26 UTC
+
+## Summary
+| Metric | Value |
+|--------|-------|
+| Total Violations | 10 |
+| 🔴 Critical | 0 |
+| 🟠 Major | 0 |
+| 🟡 Minor | 10 |
+| Files Affected | 10 |
+| Files Scanned | 15 |
+| Avg Compliance | 93.33% |
+
+## Violations by File
+
+### 📁 client/src/components/admin/ConfirmActionDialog.tsx
+
+#### 🟡 [MINOR] SC-06
+- **Line:** 0
+- **Issue:** 
+
+### 📁 client/src/context/AdminAuthContext.tsx
+
+#### 🟡 [MINOR] SC-06
+- **Line:** 0
+- **Issue:** 
+
+### 📁 client/src/layouts/AdminLayout.tsx
+
+#### 🟡 [MINOR] SC-06
+- **Line:** 0
+- **Issue:** 
+
+### 📁 client/src/pages/admin/AdminAccountDetailPage.tsx
+
+#### 🟡 [MINOR] SC-06
+- **Line:** 0
+- **Issue:** 
+
+### 📁 client/src/pages/admin/AdminAccountsPage.tsx
+
+#### 🟡 [MINOR] SC-06
+- **Line:** 0
+- **Issue:** 
+
+### 📁 client/src/pages/admin/AdminActivityLogPage.tsx
+
+#### 🟡 [MINOR] SC-06
+- **Line:** 0
+- **Issue:** 
+
+### 📁 client/src/pages/admin/AdminDashboardPage.tsx
+
+#### 🟡 [MINOR] SC-06
+- **Line:** 0
+- **Issue:** 
+
+### 📁 client/src/pages/admin/AdminLoginPage.tsx
+
+#### 🟡 [MINOR] SC-06
+- **Line:** 0
+- **Issue:** 
+
+### 📁 server/src/services/adminAccountService.ts
+
+#### 🟡 [MINOR] SC-06
+- **Line:** 0
+- **Issue:** 
+
+### 📁 server/src/services/auditService.ts
+
+#### 🟡 [MINOR] SC-06
+- **Line:** 0
+- **Issue:** 
+
+---
+
+## LLM Fix Instructions
+
+
+Please fix the following 10 coding standard violation(s) in my codebase:
+
+
+📁 File: client/src/components/admin/ConfirmActionDialog.tsx
+   - Line 0: SC-06 - 
+
+📁 File: client/src/context/AdminAuthContext.tsx
+   - Line 0: SC-06 - 
+
+📁 File: client/src/layouts/AdminLayout.tsx
+   - Line 0: SC-06 - 
+
+📁 File: client/src/pages/admin/AdminAccountDetailPage.tsx
+   - Line 0: SC-06 - 
+
+📁 File: client/src/pages/admin/AdminAccountsPage.tsx
+   - Line 0: SC-06 - 
+
+📁 File: client/src/pages/admin/AdminActivityLogPage.tsx
+   - Line 0: SC-06 - 
+
+📁 File: client/src/pages/admin/AdminDashboardPage.tsx
+   - Line 0: SC-06 - 
+
+📁 File: client/src/pages/admin/AdminLoginPage.tsx
+   - Line 0: SC-06 - 
+
+📁 File: server/src/services/adminAccountService.ts
+   - Line 0: SC-06 - 
+
+📁 File: server/src/services/auditService.ts
+   - Line 0: SC-06 - 
+
+Please:
+1. Open each file and navigate to the specified line numbers
+2. Apply the suggested fixes or refactor the code to comply with the coding standards
+3. Ensure the fixes don't break existing functionality
+4. Run tests after making changes

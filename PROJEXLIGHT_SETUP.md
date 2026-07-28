@@ -75,7 +75,7 @@ Read .claude/instructions/bootstrap.md and start
 ## Project Info
 
 - **Sprint:** Quick Prototype Sprint
-- **Tasks:** 16
+- **Tasks:** 5
 - **CLI Tool:** claude
 
 ## Key Files

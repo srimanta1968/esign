@@ -1,0 +1,30 @@
+{
+  "name": "GET /api/admin/auth/me - Current platform admin identity",
+  "endpoint": "/api/admin/auth/me",
+  "method": "GET",
+  "description": "Returns the authenticated platform administrator's identity and whether their session has completed step-up verification. Guarded by authenticateToken + requirePlatformAdmin applied at the router level.",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "priority": 12,
+  "testCases": [
+    {
+      "name": "Get current admin identity",
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.login.response.data.token}}"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "role": "platform_admin",
+          "stepUp": false
+        }
+      }
+    }
+  ],
+  "dependsOn": [
+    "POST /api/admin/auth/login"
+  ],
+  "taskId": "1403c2d1-4165-465c-87e2-a252eb372727",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+}

@@ -1,0 +1,27 @@
+{
+  "name": "POST /api/admin/auth/logout - End the admin session",
+  "endpoint": "/api/admin/auth/logout",
+  "method": "POST",
+  "description": "Ends the platform admin session and records the logout in the admin audit log. Priority is deliberately high so it runs AFTER every other admin test — logging out first would leave the rest of the suite without a usable admin identity.",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "priority": 900,
+  "testCases": [
+    {
+      "name": "Log out the admin session",
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.login.response.data.token}}"
+      },
+      "payload": {},
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true
+      }
+    }
+  ],
+  "dependsOn": [
+    "POST /api/admin/auth/login"
+  ],
+  "taskId": "1403c2d1-4165-465c-87e2-a252eb372727",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+}

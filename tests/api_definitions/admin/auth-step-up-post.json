@@ -1,0 +1,36 @@
+{
+  "name": "POST /api/admin/auth/step-up - Step-up re-authentication",
+  "endpoint": "/api/admin/auth/step-up",
+  "method": "POST",
+  "description": "Re-confirms the administrator's password and issues a short-lived step-up token. Every MUTATING admin action (access change, plan override, credit grant, message send) requires a step-up token, so a stolen or unattended admin session cannot change customer accounts on its own.",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "priority": 14,
+  "testCases": [
+    {
+      "name": "Confirm password to elevate the admin session",
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.login.response.data.token}}"
+      },
+      "payload": {
+        "password": "{{var:platform_admin_password}}"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "token": "string",
+          "stepUp": true
+        }
+      }
+    }
+  ],
+  "captureResponse": {
+    "admin.auth.step-up.response.data.token": "data.token"
+  },
+  "dependsOn": [
+    "POST /api/admin/auth/login"
+  ],
+  "taskId": "1403c2d1-4165-465c-87e2-a252eb372727",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+}

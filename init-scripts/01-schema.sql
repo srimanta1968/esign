@@ -25,11 +25,16 @@ CREATE TABLE IF NOT EXISTS users (
   email VARCHAR(255) NOT NULL UNIQUE,
   password_hash VARCHAR(255),
   name VARCHAR(255) DEFAULT '',
-  role VARCHAR(20) DEFAULT 'user',
+  role VARCHAR(20) DEFAULT 'user' CHECK (role IN ('user', 'admin', 'viewer', 'guest', 'platform_admin')),
   organization_id UUID DEFAULT NULL,
   language_preference VARCHAR(10) DEFAULT 'en',
   plan VARCHAR(20) DEFAULT 'free',
   team_id UUID DEFAULT NULL,
+  access_status VARCHAR(20) DEFAULT 'active' CHECK (access_status IN ('active', 'suspended', 'revoked')),
+  access_reason TEXT DEFAULT NULL,
+  access_changed_by UUID REFERENCES users(id),
+  access_changed_at TIMESTAMP WITH TIME ZONE DEFAULT NULL,
+  credit_balance INTEGER DEFAULT 0,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -300,9 +305,52 @@ CREATE TABLE IF NOT EXISTS subscriptions (
   current_period_start TIMESTAMP WITH TIME ZONE,
   current_period_end TIMESTAMP WITH TIME ZONE,
   seats INTEGER DEFAULT 1,
+  is_manual_override BOOLEAN DEFAULT false,
+  override_reason TEXT DEFAULT NULL,
+  override_by UUID REFERENCES users(id),
+  override_at TIMESTAMP WITH TIME ZONE DEFAULT NULL,
+  trial_ends_at TIMESTAMP WITH TIME ZONE DEFAULT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   UNIQUE(user_id)
+);
+
+-- Local mirror of Stripe invoices/charges so payment history is queryable
+-- without a live Stripe call. Stripe remains the source of truth.
+CREATE TABLE IF NOT EXISTS payments (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  stripe_invoice_id VARCHAR(255) UNIQUE,
+  stripe_charge_id VARCHAR(255),
+  amount_cents INTEGER NOT NULL DEFAULT 0,
+  currency VARCHAR(10) NOT NULL DEFAULT 'usd',
+  status VARCHAR(20) NOT NULL DEFAULT 'pending' CHECK (status IN ('paid', 'failed', 'refunded', 'pending')),
+  description TEXT DEFAULT '',
+  invoice_pdf_url TEXT DEFAULT NULL,
+  hosted_invoice_url TEXT DEFAULT NULL,
+  period_start TIMESTAMP WITH TIME ZONE,
+  period_end TIMESTAMP WITH TIME ZONE,
+  paid_at TIMESTAMP WITH TIME ZONE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Append-only ledger of admin-granted bonus document credits. Corrections are
+-- new offsetting rows, never UPDATEs, so the grant history stays intact.
+CREATE TABLE IF NOT EXISTS credit_ledger (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  delta INTEGER NOT NULL,
+  balance_after INTEGER NOT NULL,
+  reason TEXT NOT NULL,
+  granted_by UUID REFERENCES users(id),
+  expires_at TIMESTAMP WITH TIME ZONE DEFAULT NULL,
+  source VARCHAR(20) NOT NULL CHECK (source IN ('admin_grant', 'admin_revoke', 'consumption', 'expiry')),
+  related_document_id UUID DEFAULT NULL,
+  -- For an offsetting entry, the ledger row it offsets. Lets the expiry job
+  -- stay idempotent without ever mutating the original grant.
+  offsets_ledger_id UUID DEFAULT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS usage_tracking (

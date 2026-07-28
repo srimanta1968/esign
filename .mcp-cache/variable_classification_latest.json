@@ -1,0 +1,34 @@
+{
+  "timestamp": "2026-07-28T07:02:48.060698Z",
+  "count": 2,
+  "llm_prompt": "For each variable, examine the CODE (route handler, DTO, seed usage) and decide scope: 'global' if a constant reusable across ALL environments; 'env:<envName>' if it depends on a specific environment's seed data; 'cache:<producer>' if an API produces it. Apply each with projexlight_set_variable_scope. Value/name hints are ADVISORY — the code is authoritative.",
+  "apply_tool": "projexlight_set_variable_scope",
+  "variables": [
+    {
+      "name": "platform_admin_email",
+      "current_scope": "global",
+      "hints": {
+        "producible": false,
+        "producer_endpoint": "",
+        "id_shaped": false,
+        "secret_named": false,
+        "ref_count": 1,
+        "value_across_envs": "unknown"
+      },
+      "suggested_scope": "global"
+    },
+    {
+      "name": "platform_admin_password",
+      "current_scope": "global",
+      "hints": {
+        "producible": false,
+        "producer_endpoint": "",
+        "id_shaped": false,
+        "secret_named": true,
+        "ref_count": 2,
+        "value_across_envs": "unknown"
+      },
+      "suggested_scope": "env"
+    }
+  ]
+}

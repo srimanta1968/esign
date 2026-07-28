@@ -88,6 +88,18 @@ temp/
 ehthumbs.db
 Thumbs.db
 
+# ProjexLight per-developer session/token files — NEVER commit (per-dev token;
+# committing causes cross-developer merge conflicts and leaks the token).
+.projexlight/config.json
+mcp-server/mcp-config.json
+mcp-server/.env
+.projexlight/context/task-list.json
+.projexlight/reports/
+.projexlight/sprint-progress/
+.claude/logs/
+.claude/cache/
+.claude/.session/
+
 # TypeScript
 *.tsbuildinfo
 tsconfig.tsbuildinfo

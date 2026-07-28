@@ -1,0 +1,115 @@
+{
+  "name": "GET /api/admin/accounts/:id/credits - Credit balance and ledger",
+  "endpoint": "/api/admin/accounts/:id/credits",
+  "method": "GET",
+  "description": "Current credit balance plus the paginated append-only ledger for one account, with the granting admin resolved on each entry. Read-only, so no step-up elevation required.",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "priority": 38,
+  "testCases": [
+    {
+      "name": "Get credit balance and ledger",
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.login.response.data.token}}"
+      },
+      "pathParams": {
+        "id": "{{cache:auth.register.response.data.user.id}}"
+      },
+      "queryParams": {
+        "page": 1,
+        "limit": 50
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "balance": "number"
+        }
+      }
+    },
+    {
+      "name": "400 INVALID_ACCOUNT_ID — The :id path parameter is not a valid UUID",
+      "testType": "negative",
+      "coversErrorCase": "400|invalid_account_id",
+      "expectedStatus": 400,
+      "expectedError": {
+        "code": "INVALID_ACCOUNT_ID"
+      },
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.login.response.data.token}}"
+      },
+      "pathParams": {
+        "id": "{{static:not-a-uuid}}"
+      }
+    },
+    {
+      "name": "401 AUTH_REQUIRED — No Authorization header is present",
+      "testType": "negative",
+      "coversErrorCase": "401|auth_required",
+      "expectedStatus": 401,
+      "expectedError": {
+        "code": "AUTH_REQUIRED"
+      },
+      "pathParams": {
+        "id": "{{cache:auth.register.response.data.user.id}}"
+      }
+    },
+    {
+      "name": "403 NOT_PLATFORM_ADMIN — The caller is authenticated but is not a platform_admin (a tenant-level admin is refused here)",
+      "testType": "negative",
+      "coversErrorCase": "403|not_platform_admin",
+      "expectedStatus": 403,
+      "expectedError": {
+        "code": "NOT_PLATFORM_ADMIN"
+      },
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
+      },
+      "pathParams": {
+        "id": "{{cache:auth.register.response.data.user.id}}"
+      }
+    }
+  ],
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/admin/auth/login"
+  ],
+  "taskId": "f10af679-211c-4e37-9481-ff7b87515b1d",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "dfbaba08-d363-41ab-8631-4af9139fc2cc",
+  "epicId": "5efe9e03-3c39-47f9-8080-94442bc51813",
+  "errorCases": [
+    {
+      "status": 400,
+      "code": "INVALID_ACCOUNT_ID",
+      "message": "Invalid account id",
+      "when": "The :id path parameter is not a valid UUID"
+    },
+    {
+      "status": 401,
+      "code": "AUTH_REQUIRED",
+      "message": "Access token required",
+      "when": "No Authorization header is present"
+    },
+    {
+      "status": 403,
+      "code": "NOT_PLATFORM_ADMIN",
+      "message": "Platform administrator access required",
+      "when": "The caller is authenticated but is not a platform_admin (a tenant-level admin is refused here)"
+    },
+    {
+      "status": 403,
+      "code": "ACCESS_REVOKED",
+      "message": "Platform administrator access has been revoked",
+      "when": "The admin's own access_status is suspended or revoked",
+      "reproducible": false,
+      "notReproducibleReason": "Requires revoking the acting administrator's own access, which would break every subsequent admin test in the run. Covered by the adminAuthBoundary integration test, which owns its own fixture."
+    },
+    {
+      "status": 500,
+      "code": "CREDITS_FAILED",
+      "message": "Failed to load credits",
+      "when": "Query error"
+    }
+  ]
+}

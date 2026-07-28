@@ -1,0 +1,215 @@
+{
+  "name": "POST /api/admin/accounts/:id/access - Grant, suspend or revoke account access",
+  "endpoint": "/api/admin/accounts/:id/access",
+  "method": "POST",
+  "description": "Changes an account's access state. MUTATING, so it requires a step-up elevated token, not just an admin session — the Authorization header here carries the step-up token, NOT the login token. Suspending or revoking also expires the target's live sessions so the block takes effect immediately. Reason is mandatory and stored. An admin cannot change their own access.\n\nThe happy path deliberately uses 'restore' rather than 'suspend': the registered fixture user's token is consumed by many other tests in this suite, and suspending them mid-run would 403 every subsequent request that uses it. The suspend and revoke branches are covered by the integration tests for this feature, which own their own fixtures.",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "priority": 24,
+  "testCases": [
+    {
+      "name": "Restore account access",
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.step-up.response.data.token}}"
+      },
+      "pathParams": {
+        "id": "{{cache:auth.register.response.data.user.id}}"
+      },
+      "payload": {
+        "action": "restore",
+        "reason": "{{dynamic:text}}"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "access_status": "active"
+        }
+      }
+    },
+    {
+      "name": "400 INVALID_ACCOUNT_ID — The :id path parameter is not a valid UUID",
+      "testType": "negative",
+      "coversErrorCase": "400|invalid_account_id",
+      "expectedStatus": 400,
+      "expectedError": {
+        "code": "INVALID_ACCOUNT_ID"
+      },
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.step-up.response.data.token}}"
+      },
+      "pathParams": {
+        "id": "{{static:not-a-uuid}}"
+      },
+      "payload": {
+        "action": "restore",
+        "reason": "{{dynamic:text}}"
+      }
+    },
+    {
+      "name": "400 INVALID_ACTION — action is missing or not a recognised value",
+      "testType": "negative",
+      "coversErrorCase": "400|invalid_action",
+      "expectedStatus": 400,
+      "expectedError": {
+        "code": "INVALID_ACTION"
+      },
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.step-up.response.data.token}}"
+      },
+      "pathParams": {
+        "id": "{{cache:auth.register.response.data.user.id}}"
+      },
+      "payload": {
+        "action": "{{static:not_a_real_action}}",
+        "reason": "{{dynamic:text}}"
+      }
+    },
+    {
+      "name": "400 REASON_REQUIRED — reason is missing or blank",
+      "testType": "negative",
+      "coversErrorCase": "400|reason_required",
+      "expectedStatus": 400,
+      "expectedError": {
+        "code": "REASON_REQUIRED"
+      },
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.step-up.response.data.token}}"
+      },
+      "pathParams": {
+        "id": "{{cache:auth.register.response.data.user.id}}"
+      },
+      "payload": {
+        "action": "restore"
+      }
+    },
+    {
+      "name": "400 SELF_ACCESS_CHANGE — The target account is the acting administrator",
+      "testType": "negative",
+      "coversErrorCase": "400|self_access_change",
+      "expectedStatus": 400,
+      "expectedError": {
+        "code": "SELF_ACCESS_CHANGE"
+      },
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.step-up.response.data.token}}"
+      },
+      "pathParams": {
+        "id": "{{cache:admin.auth.login.response.data.admin.id}}"
+      },
+      "payload": {
+        "action": "{{static:revoke}}",
+        "reason": "{{dynamic:text}}"
+      }
+    },
+    {
+      "name": "403 STEP_UP_REQUIRED — The Authorization header carries a plain admin session token rather than an elevated step-up token",
+      "testType": "negative",
+      "coversErrorCase": "403|step_up_required",
+      "expectedStatus": 403,
+      "expectedError": {
+        "code": "STEP_UP_REQUIRED"
+      },
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.login.response.data.token}}"
+      },
+      "pathParams": {
+        "id": "{{cache:auth.register.response.data.user.id}}"
+      },
+      "payload": {
+        "action": "restore",
+        "reason": "{{dynamic:text}}"
+      }
+    },
+    {
+      "name": "404 ACCOUNT_NOT_FOUND — No account exists with that id",
+      "testType": "negative",
+      "coversErrorCase": "404|account_not_found",
+      "expectedStatus": 404,
+      "expectedError": {
+        "code": "ACCOUNT_NOT_FOUND"
+      },
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.step-up.response.data.token}}"
+      },
+      "pathParams": {
+        "id": "{{static:11111111-1111-1111-1111-111111111111}}"
+      },
+      "payload": {
+        "action": "restore",
+        "reason": "{{dynamic:text}}"
+      }
+    }
+  ],
+  "fieldEnums": {
+    "action": [
+      "suspend",
+      "revoke",
+      "restore"
+    ],
+    "access_status": [
+      "active",
+      "suspended",
+      "revoked"
+    ]
+  },
+  "statusTransitions": {
+    "active -> suspended": "POST /api/admin/accounts/:id/access with action=suspend",
+    "active -> revoked": "POST /api/admin/accounts/:id/access with action=revoke",
+    "suspended -> active": "POST /api/admin/accounts/:id/access with action=restore",
+    "revoked -> active": "POST /api/admin/accounts/:id/access with action=restore"
+  },
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/admin/auth/login",
+    "POST /api/admin/auth/step-up"
+  ],
+  "taskId": "c4f27a63-d521-48bb-9c8c-bc6fdcf756c8",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "322fe5ad-9b19-4ed0-af34-9fb7e6a4f81b",
+  "epicId": "5efe9e03-3c39-47f9-8080-94442bc51813",
+  "errorCases": [
+    {
+      "status": 400,
+      "code": "INVALID_ACCOUNT_ID",
+      "message": "Invalid account id",
+      "when": "The :id path parameter is not a valid UUID"
+    },
+    {
+      "status": 400,
+      "code": "INVALID_ACTION",
+      "message": "action must be one of 'suspend', 'revoke' or 'restore'",
+      "when": "action is missing or not a recognised value"
+    },
+    {
+      "status": 400,
+      "code": "REASON_REQUIRED",
+      "message": "A reason is required and is recorded in the audit log",
+      "when": "reason is missing or blank"
+    },
+    {
+      "status": 400,
+      "code": "SELF_ACCESS_CHANGE",
+      "message": "You cannot change your own account access",
+      "when": "The target account is the acting administrator"
+    },
+    {
+      "status": 403,
+      "code": "STEP_UP_REQUIRED",
+      "message": "Step-up verification required for this action",
+      "when": "The Authorization header carries a plain admin session token rather than an elevated step-up token"
+    },
+    {
+      "status": 404,
+      "code": "ACCOUNT_NOT_FOUND",
+      "message": "Account not found",
+      "when": "No account exists with that id"
+    },
+    {
+      "status": 500,
+      "code": "ACCESS_CHANGE_FAILED",
+      "message": "Failed to change account access",
+      "when": "Unexpected server error"
+    }
+  ]
+}

@@ -184,6 +184,13 @@ export class MigrationService {
       ['users', 'plan', "VARCHAR(20) DEFAULT 'free'"],
       ['users', 'team_id', 'UUID DEFAULT NULL'],
       ['users', 'email_verified', 'BOOLEAN DEFAULT false'],
+      // Platform-admin account access state (admin portal)
+      ['users', 'access_status', "VARCHAR(20) DEFAULT 'active'"],
+      ['users', 'access_reason', 'TEXT DEFAULT NULL'],
+      ['users', 'access_changed_by', 'UUID REFERENCES users(id)'],
+      ['users', 'access_changed_at', 'TIMESTAMP WITH TIME ZONE DEFAULT NULL'],
+      // Denormalised running total of credit_ledger.delta for this user.
+      ['users', 'credit_balance', 'INTEGER DEFAULT 0'],
       // documents
       ['documents', 'original_name', "VARCHAR(255) DEFAULT ''"],
       ['documents', 'title', "VARCHAR(255) DEFAULT ''"],
@@ -213,6 +220,48 @@ export class MigrationService {
     for (const [table, col, typedef] of alterColumns) {
       await this.run(`${table}.${col}`, `ALTER TABLE ${table} ADD COLUMN IF NOT EXISTS ${col} ${typedef}`);
     }
+
+    // Backfill access_status BEFORE the CHECK constraint is added, so rows that
+    // predate the column (NULL) do not fail validation.
+    await this.run('backfill:users.access_status', `
+      UPDATE users SET access_status = 'active' WHERE access_status IS NULL
+    `);
+
+    // Constrain account access state. Guarded so a re-run is a no-op, and
+    // wrapped in EXCEPTION so unexpected legacy data can never block startup.
+    await this.run('users.access_status_check', `
+      DO $$ BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM information_schema.table_constraints
+          WHERE constraint_name = 'users_access_status_check' AND table_name = 'users'
+        ) THEN
+          BEGIN
+            ALTER TABLE users ADD CONSTRAINT users_access_status_check
+              CHECK (access_status IN ('active', 'suspended', 'revoked'));
+          EXCEPTION WHEN OTHERS THEN NULL;
+          END;
+        END IF;
+      END $$
+    `);
+
+    // 'platform_admin' is the internal staff role for the admin portal. It is
+    // deliberately DISTINCT from the tenant-level 'admin' role — existing
+    // 'admin' users are NOT promoted here, they stay tenant admins. Staff
+    // accounts are designated explicitly.
+    await this.run('users.role_check', `
+      DO $$ BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM information_schema.table_constraints
+          WHERE constraint_name = 'users_role_check' AND table_name = 'users'
+        ) THEN
+          BEGIN
+            ALTER TABLE users ADD CONSTRAINT users_role_check
+              CHECK (role IN ('user', 'admin', 'viewer', 'guest', 'platform_admin'));
+          EXCEPTION WHEN OTHERS THEN NULL;
+          END;
+        END IF;
+      END $$
+    `);
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     // PHASE 3 — Dependent tables (reference base tables via FK)
@@ -430,6 +479,90 @@ export class MigrationService {
       )
     `);
 
+    // Local mirror of Stripe invoices and charges, so the admin portal can show
+    // payment history without a live Stripe call per account view. Stripe
+    // remains the source of truth; this is a read model fed by webhooks.
+    await this.run('payments', `
+      CREATE TABLE IF NOT EXISTS payments (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        stripe_invoice_id VARCHAR(255) UNIQUE,
+        stripe_charge_id VARCHAR(255),
+        amount_cents INTEGER NOT NULL DEFAULT 0,
+        currency VARCHAR(10) NOT NULL DEFAULT 'usd',
+        status VARCHAR(20) NOT NULL DEFAULT 'pending'
+          CHECK (status IN ('paid', 'failed', 'refunded', 'pending')),
+        description TEXT DEFAULT '',
+        invoice_pdf_url TEXT DEFAULT NULL,
+        hosted_invoice_url TEXT DEFAULT NULL,
+        period_start TIMESTAMP WITH TIME ZONE,
+        period_end TIMESTAMP WITH TIME ZONE,
+        paid_at TIMESTAMP WITH TIME ZONE,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+      )
+    `);
+
+    // Templated welcome / follow-up messages sent from the admin portal.
+    await this.run('message_templates', `
+      CREATE TABLE IF NOT EXISTS message_templates (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        key VARCHAR(100) NOT NULL UNIQUE,
+        name VARCHAR(255) NOT NULL,
+        -- No 'sms': users has no phone column, so an SMS template could never
+        -- be delivered. Add the channel when a phone number is stored.
+        channel VARCHAR(20) NOT NULL DEFAULT 'email'
+          CHECK (channel IN ('email', 'in_app')),
+        subject VARCHAR(255) DEFAULT '',
+        body TEXT NOT NULL DEFAULT '',
+        is_active BOOLEAN DEFAULT true,
+        created_by UUID REFERENCES users(id),
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+      )
+    `);
+
+    // One row per send ATTEMPT, including skipped and failed ones — a message
+    // that was never delivered is exactly what an operator needs to see.
+    await this.run('admin_message_sends', `
+      CREATE TABLE IF NOT EXISTS admin_message_sends (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        template_id UUID REFERENCES message_templates(id) ON DELETE SET NULL,
+        template_key VARCHAR(100) DEFAULT '',
+        user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        sent_by UUID REFERENCES users(id),
+        channel VARCHAR(20) NOT NULL DEFAULT 'email',
+        status VARCHAR(20) NOT NULL DEFAULT 'queued'
+          CHECK (status IN ('queued', 'sent', 'failed', 'skipped')),
+        skip_reason TEXT DEFAULT NULL,
+        error TEXT DEFAULT NULL,
+        sent_at TIMESTAMP WITH TIME ZONE,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+      )
+    `);
+
+    // Append-only ledger of bonus document credits granted by platform admins.
+    // Never UPDATEd or DELETEd — a correction is a new offsetting row, so the
+    // history of who granted what and why stays intact.
+    await this.run('credit_ledger', `
+      CREATE TABLE IF NOT EXISTS credit_ledger (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        delta INTEGER NOT NULL,
+        balance_after INTEGER NOT NULL,
+        reason TEXT NOT NULL,
+        granted_by UUID REFERENCES users(id),
+        expires_at TIMESTAMP WITH TIME ZONE DEFAULT NULL,
+        source VARCHAR(20) NOT NULL
+          CHECK (source IN ('admin_grant', 'admin_revoke', 'consumption', 'expiry')),
+        related_document_id UUID DEFAULT NULL,
+        -- For an offsetting entry, the ledger row it offsets. Lets the expiry
+        -- job stay idempotent without ever mutating the original grant.
+        offsets_ledger_id UUID DEFAULT NULL,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+      )
+    `);
+
     await this.run('usage_tracking', `
       CREATE TABLE IF NOT EXISTS usage_tracking (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -516,6 +649,17 @@ export class MigrationService {
       ['workflow_recipients', 'opened_at', 'TIMESTAMP WITH TIME ZONE DEFAULT NULL'],
       ['workflow_recipients', 'opened_ip', 'VARCHAR(45) DEFAULT NULL'],
       ['signature_fields', 'label', 'VARCHAR(100) DEFAULT NULL'],
+      // Manual (comp) plan overrides applied from the admin portal, kept
+      // distinguishable from a Stripe-backed subscription.
+      ['subscriptions', 'is_manual_override', 'BOOLEAN DEFAULT false'],
+      ['subscriptions', 'override_reason', 'TEXT DEFAULT NULL'],
+      ['subscriptions', 'override_by', 'UUID REFERENCES users(id)'],
+      ['subscriptions', 'override_at', 'TIMESTAMP WITH TIME ZONE DEFAULT NULL'],
+      ['subscriptions', 'trial_ends_at', 'TIMESTAMP WITH TIME ZONE DEFAULT NULL'],
+      // Also listed here, not only in the CREATE TABLE above: a database that
+      // created credit_ledger before this column existed would never receive it
+      // from CREATE TABLE IF NOT EXISTS.
+      ['credit_ledger', 'offsets_ledger_id', 'UUID DEFAULT NULL'],
     ];
 
     for (const [table, col, typedef] of dependentAlters) {
@@ -529,6 +673,36 @@ export class MigrationService {
       'usage_tracking.month_year_width',
       `ALTER TABLE usage_tracking ALTER COLUMN month_year TYPE VARCHAR(50)`
     );
+
+    // Actor references (who suspended an account, who granted an override or
+    // credit) must not pin the referenced staff account in place forever.
+    // Recreate them as ON DELETE SET NULL so a departed admin can be removed
+    // while the historical record survives with a null actor.
+    const actorForeignKeys: [string, string, string][] = [
+      ['users', 'access_changed_by', 'users_access_changed_by_fkey'],
+      ['subscriptions', 'override_by', 'subscriptions_override_by_fkey'],
+      ['credit_ledger', 'granted_by', 'credit_ledger_granted_by_fkey'],
+      ['message_templates', 'created_by', 'message_templates_created_by_fkey'],
+      ['admin_message_sends', 'sent_by', 'admin_message_sends_sent_by_fkey'],
+    ];
+
+    for (const [table, column, constraint] of actorForeignKeys) {
+      await this.run(`${constraint}.on_delete_set_null`, `
+        DO $$ BEGIN
+          IF EXISTS (
+            SELECT 1 FROM information_schema.table_constraints
+            WHERE constraint_name = '${constraint}' AND table_name = '${table}'
+          ) THEN
+            BEGIN
+              ALTER TABLE ${table} DROP CONSTRAINT ${constraint};
+              ALTER TABLE ${table} ADD CONSTRAINT ${constraint}
+                FOREIGN KEY (${column}) REFERENCES users(id) ON DELETE SET NULL;
+            EXCEPTION WHEN OTHERS THEN NULL;
+            END;
+          END IF;
+        END $$
+      `);
+    }
 
     // Add FK from users.team_id → teams(id) if not already present
     await this.run('users.team_id_fk', `
@@ -570,6 +744,18 @@ export class MigrationService {
       ['idx_notification_delivery_log_notification_id', 'notification_delivery_log', 'notification_id'],
       ['idx_notification_delivery_log_channel', 'notification_delivery_log', 'channel'],
       ['idx_notification_preferences_user_id', 'notification_preferences', 'user_id'],
+      // Admin portal account console filters
+      ['idx_users_access_status', 'users', 'access_status'],
+      ['idx_users_role', 'users', 'role'],
+      // Payment history lookups, newest-first per account
+      ['idx_payments_user_id', 'payments', 'user_id'],
+      ['idx_payments_status', 'payments', 'status'],
+      ['idx_payments_created_at', 'payments', 'created_at'],
+      ['idx_credit_ledger_user_id', 'credit_ledger', 'user_id'],
+      ['idx_credit_ledger_created_at', 'credit_ledger', 'created_at'],
+      ['idx_subscriptions_trial_ends_at', 'subscriptions', 'trial_ends_at'],
+      ['idx_admin_message_sends_user_id', 'admin_message_sends', 'user_id'],
+      ['idx_admin_message_sends_created_at', 'admin_message_sends', 'created_at'],
     ];
 
     for (const [name, table, col] of indexes) {
@@ -608,6 +794,37 @@ export class MigrationService {
         AND signed_pdf_path IS NOT NULL AND signed_pdf_path != ''
         AND certificate_pdf_path IS NOT NULL AND certificate_pdf_path != ''
         AND completion_email_sent_at IS NULL
+    `);
+
+    // Default message templates. Seeded only when absent, so an operator's
+    // edits to the copy are never overwritten on restart.
+    await this.run('seed:message_templates', `
+      INSERT INTO message_templates (key, name, channel, subject, body, is_active)
+      SELECT * FROM (VALUES
+        (
+          'welcome',
+          'Welcome message',
+          'email',
+          'Welcome to eDocSign',
+          'Hi {{name}},' || chr(10) || chr(10) ||
+          'Welcome to eDocSign. Your account is ready — upload a document and send it for signature whenever you are.' || chr(10) || chr(10) ||
+          'Your plan: {{plan}}' || chr(10) ||
+          'Documents included each month: {{documents_limit}}' || chr(10) || chr(10) ||
+          'If you need a hand, just reply to this email.',
+          true
+        ),
+        (
+          'followup_day7',
+          'Day 7 follow-up',
+          'email',
+          'Getting started with eDocSign',
+          'Hi {{name}},' || chr(10) || chr(10) ||
+          'You signed up a week ago and have not sent a document yet. If anything is in the way, reply and we will help.' || chr(10) || chr(10) ||
+          'Your plan: {{plan}}',
+          true
+        )
+      ) AS v(key, name, channel, subject, body, is_active)
+      WHERE NOT EXISTS (SELECT 1 FROM message_templates LIMIT 1)
     `);
 
     // Default compliance alert rules

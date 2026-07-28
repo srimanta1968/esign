@@ -1,4 +1,7 @@
-export type UserRole = 'admin' | 'user' | 'guest';
+export type UserRole = 'admin' | 'user' | 'guest' | 'viewer' | 'platform_admin';
+
+/** Whether a user may authenticate. Set by platform admins from the admin portal. */
+export type AccessStatus = 'active' | 'suspended' | 'revoked';
 
 export interface User {
   id: string;

@@ -45,7 +45,17 @@
       "date_future": "${date_future}"
     }
   },
+  "variables": {
+    "platform_admin_email": "qa_platform_admin@example.com",
+    "platform_admin_password": "PlatformAdmin123!",
+    "_note": "Platform admin has no self-registration endpoint by design. The account is seeded by tests/setup_scripts/platform_admin.sql — keep these values in sync with that file."
+  },
   "testCredentials": {
+    "platform_admin": {
+      "email": "qa_platform_admin@example.com",
+      "password": "PlatformAdmin123!",
+      "description": "Platform admin creds for /api/admin/* routes. Seeded by tests/setup_scripts/platform_admin.sql. Distinct from the tenant-level 'admin' role below."
+    },
     "default": {
       "email": "qa_test_1776316188@example.com",
       "password": "QaTest1776316188!",

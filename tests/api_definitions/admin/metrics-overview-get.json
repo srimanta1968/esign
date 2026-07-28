@@ -1,0 +1,80 @@
+{
+  "name": "GET /api/admin/metrics/overview - Portal dashboard metrics",
+  "endpoint": "/api/admin/metrics/overview",
+  "method": "GET",
+  "description": "Aggregate counts backing the admin dashboard: accounts by access status, by plan, by subscription status, new accounts this month and documents sent this month. Computed with SQL GROUP BY rather than by fetching rows, so it stays cheap as the platform grows. Read-only, so no step-up elevation required.",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "priority": 26,
+  "testCases": [
+    {
+      "name": "Load overview metrics",
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.login.response.data.token}}"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "totalAccounts": "number"
+        }
+      }
+    },
+    {
+      "name": "401 AUTH_REQUIRED — No Authorization header is present",
+      "testType": "negative",
+      "coversErrorCase": "401|auth_required",
+      "expectedStatus": 401,
+      "expectedError": {
+        "code": "AUTH_REQUIRED"
+      }
+    },
+    {
+      "name": "403 NOT_PLATFORM_ADMIN — The caller is authenticated but is not a platform_admin (a tenant-level admin is refused here)",
+      "testType": "negative",
+      "coversErrorCase": "403|not_platform_admin",
+      "expectedStatus": 403,
+      "expectedError": {
+        "code": "NOT_PLATFORM_ADMIN"
+      },
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
+      }
+    }
+  ],
+  "dependsOn": [
+    "POST /api/admin/auth/login"
+  ],
+  "taskId": "1789d2dc-c935-4410-8ef1-0b7cdbbb058c",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "6fd745f1-d68e-480b-a180-390f5124760f",
+  "epicId": "5efe9e03-3c39-47f9-8080-94442bc51813",
+  "errorCases": [
+    {
+      "status": 401,
+      "code": "AUTH_REQUIRED",
+      "message": "Access token required",
+      "when": "No Authorization header is present"
+    },
+    {
+      "status": 403,
+      "code": "NOT_PLATFORM_ADMIN",
+      "message": "Platform administrator access required",
+      "when": "The caller is authenticated but is not a platform_admin (a tenant-level admin is refused here)"
+    },
+    {
+      "status": 403,
+      "code": "ACCESS_REVOKED",
+      "message": "Platform administrator access has been revoked",
+      "when": "The admin's own access_status is suspended or revoked",
+      "reproducible": false,
+      "notReproducibleReason": "Requires revoking the acting administrator's own access, which would break every subsequent admin test in the run. Covered by the adminAuthBoundary integration test, which owns its own fixture."
+    },
+    {
+      "status": 500,
+      "code": "METRICS_FAILED",
+      "message": "Failed to load overview metrics",
+      "when": "Aggregation query error"
+    }
+  ]
+}

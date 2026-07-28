@@ -50,7 +50,9 @@ From your project's `mcp-server/` directory:
 
 ```bash
 cd mcp-server
-docker-compose -f dev-mcp-compose.yml up -d
+./setup-all.sh              # Start all services (database + Dev MCP + Test MCP)
+# Or start Dev MCP only:
+./setup-dev-mcp.sh start
 ```
 
 Wait about 30 seconds for initialization, then verify:
@@ -140,7 +142,7 @@ Response:
 If a hook shows `upToDate: false`, restart the Dev MCP container to pick up the latest template:
 
 ```bash
-docker-compose -f dev-mcp-compose.yml restart
+./setup-dev-mcp.sh restart
 ```
 
 ### Manually reinstalling hooks
@@ -633,17 +635,23 @@ API_TEST_MAX_WAIT=7200 git push    # 2 hours
 ## Cheat sheet
 
 ```bash
-# Start Dev MCP
-docker-compose -f mcp-server/dev-mcp-compose.yml up -d
+# Start all services (database + Dev MCP + Test MCP)
+cd mcp-server && ./setup-all.sh
+
+# Start Dev MCP only
+./setup-dev-mcp.sh start
 
 # Health check
 curl http://localhost:8766/health
 
 # Tail logs
-docker logs projexlight-dev-mcp -f
+./setup-dev-mcp.sh logs
 
 # Restart after config change
-docker-compose -f mcp-server/dev-mcp-compose.yml restart
+./setup-dev-mcp.sh restart
+
+# Check status
+./setup-dev-mcp.sh status
 
 # Check hook installation
 curl http://localhost:8766/hooks/status
@@ -659,8 +667,11 @@ curl -X POST http://localhost:8766/api/test \
 # Check SUT reachability from inside the container
 docker exec projexlight-dev-mcp curl -I http://host.docker.internal:3005/
 
-# Stop
-docker-compose -f mcp-server/dev-mcp-compose.yml down
+# Stop Dev MCP
+./setup-dev-mcp.sh stop
+
+# Force restart all services
+./setup-all.sh --force
 ```
 
 ---

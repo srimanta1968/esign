@@ -1,0 +1,106 @@
+{
+  "name": "GET /api/admin/accounts - List all platform accounts",
+  "endpoint": "/api/admin/accounts",
+  "method": "GET",
+  "description": "Paginated list of every account on the platform with plan, subscription status, current-month usage, team and access state. Accounts with no subscriptions row resolve to the free plan via a LEFT JOIN rather than being dropped. Read-only, so it needs an admin session but NOT step-up elevation.",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "priority": 20,
+  "testCases": [
+    {
+      "name": "List accounts filtered by plan and access status",
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.login.response.data.token}}"
+      },
+      "queryParams": {
+        "search": "",
+        "plan": "free",
+        "access_status": "active",
+        "page": 1,
+        "limit": 25
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "page": 1
+        }
+      }
+    },
+    {
+      "name": "401 AUTH_REQUIRED — No Authorization header is present",
+      "testType": "negative",
+      "coversErrorCase": "401|auth_required",
+      "expectedStatus": 401,
+      "expectedError": {
+        "code": "AUTH_REQUIRED"
+      }
+    },
+    {
+      "name": "403 NOT_PLATFORM_ADMIN — The caller is authenticated but is not a platform_admin (a tenant-level admin is refused here)",
+      "testType": "negative",
+      "coversErrorCase": "403|not_platform_admin",
+      "expectedStatus": 403,
+      "expectedError": {
+        "code": "NOT_PLATFORM_ADMIN"
+      },
+      "headers": {
+        "Authorization": "Bearer {{cache:auth.register.response.data.token}}"
+      }
+    }
+  ],
+  "fieldEnums": {
+    "plan": [
+      "free",
+      "solo",
+      "team",
+      "scale"
+    ],
+    "access_status": [
+      "active",
+      "suspended",
+      "revoked"
+    ],
+    "status": [
+      "active",
+      "cancelled",
+      "past_due",
+      "trialing"
+    ]
+  },
+  "dependsOn": [
+    "POST /api/admin/auth/login"
+  ],
+  "taskId": "41a60c90-cede-4fbf-bb60-d32c59c8661a",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "322fe5ad-9b19-4ed0-af34-9fb7e6a4f81b",
+  "epicId": "5efe9e03-3c39-47f9-8080-94442bc51813",
+  "errorCases": [
+    {
+      "status": 401,
+      "code": "AUTH_REQUIRED",
+      "message": "Access token required",
+      "when": "No Authorization header is present"
+    },
+    {
+      "status": 403,
+      "code": "NOT_PLATFORM_ADMIN",
+      "message": "Platform administrator access required",
+      "when": "The caller is authenticated but is not a platform_admin (a tenant-level admin is refused here)"
+    },
+    {
+      "status": 403,
+      "code": "ACCESS_REVOKED",
+      "message": "Platform administrator access has been revoked",
+      "when": "The admin's own access_status is suspended or revoked",
+      "reproducible": false,
+      "notReproducibleReason": "Requires revoking the acting administrator's own access, which would break every subsequent admin test in the run. Covered by the adminAuthBoundary integration test, which owns its own fixture."
+    },
+    {
+      "status": 500,
+      "code": "LIST_FAILED",
+      "message": "Failed to list accounts",
+      "when": "Query error"
+    }
+  ]
+}

@@ -8,7 +8,8 @@
         "./mcp-server/mcp-bridge.js"
       ],
       "env": {
-        "MCP_SERVER_URL": "http://localhost:8766"
+        "MCP_SERVER_URL": "http://localhost:8766",
+        "PROJECT_ID": "30229b2b-ea03-42c5-9b18-3ce752826417"
       }
     }
   }

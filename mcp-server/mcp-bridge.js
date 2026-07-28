@@ -132,7 +132,7 @@ const TOOLS = [
         taskType: {
           type: 'string',
           description: 'Type of task (api_endpoint, frontend, database, etc.)',
-          enum: ['api_endpoint', 'frontend', 'backend', 'database', 'service', 'ui_component', 'testing']
+          enum: ['api_endpoint', 'frontend', 'backend', 'database', 'service_layer', 'ui_component', 'testing']
         },
         projectPath: {
           type: 'string',
@@ -140,6 +140,41 @@ const TOOLS = [
         }
       },
       required: ['taskId']
+    }
+  },
+  {
+    name: 'projexlight_get_sdk_api',
+    description: 'ProjexCloud SDK reuse: fetch the full spec (method, path, requiresAuth, payload_shape, fieldEnums, dependsOn) for ONE endpoint from the bundled SDK catalog. Call this only when about to integrate a specific endpoint you found in mcp-server/data/sdk-catalog-index.json — avoids loading the whole catalog.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        method: {
+          type: 'string',
+          description: 'HTTP method of the endpoint, e.g. "POST"'
+        },
+        endpoint: {
+          type: 'string',
+          description: 'Endpoint path, e.g. "/api/scheduling/appointments"'
+        }
+      },
+      required: ['method', 'endpoint']
+    }
+  },
+  {
+    name: 'projexlight_get_next_task',
+    description: 'Get AND claim your next task automatically — no taskId needed. Enforces depth-first feature sequencing: finishes your currently assigned/owned feature end-to-end (in the correct task-type order) BEFORE moving to the next feature; when your feature is done it picks the oldest unassigned feature and locks it to you. Returns the full implementation instruction. Call this after projexlight_complete_task to get the correct next task instead of picking tasks yourself.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        sprintId: {
+          type: 'string',
+          description: 'Optional: scope next-task selection to a single sprint UUID.'
+        },
+        projectPath: {
+          type: 'string',
+          description: 'Unix-style path to project root for multi-project setups. Auto-detected if not provided.'
+        }
+      }
     }
   },
   {
@@ -178,7 +213,7 @@ const TOOLS = [
   },
   {
     name: 'projexlight_complete_task',
-    description: 'Mark a task as complete and get the next task',
+    description: 'Mark a task as complete and get the next task. For backend/api_endpoint tasks, include apiDefinitions and/or generatedApis so the backend can register the implemented endpoints.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -196,6 +231,16 @@ const TOOLS = [
           },
           required: ['filesGenerated', 'linesOfCode', 'complianceScore']
         },
+        apiDefinitions: {
+          type: 'array',
+          description: 'Array of API definition objects generated for this task (required for backend/api_endpoint task completion). Each item is the full api_definition JSON.',
+          items: { type: 'object', additionalProperties: true }
+        },
+        generatedApis: {
+          type: 'array',
+          description: 'Array of endpoints implemented by this task. Use when apiDefinitions is not available.',
+          items: { type: 'object', additionalProperties: true }
+        },
         projectPath: {
           type: 'string',
           description: 'Unix-style path to project root for multi-project setups. Auto-detected if not provided.'
@@ -210,6 +255,67 @@ const TOOLS = [
     inputSchema: {
       type: 'object',
       properties: {},
+      required: []
+    }
+  },
+  {
+    name: 'projexlight_get_api_definition_rules',
+    description: 'Refresh the STRICT api-definition authoring contract (variable forms {{cache}}/{{dynamic}}/{{static}}/{{baseUrl}}/{{var:name}}, MUST rules incl. FK->cache, complete payload, fieldEnums, statusTransitions, no static headers). ALWAYS call this before creating or editing any file under tests/api_definitions/ — especially if your instruction context was compacted or you are unsure of the rules.',
+    inputSchema: {
+      type: 'object',
+      properties: {},
+      required: []
+    }
+  },
+  {
+    name: 'projexlight_review_api_definitions',
+    description: 'API-DEFINITION REVIEW AGENT (incremental). (1) Verifies each NEW/CHANGED api_definition against the actual route/handler code and the authoring rules (FK->cache, no static headers, captureResponse, dependsOn, testability, fieldEnums). (2) COVERAGE: reports missingDefinitions — every endpoint in the CODE that has NO api_definition (catches endpoints the LLM forgot to write, or wrote some and missed others — critical for multi-agent runs). Unchanged files are skipped (content-hash cached). Run after creating/editing api_definitions; write the missing definitions, fix all findings, and re-run until findingsCount=0 and missingDefinitions is empty before committing.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        projectPath: { type: 'string', description: 'Project root path' },
+        subdir: { type: 'string', description: 'Optional: scope to one resource dir (e.g. "billing")' },
+        force: { type: 'boolean', description: 'Re-verify all definitions, ignoring the cache' }
+      },
+      required: ['projectPath']
+    }
+  },
+  {
+    name: 'projexlight_review_ui_features',
+    description: 'UI/BDD FEATURE REVIEW AGENT (incremental). Verifies every UI screen/page in the code has a Gherkin .feature file under tests/features/ (run via the Playwright/BDD Test MCP). Flags uncovered screens and re-checks when UI code or the feature corpus changes; covered+unchanged screens are skipped (content-hash cached). Run after generating/modifying UI code, then create/update the .feature files for flagged screens.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        projectPath: { type: 'string', description: 'Project root path' },
+        force: { type: 'boolean', description: 'Re-check all screens, ignoring the cache' }
+      },
+      required: ['projectPath']
+    }
+  },
+  {
+    name: 'projexlight_generate_api_docs',
+    description: 'Generate HTML API documentation from tests/api_definitions/ for customers, users and QA. Modularized: an index.html + one page per resource + a QA test-plan.html. Each API documents what it does, the full request payload, the expected response, valid enum values / workflow stages to test, the prerequisite call chain (dependsOn), and the test cases with expected status codes (positive + validation/error). Run after api_definitions are created/fixed.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        projectPath: { type: 'string', description: 'Project root path' },
+        outputDir: { type: 'string', description: 'Output dir (default docs/api_docs)' },
+        title: { type: 'string', description: 'Doc title (optional)' }
+      },
+      required: ['projectPath']
+    }
+  },
+  {
+    name: 'projexlight_pre_commit_regression_check',
+    description: 'MUST-32 PRE-COMMIT GATE. Call before EVERY git commit. Detects dangling references introduced by the staged changes (renamed/removed exports, routes, columns and api_definitions that other code still points at) and returns a danglingReferences[] where each entry carries an llmAutoAction: AUTO_RESTORE (put the removed thing back), AUTO_MIGRATE (update the callers) or ASK_HUMAN. Auto-apply every llmAutoAction and only pause when humanDecisionRequired is true. NEVER auto-ACKNOWLEDGE — that silently drops a real regression.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        projectPath: {
+          type: 'string',
+          description: 'Unix-style path to project root for multi-project setups. Auto-detected if not provided.'
+        }
+      },
       required: []
     }
   },
@@ -816,7 +922,7 @@ const TOOLS = [
         },
         task_type: {
           type: 'string',
-          enum: ['api_endpoint', 'frontend', 'backend', 'database', 'service', 'testing', 'development'],
+          enum: ['api_endpoint', 'frontend', 'backend', 'database', 'service_layer', 'testing', 'development'],
           description: 'Type of task'
         },
         feature_id: {
@@ -1074,7 +1180,7 @@ const TOOLS = [
               description: { type: 'string', description: 'Task description' },
               task_type: {
                 type: 'string',
-                enum: ['api_endpoint', 'frontend', 'backend', 'database', 'service', 'testing', 'development'],
+                enum: ['api_endpoint', 'frontend', 'backend', 'database', 'service_layer', 'testing', 'development'],
                 description: 'Type of task'
               },
               feature_id: { type: 'string', description: 'UUID of parent feature' },
@@ -1089,6 +1195,95 @@ const TOOLS = [
       },
       required: ['tasks']
     }
+  },
+  // ==================== ENTITY UPDATE / DELETE TOOLS ====================
+  // Update/delete existing tasks, scenarios, and features. NOTE: there is
+  // deliberately NO feature-delete tool — deleting a feature CASCADE-wipes its
+  // scenarios but only SET-NULLs its tasks (orphaning them). Use update_feature
+  // (e.g. set status='archived') instead.
+  {
+    name: 'projexlight_update_task',
+    description: 'Update an existing task\'s fields (title, description, priority, status, acceptance_criteria, task_type, estimated_hours, story_points, assigned_to, due_date, ...). Pass taskId plus only the fields you want to change. Unlike complete_task (which only flips status to completed), this edits arbitrary task fields.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        taskId: { type: 'string', description: 'UUID of the task to update' },
+        title: { type: 'string', description: 'New task title' },
+        description: { type: 'string', description: 'New task description' },
+        task_type: { type: 'string', enum: ['api_endpoint', 'frontend', 'backend', 'database', 'service_layer', 'testing', 'development'], description: 'New task type' },
+        priority: { type: 'string', enum: ['low', 'medium', 'high', 'critical'], description: 'New priority' },
+        status: { type: 'string', description: 'New status (e.g. not_started, in_progress, completed, blocked, archived)' },
+        acceptance_criteria: { type: 'array', items: { type: 'string' }, description: 'Replacement acceptance criteria list' },
+        estimated_hours: { type: 'number', description: 'Estimated hours' },
+        story_points: { type: 'number', description: 'Story points' },
+        assigned_to: { type: 'string', description: 'UUID of the assignee' },
+        due_date: { type: 'string', description: 'Due date (ISO 8601)' },
+        projectPath: { type: 'string', description: 'Unix-style path to project root for multi-project setups. Auto-detected if not provided.' }
+      },
+      required: ['taskId']
+    }
+  },
+  {
+    name: 'projexlight_delete_task',
+    description: 'Delete a task. Soft-deletes (archives) by default; pass permanent=true to hard-delete. A task is a leaf entity (only child sub-tasks cascade), so the blast radius is small. Use this instead of recreating tasks when you need to remove obsolete ones.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        taskId: { type: 'string', description: 'UUID of the task to delete' },
+        permanent: { type: 'boolean', description: 'Hard-delete instead of archive (default: false)' },
+        projectPath: { type: 'string', description: 'Unix-style path to project root for multi-project setups. Auto-detected if not provided.' }
+      },
+      required: ['taskId']
+    }
+  },
+  {
+    name: 'projexlight_update_scenario',
+    description: 'Update a BDD scenario\'s fields (title, description, priority, status, scenario_type, labels, ...). Pass scenarioId plus only the fields to change. To rewrite the Given/When/Then steps with real UI selectors, use projexlight_update_scenario_steps instead.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        scenarioId: { type: 'string', description: 'UUID of the scenario to update' },
+        title: { type: 'string', description: 'New scenario title' },
+        description: { type: 'string', description: 'New scenario description' },
+        scenario_type: { type: 'string', enum: ['UI', 'API'], description: 'New scenario type' },
+        priority: { type: 'string', enum: ['low', 'medium', 'high', 'critical'], description: 'New priority' },
+        status: { type: 'string', description: 'New status' },
+        projectPath: { type: 'string', description: 'Unix-style path to project root for multi-project setups. Auto-detected if not provided.' }
+      },
+      required: ['scenarioId']
+    }
+  },
+  {
+    name: 'projexlight_delete_scenario',
+    description: 'Delete a BDD scenario. Child tasks are NOT deleted — tasks.scenario_id is ON DELETE SET NULL, so the scenario\'s tasks survive (still under their feature) but become detached from the deleted scenario.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        scenarioId: { type: 'string', description: 'UUID of the scenario to delete' },
+        permanent: { type: 'boolean', description: 'Hard-delete flag (forwarded; note the backend hard-deletes either way)' },
+        projectPath: { type: 'string', description: 'Unix-style path to project root for multi-project setups. Auto-detected if not provided.' }
+      },
+      required: ['scenarioId']
+    }
+  },
+  {
+    name: 'projexlight_update_feature',
+    description: 'Update a feature\'s fields (title, description, feature_type, acceptance_criteria, technical_notes, priority, status, ...). Pass featureId plus only the fields to change. NOTE: there is intentionally no feature-delete tool — deleting a feature cascade-wipes its scenarios but orphans its tasks (SET NULL); set status="archived" here instead if you need to retire a feature.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        featureId: { type: 'string', description: 'UUID of the feature to update' },
+        title: { type: 'string', description: 'New feature title' },
+        description: { type: 'string', description: 'New feature description' },
+        feature_type: { type: 'string', description: 'New feature type' },
+        acceptance_criteria: { type: 'array', items: { type: 'string' }, description: 'Replacement acceptance criteria list' },
+        technical_notes: { type: 'string', description: 'Technical notes' },
+        priority: { type: 'string', enum: ['low', 'medium', 'high', 'critical'], description: 'New priority' },
+        status: { type: 'string', description: 'New status (e.g. active, archived)' },
+        projectPath: { type: 'string', description: 'Unix-style path to project root for multi-project setups. Auto-detected if not provided.' }
+      },
+      required: ['featureId']
+    }
   }
 ];
 
@@ -1098,9 +1293,16 @@ const TOOLS = [
 const TOOL_ENDPOINTS = {
   'projexlight_init_session': { method: 'POST', path: '/api/instruction/init' },
   'projexlight_get_instruction': { method: 'POST', path: '/api/instruction/get' },
+  'projexlight_get_sdk_api': { method: 'POST', path: '/api/sdk/api' },
+  'projexlight_get_next_task': { method: 'POST', path: '/api/instruction/next' },
   'projexlight_validate': { method: 'POST', path: '/api/instruction/validate' },
   'projexlight_complete_task': { method: 'POST', path: '/api/instruction/complete' },
   'projexlight_get_rules': { method: 'GET', path: '/api/instruction/rules' },
+  'projexlight_get_api_definition_rules': { method: 'GET', path: '/api/rules/api-definition' },
+  'projexlight_review_api_definitions': { method: 'POST', path: '/api/instruction/review-api-definitions' },
+  'projexlight_review_ui_features': { method: 'POST', path: '/api/instruction/review-ui-features' },
+  'projexlight_generate_api_docs': { method: 'POST', path: '/api/instruction/generate-api-docs' },
+  'projexlight_pre_commit_regression_check': { method: 'POST', path: '/api/pre-commit-regression-check' },
   'projexlight_decision_tree': { method: 'POST', path: '/api/instruction/decision-tree' },
   'projexlight_quality_gates': { method: 'POST', path: '/api/instruction/quality-gates' },
   'projexlight_get_template': { method: 'POST', path: '/api/instruction/template' },
@@ -1151,7 +1353,13 @@ const TOOL_ENDPOINTS = {
   'projexlight_create_tasks_bulk': { method: 'POST', path: '/api/tasks/create-bulk' },
   'projexlight_implement': { method: 'POST', path: '/api/implement' },
   'projexlight_update_scenario_steps': { method: 'POST', path: '/api/scenarios/update-steps' },
-  'projexlight_create_scenario': { method: 'POST', path: '/api/scenarios/create' }
+  'projexlight_create_scenario': { method: 'POST', path: '/api/scenarios/create' },
+  // Entity Update / Delete Tools (gate-free MCP path; no feature-delete by design)
+  'projexlight_update_task': { method: 'POST', path: '/api/tasks/update' },
+  'projexlight_delete_task': { method: 'POST', path: '/api/tasks/delete' },
+  'projexlight_update_scenario': { method: 'POST', path: '/api/scenarios/update' },
+  'projexlight_delete_scenario': { method: 'POST', path: '/api/scenarios/delete' },
+  'projexlight_update_feature': { method: 'POST', path: '/api/features/update' }
 };
 
 // Timeout configuration per endpoint type
@@ -1373,7 +1581,7 @@ async function main() {
   const healthy = await checkHealth();
   if (!healthy) {
     console.error('[MCP Bridge] Warning: ProjexLight MCP server not reachable at ' + MCP_SERVER_URL);
-    console.error('[MCP Bridge] Make sure the Docker container is running: docker-compose up -d mcp-server');
+    console.error('[MCP Bridge] Make sure the Docker container is running: cd mcp-server && ./setup-all.sh');
   }
 
   const rl = readline.createInterface({

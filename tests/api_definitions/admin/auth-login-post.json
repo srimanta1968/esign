@@ -1,0 +1,91 @@
+{
+  "name": "POST /api/admin/auth/login - Platform admin login",
+  "endpoint": "/api/admin/auth/login",
+  "method": "POST",
+  "description": "Authenticates a platform_admin and issues a short-TTL admin session token. This is the ONLY public route under /api/admin — it provides auth rather than requiring it. Tenant-level 'admin' users are rejected with 403.",
+  "requiresAuth": false,
+  "expectedStatus": 200,
+  "priority": 10,
+  "setupScript": "platform_admin.sql",
+  "testCases": [
+    {
+      "name": "Platform admin logs in with seeded credentials",
+      "payload": {
+        "email": "{{var:platform_admin_email}}",
+        "password": "{{var:platform_admin_password}}"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "token": "string",
+          "admin": {
+            "role": "platform_admin"
+          }
+        }
+      }
+    },
+    {
+      "name": "400 MISSING_CREDENTIALS — email or password is absent from the body",
+      "testType": "negative",
+      "coversErrorCase": "400|missing_credentials",
+      "expectedStatus": 400,
+      "expectedError": {
+        "code": "MISSING_CREDENTIALS"
+      },
+      "payload": {
+        "email": "{{var:platform_admin_email}}"
+      }
+    },
+    {
+      "name": "401 INVALID_CREDENTIALS — Wrong password, unknown email, OR a valid non-platform_admin account — deliberately identical so staff accounts cannot be enumerated",
+      "testType": "negative",
+      "coversErrorCase": "401|invalid_credentials",
+      "expectedStatus": 401,
+      "expectedError": {
+        "code": "INVALID_CREDENTIALS"
+      },
+      "payload": {
+        "email": "{{var:platform_admin_email}}",
+        "password": "{{static:WrongPassword123!}}"
+      }
+    }
+  ],
+  "captureResponse": {
+    "admin.auth.login.response.data.token": "data.token",
+    "admin.auth.login.response.data.admin.id": "data.admin.id"
+  },
+  "fieldEnums": {
+    "role": [
+      "user",
+      "admin",
+      "viewer",
+      "guest",
+      "platform_admin"
+    ]
+  },
+  "taskId": "1403c2d1-4165-465c-87e2-a252eb372727",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "6fd745f1-d68e-480b-a180-390f5124760f",
+  "epicId": "5efe9e03-3c39-47f9-8080-94442bc51813",
+  "errorCases": [
+    {
+      "status": 400,
+      "code": "MISSING_CREDENTIALS",
+      "message": "Email and password are required",
+      "when": "email or password is absent from the body"
+    },
+    {
+      "status": 401,
+      "code": "INVALID_CREDENTIALS",
+      "message": "Invalid credentials",
+      "when": "Wrong password, unknown email, OR a valid non-platform_admin account — deliberately identical so staff accounts cannot be enumerated"
+    },
+    {
+      "status": 500,
+      "code": "LOGIN_FAILED",
+      "message": "Admin login failed",
+      "when": "Unexpected server error"
+    }
+  ]
+}

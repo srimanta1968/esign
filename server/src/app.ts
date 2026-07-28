@@ -18,6 +18,7 @@ import analyticsRoutes from './routes/analyticsRoutes';
 import signingRoutes from './routes/signingRoutes';
 import billingRoutes from './routes/billingRoutes';
 import teamRoutes from './routes/teamRoutes';
+import adminRoutes from './routes/adminRoutes';
 import { auditMiddleware } from './middleware/auditMiddleware';
 
 const app: Application = express();
@@ -59,6 +60,7 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/sign', signingRoutes);
 app.use('/api/billing', billingRoutes);
 app.use('/api/teams', teamRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Error handling
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
@@ -68,8 +70,19 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 
 const PORT: number = config.port || 3000;
 
+/**
+ * Under test the app is imported for its routes only — supertest binds its own
+ * ephemeral port. Binding PORT here would collide across test files and the
+ * background schedulers would keep the run alive after the assertions finish.
+ */
+const IS_TEST = process.env.NODE_ENV === 'test';
+
 // Run migrations on startup then start server
 MigrationService.runMigrations().then(() => {
+  if (IS_TEST) {
+    return;
+  }
+
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
@@ -109,11 +122,32 @@ MigrationService.runMigrations().then(() => {
     setTimeout(runPruneTick, 60 * 1000);
     setInterval(runPruneTick, NOTIFICATION_PRUNE_MS);
   });
+
+  // Trial and credit expiry: revert trials whose end date has passed and claw
+  // back expired credit grants. Runs shortly after startup, then daily.
+  import('./jobs/expireTrialsAndCredits').then(({ expireTrialsAndCredits }) => {
+    const EXPIRY_TICK_MS = 24 * 60 * 60 * 1000;
+    const runExpiryTick = (): void => {
+      expireTrialsAndCredits()
+        .then(({ trialsExpired, grantsExpired, creditsExpired }) => {
+          if (trialsExpired || grantsExpired) {
+            console.log(
+              `Expiry sweep: trials=${trialsExpired} grants=${grantsExpired} credits=${creditsExpired}`
+            );
+          }
+        })
+        .catch(err => console.error('Trial/credit expiry error:', err?.message || err));
+    };
+    setTimeout(runExpiryTick, 90 * 1000);
+    setInterval(runExpiryTick, EXPIRY_TICK_MS);
+  });
 }).catch((err) => {
   console.error('Migration failed, starting server anyway:', err);
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
+  if (!IS_TEST) {
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  }
 });
 
 export default app;

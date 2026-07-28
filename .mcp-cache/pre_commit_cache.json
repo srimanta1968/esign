@@ -1,5 +1,5 @@
 {
-  "last_scan": "2026-04-16T21:08:28.595800Z",
+  "last_scan": "2026-07-28T07:02:51.628513Z",
   "scanned_files": {
     "server/src/routes/analyticsRoutes.ts": {
       "hash": "dfd4f7d9965fd389f41e158b99855dc37a0168e7a2bcc82bae96fcc631196611",
@@ -48,7 +48,7 @@
       "linesOfCode": 166
     },
     "server/src/routes/billingRoutes.ts": {
-      "hash": "08ebdd8aa639106ac8957cdefe8288140a06deb73b65df10e811bb6f255cb48c",
+      "hash": "a8538ac61c6b97dd7b23c1ff317df6dcacde18bf2a53c2f9cf2991f46b481a18",
       "compliance": 75,
       "violations": [
         {
@@ -62,22 +62,12 @@
           "confidence": 90,
           "source": "local_rules",
           "filePath": "server/src/routes/billingRoutes.ts"
-        },
-        {
-          "line": 0,
-          "severity": "major",
-          "category": "api_definition_drift",
-          "rule": "TEST_DEF_OUT_OF_SYNC",
-          "description": "api_definition billing-webhook-post.json testCases[0] payload missing required fields that the handler destructures from req.body: ['interval', 'plan']. Handler reads: ['interval', 'plan']. Test sends: ['type'].",
-          "currentCode": "const { interval, plan } = req.body",
-          "autoFixable": false,
-          "confidence": 95,
-          "source": "drift_check",
-          "filePath": "server/src/routes/billingRoutes.ts"
         }
       ],
-      "timestamp": "2026-04-16T05:06:11.057571Z",
-      "linesOfCode": 168
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T05:28:26.072234Z",
+      "linesOfCode": 226
     },
     "server/src/routes/complianceRoutes.ts": {
       "hash": "4c51a9fbdb952e1dd6f082bb09722686d0c9fe7da29c2e455f23a10f4c2688d9",
@@ -398,11 +388,13 @@
       "linesOfCode": 1
     },
     "tests/config/test-config.json": {
-      "hash": "dfebaf865d0ea1ef0a232de4cca9b9fddc5253dc35d7bf4a673af807a66106df",
+      "hash": "40e31e8225ddf736593a8767e8f162d5519c24d7eb833acf9746ec75d7edfa67",
       "compliance": 100,
       "violations": [],
-      "timestamp": "2026-04-16T18:21:47.708382Z",
-      "linesOfCode": 191
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T04:38:31.345714Z",
+      "linesOfCode": 201
     },
     "scripts/gen-api-defs.js": {
       "hash": "03c17668fa5620912a8a8c962b4a25e4d0f48743ee10b0eb1177d6ccd7a1f8ec",
@@ -1106,6 +1098,1034 @@
       "violations": [],
       "timestamp": "2026-04-16T21:07:46.840754Z",
       "linesOfCode": 36
+    },
+    "server/src/services/migrationService.ts": {
+      "hash": "12dc1a87722583679b2201ae5f404b4cb02159478cf745e10b9219e931e87fe9",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T06:17:01.284507Z",
+      "linesOfCode": 714
+    },
+    "server/src/app.ts": {
+      "hash": "815d52902da40ea5c0a7d1f45d163951f86641b5bccc36b8ade44979bd2ec76c",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T06:17:00.198404Z",
+      "linesOfCode": 123
+    },
+    "server/src/middleware/requirePlatformAdmin.ts": {
+      "hash": "4ae6b0ec39c163e42381c61ea4d78881b5f4dbe802737bc454f8c4f79ffc5d5b",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T04:19:43.842164Z",
+      "linesOfCode": 80
+    },
+    "server/src/routes/adminRoutes.ts": {
+      "hash": "43e52a09d361abccd3db6ce87627f745f42b60a49d1d4a607c4b414cff59b292",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T05:59:02.785417Z",
+      "linesOfCode": 906
+    },
+    "server/src/types/user.ts": {
+      "hash": "67b019cae725a4d2205cdc963c37e297161f73cfac2eb2707c6719ed8db55006",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T04:19:44.839220Z",
+      "linesOfCode": 52
+    },
+    "server/src/middleware/requireStepUp.ts": {
+      "hash": "35d3efdc6f3df77603a716cfef404d3c5bc2a9bb256f6d89ecb3be18e7bc52b5",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T04:38:28.635094Z",
+      "linesOfCode": 38
+    },
+    "server/src/services/adminAuthService.ts": {
+      "hash": "93e7a25ec9db9c32784875d0365cbaeadc2cd3e84c7b5fbbfebd7f6695b50c11",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T04:38:30.783324Z",
+      "linesOfCode": 166
+    },
+    "tests/api_definitions/admin/auth-login-post.json": {
+      "hash": "6a79b1c99f146ad29e42d6fdf6807c7096fdcb021aff0517c99b60a8cfb64088",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T07:02:24.940658Z",
+      "linesOfCode": 91
+    },
+    "tests/api_definitions/admin/auth-logout-post.json": {
+      "hash": "e16589f6085d016e69288fcd5f6bc60b7862026054ba3e591bc89520b26c2dc0",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T07:02:25.269741Z",
+      "linesOfCode": 80
+    },
+    "tests/api_definitions/admin/auth-me-get.json": {
+      "hash": "dde55052d248b089e1b91b1f3cab8ccda15d62e394394c099b4c4f2ae8fee898",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T07:02:25.655282Z",
+      "linesOfCode": 75
+    },
+    "tests/api_definitions/admin/auth-step-up-post.json": {
+      "hash": "3794c527dac445cbdcbe3b30abc495e2f9fe5a7927c81d0480e46b6273a206d4",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T07:02:25.988361Z",
+      "linesOfCode": 115
+    },
+    "server/src/controllers/authController.ts": {
+      "hash": "ffd367a6cb73af1aa3cea25ad4d8a34988c350ed1d58df69232601c77d37b8f0",
+      "compliance": 75,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-11",
+          "description": "Direct database access - use DataService/ORM instead",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/controllers/authController.ts"
+        }
+      ],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T05:59:02.465223Z",
+      "linesOfCode": 537
+    },
+    "server/src/middleware/auditMiddleware.ts": {
+      "hash": "ec17d9df065907ba65340d24d7d68e6ad60d0d977ce836ffb78d28657908c2c7",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T04:56:14.248228Z",
+      "linesOfCode": 77
+    },
+    "server/src/middleware/auth.ts": {
+      "hash": "43ce78e138ff2a9dbf6795ac3f1bb7d7a0611744f18779fac0ed044b62335ba5",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T04:56:14.621932Z",
+      "linesOfCode": 74
+    },
+    "server/src/services/adminAccountService.ts": {
+      "hash": "3ff39c48461f7367543f797cc0ee004dc63dd55de398d11d65d5bffbf23279b8",
+      "compliance": 90,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-06",
+          "description": "Missing try/catch error handling",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/services/adminAccountService.ts"
+        }
+      ],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T06:17:00.741748Z",
+      "linesOfCode": 328
+    },
+    "server/src/services/auditService.ts": {
+      "hash": "0934d2edf4d3cdb9d0a6d5ddaa4512db1f351da96bc8c0dd6b117d9c15dea7b1",
+      "compliance": 90,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-06",
+          "description": "Missing try/catch error handling",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/services/auditService.ts"
+        }
+      ],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T05:15:19.236836Z",
+      "linesOfCode": 315
+    },
+    "server/src/services/authService.ts": {
+      "hash": "32966b38c2596d19fcfdc4f0f6270809421f6a7d456312358643c2ca67839c19",
+      "compliance": 75,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-11",
+          "description": "Direct database access - use DataService/ORM instead",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/services/authService.ts"
+        }
+      ],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T04:56:18.464150Z",
+      "linesOfCode": 261
+    },
+    "tests/api_definitions/admin/accounts-get.json": {
+      "hash": "c0d67022e3b4ef29c7316c972e66c4f8f54f421cca3edb54b64ebd0138224a38",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T07:02:21.604933Z",
+      "linesOfCode": 106
+    },
+    "tests/api_definitions/admin/accounts-id-access-post.json": {
+      "hash": "3713e17b9f0564eaf67c55b4c2127ed30d4eed233e88a392a84c9d79b0593eb9",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T07:02:21.935043Z",
+      "linesOfCode": 215
+    },
+    "tests/api_definitions/admin/accounts-id-get.json": {
+      "hash": "5023fb864dd8cead316ef885b84237362809349d14a77ba0c1968c3d563b3d56",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T07:02:23.299968Z",
+      "linesOfCode": 134
+    },
+    "client/src/App.tsx": {
+      "hash": "180e8b1f96bd39d18b489d01ecc212a62646114b1a539805332b870bfebf7ef2",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T05:58:57.694228Z",
+      "linesOfCode": 136
+    },
+    "client/src/components/admin/ConfirmActionDialog.tsx": {
+      "hash": "3b68909a70a956170255a2cc5df7f23206d0c1aba661938d474bd21f00b6957c",
+      "compliance": 90,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-06",
+          "description": "Missing try/catch error handling",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "client/src/components/admin/ConfirmActionDialog.tsx"
+        }
+      ],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T05:15:09.647399Z",
+      "linesOfCode": 125
+    },
+    "client/src/context/AdminAuthContext.tsx": {
+      "hash": "9fd5cba7995ce26a2a2b97aee45475a6ce0960704fd81db5c6f0e5f46a2e6c93",
+      "compliance": 90,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-06",
+          "description": "Missing try/catch error handling",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "client/src/context/AdminAuthContext.tsx"
+        }
+      ],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T05:15:10.338629Z",
+      "linesOfCode": 92
+    },
+    "client/src/layouts/AdminLayout.tsx": {
+      "hash": "ebbea966bb5a5de19dd5e1e3eca90209b76ad732d9ec8826c493b947fc881e4e",
+      "compliance": 90,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-06",
+          "description": "Missing try/catch error handling",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "client/src/layouts/AdminLayout.tsx"
+        }
+      ],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T05:58:58.688342Z",
+      "linesOfCode": 91
+    },
+    "client/src/pages/admin/AdminAccountDetailPage.tsx": {
+      "hash": "921b494b31372982d17dde7ef8c5abfa27563de2be4c725d7ccf514e8dcfcdfb",
+      "compliance": 90,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-06",
+          "description": "Missing try/catch error handling",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "client/src/pages/admin/AdminAccountDetailPage.tsx"
+        }
+      ],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T05:58:59.560956Z",
+      "linesOfCode": 243
+    },
+    "client/src/pages/admin/AdminAccountsPage.tsx": {
+      "hash": "1933b9d48db145d58176bdd51d759849606cfef2cd1790965d2c15552a4e3155",
+      "compliance": 90,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-06",
+          "description": "Missing try/catch error handling",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "client/src/pages/admin/AdminAccountsPage.tsx"
+        }
+      ],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T05:15:12.265765Z",
+      "linesOfCode": 257
+    },
+    "client/src/pages/admin/AdminActivityLogPage.tsx": {
+      "hash": "475e07f28cac23263ff7d1d1bcefdcbb2b45c5262712687d75c33d191e5e380c",
+      "compliance": 90,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-06",
+          "description": "Missing try/catch error handling",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "client/src/pages/admin/AdminActivityLogPage.tsx"
+        }
+      ],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T05:15:12.926607Z",
+      "linesOfCode": 176
+    },
+    "client/src/pages/admin/AdminDashboardPage.tsx": {
+      "hash": "10cdf40f1b1535b4c0734add9b7f07a6468d51c4c833afe507e9f167c8a0b2c2",
+      "compliance": 90,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-06",
+          "description": "Missing try/catch error handling",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "client/src/pages/admin/AdminDashboardPage.tsx"
+        }
+      ],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T05:15:13.705707Z",
+      "linesOfCode": 130
+    },
+    "client/src/pages/admin/AdminLoginPage.tsx": {
+      "hash": "66b3f81016223d3f1cd46bb24368e98567264b3be44759236d6538fbd34b203e",
+      "compliance": 90,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-06",
+          "description": "Missing try/catch error handling",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "client/src/pages/admin/AdminLoginPage.tsx"
+        }
+      ],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T05:15:14.336365Z",
+      "linesOfCode": 84
+    },
+    "client/src/services/adminApi.ts": {
+      "hash": "8c8d18e15f28e438eb84e48985ff0f24a02eee52954a86bc33ec9f27c12cfefa",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T05:15:15.012297Z",
+      "linesOfCode": 98
+    },
+    "tests/api_definitions/admin/activity-get.json": {
+      "hash": "d0943b4c3f8e0cf9b3b8d589a5f2b334721b720f14c1fc46d208de9abc3785a1",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T07:02:24.607681Z",
+      "linesOfCode": 84
+    },
+    "tests/api_definitions/admin/metrics-overview-get.json": {
+      "hash": "f2b69bc6c7094682b4eaff16d3c230e9bcc35c304519cd4bc1fe7a92d4873e51",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T07:02:26.371309Z",
+      "linesOfCode": 80
+    },
+    "client/src/pages/admin/AdminAccountBillingTab.tsx": {
+      "hash": "f19f62bf06563823517bc7daba2b299fd81a825fa747f71cd7c1928c432b82c1",
+      "compliance": 90,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-06",
+          "description": "Missing try/catch error handling",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "client/src/pages/admin/AdminAccountBillingTab.tsx"
+        }
+      ],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T05:28:19.372127Z",
+      "linesOfCode": 225
+    },
+    "client/src/pages/admin/AdminRevenueDashboardPage.tsx": {
+      "hash": "0c015875fdd5920e242545fbedda447573836cfe24492fc0fca87c189f4ee864",
+      "compliance": 90,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-06",
+          "description": "Missing try/catch error handling",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "client/src/pages/admin/AdminRevenueDashboardPage.tsx"
+        }
+      ],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T05:28:20.662354Z",
+      "linesOfCode": 144
+    },
+    "server/src/scripts/backfill-payments.ts": {
+      "hash": "ebe8bcd4c7431159011983416b6232049aa7428582217974cf83f58aa43c8215",
+      "compliance": 65,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-06",
+          "description": "Missing try/catch error handling",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/scripts/backfill-payments.ts"
+        },
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-12",
+          "description": "Potential hardcoded secrets detected",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/scripts/backfill-payments.ts"
+        }
+      ],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T05:28:27.798947Z",
+      "linesOfCode": 151
+    },
+    "server/src/services/adminBillingService.ts": {
+      "hash": "c2765620b7977fef1b48123c2a1fe4af8dc2f09b4fb10ed4b2d114e0185e2ebb",
+      "compliance": 90,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-06",
+          "description": "Missing try/catch error handling",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/services/adminBillingService.ts"
+        }
+      ],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T05:44:55.322874Z",
+      "linesOfCode": 344
+    },
+    "tests/api_definitions/admin/accounts-id-billing-get.json": {
+      "hash": "2e5d879f552d89a9339b30b4e71019cfdc619bcffc49016fac5e5c6d0b376860",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T07:02:22.263045Z",
+      "linesOfCode": 131
+    },
+    "tests/api_definitions/admin/accounts-id-plan-post.json": {
+      "hash": "1364ad25e511ff0171889485508fbf2b8795cc5e41c5d66aed6c6529895ec56b",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T07:02:23.648717Z",
+      "linesOfCode": 185
+    },
+    "tests/api_definitions/admin/metrics-revenue-get.json": {
+      "hash": "ec6def8af2d452818cc70a2634169cc5446a1e798922190829be03bb9bf58027",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T07:02:27.536963Z",
+      "linesOfCode": 80
+    },
+    "client/src/pages/admin/AdminAccountCreditsTab.tsx": {
+      "hash": "7e15baf83ee9b198aaef6bac04d412b412502e2adb3644a6a71325edac5c164b",
+      "compliance": 90,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-06",
+          "description": "Missing try/catch error handling",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "client/src/pages/admin/AdminAccountCreditsTab.tsx"
+        }
+      ],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T05:44:45.722757Z",
+      "linesOfCode": 338
+    },
+    "server/src/jobs/expireTrialsAndCredits.ts": {
+      "hash": "f13c678b4b3d952faf13bd58d8660c331a8a606c86dee831e072e00704d8e5d3",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T05:44:47.741744Z",
+      "linesOfCode": 39
+    },
+    "server/src/middleware/planLimits.ts": {
+      "hash": "fb9de7656346d2c1a0dd59c8c124f321a72a39872f78d5deed838bcddd9c1ad9",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T05:44:48.034364Z",
+      "linesOfCode": 49
+    },
+    "server/src/services/creditService.ts": {
+      "hash": "c41df63ea231c4b61286e44a721544421050b8e7d908ddf3c908a515f917797f",
+      "compliance": 90,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-06",
+          "description": "Missing try/catch error handling",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/services/creditService.ts"
+        }
+      ],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T05:44:55.638826Z",
+      "linesOfCode": 254
+    },
+    "server/src/services/subscriptionService.ts": {
+      "hash": "5a63c16365a95f9c0d91f2a50fd126374a258d96fcc7c9101619539e398977bb",
+      "compliance": 65,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-06",
+          "description": "Missing try/catch error handling",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/services/subscriptionService.ts"
+        },
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-11",
+          "description": "Direct database access - use DataService/ORM instead",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/services/subscriptionService.ts"
+        }
+      ],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T05:44:56.304143Z",
+      "linesOfCode": 244
+    },
+    "tests/api_definitions/admin/accounts-id-credits-get.json": {
+      "hash": "493918abad723e00726458c622ceb94ac754e24e5ba5650be6844076c0649fc4",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T07:02:22.576913Z",
+      "linesOfCode": 115
+    },
+    "tests/api_definitions/admin/accounts-id-credits-post.json": {
+      "hash": "25368ac31a32b2537605ce076f5050672dac4ae340c8b95e03a7bc15d9f45157",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T07:02:22.945876Z",
+      "linesOfCode": 243
+    },
+    "tests/api_definitions/admin/accounts-id-trial-delete.json": {
+      "hash": "80c9ffef884ef71e8308bd09f235699abb0f8444928f732c51c3dee2f5be6474",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T07:02:23.928270Z",
+      "linesOfCode": 108
+    },
+    "tests/api_definitions/admin/accounts-id-trial-post.json": {
+      "hash": "39503299f2e5ea8b60c0d54adcbacbb583e4dbb3fcc61ace8afabc3eaca7f214",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T07:02:24.266029Z",
+      "linesOfCode": 231
+    },
+    "client/src/pages/admin/AdminAccountMessagesTab.tsx": {
+      "hash": "5c27e5749b3e8d0e635127cf5dd742bb5b220f1cee6db0d92707260cebfd2305",
+      "compliance": 90,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-06",
+          "description": "Missing try/catch error handling",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "client/src/pages/admin/AdminAccountMessagesTab.tsx"
+        }
+      ],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T05:59:00.268594Z",
+      "linesOfCode": 170
+    },
+    "client/src/pages/admin/AdminMessageTemplatesPage.tsx": {
+      "hash": "f157795f5635adbe215910465f122bf0806cbd260af79309790f4e17c68bfeb3",
+      "compliance": 90,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-06",
+          "description": "Missing try/catch error handling",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "client/src/pages/admin/AdminMessageTemplatesPage.tsx"
+        }
+      ],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T05:59:01.008142Z",
+      "linesOfCode": 285
+    },
+    "client/src/pages/admin/AdminSendMessagePage.tsx": {
+      "hash": "c99ed6cb69429525c0572af5f0ca833f29b8ff2395816ab06595d879d93945a2",
+      "compliance": 90,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-06",
+          "description": "Missing try/catch error handling",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "client/src/pages/admin/AdminSendMessagePage.tsx"
+        }
+      ],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T05:59:01.717032Z",
+      "linesOfCode": 252
+    },
+    "server/src/services/adminMessagingService.ts": {
+      "hash": "e725cc80fbdacca1acfa650a4564b189ca6804854fdf2c0ffd6659c3f07c56f0",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T05:59:11.740206Z",
+      "linesOfCode": 379
+    },
+    "server/jest.config.js": {
+      "hash": "e5a3be8b21667fa7f532bba759dbbc711418e2c4bfbae048d6b6c6ca010e6176",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T06:16:56.041083Z",
+      "linesOfCode": 21
+    },
+    "server/package-lock.json": {
+      "hash": "f9481e0fa4da5150ed3689c06311198d226c9fcc5f86edba4ec024231d0871a6",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T06:16:56.271995Z",
+      "linesOfCode": 7672
+    },
+    "server/package.json": {
+      "hash": "0c003344ca51d96a43da2caa16926a631f542b577e4d7b162eac8b330333eec8",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T06:16:56.616753Z",
+      "linesOfCode": 48
+    },
+    "server/src/__tests__/adminAccountAccess.test.ts": {
+      "hash": "bcb2380da2a9cac3c272178e612edc85e58ade2328bb66ea30a327f8b2bdd0c2",
+      "compliance": 65,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-06",
+          "description": "Missing try/catch error handling",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/__tests__/adminAccountAccess.test.ts"
+        },
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-12",
+          "description": "Potential hardcoded secrets detected",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/__tests__/adminAccountAccess.test.ts"
+        }
+      ],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T06:16:57.087843Z",
+      "linesOfCode": 147
+    },
+    "server/src/__tests__/adminAuthBoundary.test.ts": {
+      "hash": "a7c3854c85051069d06debcde10e204619c15fb54f456aaef702db6ce9367dd8",
+      "compliance": 40,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-06",
+          "description": "Missing try/catch error handling",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/__tests__/adminAuthBoundary.test.ts"
+        },
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-11",
+          "description": "Direct database access - use DataService/ORM instead",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/__tests__/adminAuthBoundary.test.ts"
+        },
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-12",
+          "description": "Potential hardcoded secrets detected",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/__tests__/adminAuthBoundary.test.ts"
+        }
+      ],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T06:16:57.594087Z",
+      "linesOfCode": 142
+    },
+    "server/src/__tests__/adminBillingOverride.test.ts": {
+      "hash": "ddc5ca28f27398c962b47ee80d062c7cec289df5c0af4ec7da791451e9a0d010",
+      "compliance": 90,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-06",
+          "description": "Missing try/catch error handling",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/__tests__/adminBillingOverride.test.ts"
+        }
+      ],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T06:16:58.105690Z",
+      "linesOfCode": 147
+    },
+    "server/src/__tests__/adminCreditsTrials.test.ts": {
+      "hash": "9191d9dc471ac94f12a5fbd51b697db234857d62e5cd1f76196d502a0039b5b2",
+      "compliance": 65,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-06",
+          "description": "Missing try/catch error handling",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/__tests__/adminCreditsTrials.test.ts"
+        },
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-11",
+          "description": "Direct database access - use DataService/ORM instead",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/__tests__/adminCreditsTrials.test.ts"
+        }
+      ],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T06:16:58.600809Z",
+      "linesOfCode": 179
+    },
+    "server/src/__tests__/helpers/adminTestContext.ts": {
+      "hash": "a9230e49003cb3f3cafca858ba17fc1c4d12317f6ac1f64786385ec3879ffd96",
+      "compliance": 50,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-11",
+          "description": "Direct database access - use DataService/ORM instead",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/__tests__/helpers/adminTestContext.ts"
+        },
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-12",
+          "description": "Potential hardcoded secrets detected",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/__tests__/helpers/adminTestContext.ts"
+        }
+      ],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T06:16:59.064790Z",
+      "linesOfCode": 78
+    },
+    "server/src/__tests__/helpers/jestSetup.ts": {
+      "hash": "55a63b9014f3c5c938b2cec9830c216953e6c8d509f60ff4d57aeb0f45a18080",
+      "compliance": 95,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-05",
+          "description": "Missing TypeScript types/interfaces",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/__tests__/helpers/jestSetup.ts"
+        }
+      ],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T06:16:59.580027Z",
+      "linesOfCode": 10
+    },
+    "server/src/__tests__/adminMessaging.test.ts": {
+      "hash": "e173e0e0e58032521c8adb2654eeecc18d991e8f24ebf01e877428ad9a83e852",
+      "compliance": 75,
+      "violations": [
+        {
+          "line": 0,
+          "severity": "minor",
+          "category": "general",
+          "rule": "SC-11",
+          "description": "Direct database access - use DataService/ORM instead",
+          "currentCode": "",
+          "autoFixable": false,
+          "confidence": 90,
+          "source": "local_rules",
+          "filePath": "server/src/__tests__/adminMessaging.test.ts"
+        }
+      ],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T06:21:41.591560Z",
+      "linesOfCode": 222
+    },
+    "mcp-server/mcp-bridge.js": {
+      "hash": "fd69d5432f283c8f0d460bd07dc1ff7f3a06f0767d560b6cd3030f4f275d9ab7",
+      "compliance": 100,
+      "violations": [],
+      "standards_version": "sha256:7cf517c6c97eb3c02613c89ab9ab90c84e2a2020608d1abb82ce6a55ba803f62",
+      "custom_violations": [],
+      "timestamp": "2026-07-28T07:02:21.208434Z",
+      "linesOfCode": 1512
     }
   },
   "registered_apis": {
@@ -1187,19 +2207,19 @@
     },
     "POST:/api/billing/checkout": {
       "filePath": "server/src/routes/billingRoutes.ts",
-      "timestamp": "2026-04-16T05:07:32.134626Z"
+      "timestamp": "2026-07-28T05:28:35.622705Z"
     },
     "POST:/api/billing/portal": {
       "filePath": "server/src/routes/billingRoutes.ts",
-      "timestamp": "2026-04-16T05:07:32.134628Z"
+      "timestamp": "2026-07-28T05:28:35.622708Z"
     },
     "GET:/api/billing/subscription": {
       "filePath": "server/src/routes/billingRoutes.ts",
-      "timestamp": "2026-04-16T05:07:32.134630Z"
+      "timestamp": "2026-07-28T05:28:35.622711Z"
     },
     "POST:/api/billing/webhook": {
       "filePath": "server/src/routes/billingRoutes.ts",
-      "timestamp": "2026-04-16T05:07:32.134632Z"
+      "timestamp": "2026-07-28T05:28:35.622713Z"
     },
     "GET:/api/compliance/report": {
       "filePath": "server/src/routes/complianceRoutes.ts",
@@ -1504,6 +2524,94 @@
     "POST:/api/workflows/:id/self-sign": {
       "filePath": "server/src/routes/workflowRoutes.ts",
       "timestamp": "2026-04-16T05:07:32.134754Z"
+    },
+    "POST:/auth/login": {
+      "filePath": "server/src/routes/adminRoutes.ts",
+      "timestamp": "2026-07-28T05:59:15.134637Z"
+    },
+    "GET:/auth/me": {
+      "filePath": "server/src/routes/adminRoutes.ts",
+      "timestamp": "2026-07-28T05:59:15.134641Z"
+    },
+    "POST:/auth/step-up": {
+      "filePath": "server/src/routes/adminRoutes.ts",
+      "timestamp": "2026-07-28T05:59:15.134644Z"
+    },
+    "POST:/auth/logout": {
+      "filePath": "server/src/routes/adminRoutes.ts",
+      "timestamp": "2026-07-28T05:59:15.134646Z"
+    },
+    "GET:/accounts": {
+      "filePath": "server/src/routes/adminRoutes.ts",
+      "timestamp": "2026-07-28T05:59:15.134648Z"
+    },
+    "GET:/accounts/:id": {
+      "filePath": "server/src/routes/adminRoutes.ts",
+      "timestamp": "2026-07-28T05:59:15.134650Z"
+    },
+    "POST:/accounts/:id/access": {
+      "filePath": "server/src/routes/adminRoutes.ts",
+      "timestamp": "2026-07-28T05:59:15.134652Z"
+    },
+    "GET:/metrics/overview": {
+      "filePath": "server/src/routes/adminRoutes.ts",
+      "timestamp": "2026-07-28T05:59:15.134674Z"
+    },
+    "GET:/activity": {
+      "filePath": "server/src/routes/adminRoutes.ts",
+      "timestamp": "2026-07-28T05:59:15.134675Z"
+    },
+    "GET:/accounts/:id/billing": {
+      "filePath": "server/src/routes/adminRoutes.ts",
+      "timestamp": "2026-07-28T05:59:15.134654Z"
+    },
+    "POST:/accounts/:id/plan": {
+      "filePath": "server/src/routes/adminRoutes.ts",
+      "timestamp": "2026-07-28T05:59:15.134656Z"
+    },
+    "GET:/metrics/revenue": {
+      "filePath": "server/src/routes/adminRoutes.ts",
+      "timestamp": "2026-07-28T05:59:15.134673Z"
+    },
+    "GET:/accounts/:id/credits": {
+      "filePath": "server/src/routes/adminRoutes.ts",
+      "timestamp": "2026-07-28T05:59:15.134657Z"
+    },
+    "POST:/accounts/:id/credits": {
+      "filePath": "server/src/routes/adminRoutes.ts",
+      "timestamp": "2026-07-28T05:59:15.134658Z"
+    },
+    "POST:/accounts/:id/trial": {
+      "filePath": "server/src/routes/adminRoutes.ts",
+      "timestamp": "2026-07-28T05:59:15.134660Z"
+    },
+    "DELETE:/accounts/:id/trial": {
+      "filePath": "server/src/routes/adminRoutes.ts",
+      "timestamp": "2026-07-28T05:59:15.134662Z"
+    },
+    "GET:/message-templates": {
+      "filePath": "server/src/routes/adminRoutes.ts",
+      "timestamp": "2026-07-28T05:59:15.134663Z"
+    },
+    "POST:/message-templates": {
+      "filePath": "server/src/routes/adminRoutes.ts",
+      "timestamp": "2026-07-28T05:59:15.134665Z"
+    },
+    "POST:/messages/preview": {
+      "filePath": "server/src/routes/adminRoutes.ts",
+      "timestamp": "2026-07-28T05:59:15.134666Z"
+    },
+    "POST:/messages/send": {
+      "filePath": "server/src/routes/adminRoutes.ts",
+      "timestamp": "2026-07-28T05:59:15.134668Z"
+    },
+    "POST:/messages/send-segment": {
+      "filePath": "server/src/routes/adminRoutes.ts",
+      "timestamp": "2026-07-28T05:59:15.134670Z"
+    },
+    "GET:/accounts/:id/messages": {
+      "filePath": "server/src/routes/adminRoutes.ts",
+      "timestamp": "2026-07-28T05:59:15.134671Z"
     }
   }
 }

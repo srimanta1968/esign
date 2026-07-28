@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS users (
   email VARCHAR(255) NOT NULL UNIQUE,
   password_hash VARCHAR(255),
   name VARCHAR(255) DEFAULT '',
-  role VARCHAR(20) DEFAULT 'user' CHECK (role IN ('user', 'admin', 'viewer', 'platform_admin')),
+  role VARCHAR(20) DEFAULT 'user' CHECK (role IN ('user', 'admin', 'viewer', 'guest', 'platform_admin')),
   organization_id UUID DEFAULT NULL,
   language_preference VARCHAR(10) DEFAULT 'en',
   plan VARCHAR(20) DEFAULT 'free',

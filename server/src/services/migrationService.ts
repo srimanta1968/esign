@@ -254,7 +254,7 @@ export class MigrationService {
         ) THEN
           BEGIN
             ALTER TABLE users ADD CONSTRAINT users_role_check
-              CHECK (role IN ('user', 'admin', 'viewer', 'platform_admin'));
+              CHECK (role IN ('user', 'admin', 'viewer', 'guest', 'platform_admin'));
           EXCEPTION WHEN OTHERS THEN NULL;
           END;
         END IF;

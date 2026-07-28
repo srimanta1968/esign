@@ -18,6 +18,7 @@ import analyticsRoutes from './routes/analyticsRoutes';
 import signingRoutes from './routes/signingRoutes';
 import billingRoutes from './routes/billingRoutes';
 import teamRoutes from './routes/teamRoutes';
+import adminRoutes from './routes/adminRoutes';
 import { auditMiddleware } from './middleware/auditMiddleware';
 
 const app: Application = express();
@@ -59,6 +60,7 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/sign', signingRoutes);
 app.use('/api/billing', billingRoutes);
 app.use('/api/teams', teamRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Error handling
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {

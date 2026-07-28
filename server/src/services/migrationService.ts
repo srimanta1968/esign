@@ -184,6 +184,11 @@ export class MigrationService {
       ['users', 'plan', "VARCHAR(20) DEFAULT 'free'"],
       ['users', 'team_id', 'UUID DEFAULT NULL'],
       ['users', 'email_verified', 'BOOLEAN DEFAULT false'],
+      // Platform-admin account access state (admin portal)
+      ['users', 'access_status', "VARCHAR(20) DEFAULT 'active'"],
+      ['users', 'access_reason', 'TEXT DEFAULT NULL'],
+      ['users', 'access_changed_by', 'UUID REFERENCES users(id)'],
+      ['users', 'access_changed_at', 'TIMESTAMP WITH TIME ZONE DEFAULT NULL'],
       // documents
       ['documents', 'original_name', "VARCHAR(255) DEFAULT ''"],
       ['documents', 'title', "VARCHAR(255) DEFAULT ''"],
@@ -213,6 +218,48 @@ export class MigrationService {
     for (const [table, col, typedef] of alterColumns) {
       await this.run(`${table}.${col}`, `ALTER TABLE ${table} ADD COLUMN IF NOT EXISTS ${col} ${typedef}`);
     }
+
+    // Backfill access_status BEFORE the CHECK constraint is added, so rows that
+    // predate the column (NULL) do not fail validation.
+    await this.run('backfill:users.access_status', `
+      UPDATE users SET access_status = 'active' WHERE access_status IS NULL
+    `);
+
+    // Constrain account access state. Guarded so a re-run is a no-op, and
+    // wrapped in EXCEPTION so unexpected legacy data can never block startup.
+    await this.run('users.access_status_check', `
+      DO $$ BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM information_schema.table_constraints
+          WHERE constraint_name = 'users_access_status_check' AND table_name = 'users'
+        ) THEN
+          BEGIN
+            ALTER TABLE users ADD CONSTRAINT users_access_status_check
+              CHECK (access_status IN ('active', 'suspended', 'revoked'));
+          EXCEPTION WHEN OTHERS THEN NULL;
+          END;
+        END IF;
+      END $$
+    `);
+
+    // 'platform_admin' is the internal staff role for the admin portal. It is
+    // deliberately DISTINCT from the tenant-level 'admin' role — existing
+    // 'admin' users are NOT promoted here, they stay tenant admins. Staff
+    // accounts are designated explicitly.
+    await this.run('users.role_check', `
+      DO $$ BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM information_schema.table_constraints
+          WHERE constraint_name = 'users_role_check' AND table_name = 'users'
+        ) THEN
+          BEGIN
+            ALTER TABLE users ADD CONSTRAINT users_role_check
+              CHECK (role IN ('user', 'admin', 'viewer', 'platform_admin'));
+          EXCEPTION WHEN OTHERS THEN NULL;
+          END;
+        END IF;
+      END $$
+    `);
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     // PHASE 3 — Dependent tables (reference base tables via FK)
@@ -570,6 +617,9 @@ export class MigrationService {
       ['idx_notification_delivery_log_notification_id', 'notification_delivery_log', 'notification_id'],
       ['idx_notification_delivery_log_channel', 'notification_delivery_log', 'channel'],
       ['idx_notification_preferences_user_id', 'notification_preferences', 'user_id'],
+      // Admin portal account console filters
+      ['idx_users_access_status', 'users', 'access_status'],
+      ['idx_users_role', 'users', 'role'],
     ];
 
     for (const [name, table, col] of indexes) {

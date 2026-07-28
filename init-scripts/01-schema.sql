@@ -25,11 +25,15 @@ CREATE TABLE IF NOT EXISTS users (
   email VARCHAR(255) NOT NULL UNIQUE,
   password_hash VARCHAR(255),
   name VARCHAR(255) DEFAULT '',
-  role VARCHAR(20) DEFAULT 'user',
+  role VARCHAR(20) DEFAULT 'user' CHECK (role IN ('user', 'admin', 'viewer', 'platform_admin')),
   organization_id UUID DEFAULT NULL,
   language_preference VARCHAR(10) DEFAULT 'en',
   plan VARCHAR(20) DEFAULT 'free',
   team_id UUID DEFAULT NULL,
+  access_status VARCHAR(20) DEFAULT 'active' CHECK (access_status IN ('active', 'suspended', 'revoked')),
+  access_reason TEXT DEFAULT NULL,
+  access_changed_by UUID REFERENCES users(id),
+  access_changed_at TIMESTAMP WITH TIME ZONE DEFAULT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );

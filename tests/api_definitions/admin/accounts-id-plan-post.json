@@ -1,0 +1,46 @@
+{
+  "name": "POST /api/admin/accounts/:id/plan - Manual plan override",
+  "endpoint": "/api/admin/accounts/:id/plan",
+  "method": "POST",
+  "description": "Applies a comp/manual plan change. MUTATING, so the Authorization header carries the step-up token, NOT the login token. Delegates to SubscriptionService.createOrUpdateSubscription so the subscriptions row, users.plan and the current month's usage limit move together, then flags the row as a manual override. Returns a warning when the account has a live Stripe subscription, because a future webhook will overwrite the override.\n\nThe happy path raises the fixture account to 'solo'. Raising a limit cannot break other tests in the suite; lowering one could, so the downgrade path is left to the integration tests which own their own fixtures.",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "priority": 32,
+  "testCases": [
+    {
+      "name": "Override plan to solo",
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.step-up.response.data.token}}"
+      },
+      "pathParams": {
+        "id": "{{cache:auth.register.response.data.user.id}}"
+      },
+      "payload": {
+        "plan": "{{static:solo}}",
+        "reason": "{{dynamic:text}}"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "plan": "solo",
+          "is_manual_override": true
+        }
+      }
+    }
+  ],
+  "fieldEnums": {
+    "plan": ["free", "solo", "team", "scale"]
+  },
+  "statusTransitions": {
+    "free -> solo|team|scale": "POST /api/admin/accounts/:id/plan (manual override)",
+    "any -> free": "POST /api/admin/accounts/:id/plan with plan=free, or Stripe subscription cancellation"
+  },
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/admin/auth/login",
+    "POST /api/admin/auth/step-up"
+  ],
+  "taskId": "3b15766d-9782-4fec-84c9-1e861b861dae",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+}

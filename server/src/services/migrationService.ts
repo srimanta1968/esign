@@ -477,6 +477,30 @@ export class MigrationService {
       )
     `);
 
+    // Local mirror of Stripe invoices and charges, so the admin portal can show
+    // payment history without a live Stripe call per account view. Stripe
+    // remains the source of truth; this is a read model fed by webhooks.
+    await this.run('payments', `
+      CREATE TABLE IF NOT EXISTS payments (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        stripe_invoice_id VARCHAR(255) UNIQUE,
+        stripe_charge_id VARCHAR(255),
+        amount_cents INTEGER NOT NULL DEFAULT 0,
+        currency VARCHAR(10) NOT NULL DEFAULT 'usd',
+        status VARCHAR(20) NOT NULL DEFAULT 'pending'
+          CHECK (status IN ('paid', 'failed', 'refunded', 'pending')),
+        description TEXT DEFAULT '',
+        invoice_pdf_url TEXT DEFAULT NULL,
+        hosted_invoice_url TEXT DEFAULT NULL,
+        period_start TIMESTAMP WITH TIME ZONE,
+        period_end TIMESTAMP WITH TIME ZONE,
+        paid_at TIMESTAMP WITH TIME ZONE,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+      )
+    `);
+
     await this.run('usage_tracking', `
       CREATE TABLE IF NOT EXISTS usage_tracking (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -563,6 +587,13 @@ export class MigrationService {
       ['workflow_recipients', 'opened_at', 'TIMESTAMP WITH TIME ZONE DEFAULT NULL'],
       ['workflow_recipients', 'opened_ip', 'VARCHAR(45) DEFAULT NULL'],
       ['signature_fields', 'label', 'VARCHAR(100) DEFAULT NULL'],
+      // Manual (comp) plan overrides applied from the admin portal, kept
+      // distinguishable from a Stripe-backed subscription.
+      ['subscriptions', 'is_manual_override', 'BOOLEAN DEFAULT false'],
+      ['subscriptions', 'override_reason', 'TEXT DEFAULT NULL'],
+      ['subscriptions', 'override_by', 'UUID REFERENCES users(id)'],
+      ['subscriptions', 'override_at', 'TIMESTAMP WITH TIME ZONE DEFAULT NULL'],
+      ['subscriptions', 'trial_ends_at', 'TIMESTAMP WITH TIME ZONE DEFAULT NULL'],
     ];
 
     for (const [table, col, typedef] of dependentAlters) {
@@ -620,6 +651,10 @@ export class MigrationService {
       // Admin portal account console filters
       ['idx_users_access_status', 'users', 'access_status'],
       ['idx_users_role', 'users', 'role'],
+      // Payment history lookups, newest-first per account
+      ['idx_payments_user_id', 'payments', 'user_id'],
+      ['idx_payments_status', 'payments', 'status'],
+      ['idx_payments_created_at', 'payments', 'created_at'],
     ];
 
     for (const [name, table, col] of indexes) {

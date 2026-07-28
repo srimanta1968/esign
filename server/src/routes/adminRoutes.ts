@@ -4,6 +4,7 @@ import { authenticateToken } from '../middleware/auth';
 import { requirePlatformAdmin, PlatformAdminRequest } from '../middleware/requirePlatformAdmin';
 import { AdminAuthService, AdminTokenClaims } from '../services/adminAuthService';
 import { AdminAccountService } from '../services/adminAccountService';
+import { AdminBillingService } from '../services/adminBillingService';
 import { AuditService } from '../services/auditService';
 import { requireStepUp } from '../middleware/requireStepUp';
 import { getClientIp } from '../middleware/auditMiddleware';
@@ -18,6 +19,9 @@ const ACCESS_ACTIONS: Record<AccessAction, AccessStatus> = {
   revoke: 'revoked',
   restore: 'active',
 };
+
+/** Plans an override may target. Mirrors the subscriptions.plan CHECK. */
+const VALID_PLANS: string[] = ['free', 'solo', 'team', 'scale'];
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -343,8 +347,150 @@ router.post(
 );
 
 // ─────────────────────────────────────────────────────────────
+// BILLING
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * Subscription and payment history for one account. Read-only.
+ */
+router.get('/accounts/:id/billing', (async (req: PlatformAdminRequest, res: Response): Promise<void> => {
+  try {
+    if (!isUuid(req.params.id)) {
+      res.status(400).json({
+        success: false,
+        error: 'Invalid account id',
+      });
+      return;
+    }
+
+    const { page, limit } = req.query as Record<string, string>;
+
+    const billing = await AdminBillingService.getAccountBilling(
+      req.params.id,
+      page ? parseInt(page, 10) : 1,
+      limit ? parseInt(limit, 10) : undefined
+    );
+
+    res.json({
+      success: true,
+      data: billing,
+    });
+  } catch {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to load billing detail',
+    });
+  }
+}) as RequestHandler);
+
+/**
+ * Apply a manual (comp) plan override. Mutating — requires step-up.
+ */
+router.post(
+  '/accounts/:id/plan',
+  requireStepUp as RequestHandler,
+  (async (req: PlatformAdminRequest, res: Response): Promise<void> => {
+    try {
+      const { plan, reason } = req.body as { plan?: string; reason?: string };
+      const targetUserId = req.params.id;
+
+      if (!isUuid(targetUserId)) {
+        res.status(400).json({
+          success: false,
+          error: 'Invalid account id',
+        });
+        return;
+      }
+
+      if (!plan || !VALID_PLANS.includes(plan)) {
+        res.status(400).json({
+          success: false,
+          error: `plan must be one of ${VALID_PLANS.join(', ')}`,
+        });
+        return;
+      }
+
+      if (!reason || !reason.trim()) {
+        res.status(400).json({
+          success: false,
+          error: 'A reason is required and is recorded in the audit log',
+        });
+        return;
+      }
+
+      const account = await AdminAccountService.getAccountDetail(targetUserId);
+
+      if (!account) {
+        res.status(404).json({
+          success: false,
+          error: 'Account not found',
+        });
+        return;
+      }
+
+      const result = await AdminBillingService.overridePlan(
+        targetUserId,
+        plan,
+        reason.trim(),
+        req.adminId as string
+      );
+
+      await AuditService.logAdminAction({
+        adminId: req.adminId as string,
+        targetUserId,
+        action: 'admin.plan.override',
+        before: { plan: result.before },
+        after: { plan: result.after },
+        reason: reason.trim(),
+        ipAddress: getClientIp(req),
+        userAgent: req.headers['user-agent'] || '',
+      });
+
+      res.json({
+        success: true,
+        data: {
+          id: targetUserId,
+          plan: result.after,
+          previous_plan: result.before,
+          is_manual_override: true,
+          // A live Stripe subscription will overwrite this on its next
+          // webhook, so the operator needs to know the override is temporary.
+          warning: result.stripeSubscriptionId
+            ? 'This account has a live Stripe subscription. A future Stripe webhook will overwrite this manual override.'
+            : null,
+        },
+      });
+    } catch {
+      res.status(500).json({
+        success: false,
+        error: 'Failed to override plan',
+      });
+    }
+  }) as RequestHandler
+);
+
+// ─────────────────────────────────────────────────────────────
 // METRICS & ACTIVITY
 // ─────────────────────────────────────────────────────────────
+
+/**
+ * Revenue and billing-health figures. Read-only.
+ */
+router.get('/metrics/revenue', (async (_req: PlatformAdminRequest, res: Response): Promise<void> => {
+  try {
+    const metrics = await AdminBillingService.getRevenueMetrics();
+
+    res.json({
+      success: true,
+      data: metrics,
+    });
+  } catch {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to load revenue metrics',
+    });
+  }
+}) as RequestHandler);
 
 /**
  * Aggregate counts backing the portal dashboard.

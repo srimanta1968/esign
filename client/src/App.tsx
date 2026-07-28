@@ -43,6 +43,7 @@ import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import AdminAccountsPage from './pages/admin/AdminAccountsPage';
 import AdminAccountDetailPage from './pages/admin/AdminAccountDetailPage';
 import AdminActivityLogPage from './pages/admin/AdminActivityLogPage';
+import AdminRevenueDashboardPage from './pages/admin/AdminRevenueDashboardPage';
 
 function App() {
   return (
@@ -71,6 +72,7 @@ function App() {
                           <Route path="/" element={<AdminDashboardPage />} />
                           <Route path="/accounts" element={<AdminAccountsPage />} />
                           <Route path="/accounts/:id" element={<AdminAccountDetailPage />} />
+                          <Route path="/revenue" element={<AdminRevenueDashboardPage />} />
                           <Route path="/activity" element={<AdminActivityLogPage />} />
                         </Routes>
                       </AdminLayout>

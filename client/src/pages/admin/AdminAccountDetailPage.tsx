@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { AdminApiService } from '../../services/adminApi';
 import ConfirmActionDialog from '../../components/admin/ConfirmActionDialog';
+import AdminAccountBillingTab from './AdminAccountBillingTab';
 
 interface AccountDetail {
   account: {
@@ -243,7 +244,7 @@ function AdminAccountDetailPage() {
         </div>
       )}
 
-      {tab === 'Billing' && <PendingTab name="Subscription and payment history" />}
+      {tab === 'Billing' && id && <AdminAccountBillingTab accountId={id} />}
       {tab === 'Credits & Trial' && <PendingTab name="Credit ledger and trials" />}
       {tab === 'Messages' && <PendingTab name="Message history" />}
 

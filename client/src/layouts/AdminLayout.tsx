@@ -5,6 +5,7 @@ import { useAdminAuth } from '../context/AdminAuthContext';
 const NAV_ITEMS: { to: string; label: string }[] = [
   { to: '/admin-portal', label: 'Dashboard' },
   { to: '/admin-portal/accounts', label: 'Accounts' },
+  { to: '/admin-portal/revenue', label: 'Revenue' },
   { to: '/admin-portal/activity', label: 'Activity' },
 ];
 

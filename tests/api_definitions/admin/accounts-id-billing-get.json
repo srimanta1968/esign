@@ -1,0 +1,43 @@
+{
+  "name": "GET /api/admin/accounts/:id/billing - Subscription and payment history",
+  "endpoint": "/api/admin/accounts/:id/billing",
+  "method": "GET",
+  "description": "Subscription summary plus paginated payment history for one account. Reads the local payments mirror rather than calling Stripe per view. An account with no subscription and no payments returns the free-plan defaults and an empty list rather than an error. Manual (comp) overrides are flagged with the reason and the admin who applied them. Read-only, so no step-up elevation required.",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "priority": 30,
+  "testCases": [
+    {
+      "name": "Get billing for a registered account",
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.login.response.data.token}}"
+      },
+      "pathParams": {
+        "id": "{{cache:auth.register.response.data.user.id}}"
+      },
+      "queryParams": {
+        "page": 1,
+        "limit": 25
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "subscription": {
+            "plan": "free"
+          }
+        }
+      }
+    }
+  ],
+  "fieldEnums": {
+    "status": ["paid", "failed", "refunded", "pending"],
+    "plan": ["free", "solo", "team", "scale"]
+  },
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/admin/auth/login"
+  ],
+  "taskId": "84bec073-d4ff-4301-bd5f-22e50f2713df",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+}

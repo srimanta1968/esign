@@ -304,9 +304,34 @@ CREATE TABLE IF NOT EXISTS subscriptions (
   current_period_start TIMESTAMP WITH TIME ZONE,
   current_period_end TIMESTAMP WITH TIME ZONE,
   seats INTEGER DEFAULT 1,
+  is_manual_override BOOLEAN DEFAULT false,
+  override_reason TEXT DEFAULT NULL,
+  override_by UUID REFERENCES users(id),
+  override_at TIMESTAMP WITH TIME ZONE DEFAULT NULL,
+  trial_ends_at TIMESTAMP WITH TIME ZONE DEFAULT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   UNIQUE(user_id)
+);
+
+-- Local mirror of Stripe invoices/charges so payment history is queryable
+-- without a live Stripe call. Stripe remains the source of truth.
+CREATE TABLE IF NOT EXISTS payments (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  stripe_invoice_id VARCHAR(255) UNIQUE,
+  stripe_charge_id VARCHAR(255),
+  amount_cents INTEGER NOT NULL DEFAULT 0,
+  currency VARCHAR(10) NOT NULL DEFAULT 'usd',
+  status VARCHAR(20) NOT NULL DEFAULT 'pending' CHECK (status IN ('paid', 'failed', 'refunded', 'pending')),
+  description TEXT DEFAULT '',
+  invoice_pdf_url TEXT DEFAULT NULL,
+  hosted_invoice_url TEXT DEFAULT NULL,
+  period_start TIMESTAMP WITH TIME ZONE,
+  period_end TIMESTAMP WITH TIME ZONE,
+  paid_at TIMESTAMP WITH TIME ZONE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS usage_tracking (

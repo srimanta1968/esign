@@ -3,6 +3,7 @@ import { authenticateToken, AuthenticatedRequest } from '../middleware/auth';
 import { StripeService } from '../services/stripeService';
 import { SubscriptionService } from '../services/subscriptionService';
 import { DataService } from '../services/DataService';
+import { AdminBillingService } from '../services/adminBillingService';
 
 const router: Router = Router();
 
@@ -88,6 +89,43 @@ router.get('/subscription', authenticateToken as RequestHandler, (async (req: Au
 }) as RequestHandler);
 
 // POST /api/billing/webhook - Stripe webhook (NO auth, raw body)
+/**
+ * Mirror a Stripe invoice into the local payments table.
+ *
+ * Keyed on the invoice id, which is UNIQUE, so Stripe's webhook retries update
+ * the existing row rather than inserting a duplicate. Silently skips invoices
+ * whose customer we cannot attribute to an account — an unattributable invoice
+ * must not fail the webhook, or Stripe will retry it forever.
+ */
+async function mirrorInvoice(invoice: any, status: 'paid' | 'failed'): Promise<void> {
+  if (!invoice?.id || !invoice?.customer) {
+    return;
+  }
+
+  const userId = await AdminBillingService.findUserByStripeCustomer(invoice.customer as string);
+
+  if (!userId) {
+    return;
+  }
+
+  await AdminBillingService.upsertPayment({
+    userId,
+    stripeInvoiceId: invoice.id as string,
+    stripeChargeId: (invoice.charge as string) || null,
+    amountCents: invoice.amount_paid ?? invoice.amount_due ?? 0,
+    currency: invoice.currency || 'usd',
+    status,
+    description: invoice.description || invoice.lines?.data?.[0]?.description || 'Subscription',
+    invoicePdfUrl: invoice.invoice_pdf || null,
+    hostedInvoiceUrl: invoice.hosted_invoice_url || null,
+    periodStart: invoice.period_start ? new Date(invoice.period_start * 1000) : null,
+    periodEnd: invoice.period_end ? new Date(invoice.period_end * 1000) : null,
+    paidAt: status === 'paid' && invoice.status_transitions?.paid_at
+      ? new Date(invoice.status_transitions.paid_at * 1000)
+      : null,
+  });
+}
+
 router.post('/webhook', (async (req: Request, res: Response): Promise<void> => {
   try {
     if (!StripeService.isConfigured()) {
@@ -173,6 +211,12 @@ router.post('/webhook', (async (req: Request, res: Response): Promise<void> => {
         break;
       }
 
+      case 'invoice.paid': {
+        const invoice = event.data.object as any;
+        await mirrorInvoice(invoice, 'paid');
+        break;
+      }
+
       case 'invoice.payment_failed': {
         const invoice = event.data.object as any;
         const customerId = invoice.customer as string;
@@ -185,6 +229,26 @@ router.post('/webhook', (async (req: Request, res: Response): Promise<void> => {
             `UPDATE subscriptions SET status = 'past_due', updated_at = NOW() WHERE user_id = $1`,
             [sub.user_id]
           );
+        }
+        await mirrorInvoice(invoice, 'failed');
+        break;
+      }
+
+      case 'charge.refunded': {
+        const charge = event.data.object as any;
+        if (charge.invoice) {
+          const userId = await AdminBillingService.findUserByStripeCustomer(charge.customer as string);
+          if (userId) {
+            await AdminBillingService.upsertPayment({
+              userId,
+              stripeInvoiceId: charge.invoice as string,
+              stripeChargeId: charge.id as string,
+              amountCents: charge.amount_refunded ?? charge.amount ?? 0,
+              currency: charge.currency || 'usd',
+              status: 'refunded',
+              description: charge.description || 'Refund',
+            });
+          }
         }
         break;
       }

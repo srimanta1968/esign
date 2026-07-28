@@ -1,0 +1,29 @@
+{
+  "name": "GET /api/admin/metrics/revenue - Revenue and billing health",
+  "endpoint": "/api/admin/metrics/revenue",
+  "method": "GET",
+  "description": "Paid, failed and refunded totals over the trailing 30 days, plus counts of past-due accounts and manual plan overrides. Amounts are in minor units (cents) to avoid floating-point rounding. Aggregated with SQL FILTER rather than by fetching payment rows. Read-only, so no step-up elevation required.",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "priority": 34,
+  "testCases": [
+    {
+      "name": "Load revenue metrics",
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.login.response.data.token}}"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "accountsPastDue": "number"
+        }
+      }
+    }
+  ],
+  "dependsOn": [
+    "POST /api/admin/auth/login"
+  ],
+  "taskId": "1789d2dc-c935-4410-8ef1-0b7cdbbb058c",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+}

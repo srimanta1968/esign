@@ -31,13 +31,57 @@
     }
   ],
   "fieldEnums": {
-    "status": ["paid", "failed", "refunded", "pending"],
-    "plan": ["free", "solo", "team", "scale"]
+    "status": [
+      "paid",
+      "failed",
+      "refunded",
+      "pending"
+    ],
+    "plan": [
+      "free",
+      "solo",
+      "team",
+      "scale"
+    ]
   },
   "dependsOn": [
     "POST /api/auth/register",
     "POST /api/admin/auth/login"
   ],
   "taskId": "84bec073-d4ff-4301-bd5f-22e50f2713df",
-  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "0fac4905-ba67-4ce4-98b7-366c8c4c6c11",
+  "epicId": "5efe9e03-3c39-47f9-8080-94442bc51813",
+  "errorCases": [
+    {
+      "status": 400,
+      "code": "INVALID_ACCOUNT_ID",
+      "message": "Invalid account id",
+      "when": "The :id path parameter is not a valid UUID"
+    },
+    {
+      "status": 401,
+      "code": "AUTH_REQUIRED",
+      "message": "Access token required",
+      "when": "No Authorization header is present"
+    },
+    {
+      "status": 403,
+      "code": "NOT_PLATFORM_ADMIN",
+      "message": "Platform administrator access required",
+      "when": "The caller is authenticated but is not a platform_admin (a tenant-level admin is refused here)"
+    },
+    {
+      "status": 403,
+      "code": "ACCESS_REVOKED",
+      "message": "Platform administrator access has been revoked",
+      "when": "The admin's own access_status is suspended or revoked"
+    },
+    {
+      "status": 500,
+      "code": "BILLING_FAILED",
+      "message": "Failed to load billing detail",
+      "when": "Query error"
+    }
+  ]
 }

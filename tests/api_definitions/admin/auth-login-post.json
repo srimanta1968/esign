@@ -31,8 +31,36 @@
     "admin.auth.login.response.data.admin.id": "data.admin.id"
   },
   "fieldEnums": {
-    "role": ["user", "admin", "viewer", "guest", "platform_admin"]
+    "role": [
+      "user",
+      "admin",
+      "viewer",
+      "guest",
+      "platform_admin"
+    ]
   },
   "taskId": "1403c2d1-4165-465c-87e2-a252eb372727",
-  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "6fd745f1-d68e-480b-a180-390f5124760f",
+  "epicId": "5efe9e03-3c39-47f9-8080-94442bc51813",
+  "errorCases": [
+    {
+      "status": 400,
+      "code": "MISSING_CREDENTIALS",
+      "message": "Email and password are required",
+      "when": "email or password is absent from the body"
+    },
+    {
+      "status": 401,
+      "code": "INVALID_CREDENTIALS",
+      "message": "Invalid credentials",
+      "when": "Wrong password, unknown email, OR a valid non-platform_admin account — deliberately identical so staff accounts cannot be enumerated"
+    },
+    {
+      "status": 500,
+      "code": "LOGIN_FAILED",
+      "message": "Admin login failed",
+      "when": "Unexpected server error"
+    }
+  ]
 }

@@ -30,7 +30,12 @@
     }
   ],
   "fieldEnums": {
-    "plan": ["free", "solo", "team", "scale"]
+    "plan": [
+      "free",
+      "solo",
+      "team",
+      "scale"
+    ]
   },
   "statusTransitions": {
     "free -> solo|team|scale": "POST /api/admin/accounts/:id/plan (manual override)",
@@ -42,5 +47,45 @@
     "POST /api/admin/auth/step-up"
   ],
   "taskId": "3b15766d-9782-4fec-84c9-1e861b861dae",
-  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "0fac4905-ba67-4ce4-98b7-366c8c4c6c11",
+  "epicId": "5efe9e03-3c39-47f9-8080-94442bc51813",
+  "errorCases": [
+    {
+      "status": 400,
+      "code": "INVALID_ACCOUNT_ID",
+      "message": "Invalid account id",
+      "when": "The :id path parameter is not a valid UUID"
+    },
+    {
+      "status": 400,
+      "code": "INVALID_PLAN",
+      "message": "plan must be one of free, solo, team, scale",
+      "when": "plan is missing or not a recognised plan"
+    },
+    {
+      "status": 400,
+      "code": "REASON_REQUIRED",
+      "message": "A reason is required and is recorded in the audit log",
+      "when": "reason is missing or blank"
+    },
+    {
+      "status": 403,
+      "code": "STEP_UP_REQUIRED",
+      "message": "Step-up verification required for this action",
+      "when": "The Authorization header carries a plain admin session token rather than an elevated step-up token"
+    },
+    {
+      "status": 404,
+      "code": "ACCOUNT_NOT_FOUND",
+      "message": "Account not found",
+      "when": "No account exists with that id"
+    },
+    {
+      "status": 500,
+      "code": "OVERRIDE_FAILED",
+      "message": "Failed to override plan",
+      "when": "Unexpected server error"
+    }
+  ]
 }

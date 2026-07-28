@@ -32,5 +32,39 @@
     "POST /api/admin/auth/login"
   ],
   "taskId": "1403c2d1-4165-465c-87e2-a252eb372727",
-  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "6fd745f1-d68e-480b-a180-390f5124760f",
+  "epicId": "5efe9e03-3c39-47f9-8080-94442bc51813",
+  "errorCases": [
+    {
+      "status": 400,
+      "code": "PASSWORD_REQUIRED",
+      "message": "Password is required to complete step-up verification",
+      "when": "password is absent from the body"
+    },
+    {
+      "status": 401,
+      "code": "CONFIRMATION_FAILED",
+      "message": "Password confirmation failed",
+      "when": "The supplied password does not match"
+    },
+    {
+      "status": 403,
+      "code": "NOT_PLATFORM_ADMIN",
+      "message": "Platform administrator access required",
+      "when": "The caller is authenticated but is not a platform_admin (a tenant-level admin is refused here)"
+    },
+    {
+      "status": 403,
+      "code": "ACCESS_REVOKED",
+      "message": "Platform administrator access has been revoked",
+      "when": "The admin's own access_status is suspended or revoked"
+    },
+    {
+      "status": 500,
+      "code": "STEP_UP_FAILED",
+      "message": "Step-up verification failed",
+      "when": "Unexpected server error"
+    }
+  ]
 }

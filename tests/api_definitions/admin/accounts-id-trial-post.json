@@ -31,8 +31,17 @@
     }
   ],
   "fieldEnums": {
-    "plan": ["solo", "team", "scale"],
-    "status": ["active", "cancelled", "past_due", "trialing"]
+    "plan": [
+      "solo",
+      "team",
+      "scale"
+    ],
+    "status": [
+      "active",
+      "cancelled",
+      "past_due",
+      "trialing"
+    ]
   },
   "statusTransitions": {
     "active -> trialing": "POST /api/admin/accounts/:id/trial",
@@ -45,5 +54,57 @@
     "POST /api/admin/auth/step-up"
   ],
   "taskId": "a7d58441-99d4-4224-8b02-96306862b103",
-  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "dfbaba08-d363-41ab-8631-4af9139fc2cc",
+  "epicId": "5efe9e03-3c39-47f9-8080-94442bc51813",
+  "errorCases": [
+    {
+      "status": 400,
+      "code": "INVALID_ACCOUNT_ID",
+      "message": "Invalid account id",
+      "when": "The :id path parameter is not a valid UUID"
+    },
+    {
+      "status": 400,
+      "code": "INVALID_PLAN",
+      "message": "plan must be one of solo, team, scale",
+      "when": "plan is missing, unrecognised, or 'free' (trialling free is meaningless)"
+    },
+    {
+      "status": 400,
+      "code": "INVALID_DURATION",
+      "message": "duration_days must be a whole number between 1 and 180",
+      "when": "duration_days is absent, non-integer, below 1 or above 180"
+    },
+    {
+      "status": 400,
+      "code": "REASON_REQUIRED",
+      "message": "A reason is required and is recorded in the audit log",
+      "when": "reason is missing or blank"
+    },
+    {
+      "status": 403,
+      "code": "STEP_UP_REQUIRED",
+      "message": "Step-up verification required for this action",
+      "when": "The Authorization header carries a plain admin session token rather than an elevated step-up token"
+    },
+    {
+      "status": 404,
+      "code": "ACCOUNT_NOT_FOUND",
+      "message": "Account not found",
+      "when": "No account exists with that id"
+    },
+    {
+      "status": 409,
+      "code": "ACTIVE_PAID_SUBSCRIPTION",
+      "message": "This account already has an active paid subscription, so a trial would downgrade it on expiry",
+      "when": "The account has a live Stripe subscription with status active"
+    },
+    {
+      "status": 500,
+      "code": "TRIAL_FAILED",
+      "message": "Failed to grant trial",
+      "when": "Unexpected server error"
+    }
+  ]
 }

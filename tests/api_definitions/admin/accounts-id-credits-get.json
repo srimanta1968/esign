@@ -33,5 +33,39 @@
     "POST /api/admin/auth/login"
   ],
   "taskId": "f10af679-211c-4e37-9481-ff7b87515b1d",
-  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "dfbaba08-d363-41ab-8631-4af9139fc2cc",
+  "epicId": "5efe9e03-3c39-47f9-8080-94442bc51813",
+  "errorCases": [
+    {
+      "status": 400,
+      "code": "INVALID_ACCOUNT_ID",
+      "message": "Invalid account id",
+      "when": "The :id path parameter is not a valid UUID"
+    },
+    {
+      "status": 401,
+      "code": "AUTH_REQUIRED",
+      "message": "Access token required",
+      "when": "No Authorization header is present"
+    },
+    {
+      "status": 403,
+      "code": "NOT_PLATFORM_ADMIN",
+      "message": "Platform administrator access required",
+      "when": "The caller is authenticated but is not a platform_admin (a tenant-level admin is refused here)"
+    },
+    {
+      "status": 403,
+      "code": "ACCESS_REVOKED",
+      "message": "Platform administrator access has been revoked",
+      "when": "The admin's own access_status is suspended or revoked"
+    },
+    {
+      "status": 500,
+      "code": "CREDITS_FAILED",
+      "message": "Failed to load credits",
+      "when": "Query error"
+    }
+  ]
 }

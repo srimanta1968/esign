@@ -25,5 +25,33 @@
     "POST /api/admin/auth/login"
   ],
   "taskId": "1789d2dc-c935-4410-8ef1-0b7cdbbb058c",
-  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "6fd745f1-d68e-480b-a180-390f5124760f",
+  "epicId": "5efe9e03-3c39-47f9-8080-94442bc51813",
+  "errorCases": [
+    {
+      "status": 401,
+      "code": "AUTH_REQUIRED",
+      "message": "Access token required",
+      "when": "No Authorization header is present"
+    },
+    {
+      "status": 403,
+      "code": "NOT_PLATFORM_ADMIN",
+      "message": "Platform administrator access required",
+      "when": "The caller is authenticated but is not a platform_admin (a tenant-level admin is refused here)"
+    },
+    {
+      "status": 403,
+      "code": "ACCESS_REVOKED",
+      "message": "Platform administrator access has been revoked",
+      "when": "The admin's own access_status is suspended or revoked"
+    },
+    {
+      "status": 500,
+      "code": "METRICS_FAILED",
+      "message": "Failed to load revenue metrics",
+      "when": "Aggregation query error"
+    }
+  ]
 }

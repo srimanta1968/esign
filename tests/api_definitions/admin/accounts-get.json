@@ -29,13 +29,55 @@
     }
   ],
   "fieldEnums": {
-    "plan": ["free", "solo", "team", "scale"],
-    "access_status": ["active", "suspended", "revoked"],
-    "status": ["active", "cancelled", "past_due", "trialing"]
+    "plan": [
+      "free",
+      "solo",
+      "team",
+      "scale"
+    ],
+    "access_status": [
+      "active",
+      "suspended",
+      "revoked"
+    ],
+    "status": [
+      "active",
+      "cancelled",
+      "past_due",
+      "trialing"
+    ]
   },
   "dependsOn": [
     "POST /api/admin/auth/login"
   ],
   "taskId": "41a60c90-cede-4fbf-bb60-d32c59c8661a",
-  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "322fe5ad-9b19-4ed0-af34-9fb7e6a4f81b",
+  "epicId": "5efe9e03-3c39-47f9-8080-94442bc51813",
+  "errorCases": [
+    {
+      "status": 401,
+      "code": "AUTH_REQUIRED",
+      "message": "Access token required",
+      "when": "No Authorization header is present"
+    },
+    {
+      "status": 403,
+      "code": "NOT_PLATFORM_ADMIN",
+      "message": "Platform administrator access required",
+      "when": "The caller is authenticated but is not a platform_admin (a tenant-level admin is refused here)"
+    },
+    {
+      "status": 403,
+      "code": "ACCESS_REVOKED",
+      "message": "Platform administrator access has been revoked",
+      "when": "The admin's own access_status is suspended or revoked"
+    },
+    {
+      "status": 500,
+      "code": "LIST_FAILED",
+      "message": "Failed to list accounts",
+      "when": "Query error"
+    }
+  ]
 }

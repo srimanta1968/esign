@@ -29,8 +29,16 @@
     }
   ],
   "fieldEnums": {
-    "action": ["suspend", "revoke", "restore"],
-    "access_status": ["active", "suspended", "revoked"]
+    "action": [
+      "suspend",
+      "revoke",
+      "restore"
+    ],
+    "access_status": [
+      "active",
+      "suspended",
+      "revoked"
+    ]
   },
   "statusTransitions": {
     "active -> suspended": "POST /api/admin/accounts/:id/access with action=suspend",
@@ -44,5 +52,51 @@
     "POST /api/admin/auth/step-up"
   ],
   "taskId": "c4f27a63-d521-48bb-9c8c-bc6fdcf756c8",
-  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "322fe5ad-9b19-4ed0-af34-9fb7e6a4f81b",
+  "epicId": "5efe9e03-3c39-47f9-8080-94442bc51813",
+  "errorCases": [
+    {
+      "status": 400,
+      "code": "INVALID_ACCOUNT_ID",
+      "message": "Invalid account id",
+      "when": "The :id path parameter is not a valid UUID"
+    },
+    {
+      "status": 400,
+      "code": "INVALID_ACTION",
+      "message": "action must be one of 'suspend', 'revoke' or 'restore'",
+      "when": "action is missing or not a recognised value"
+    },
+    {
+      "status": 400,
+      "code": "REASON_REQUIRED",
+      "message": "A reason is required and is recorded in the audit log",
+      "when": "reason is missing or blank"
+    },
+    {
+      "status": 400,
+      "code": "SELF_ACCESS_CHANGE",
+      "message": "You cannot change your own account access",
+      "when": "The target account is the acting administrator"
+    },
+    {
+      "status": 403,
+      "code": "STEP_UP_REQUIRED",
+      "message": "Step-up verification required for this action",
+      "when": "The Authorization header carries a plain admin session token rather than an elevated step-up token"
+    },
+    {
+      "status": 404,
+      "code": "ACCOUNT_NOT_FOUND",
+      "message": "Account not found",
+      "when": "No account exists with that id"
+    },
+    {
+      "status": 500,
+      "code": "ACCESS_CHANGE_FAILED",
+      "message": "Failed to change account access",
+      "when": "Unexpected server error"
+    }
+  ]
 }

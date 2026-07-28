@@ -31,5 +31,33 @@
     "POST /api/admin/accounts/:id/trial"
   ],
   "taskId": "a7d58441-99d4-4224-8b02-96306862b103",
-  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "dfbaba08-d363-41ab-8631-4af9139fc2cc",
+  "epicId": "5efe9e03-3c39-47f9-8080-94442bc51813",
+  "errorCases": [
+    {
+      "status": 400,
+      "code": "INVALID_ACCOUNT_ID",
+      "message": "Invalid account id",
+      "when": "The :id path parameter is not a valid UUID"
+    },
+    {
+      "status": 403,
+      "code": "STEP_UP_REQUIRED",
+      "message": "Step-up verification required for this action",
+      "when": "The Authorization header carries a plain admin session token rather than an elevated step-up token"
+    },
+    {
+      "status": 404,
+      "code": "NO_ACTIVE_TRIAL",
+      "message": "This account has no active trial",
+      "when": "The subscription status is not 'trialing'"
+    },
+    {
+      "status": 500,
+      "code": "TRIAL_CANCEL_FAILED",
+      "message": "Failed to cancel trial",
+      "when": "Unexpected server error"
+    }
+  ]
 }

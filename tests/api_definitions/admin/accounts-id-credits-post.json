@@ -30,8 +30,16 @@
     }
   ],
   "fieldEnums": {
-    "action": ["grant", "revoke"],
-    "source": ["admin_grant", "admin_revoke", "consumption", "expiry"]
+    "action": [
+      "grant",
+      "revoke"
+    ],
+    "source": [
+      "admin_grant",
+      "admin_revoke",
+      "consumption",
+      "expiry"
+    ]
   },
   "dependsOn": [
     "POST /api/auth/register",
@@ -39,5 +47,57 @@
     "POST /api/admin/auth/step-up"
   ],
   "taskId": "f10af679-211c-4e37-9481-ff7b87515b1d",
-  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110",
+  "featureId": "dfbaba08-d363-41ab-8631-4af9139fc2cc",
+  "epicId": "5efe9e03-3c39-47f9-8080-94442bc51813",
+  "errorCases": [
+    {
+      "status": 400,
+      "code": "INVALID_ACCOUNT_ID",
+      "message": "Invalid account id",
+      "when": "The :id path parameter is not a valid UUID"
+    },
+    {
+      "status": 400,
+      "code": "INVALID_ACTION",
+      "message": "action must be 'grant' or 'revoke'",
+      "when": "action is missing or not a recognised value"
+    },
+    {
+      "status": 400,
+      "code": "REASON_REQUIRED",
+      "message": "A reason is required and is recorded in the audit log",
+      "when": "reason is missing or blank"
+    },
+    {
+      "status": 400,
+      "code": "INVALID_AMOUNT",
+      "message": "Credit amount must be a positive whole number",
+      "when": "amount is zero, negative or fractional"
+    },
+    {
+      "status": 400,
+      "code": "INVALID_EXPIRY",
+      "message": "expires_at must be a valid date",
+      "when": "expires_at is supplied but unparseable"
+    },
+    {
+      "status": 403,
+      "code": "STEP_UP_REQUIRED",
+      "message": "Step-up verification required for this action",
+      "when": "The Authorization header carries a plain admin session token rather than an elevated step-up token"
+    },
+    {
+      "status": 404,
+      "code": "ACCOUNT_NOT_FOUND",
+      "message": "Account not found",
+      "when": "No account exists with that id"
+    },
+    {
+      "status": 500,
+      "code": "CREDITS_CHANGE_FAILED",
+      "message": "Failed to change credits",
+      "when": "Unexpected server error"
+    }
+  ]
 }

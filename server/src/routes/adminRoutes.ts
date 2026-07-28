@@ -5,6 +5,7 @@ import { requirePlatformAdmin, PlatformAdminRequest } from '../middleware/requir
 import { AdminAuthService, AdminTokenClaims } from '../services/adminAuthService';
 import { AdminAccountService } from '../services/adminAccountService';
 import { AdminBillingService } from '../services/adminBillingService';
+import { CreditService } from '../services/creditService';
 import { AuditService } from '../services/auditService';
 import { requireStepUp } from '../middleware/requireStepUp';
 import { getClientIp } from '../middleware/auditMiddleware';
@@ -22,6 +23,12 @@ const ACCESS_ACTIONS: Record<AccessAction, AccessStatus> = {
 
 /** Plans an override may target. Mirrors the subscriptions.plan CHECK. */
 const VALID_PLANS: string[] = ['free', 'solo', 'team', 'scale'];
+
+/** Trialling 'free' is meaningless, so only paid plans are trialable. */
+const TRIALABLE_PLANS: string[] = ['solo', 'team', 'scale'];
+
+/** Upper bound on a comped trial, so a typo cannot grant one for years. */
+const MAX_TRIAL_DAYS = 180;
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -465,6 +472,282 @@ router.post(
         success: false,
         error: 'Failed to override plan',
       });
+    }
+  }) as RequestHandler
+);
+
+// ─────────────────────────────────────────────────────────────
+// CREDITS & TRIALS
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * Credit balance and ledger for one account. Read-only.
+ */
+router.get('/accounts/:id/credits', (async (req: PlatformAdminRequest, res: Response): Promise<void> => {
+  try {
+    if (!isUuid(req.params.id)) {
+      res.status(400).json({ success: false, error: 'Invalid account id' });
+      return;
+    }
+
+    const { page, limit } = req.query as Record<string, string>;
+
+    const [balance, ledger] = await Promise.all([
+      CreditService.getBalance(req.params.id),
+      CreditService.getLedger(
+        req.params.id,
+        page ? parseInt(page, 10) : 1,
+        limit ? parseInt(limit, 10) : undefined
+      ),
+    ]);
+
+    res.json({
+      success: true,
+      data: { balance, ledger },
+    });
+  } catch {
+    res.status(500).json({ success: false, error: 'Failed to load credits' });
+  }
+}) as RequestHandler);
+
+/**
+ * Grant or revoke bonus credits. Mutating — requires step-up.
+ */
+router.post(
+  '/accounts/:id/credits',
+  requireStepUp as RequestHandler,
+  (async (req: PlatformAdminRequest, res: Response): Promise<void> => {
+    try {
+      const { action, amount, reason, expires_at } = req.body as {
+        action?: string;
+        amount?: number | 'all';
+        reason?: string;
+        expires_at?: string;
+      };
+      const targetUserId = req.params.id;
+
+      if (!isUuid(targetUserId)) {
+        res.status(400).json({ success: false, error: 'Invalid account id' });
+        return;
+      }
+
+      if (action !== 'grant' && action !== 'revoke') {
+        res.status(400).json({ success: false, error: "action must be 'grant' or 'revoke'" });
+        return;
+      }
+
+      if (!reason || !reason.trim()) {
+        res.status(400).json({
+          success: false,
+          error: 'A reason is required and is recorded in the credit ledger',
+        });
+        return;
+      }
+
+      const account = await AdminAccountService.getAccountDetail(targetUserId);
+
+      if (!account) {
+        res.status(404).json({ success: false, error: 'Account not found' });
+        return;
+      }
+
+      if (action === 'grant') {
+        const expiresAt = expires_at ? new Date(expires_at) : null;
+
+        if (expiresAt && Number.isNaN(expiresAt.getTime())) {
+          res.status(400).json({ success: false, error: 'expires_at must be a valid date' });
+          return;
+        }
+
+        const result = await CreditService.grantCredits(
+          targetUserId,
+          Number(amount),
+          reason.trim(),
+          req.adminId as string,
+          expiresAt
+        );
+
+        await AuditService.logAdminAction({
+          adminId: req.adminId as string,
+          targetUserId,
+          action: 'admin.credits.grant',
+          before: { credit_balance: result.balance - Number(amount) },
+          after: { credit_balance: result.balance },
+          reason: reason.trim(),
+          ipAddress: getClientIp(req),
+          userAgent: req.headers['user-agent'] || '',
+        });
+
+        res.json({
+          success: true,
+          data: { action: 'grant', granted: Number(amount), balance: result.balance },
+        });
+        return;
+      }
+
+      const result = await CreditService.revokeCredits(
+        targetUserId,
+        amount === 'all' ? 'all' : Number(amount),
+        reason.trim(),
+        req.adminId as string
+      );
+
+      await AuditService.logAdminAction({
+        adminId: req.adminId as string,
+        targetUserId,
+        action: 'admin.credits.revoke',
+        before: { credit_balance: result.balance + result.revoked },
+        after: { credit_balance: result.balance },
+        reason: reason.trim(),
+        ipAddress: getClientIp(req),
+        userAgent: req.headers['user-agent'] || '',
+      });
+
+      res.json({
+        success: true,
+        data: { action: 'revoke', revoked: result.revoked, balance: result.balance },
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error && error.message.includes('positive whole number')) {
+        res.status(400).json({ success: false, error: error.message });
+        return;
+      }
+
+      res.status(500).json({ success: false, error: 'Failed to change credits' });
+    }
+  }) as RequestHandler
+);
+
+/**
+ * Start a time-limited trial. Mutating — requires step-up.
+ */
+router.post(
+  '/accounts/:id/trial',
+  requireStepUp as RequestHandler,
+  (async (req: PlatformAdminRequest, res: Response): Promise<void> => {
+    try {
+      const { plan, duration_days, reason } = req.body as {
+        plan?: string;
+        duration_days?: number;
+        reason?: string;
+      };
+      const targetUserId = req.params.id;
+
+      if (!isUuid(targetUserId)) {
+        res.status(400).json({ success: false, error: 'Invalid account id' });
+        return;
+      }
+
+      if (!plan || !TRIALABLE_PLANS.includes(plan)) {
+        res.status(400).json({
+          success: false,
+          error: `plan must be one of ${TRIALABLE_PLANS.join(', ')}`,
+        });
+        return;
+      }
+
+      const days = Number(duration_days);
+
+      if (!Number.isInteger(days) || days < 1 || days > MAX_TRIAL_DAYS) {
+        res.status(400).json({
+          success: false,
+          error: `duration_days must be a whole number between 1 and ${MAX_TRIAL_DAYS}`,
+        });
+        return;
+      }
+
+      if (!reason || !reason.trim()) {
+        res.status(400).json({
+          success: false,
+          error: 'A reason is required and is recorded in the audit log',
+        });
+        return;
+      }
+
+      const account = await AdminAccountService.getAccountDetail(targetUserId);
+
+      if (!account) {
+        res.status(404).json({ success: false, error: 'Account not found' });
+        return;
+      }
+
+      const result = await AdminBillingService.grantTrial(
+        targetUserId,
+        plan,
+        days,
+        reason.trim(),
+        req.adminId as string
+      );
+
+      await AuditService.logAdminAction({
+        adminId: req.adminId as string,
+        targetUserId,
+        action: 'admin.trial.grant',
+        before: { plan: account.account.plan, status: account.account.subscription_status },
+        after: { plan: result.plan, status: 'trialing', trial_ends_at: result.trialEndsAt.toISOString() },
+        reason: reason.trim(),
+        ipAddress: getClientIp(req),
+        userAgent: req.headers['user-agent'] || '',
+      });
+
+      res.json({
+        success: true,
+        data: {
+          plan: result.plan,
+          status: 'trialing',
+          trial_ends_at: result.trialEndsAt.toISOString(),
+        },
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error && error.message === 'Account has an active paid subscription') {
+        res.status(409).json({
+          success: false,
+          error: 'This account already has an active paid subscription, so a trial would downgrade it on expiry',
+        });
+        return;
+      }
+
+      res.status(500).json({ success: false, error: 'Failed to grant trial' });
+    }
+  }) as RequestHandler
+);
+
+/**
+ * Cancel a trial early. Mutating — requires step-up (DELETE is no exception).
+ */
+router.delete(
+  '/accounts/:id/trial',
+  requireStepUp as RequestHandler,
+  (async (req: PlatformAdminRequest, res: Response): Promise<void> => {
+    try {
+      const targetUserId = req.params.id;
+
+      if (!isUuid(targetUserId)) {
+        res.status(400).json({ success: false, error: 'Invalid account id' });
+        return;
+      }
+
+      const result = await AdminBillingService.cancelTrial(targetUserId);
+
+      await AuditService.logAdminAction({
+        adminId: req.adminId as string,
+        targetUserId,
+        action: 'admin.trial.cancel',
+        before: { status: 'trialing' },
+        after: { plan: result.plan, status: 'active' },
+        reason: 'Trial cancelled by administrator',
+        ipAddress: getClientIp(req),
+        userAgent: req.headers['user-agent'] || '',
+      });
+
+      res.json({ success: true, data: { plan: result.plan, status: 'active' } });
+    } catch (error: unknown) {
+      if (error instanceof Error && error.message === 'No active trial') {
+        res.status(404).json({ success: false, error: 'This account has no active trial' });
+        return;
+      }
+
+      res.status(500).json({ success: false, error: 'Failed to cancel trial' });
     }
   }) as RequestHandler
 );

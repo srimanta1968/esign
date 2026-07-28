@@ -1,0 +1,49 @@
+{
+  "name": "POST /api/admin/accounts/:id/trial - Grant a time-limited trial",
+  "endpoint": "/api/admin/accounts/:id/trial",
+  "method": "POST",
+  "description": "Starts a trial of a paid plan with an explicit expiry. MUTATING, so the Authorization header carries the step-up token. Sets subscriptions.status to 'trialing' (already permitted by the existing status CHECK) and trial_ends_at, and applies the trial plan's document limit immediately. The daily expiry job reverts the account to free once trial_ends_at passes. Rejected when the account already has a live paid Stripe subscription — trialing a plan they already pay for would downgrade them on expiry.",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "priority": 40,
+  "testCases": [
+    {
+      "name": "Grant a 14-day team trial",
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.step-up.response.data.token}}"
+      },
+      "pathParams": {
+        "id": "{{cache:auth.register.response.data.user.id}}"
+      },
+      "payload": {
+        "plan": "{{static:team}}",
+        "duration_days": 14,
+        "reason": "{{dynamic:text}}"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "plan": "team",
+          "status": "trialing"
+        }
+      }
+    }
+  ],
+  "fieldEnums": {
+    "plan": ["solo", "team", "scale"],
+    "status": ["active", "cancelled", "past_due", "trialing"]
+  },
+  "statusTransitions": {
+    "active -> trialing": "POST /api/admin/accounts/:id/trial",
+    "trialing -> active (free)": "DELETE /api/admin/accounts/:id/trial, or automatically once trial_ends_at passes",
+    "trialing -> active (paid)": "Stripe checkout completing during the trial"
+  },
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/admin/auth/login",
+    "POST /api/admin/auth/step-up"
+  ],
+  "taskId": "a7d58441-99d4-4224-8b02-96306862b103",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+}

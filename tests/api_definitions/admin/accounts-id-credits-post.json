@@ -1,0 +1,43 @@
+{
+  "name": "POST /api/admin/accounts/:id/credits - Grant or revoke bonus credits",
+  "endpoint": "/api/admin/accounts/:id/credits",
+  "method": "POST",
+  "description": "Grants or revokes bonus document credits. MUTATING, so the Authorization header carries the step-up token, NOT the login token. Credits sit on top of the plan quota — the monthly allowance is always consumed first and credits only apply once it is exhausted. Reason is mandatory and recorded in the append-only ledger with the acting admin. Revoking more than the balance clamps to zero rather than going negative.\n\nFor a team member the credits are held by the TEAM OWNER, because team usage is tracked against the owner's quota.",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "priority": 36,
+  "testCases": [
+    {
+      "name": "Grant 25 bonus credits",
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.step-up.response.data.token}}"
+      },
+      "pathParams": {
+        "id": "{{cache:auth.register.response.data.user.id}}"
+      },
+      "payload": {
+        "action": "{{static:grant}}",
+        "amount": 25,
+        "reason": "{{dynamic:text}}"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "action": "grant"
+        }
+      }
+    }
+  ],
+  "fieldEnums": {
+    "action": ["grant", "revoke"],
+    "source": ["admin_grant", "admin_revoke", "consumption", "expiry"]
+  },
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/admin/auth/login",
+    "POST /api/admin/auth/step-up"
+  ],
+  "taskId": "f10af679-211c-4e37-9481-ff7b87515b1d",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+}

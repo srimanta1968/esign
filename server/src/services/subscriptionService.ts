@@ -1,5 +1,6 @@
 import { DataService } from './DataService';
 import { PLAN_LIMITS } from './stripeService';
+import { CreditService } from './creditService';
 
 function currentMonthYear(): string {
   const now = new Date();
@@ -212,17 +213,31 @@ export class SubscriptionService {
    * Check whether the user is within their plan limit.
    * For team members, checks against the shared team quota.
    */
-  static async checkLimit(userId: string): Promise<{ allowed: boolean; used: number; limit: number; plan: string }> {
+  static async checkLimit(userId: string): Promise<{
+    allowed: boolean;
+    used: number;
+    limit: number;
+    plan: string;
+    credits: number;
+    /** True when the plan quota is spent and only credits are keeping this allowed. */
+    usingCredits: boolean;
+  }> {
     // Check if user belongs to a team
     const teamInfo = await SubscriptionService.getTeamInfo(userId);
 
+    const credits = await CreditService.getBalance(userId);
+
     if (teamInfo) {
       const usage = await SubscriptionService.getUsage(userId);
+      const withinQuota = usage.documents_sent < teamInfo.team_document_limit;
+
       return {
-        allowed: usage.documents_sent < teamInfo.team_document_limit,
+        allowed: withinQuota || credits > 0,
         used: usage.documents_sent,
         limit: teamInfo.team_document_limit,
         plan: teamInfo.team_plan,
+        credits,
+        usingCredits: !withinQuota && credits > 0,
       };
     }
 
@@ -234,12 +249,42 @@ export class SubscriptionService {
     const plan = sub?.plan || 'free';
     const limit = PLAN_LIMITS[plan] ?? PLAN_LIMITS.free;
     const usage = await SubscriptionService.getUsage(userId);
+    const withinQuota = usage.documents_sent < limit;
 
     return {
-      allowed: usage.documents_sent < limit,
+      allowed: withinQuota || credits > 0,
       used: usage.documents_sent,
       limit,
       plan,
+      credits,
+      usingCredits: !withinQuota && credits > 0,
     };
+  }
+
+  /**
+   * Record one document send against the account's allowance.
+   *
+   * The plan quota is ALWAYS consumed first; a credit is only spent once the
+   * quota is exhausted, so a grant never masks an undersized plan. Called only
+   * after a send has actually succeeded, so a failed send costs nothing.
+   */
+  static async consumeAllowance(userId: string): Promise<{ consumed: 'quota' | 'credit' | 'none' }> {
+    const check = await SubscriptionService.checkLimit(userId);
+
+    if (check.used < check.limit) {
+      await SubscriptionService.incrementUsage(userId);
+      return { consumed: 'quota' };
+    }
+
+    const spent = await CreditService.consumeCredit(userId);
+
+    if (spent) {
+      return { consumed: 'credit' };
+    }
+
+    // Over quota with no credit left. Still count the send so usage reporting
+    // stays truthful — the limit check refuses the next one.
+    await SubscriptionService.incrementUsage(userId);
+    return { consumed: 'none' };
   }
 }

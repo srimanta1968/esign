@@ -59,6 +59,8 @@ export interface AccountDetail {
     access_changed_by_email: string | null;
     organization_id: string | null;
     email_verified: boolean;
+    trial_ends_at: Date | null;
+    credit_balance: number;
   };
   usageHistory: { month_year: string; documents_sent: number; documents_limit: number }[];
   workflowCount: number;
@@ -184,6 +186,8 @@ export class AdminAccountService {
          COALESCE(u.email_verified, false) AS email_verified,
          COALESCE(s.plan, u.plan, 'free') AS plan,
          COALESCE(s.status, 'active') AS subscription_status,
+         s.trial_ends_at,
+         COALESCE(u.credit_balance, 0) AS credit_balance,
          COALESCE(ut.documents_sent, 0) AS documents_sent,
          COALESCE(ut.documents_limit, 0) AS documents_limit,
          u.team_id,

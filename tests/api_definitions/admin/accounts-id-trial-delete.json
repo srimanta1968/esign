@@ -1,0 +1,35 @@
+{
+  "name": "DELETE /api/admin/accounts/:id/trial - Cancel a trial early",
+  "endpoint": "/api/admin/accounts/:id/trial",
+  "method": "DELETE",
+  "description": "Ends an active trial immediately and reverts the account to the free plan. MUTATING, so the Authorization header carries the step-up token — auth is orthogonal to HTTP method, DELETE needs it too. Runs after the trial-grant test, which creates the trial this cancels.",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "priority": 42,
+  "testCases": [
+    {
+      "name": "Cancel the active trial",
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.step-up.response.data.token}}"
+      },
+      "pathParams": {
+        "id": "{{cache:auth.register.response.data.user.id}}"
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "plan": "free"
+        }
+      }
+    }
+  ],
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/admin/auth/login",
+    "POST /api/admin/auth/step-up",
+    "POST /api/admin/accounts/:id/trial"
+  ],
+  "taskId": "a7d58441-99d4-4224-8b02-96306862b103",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+}

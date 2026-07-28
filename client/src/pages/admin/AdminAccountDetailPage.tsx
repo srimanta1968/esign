@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { AdminApiService } from '../../services/adminApi';
 import ConfirmActionDialog from '../../components/admin/ConfirmActionDialog';
 import AdminAccountBillingTab from './AdminAccountBillingTab';
+import AdminAccountCreditsTab from './AdminAccountCreditsTab';
 
 interface AccountDetail {
   account: {
@@ -17,6 +18,8 @@ interface AccountDetail {
     email_verified: boolean;
     plan: string;
     subscription_status: string;
+    trial_ends_at: string | null;
+    credit_balance: number;
     documents_sent: number;
     documents_limit: number;
     team_name: string | null;
@@ -245,7 +248,16 @@ function AdminAccountDetailPage() {
       )}
 
       {tab === 'Billing' && id && <AdminAccountBillingTab accountId={id} />}
-      {tab === 'Credits & Trial' && <PendingTab name="Credit ledger and trials" />}
+      {tab === 'Credits & Trial' && id && (
+        <AdminAccountCreditsTab
+          accountId={id}
+          trial={{
+            status: account.subscription_status,
+            plan: account.plan,
+            trial_ends_at: account.trial_ends_at,
+          }}
+        />
+      )}
       {tab === 'Messages' && <PendingTab name="Message history" />}
 
       {pendingAction && (

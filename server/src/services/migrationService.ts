@@ -189,6 +189,8 @@ export class MigrationService {
       ['users', 'access_reason', 'TEXT DEFAULT NULL'],
       ['users', 'access_changed_by', 'UUID REFERENCES users(id)'],
       ['users', 'access_changed_at', 'TIMESTAMP WITH TIME ZONE DEFAULT NULL'],
+      // Denormalised running total of credit_ledger.delta for this user.
+      ['users', 'credit_balance', 'INTEGER DEFAULT 0'],
       // documents
       ['documents', 'original_name', "VARCHAR(255) DEFAULT ''"],
       ['documents', 'title', "VARCHAR(255) DEFAULT ''"],
@@ -501,6 +503,28 @@ export class MigrationService {
       )
     `);
 
+    // Append-only ledger of bonus document credits granted by platform admins.
+    // Never UPDATEd or DELETEd — a correction is a new offsetting row, so the
+    // history of who granted what and why stays intact.
+    await this.run('credit_ledger', `
+      CREATE TABLE IF NOT EXISTS credit_ledger (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        delta INTEGER NOT NULL,
+        balance_after INTEGER NOT NULL,
+        reason TEXT NOT NULL,
+        granted_by UUID REFERENCES users(id),
+        expires_at TIMESTAMP WITH TIME ZONE DEFAULT NULL,
+        source VARCHAR(20) NOT NULL
+          CHECK (source IN ('admin_grant', 'admin_revoke', 'consumption', 'expiry')),
+        related_document_id UUID DEFAULT NULL,
+        -- For an offsetting entry, the ledger row it offsets. Lets the expiry
+        -- job stay idempotent without ever mutating the original grant.
+        offsets_ledger_id UUID DEFAULT NULL,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+      )
+    `);
+
     await this.run('usage_tracking', `
       CREATE TABLE IF NOT EXISTS usage_tracking (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -594,6 +618,10 @@ export class MigrationService {
       ['subscriptions', 'override_by', 'UUID REFERENCES users(id)'],
       ['subscriptions', 'override_at', 'TIMESTAMP WITH TIME ZONE DEFAULT NULL'],
       ['subscriptions', 'trial_ends_at', 'TIMESTAMP WITH TIME ZONE DEFAULT NULL'],
+      // Also listed here, not only in the CREATE TABLE above: a database that
+      // created credit_ledger before this column existed would never receive it
+      // from CREATE TABLE IF NOT EXISTS.
+      ['credit_ledger', 'offsets_ledger_id', 'UUID DEFAULT NULL'],
     ];
 
     for (const [table, col, typedef] of dependentAlters) {
@@ -655,6 +683,9 @@ export class MigrationService {
       ['idx_payments_user_id', 'payments', 'user_id'],
       ['idx_payments_status', 'payments', 'status'],
       ['idx_payments_created_at', 'payments', 'created_at'],
+      ['idx_credit_ledger_user_id', 'credit_ledger', 'user_id'],
+      ['idx_credit_ledger_created_at', 'credit_ledger', 'created_at'],
+      ['idx_subscriptions_trial_ends_at', 'subscriptions', 'trial_ends_at'],
     ];
 
     for (const [name, table, col] of indexes) {

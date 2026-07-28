@@ -111,6 +111,25 @@ MigrationService.runMigrations().then(() => {
     setTimeout(runPruneTick, 60 * 1000);
     setInterval(runPruneTick, NOTIFICATION_PRUNE_MS);
   });
+
+  // Trial and credit expiry: revert trials whose end date has passed and claw
+  // back expired credit grants. Runs shortly after startup, then daily.
+  import('./jobs/expireTrialsAndCredits').then(({ expireTrialsAndCredits }) => {
+    const EXPIRY_TICK_MS = 24 * 60 * 60 * 1000;
+    const runExpiryTick = (): void => {
+      expireTrialsAndCredits()
+        .then(({ trialsExpired, grantsExpired, creditsExpired }) => {
+          if (trialsExpired || grantsExpired) {
+            console.log(
+              `Expiry sweep: trials=${trialsExpired} grants=${grantsExpired} credits=${creditsExpired}`
+            );
+          }
+        })
+        .catch(err => console.error('Trial/credit expiry error:', err?.message || err));
+    };
+    setTimeout(runExpiryTick, 90 * 1000);
+    setInterval(runExpiryTick, EXPIRY_TICK_MS);
+  });
 }).catch((err) => {
   console.error('Migration failed, starting server anyway:', err);
   app.listen(PORT, () => {

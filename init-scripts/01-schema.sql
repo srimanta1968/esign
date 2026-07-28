@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS users (
   access_reason TEXT DEFAULT NULL,
   access_changed_by UUID REFERENCES users(id),
   access_changed_at TIMESTAMP WITH TIME ZONE DEFAULT NULL,
+  credit_balance INTEGER DEFAULT 0,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -332,6 +333,24 @@ CREATE TABLE IF NOT EXISTS payments (
   paid_at TIMESTAMP WITH TIME ZONE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Append-only ledger of admin-granted bonus document credits. Corrections are
+-- new offsetting rows, never UPDATEs, so the grant history stays intact.
+CREATE TABLE IF NOT EXISTS credit_ledger (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  delta INTEGER NOT NULL,
+  balance_after INTEGER NOT NULL,
+  reason TEXT NOT NULL,
+  granted_by UUID REFERENCES users(id),
+  expires_at TIMESTAMP WITH TIME ZONE DEFAULT NULL,
+  source VARCHAR(20) NOT NULL CHECK (source IN ('admin_grant', 'admin_revoke', 'consumption', 'expiry')),
+  related_document_id UUID DEFAULT NULL,
+  -- For an offsetting entry, the ledger row it offsets. Lets the expiry job
+  -- stay idempotent without ever mutating the original grant.
+  offsets_ledger_id UUID DEFAULT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS usage_tracking (

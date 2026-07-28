@@ -163,6 +163,113 @@ export class AdminBillingService {
   }
 
   /**
+   * Start a time-limited trial of a paid plan.
+   *
+   * Applies the trial plan's limits immediately via SubscriptionService, then
+   * marks the subscription 'trialing' with an expiry. Refused when a live paid
+   * Stripe subscription exists — trialing a plan they already pay for would
+   * downgrade them to free when the trial expires.
+   */
+  static async grantTrial(
+    userId: string,
+    plan: string,
+    durationDays: number,
+    reason: string,
+    adminId: string
+  ): Promise<{ plan: string; trialEndsAt: Date }> {
+    const existing = await DataService.queryOne<{ stripe_subscription_id: string | null; status: string }>(
+      'SELECT stripe_subscription_id, status FROM subscriptions WHERE user_id = $1',
+      [userId]
+    );
+
+    if (existing?.stripe_subscription_id && existing.status === 'active') {
+      throw new Error('Account has an active paid subscription');
+    }
+
+    const trialEndsAt = new Date(Date.now() + durationDays * 24 * 60 * 60 * 1000);
+
+    await SubscriptionService.createOrUpdateSubscription(userId, plan, null, null, null, null);
+
+    await DataService.queryOne(
+      `UPDATE subscriptions
+       SET status = 'trialing', trial_ends_at = $1, is_manual_override = true,
+           override_reason = $2, override_by = $3, override_at = NOW(), updated_at = NOW()
+       WHERE user_id = $4
+       RETURNING id`,
+      [trialEndsAt, reason, adminId, userId]
+    );
+
+    return { plan, trialEndsAt };
+  }
+
+  /**
+   * End a trial and revert the account to free.
+   */
+  static async cancelTrial(userId: string): Promise<{ plan: string }> {
+    const existing = await DataService.queryOne<{ status: string }>(
+      'SELECT status FROM subscriptions WHERE user_id = $1',
+      [userId]
+    );
+
+    if (!existing || existing.status !== 'trialing') {
+      throw new Error('No active trial');
+    }
+
+    await SubscriptionService.createOrUpdateSubscription(userId, 'free', null, null, null, null);
+
+    await DataService.queryOne(
+      `UPDATE subscriptions
+       SET status = 'active', trial_ends_at = NULL, updated_at = NOW()
+       WHERE user_id = $1
+       RETURNING id`,
+      [userId]
+    );
+
+    return { plan: 'free' };
+  }
+
+  /**
+   * Revert every trial whose expiry has passed.
+   *
+   * Idempotent: once reverted, trial_ends_at is cleared and status is no
+   * longer 'trialing', so a second run in the same day finds nothing.
+   */
+  static async expireTrials(): Promise<{ expired: number; userIds: string[] }> {
+    const due = await DataService.queryAll<{ user_id: string }>(
+      `SELECT user_id FROM subscriptions
+       WHERE status = 'trialing' AND trial_ends_at IS NOT NULL AND trial_ends_at <= NOW()`
+    );
+
+    for (const row of due) {
+      await SubscriptionService.createOrUpdateSubscription(row.user_id, 'free', null, null, null, null);
+      await DataService.queryOne(
+        `UPDATE subscriptions
+         SET status = 'active', trial_ends_at = NULL, updated_at = NOW()
+         WHERE user_id = $1
+         RETURNING id`,
+        [row.user_id]
+      );
+    }
+
+    return { expired: due.length, userIds: due.map((row) => row.user_id) };
+  }
+
+  /**
+   * Trials expiring within the given number of days, for the dashboard.
+   */
+  static async getTrialsExpiringSoon(days = 7): Promise<number> {
+    const row = await DataService.queryOne<{ count: string }>(
+      `SELECT COUNT(*) AS count FROM subscriptions
+       WHERE status = 'trialing'
+         AND trial_ends_at IS NOT NULL
+         AND trial_ends_at BETWEEN NOW() AND NOW() + ($1 || ' days')::interval`,
+      [String(days)]
+    );
+
+    return parseInt(row?.count || '0', 10);
+  }
+
+  /**
    * Insert or update a payment mirrored from a Stripe event.
    *
    * Keyed on stripe_invoice_id, which is UNIQUE, so Stripe's webhook retries

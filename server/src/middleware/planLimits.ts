@@ -22,7 +22,7 @@ export const checkPlanLimit: RequestHandler = (async (
       return;
     }
 
-    const { allowed, used, limit, plan } = await SubscriptionService.checkLimit(userId);
+    const { allowed, used, limit, plan, credits } = await SubscriptionService.checkLimit(userId);
 
     if (!allowed) {
       res.status(403).json({
@@ -32,16 +32,19 @@ export const checkPlanLimit: RequestHandler = (async (
         current_plan: plan,
         usage: used,
         limit,
+        credits,
         upgrade_url: '/pricing',
       });
       return;
     }
 
-    // Call next and increment usage after response finishes
+    // Record the send after the response finishes. consumeAllowance spends the
+    // plan quota first and only falls through to an admin-granted credit once
+    // the quota is exhausted.
     res.on('finish', () => {
       if (res.statusCode >= 200 && res.statusCode < 300) {
-        SubscriptionService.incrementUsage(userId).catch((err) => {
-          console.error('Failed to increment usage:', err instanceof Error ? err.message : err);
+        SubscriptionService.consumeAllowance(userId).catch((err) => {
+          console.error('Failed to record usage:', err instanceof Error ? err.message : err);
         });
       }
     });

@@ -1,0 +1,37 @@
+{
+  "name": "GET /api/admin/accounts/:id/credits - Credit balance and ledger",
+  "endpoint": "/api/admin/accounts/:id/credits",
+  "method": "GET",
+  "description": "Current credit balance plus the paginated append-only ledger for one account, with the granting admin resolved on each entry. Read-only, so no step-up elevation required.",
+  "requiresAuth": true,
+  "expectedStatus": 200,
+  "priority": 38,
+  "testCases": [
+    {
+      "name": "Get credit balance and ledger",
+      "headers": {
+        "Authorization": "Bearer {{cache:admin.auth.login.response.data.token}}"
+      },
+      "pathParams": {
+        "id": "{{cache:auth.register.response.data.user.id}}"
+      },
+      "queryParams": {
+        "page": 1,
+        "limit": 50
+      },
+      "expectedStatus": 200,
+      "expectedResponse": {
+        "success": true,
+        "data": {
+          "balance": "number"
+        }
+      }
+    }
+  ],
+  "dependsOn": [
+    "POST /api/auth/register",
+    "POST /api/admin/auth/login"
+  ],
+  "taskId": "f10af679-211c-4e37-9481-ff7b87515b1d",
+  "sprintId": "729f9fe5-b963-4444-8b0e-f82bd555d110"
+}

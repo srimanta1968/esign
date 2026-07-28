@@ -30,6 +30,7 @@ export async function authenticateToken(
     res.status(401).json({
       success: false,
       error: 'Access token required',
+      code: 'AUTH_REQUIRED',
     });
     return;
   }
@@ -42,6 +43,7 @@ export async function authenticateToken(
     res.status(403).json({
       success: false,
       error: 'Invalid or expired token',
+      code: 'INVALID_TOKEN',
     });
     return;
   }

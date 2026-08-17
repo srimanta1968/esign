@@ -53,6 +53,37 @@ function sanitizeHeaderValue(value: string): string {
   return value.replace(/[\r\n]+/g, ' ').trim();
 }
 
+/**
+ * Derive a text/plain alternative from an HTML body.
+ *
+ * An HTML-only message is a long-standing spam signal — real correspondence is
+ * multipart/alternative, and filters score single-part HTML with one prominent
+ * link like the bulk mail it resembles. Anchor hrefs are kept inline so the
+ * signing URL survives in clients that show the text part.
+ */
+function htmlToPlainText(html: string): string {
+  return html
+    .replace(/<style[\s\S]*?<\/style>/gi, '')
+    .replace(/<head[\s\S]*?<\/head>/gi, '')
+    .replace(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi, '$2 ($1)')
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<(p|div|h[1-6]|tr|li)\b[^>]*>/gi, '\n')
+    .replace(/<\/(p|div|h[1-6]|tr|li)>/gi, '\n')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/[ \t]+/g, ' ')
+    .replace(/ *\n{3,} */g, '\n\n')
+    .split('\n')
+    .map((line) => line.trim())
+    .join('\n')
+    .trim();
+}
+
 // RFC 2606 reserved + common test fixture domains. Any send to one of these
 // hard-bounces and damages SendGrid sender reputation, so we drop the message
 // before it ever leaves the server. Catches stray test data that ends up in
@@ -127,9 +158,13 @@ export class EmailService {
           replyTo,
           subject,
           html: body,
-          headers: {
-            'X-Priority': '1',
-          },
+          // Every message previously carried X-Priority: 1, which rendered as
+          // "High importance" with a red exclamation in Outlook and Gmail.
+          // Automated mail flagging itself urgent is a spam heuristic in its own
+          // right, and signing requests were landing in Junk across Gmail,
+          // Outlook and Microsoft 365 tenants alike. Nothing here is urgent
+          // enough to justify the header, so it is gone.
+          text: htmlToPlainText(body),
           mailSettings: {
             bypassListManagement: { enable: false },
           },
@@ -174,6 +209,7 @@ export class EmailService {
         to,
         subject,
         html: body,
+        text: htmlToPlainText(body),
       });
 
       const previewUrl = nodemailer ? nodemailer.getTestMessageUrl(info) : false;

@@ -671,6 +671,27 @@ export class MigrationService {
       await this.run(`${table}.${col}`, `ALTER TABLE ${table} ADD COLUMN IF NOT EXISTS ${col} ${typedef}`);
     }
 
+    // Backfill notified_at for recipients of workflows that had already been
+    // started before the column existed. Their signing emails did go out, so
+    // leaving the column NULL would make the UI report "not sent yet" for every
+    // historical signer.
+    //
+    // Bounded by a fixed cutoff rather than just "IS NULL": these migrations
+    // re-run on every boot, and without the date a genuine send failure — which
+    // legitimately leaves notified_at NULL — would get stamped as delivered on
+    // the next restart. Nothing created after the cutoff is ever touched.
+    await this.run(
+      'workflow_recipients.notified_at.backfill',
+      `UPDATE workflow_recipients r
+          SET notified_at = w.created_at
+         FROM signing_workflows w
+        WHERE r.workflow_id = w.id
+          AND r.notified_at IS NULL
+          AND r.notify_error IS NULL
+          AND w.status <> 'draft'
+          AND w.created_at < TIMESTAMP WITH TIME ZONE '2026-08-17 17:00:00+00'`
+    );
+
     // Widen usage_tracking.month_year so it can also hold team-scoped keys
     // (`team-<uuid>`, ~41 chars) used by SubscriptionService for team plans.
     // The original VARCHAR(7) only fit the YYYY-MM format used by individual users.

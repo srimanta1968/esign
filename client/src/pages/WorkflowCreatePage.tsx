@@ -11,6 +11,13 @@ interface Document {
   file_path: string;
 }
 
+interface EmailCheck {
+  email: string;
+  severity: 'ok' | 'warning' | 'error';
+  reason: string;
+  suggestion?: string;
+}
+
 interface Recipient {
   email: string;
   name: string;
@@ -35,6 +42,12 @@ function WorkflowCreatePage() {
   const [selectedDocumentId, setSelectedDocumentId] = useState<string>(preselectedDocId);
   const [recipients, setRecipients] = useState<Recipient[]>([]);
   const [newEmail, setNewEmail] = useState<string>('');
+  const [validatingEmail, setValidatingEmail] = useState<boolean>(false);
+  const [recipientWarning, setRecipientWarning] = useState<string>('');
+  const [suggestedEmail, setSuggestedEmail] = useState<string>('');
+  // Which address the sender has already been warned about, so a second click
+  // on the same value means "yes, I meant that one".
+  const [lastWarnedEmail, setLastWarnedEmail] = useState<string>('');
   const [newName, setNewName] = useState<string>('');
   const [workflowType, setWorkflowType] = useState<'sequential' | 'parallel'>('sequential');
   const [signatureFields, setSignatureFields] = useState<SignatureField[]>([]);
@@ -59,7 +72,7 @@ function WorkflowCreatePage() {
     fetchDocuments();
   }, []);
 
-  const addRecipient = (): void => {
+  const addRecipient = async (): Promise<void> => {
     const trimmedEmail = newEmail.trim();
     const trimmedName = newName.trim();
     if (!trimmedEmail || !trimmedName) {
@@ -75,7 +88,44 @@ function WorkflowCreatePage() {
       setError('Recipient already added');
       return;
     }
+
+    // Check the domain can actually receive mail before the address is added.
+    // Catching a typo here costs one round trip; catching it after sending
+    // means a workflow that sits pending forever while the mail hard-bounces.
     setError('');
+    setRecipientWarning('');
+    setValidatingEmail(true);
+    try {
+      const response = await ApiService.post<{ results: EmailCheck[] }>(
+        '/workflows/validate-recipients',
+        { emails: [trimmedEmail] }
+      );
+      const check = response.success ? response.data?.results?.[0] : undefined;
+
+      if (check?.severity === 'error') {
+        setError(check.reason);
+        setSuggestedEmail(check.suggestion || '');
+        return;
+      }
+      if (check?.severity === 'warning') {
+        // Not fatal — the sender may know the address is right. Warn, offer the
+        // correction, and let a second click through.
+        setSuggestedEmail(check.suggestion || '');
+        if (lastWarnedEmail !== trimmedEmail) {
+          setLastWarnedEmail(trimmedEmail);
+          setRecipientWarning(`${check.reason} Click "Add" again to use this address anyway.`);
+          return;
+        }
+      }
+    } catch {
+      // A validation outage must not stop someone sending a document.
+    } finally {
+      setValidatingEmail(false);
+    }
+
+    setRecipientWarning('');
+    setSuggestedEmail('');
+    setLastWarnedEmail('');
     setRecipients([
       ...recipients,
       { email: trimmedEmail, name: trimmedName, order: recipients.length + 1 },
@@ -407,11 +457,32 @@ function WorkflowCreatePage() {
             <button
               type="button"
               onClick={addRecipient}
-              className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors text-sm whitespace-nowrap"
+              disabled={validatingEmail}
+              className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors text-sm whitespace-nowrap disabled:opacity-50"
             >
-              Add Recipient
+              {validatingEmail ? 'Checking…' : 'Add Recipient'}
             </button>
           </div>
+
+          {recipientWarning && (
+            <div className="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded-lg mb-3 text-sm">
+              {recipientWarning}
+            </div>
+          )}
+          {suggestedEmail && suggestedEmail !== newEmail && (
+            <button
+              type="button"
+              onClick={() => {
+                setNewEmail(suggestedEmail);
+                setSuggestedEmail('');
+                setRecipientWarning('');
+                setError('');
+              }}
+              className="text-indigo-600 hover:text-indigo-700 text-sm font-medium mb-3"
+            >
+              Use {suggestedEmail} instead
+            </button>
+          )}
 
           {/* Add Myself button */}
           {user && (

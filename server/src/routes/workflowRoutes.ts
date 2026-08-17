@@ -6,6 +6,7 @@ import { checkPlanLimit } from '../middleware/planLimits';
 import { DataService } from '../services/DataService';
 import { StorageService } from '../services/storageService';
 import { WorkflowService } from '../services/workflowService';
+import { EmailValidationService } from '../services/emailValidationService';
 // @governance-tracked — API definitions added for EP-247 Signature Workflow Engine
 
 /**
@@ -180,6 +181,52 @@ router.get('/:id/downloads', authenticateToken as RequestHandler, (async (req: A
     res.status(500).json({ success: false, error: 'Internal server error' });
   }
 }) as RequestHandler);
+
+/**
+ * Check recipient addresses before the workflow is created, so a typo is caught
+ * while the sender is still looking at the field rather than after the request
+ * has silently bounced.
+ */
+router.post(
+  '/validate-recipients',
+  authenticateToken as RequestHandler,
+  (async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    try {
+      const { emails } = req.body as { emails?: unknown };
+
+      if (!Array.isArray(emails) || emails.length === 0) {
+        res.status(400).json({
+          success: false,
+          error: 'emails must be a non-empty array',
+          code: 'INVALID_REQUEST',
+        });
+        return;
+      }
+      // Bounded so this cannot be used to drive arbitrary volumes of DNS
+      // lookups through the server.
+      if (emails.length > 50) {
+        res.status(400).json({
+          success: false,
+          error: 'At most 50 addresses can be validated at once',
+          code: 'TOO_MANY_EMAILS',
+        });
+        return;
+      }
+
+      const results = await EmailValidationService.validateMany(
+        emails.map((e) => (typeof e === 'string' ? e : ''))
+      );
+
+      res.status(200).json({ success: true, data: { results } });
+    } catch (error: unknown) {
+      console.error(
+        'Recipient validation error:',
+        error instanceof Error ? error.message : error
+      );
+      res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+  }) as RequestHandler
+);
 
 /**
  * Signing URL plus a ready-to-send draft for one recipient, so the creator can

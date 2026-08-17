@@ -1,5 +1,6 @@
 import { Response } from 'express';
 import { WorkflowService } from '../services/workflowService';
+import { EmailValidationService } from '../services/emailValidationService';
 import { AuthenticatedRequest } from '../middleware/auth';
 import { CreateWorkflowRequest, UpdateWorkflowRequest, ConfigureRemindersRequest } from '../types/workflow';
 
@@ -39,6 +40,25 @@ export class WorkflowController {
         signer_name: r.signer_name || r.name,
         signing_order: r.signing_order ?? r.order ?? 1,
       }));
+
+      // Refuse addresses that provably cannot receive the request. Letting one
+      // through leaves the workflow stuck at "pending" with nobody aware the
+      // mail hard-bounced, and hard bounces cost sending reputation for every
+      // other recipient. Warnings (likely typos, disposable domains) are
+      // surfaced in the UI before submit and do not block a deliberate sender.
+      const validations = await EmailValidationService.validateMany(
+        recipients.map((r: { signer_email: string }) => r.signer_email)
+      );
+      const invalid = validations.filter((v) => v.severity === 'error');
+      if (invalid.length > 0) {
+        res.status(400).json({
+          success: false,
+          error: invalid.map((v) => `${v.email}: ${v.reason}`).join('; '),
+          code: 'INVALID_RECIPIENT_EMAIL',
+          data: { invalid },
+        });
+        return;
+      }
 
       // Map client signature_fields to server fields format
       const fields = signature_fields?.map((f: any) => ({

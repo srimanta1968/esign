@@ -51,15 +51,55 @@ function deriveResourceId(path: string): string | null {
 }
 
 /**
- * Audit middleware that automatically logs ALL API requests.
+ * Reads worth keeping: someone obtaining document content, exporting an audit
+ * trail, or looking at the admin portal. Everything else a GET can do is
+ * navigation, and navigation is not an audit event.
+ */
+const AUDITABLE_READS: RegExp[] = [
+  /^\/api\/admin\//,
+  /\/file$/,
+  /\/document$/,
+  /\/downloads?$/,
+  /\/export$/,
+  /^\/api\/api-keys/,
+];
+
+/**
+ * Whether this request belongs in the audit log.
+ *
+ * Logging every request buried the trail: 95% of entries were GETs, and more
+ * than half were the workflow page polling /status every ten seconds. A single
+ * admin.plan.override sat under 4,794 page refreshes, which makes the log
+ * useless exactly when it is needed. Anything that changes state is always
+ * recorded; reads only when the read is itself the sensitive act.
+ */
+function shouldAudit(req: AuthenticatedRequest): boolean {
+  if (req.method !== 'GET' && req.method !== 'HEAD' && req.method !== 'OPTIONS') return true;
+  const path = req.path || '';
+  return AUDITABLE_READS.some((pattern) => pattern.test(path));
+}
+
+/**
+ * Audit middleware that logs state-changing requests and sensitive reads.
  * Must be placed AFTER auth middleware so userId is available.
  */
 export const auditMiddleware: RequestHandler = (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
+  if (!shouldAudit(req)) {
+    next();
+    return;
+  }
+
+  // Captured before routing: Express rewrites req.url to be router-relative
+  // while a sub-router handles the request, and the finish handler runs while
+  // it is still rewritten. That is why entries used to read "GET /<uuid>/status"
+  // with no hint of which resource they belonged to.
+  const fullPath = req.path;
+
   // Log after the response is sent to avoid blocking the request
   res.on('finish', () => {
-    const action = `${req.method} ${req.path}`;
-    const resourceType = deriveResourceType(req.path);
-    const resourceId = deriveResourceId(req.originalUrl || req.path);
+    const action = `${req.method} ${fullPath}`;
+    const resourceType = deriveResourceType(fullPath);
+    const resourceId = deriveResourceId(req.originalUrl || fullPath);
 
     AuditService.logEvent({
       userId: req.userId || null,
@@ -71,7 +111,7 @@ export const auditMiddleware: RequestHandler = (req: AuthenticatedRequest, res: 
       metadata: {
         statusCode: res.statusCode,
         method: req.method,
-        path: req.path,
+        path: fullPath,
         query: req.query,
         body: sanitizeBody(req.body),
       },

@@ -352,6 +352,26 @@ export class AuditService {
 
     return csvLines.join('\n');
   }
+
+  /**
+   * Drop audit entries past their retention window.
+   *
+   * Admin actions are exempt and kept indefinitely: plan overrides, credit
+   * grants and trial changes are the entries someone will actually need to
+   * answer for, and there are few enough of them that age is no reason to lose
+   * them. Signing evidence is not touched by this at all — it lives in
+   * workflow_history, which has its own lifecycle.
+   */
+  static async pruneOldEntries(retentionDays = 365): Promise<{ deleted: number }> {
+    const result = await DataService.query(
+      `DELETE FROM audit_logs
+        WHERE created_at < NOW() - ($1 || ' days')::interval
+          AND action NOT LIKE 'admin.%'`,
+      [String(retentionDays)]
+    );
+
+    return { deleted: result.rowCount ?? 0 };
+  }
 }
 
 export default AuditService;

@@ -129,6 +129,21 @@ MigrationService.runMigrations().then(() => {
     setInterval(runPruneTick, NOTIFICATION_PRUNE_MS);
   });
 
+  // Audit retention: drop non-admin audit entries older than a year. Runs
+  // shortly after startup, then daily.
+  import('./services/auditService').then(({ AuditService }) => {
+    const AUDIT_PRUNE_MS = 24 * 60 * 60 * 1000;
+    const runAuditPruneTick = (): void => {
+      AuditService.pruneOldEntries()
+        .then(({ deleted }) => {
+          if (deleted) console.log(`Audit prune: removed ${deleted} entries past retention`);
+        })
+        .catch(err => console.error('Audit prune error:', err?.message || err));
+    };
+    setTimeout(runAuditPruneTick, 120 * 1000);
+    setInterval(runAuditPruneTick, AUDIT_PRUNE_MS);
+  });
+
   // Trial and credit expiry: revert trials whose end date has passed and claw
   // back expired credit grants. Runs shortly after startup, then daily.
   import('./jobs/expireTrialsAndCredits').then(({ expireTrialsAndCredits }) => {

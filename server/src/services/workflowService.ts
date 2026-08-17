@@ -1580,6 +1580,7 @@ export class WorkflowService {
       notified_at: asIso(r.notified_at),
       notify_error: r.notify_error || null,
       opened_at: asIso(r.opened_at),
+      opened_confirmed_at: asIso(r.opened_confirmed_at),
     };
   }
 

@@ -11,6 +11,17 @@ import {
   SignatureField,
 } from '../types/workflow';
 
+/**
+ * How long after sending a signing request an "open" is assumed to be a mail
+ * security scanner rather than the recipient.
+ *
+ * Observed in production: Microsoft Defender Safe Links detonated signing links
+ * 25 and 33 seconds after delivery, from Microsoft-owned addresses, executing
+ * the page well enough to call /started. Two minutes clears that comfortably
+ * while still crediting a recipient who opens the mail a few minutes later.
+ */
+const SCANNER_GRACE_MS = 2 * 60 * 1000;
+
 interface SignatureSubmission {
   fieldId: string;
   signatureData: string; // base64
@@ -296,17 +307,47 @@ export class SigningController {
       const userAgent = req.headers['user-agent'] || 'unknown';
       const alreadyOpened = !!recipient.opened_at;
 
+      // Mail-security products fetch every link they deliver. Microsoft
+      // Defender Safe Links renders the page in a real headless browser, so it
+      // reaches this endpoint just like a person would — seconds after the mail
+      // was sent, from cloud infrastructure. Treating that as "the recipient
+      // read your document" is worse than reporting nothing, because it stops
+      // the sender chasing a signature that never reached a human.
+      //
+      // Anything arriving inside the scan window is recorded but not confirmed.
+      // The window under-reports — a genuinely fast recipient is not credited
+      // until they return — which is the safe direction to be wrong in.
+      const openedWithin = recipient.notified_at
+        ? Date.now() - new Date(recipient.notified_at).getTime()
+        : Number.MAX_SAFE_INTEGER;
+      const looksAutomated = openedWithin < SCANNER_GRACE_MS;
+
       if (!alreadyOpened) {
         await DataService.query(
-          'UPDATE workflow_recipients SET opened_at = NOW(), opened_ip = $1 WHERE id = $2 AND opened_at IS NULL',
-          [actorIp, signingToken.recipient_id]
+          'UPDATE workflow_recipients SET opened_at = NOW(), opened_ip = $1, opened_user_agent = $2 WHERE id = $3 AND opened_at IS NULL',
+          [actorIp, userAgent, signingToken.recipient_id]
         );
+      }
 
+      // Confirmation is independent of first-touch: the scanner opens first,
+      // then the recipient opens later and that later visit is what counts.
+      const alreadyConfirmed = !!recipient.opened_confirmed_at;
+      if (!looksAutomated && !alreadyConfirmed) {
+        await DataService.query(
+          'UPDATE workflow_recipients SET opened_confirmed_at = NOW() WHERE id = $1 AND opened_confirmed_at IS NULL',
+          [signingToken.recipient_id]
+        );
+      }
+
+      if (!alreadyOpened || (!looksAutomated && !alreadyConfirmed)) {
         await WorkflowService.logHistory(signingToken.workflow_id, 'opened', recipient.signer_email, actorIp, {
           user_agent: userAgent,
           recipient_id: recipient.id,
           signing_order: recipient.signing_order,
           timestamp: new Date().toISOString(),
+          // Kept on the history entry so an audit can tell a scan from a read.
+          likely_scanner: looksAutomated,
+          seconds_after_send: recipient.notified_at ? Math.round(openedWithin / 1000) : null,
         });
       }
 
@@ -316,6 +357,7 @@ export class SigningController {
           recipient_id: recipient.id,
           first_opened: !alreadyOpened,
           opened_at: alreadyOpened ? recipient.opened_at : new Date().toISOString(),
+          confirmed: !looksAutomated || alreadyConfirmed,
         },
       });
     } catch (error: any) {

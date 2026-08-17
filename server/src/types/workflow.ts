@@ -31,7 +31,11 @@ export interface WorkflowRecipient {
   notified_at?: Date | null;
   /** Why the last send attempt failed, if it did. */
   notify_error?: string | null;
+  /** Any fetch of the signing page, including mail-security scanners. */
   opened_at?: Date | null;
+  /** The subset of opens plausibly caused by a human — what the UI reports. */
+  opened_confirmed_at?: Date | null;
+  opened_user_agent?: string | null;
 }
 
 export interface SignatureField {
@@ -144,7 +148,11 @@ export interface WorkflowRecipientResponse {
    */
   notified_at: string | null;
   notify_error: string | null;
+  /** Raw first touch — may well be a mail-security scanner, so do not present
+   *  this as the recipient having read the document. */
   opened_at: string | null;
+  /** First touch attributable to a person; this is what the UI shows. */
+  opened_confirmed_at: string | null;
 }
 
 export interface SignatureFieldResponse {

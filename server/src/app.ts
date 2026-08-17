@@ -23,6 +23,12 @@ import { auditMiddleware } from './middleware/auditMiddleware';
 
 const app: Application = express();
 
+// nginx terminates TLS and proxies from localhost, so without this every
+// request reports 127.0.0.1 — audit trails, opened_ip and rate limiting were
+// all recording the proxy instead of the caller. One hop only: trusting the
+// whole X-Forwarded-For chain would let a client forge its own address.
+app.set('trust proxy', 1);
+
 // Middleware
 app.use(helmet());
 app.use(cors({

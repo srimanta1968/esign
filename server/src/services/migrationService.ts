@@ -653,6 +653,11 @@ export class MigrationService {
       // them and they haven't signed" from "we never managed to email them".
       ['workflow_recipients', 'notified_at', 'TIMESTAMP WITH TIME ZONE DEFAULT NULL'],
       ['workflow_recipients', 'notify_error', 'TEXT DEFAULT NULL'],
+      // opened_at records *any* fetch of the signing page, which mail-security
+      // scanners trigger seconds after delivery. opened_confirmed_at is the
+      // subset plausibly caused by a human, and is what the UI reports.
+      ['workflow_recipients', 'opened_confirmed_at', 'TIMESTAMP WITH TIME ZONE DEFAULT NULL'],
+      ['workflow_recipients', 'opened_user_agent', 'TEXT DEFAULT NULL'],
       ['signature_fields', 'label', 'VARCHAR(100) DEFAULT NULL'],
       // Manual (comp) plan overrides applied from the admin portal, kept
       // distinguishable from a Stripe-backed subscription.

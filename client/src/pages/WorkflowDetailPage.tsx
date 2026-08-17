@@ -23,7 +23,10 @@ interface Signer {
   /** Delivery state, separate from signing state — see deliveryBadge below. */
   notified_at?: string | null;
   notify_error?: string | null;
+  /** Any fetch of the signing page — often a mail-security scanner. */
   opened_at?: string | null;
+  /** Opens attributable to a person; only this drives the "opened" badge. */
+  opened_confirmed_at?: string | null;
 }
 
 interface ManualSendDetails {
@@ -162,6 +165,7 @@ function WorkflowDetailPage() {
             notified_at: r.notified_at ?? null,
             notify_error: r.notify_error ?? null,
             opened_at: r.opened_at ?? null,
+            opened_confirmed_at: r.opened_confirmed_at ?? null,
           })),
           signature_fields: (raw.signature_fields || raw.fields || []).map((f: any, i: number) => {
             // Find recipient_index from recipient_id
@@ -594,18 +598,23 @@ function WorkflowDetailPage() {
         detail: `Email failed: ${signer.notify_error}`,
       };
     }
-    if (signer.opened_at) {
+    if (signer.opened_confirmed_at) {
       return {
         label: 'opened',
         className: 'text-indigo-700 bg-indigo-50 border-indigo-200',
-        detail: `Opened ${new Date(signer.opened_at).toLocaleString()}`,
+        detail: `Opened ${new Date(signer.opened_confirmed_at).toLocaleString()}`,
       };
     }
     if (signer.notified_at) {
+      // An unconfirmed open is a mail-security scanner following the link, not
+      // the recipient reading it. Saying so is still useful — it is proof the
+      // message reached their mail system — but it must not read as "opened".
       return {
         label: 'email sent',
         className: 'text-blue-700 bg-blue-50 border-blue-200',
-        detail: `Sent ${new Date(signer.notified_at).toLocaleString()} — awaiting signature`,
+        detail: signer.opened_at
+          ? `Sent ${new Date(signer.notified_at).toLocaleString()} — reached their mail system (link checked by a security scanner, not yet opened by them)`
+          : `Sent ${new Date(signer.notified_at).toLocaleString()} — awaiting signature`,
       };
     }
     return {

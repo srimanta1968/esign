@@ -241,6 +241,38 @@ export class EmailService {
   }
 
   /**
+   * Send a password reset link.
+   */
+  static async sendPasswordReset(
+    to: string,
+    resetUrl: string,
+    expiresInMinutes: number
+  ): Promise<{ success: boolean; messageId?: string; previewUrl?: string | false; error?: string }> {
+    const htmlBody = `
+      <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
+        <h2 style="color: #1e293b; margin-bottom: 8px;">Reset your password</h2>
+        <p style="color: #64748b; margin-bottom: 24px;">
+          We received a request to reset the password for your eDocSign account.
+          Click the button below to choose a new one.
+        </p>
+        <div style="text-align: center; margin-bottom: 24px;">
+          <a href="${resetUrl}" style="display: inline-block; background: #4f46e5; color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 12px;">Reset Password</a>
+        </div>
+        <p style="color: #94a3b8; font-size: 13px;">
+          This link expires in ${expiresInMinutes} minutes and can only be used once.
+          If you didn't request a password reset, you can safely ignore this email — your password stays unchanged.
+        </p>
+        <p style="color: #94a3b8; font-size: 12px; word-break: break-all;">
+          If the button doesn't work, paste this link into your browser:<br />${resetUrl}
+        </p>
+        ${EMAIL_FOOTER}
+      </div>
+    `;
+
+    return EmailService.send(to, 'Reset your eDocSign password', htmlBody);
+  }
+
+  /**
    * Send a signature confirmation email.
    */
   static async sendSignatureConfirmation(

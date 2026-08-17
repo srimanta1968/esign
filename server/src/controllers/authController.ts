@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import crypto from 'crypto';
-import { AuthService } from '../services/authService';
+import { AuthService, PASSWORD_RESET_TTL_MINUTES } from '../services/authService';
 import { SessionService } from '../services/sessionService';
 import { EmailService } from '../services/emailService';
 import { DataService } from '../services/DataService';
@@ -285,11 +285,25 @@ export class AuthController {
         return;
       }
 
-      const result = await AuthService.forgotPassword(email);
+      const { message, resetToken } = await AuthService.forgotPassword(email);
 
+      // resetToken is empty when no account matches — the response stays identical
+      // either way so the endpoint can't be used to enumerate registered addresses.
+      if (resetToken) {
+        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+        const resetUrl = `${frontendUrl}/reset-password?token=${encodeURIComponent(resetToken)}`;
+        try {
+          await EmailService.sendPasswordReset(email, resetUrl, PASSWORD_RESET_TTL_MINUTES);
+        } catch (err) {
+          console.error('Failed to send password reset email:', err);
+        }
+      }
+
+      // Never return the token itself: anyone who knows an address could otherwise
+      // read it straight off this endpoint and take over the account.
       res.status(200).json({
         success: true,
-        data: result,
+        data: { message },
       });
     } catch (error: any) {
       console.error('Forgot password error:', error);

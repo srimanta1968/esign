@@ -7,6 +7,9 @@ import { User, UserResponse, UserRole, PasswordResetToken } from '../types/user'
 
 const jwtSignOptions: SignOptions = { expiresIn: config.jwt.expiresIn as any };
 
+/** How long a password reset link stays valid. Shared with the email that carries it. */
+export const PASSWORD_RESET_TTL_MINUTES = 60;
+
 /**
  * AuthService handles user authentication operations.
  */
@@ -189,7 +192,7 @@ export class AuthService {
       );
 
       const resetToken: string = crypto.randomBytes(32).toString('hex');
-      const expiresAt: Date = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+      const expiresAt: Date = new Date(Date.now() + PASSWORD_RESET_TTL_MINUTES * 60 * 1000);
 
       await DataService.queryOne<PasswordResetToken>(
         'INSERT INTO password_reset_tokens (user_id, token, expires_at) VALUES ($1, $2, $3) RETURNING id, user_id, token, expires_at',

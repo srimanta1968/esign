@@ -559,7 +559,10 @@ export class WorkflowService {
           <p>No further action is required on your part.</p>
           ${WorkflowService.buildProjexLightFooter()}
         </div>`;
-      await EmailService.send(recipient.signer_email, subject, htmlBody);
+      await EmailService.send(recipient.signer_email, subject, htmlBody, {
+        fromName: `${creatorEmail} via eDocSign`,
+        replyTo: { email: creatorEmail },
+      });
 
       // Create in-app notification for the recipient
       const user = await DataService.queryOne<{ id: string }>(
@@ -876,7 +879,13 @@ export class WorkflowService {
         expiresAt: signingToken.expires_at,
       });
 
-      await EmailService.send(recipient.signer_email, subject, htmlBody);
+      // Present the initiator as the sender ("Srimanta Jana via eDocSign") and
+      // route replies to them, while the From address stays on the
+      // authenticated domain so DMARC alignment holds.
+      await EmailService.send(recipient.signer_email, subject, htmlBody, {
+        fromName: `${senderName} via eDocSign`,
+        replyTo: senderEmail ? { email: senderEmail, name: senderName } : undefined,
+      });
     } catch (error) {
       console.error('Failed to send signing email:', error instanceof Error ? error.message : error);
     }

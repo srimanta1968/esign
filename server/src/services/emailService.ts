@@ -29,6 +29,30 @@ const REPLY_TO = {
   name: 'eDocSign Support',
 };
 
+/**
+ * Per-message overrides for sender presentation.
+ *
+ * Only the display name and Reply-To are overridable — never the From address
+ * itself. Sending as the initiator's own address (e.g. their @gmail.com) would
+ * break DMARC alignment, because the message is DKIM-signed with
+ * d=projexlight.com and carries a projexlight.com envelope sender. Domains
+ * publishing p=reject would bounce it outright, and SendGrid would refuse the
+ * unverified sender identity. The "<Name> via eDocSign" display name plus a
+ * Reply-To gives the recipient the same recognition without the spoof.
+ */
+export interface SendOptions {
+  /** Display name shown to the recipient, e.g. "Srimanta Jana via eDocSign". */
+  fromName?: string;
+  /** Where replies should land — normally the person who initiated the request. */
+  replyTo?: { email: string; name?: string };
+}
+
+// Display names and reply-to values originate from user-supplied profile data,
+// so strip CR/LF before they reach an email header.
+function sanitizeHeaderValue(value: string): string {
+  return value.replace(/[\r\n]+/g, ' ').trim();
+}
+
 // RFC 2606 reserved + common test fixture domains. Any send to one of these
 // hard-bounces and damages SendGrid sender reputation, so we drop the message
 // before it ever leaves the server. Catches stray test data that ends up in
@@ -67,7 +91,12 @@ export class EmailService {
   /**
    * Send an email via SendGrid (if configured), nodemailer (fallback), or console (dev).
    */
-  static async send(to: string, subject: string, body: string): Promise<{ success: boolean; messageId?: string; previewUrl?: string | false; error?: string }> {
+  static async send(
+    to: string,
+    subject: string,
+    body: string,
+    options: SendOptions = {}
+  ): Promise<{ success: boolean; messageId?: string; previewUrl?: string | false; error?: string }> {
     if (isBlockedRecipient(to)) {
       // Hard-bounce protection: reserved/test domains never accept mail.
       // Sending would damage SendGrid sender reputation, so we drop silently
@@ -76,13 +105,26 @@ export class EmailService {
       return { success: true, messageId: `skipped-${Date.now()}` };
     }
 
+    // The address always stays on the authenticated domain; only the display
+    // name changes, so DKIM/DMARC alignment holds regardless of who initiated.
+    const from = {
+      email: DEFAULT_FROM.email,
+      name: options.fromName ? sanitizeHeaderValue(options.fromName) : DEFAULT_FROM.name,
+    };
+    const replyTo = options.replyTo?.email
+      ? {
+          email: sanitizeHeaderValue(options.replyTo.email),
+          name: sanitizeHeaderValue(options.replyTo.name || options.fromName || REPLY_TO.name),
+        }
+      : REPLY_TO;
+
     // Try SendGrid first
     if (sgMail && process.env.SENDGRID_API_KEY) {
       try {
         const [response] = await sgMail.send({
           to,
-          from: DEFAULT_FROM,
-          replyTo: REPLY_TO,
+          from,
+          replyTo,
           subject,
           html: body,
           headers: {
@@ -127,7 +169,8 @@ export class EmailService {
       }
 
       const info = await transporter.sendMail({
-        from: DEFAULT_FROM,
+        from,
+        replyTo,
         to,
         subject,
         html: body,

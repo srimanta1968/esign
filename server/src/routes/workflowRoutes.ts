@@ -5,6 +5,7 @@ import { authenticateToken, AuthenticatedRequest } from '../middleware/auth';
 import { checkPlanLimit } from '../middleware/planLimits';
 import { DataService } from '../services/DataService';
 import { StorageService } from '../services/storageService';
+import { WorkflowService } from '../services/workflowService';
 // @governance-tracked — API definitions added for EP-247 Signature Workflow Engine
 
 /**
@@ -179,6 +180,58 @@ router.get('/:id/downloads', authenticateToken as RequestHandler, (async (req: A
     res.status(500).json({ success: false, error: 'Internal server error' });
   }
 }) as RequestHandler);
+
+/**
+ * Signing URL plus a ready-to-send draft for one recipient, so the creator can
+ * deliver the request by hand when automated mail is being filtered.
+ */
+router.get(
+  '/:id/recipients/:recipientId/manual-send',
+  authenticateToken as RequestHandler,
+  (async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    try {
+      if (!req.userId) {
+        res.status(401).json({ success: false, error: 'User not authenticated', code: 'AUTH_REQUIRED' });
+        return;
+      }
+
+      const details = await WorkflowService.getManualSendDetails(
+        req.params.id,
+        req.userId,
+        req.params.recipientId,
+        req.userEmail || '',
+        req.ip,
+        req.get('user-agent')
+      );
+
+      res.status(200).json({ success: true, data: details });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Failed to build signing link';
+      if (message.includes('not authorized') || message.includes('Workflow not found')) {
+        res.status(404).json({ success: false, error: message, code: 'WORKFLOW_NOT_FOUND' });
+        return;
+      }
+      if (message.includes('Recipient not found')) {
+        res.status(404).json({ success: false, error: message, code: 'RECIPIENT_NOT_FOUND' });
+        return;
+      }
+      if (message.includes('No valid signing link')) {
+        res.status(409).json({ success: false, error: message, code: 'TOKEN_UNAVAILABLE' });
+        return;
+      }
+      if (
+        message.includes('already') ||
+        message.includes('turn yet') ||
+        message.includes('only available for active')
+      ) {
+        res.status(400).json({ success: false, error: message, code: 'INVALID_STATE' });
+        return;
+      }
+      console.error('Manual send details error:', message);
+      res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+  }) as RequestHandler
+);
 
 router.get('/:id', authenticateToken as RequestHandler, workflowHandlers.getById);
 router.put('/:id', authenticateToken as RequestHandler, workflowHandlers.update);

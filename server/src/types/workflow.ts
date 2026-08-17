@@ -2,7 +2,7 @@ export type WorkflowType = 'parallel' | 'sequential';
 export type WorkflowStatus = 'draft' | 'active' | 'completed' | 'cancelled';
 export type RecipientStatus = 'pending' | 'signed' | 'declined';
 export type SignatureFieldType = 'signature' | 'initials' | 'date' | 'text';
-export type WorkflowAction = 'created' | 'started' | 'signed' | 'declined' | 'completed' | 'cancelled' | 'reminder_sent' | 'updated' | 'token_generated' | 'opened';
+export type WorkflowAction = 'created' | 'started' | 'signed' | 'declined' | 'completed' | 'cancelled' | 'reminder_sent' | 'updated' | 'token_generated' | 'opened' | 'signing_link_revealed';
 
 export interface SigningWorkflow {
   id: string;
@@ -27,6 +27,11 @@ export interface WorkflowRecipient {
   signing_order: number;
   status: RecipientStatus;
   signed_at: Date | null;
+  /** When the signing request was handed to the mail provider. */
+  notified_at?: Date | null;
+  /** Why the last send attempt failed, if it did. */
+  notify_error?: string | null;
+  opened_at?: Date | null;
 }
 
 export interface SignatureField {
@@ -132,6 +137,14 @@ export interface WorkflowRecipientResponse {
   signing_order: number;
   status: RecipientStatus;
   signed_at: string | null;
+  /**
+   * Delivery state, distinct from signing state. "pending" on its own cannot
+   * tell the creator whether the request was ever sent, so the UI reads these
+   * to show "sent" / "opened" / a send failure instead of a bare "pending".
+   */
+  notified_at: string | null;
+  notify_error: string | null;
+  opened_at: string | null;
 }
 
 export interface SignatureFieldResponse {

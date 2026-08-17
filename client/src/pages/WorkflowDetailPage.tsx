@@ -20,6 +20,19 @@ interface Signer {
   order: number;
   last_reminder_sent?: string | null;
   reminder_interval_hours?: number;
+  /** Delivery state, separate from signing state — see deliveryBadge below. */
+  notified_at?: string | null;
+  notify_error?: string | null;
+  opened_at?: string | null;
+}
+
+interface ManualSendDetails {
+  recipient_email: string;
+  recipient_name: string | null;
+  signing_url: string;
+  expires_at: string;
+  subject: string;
+  message: string;
 }
 
 interface Workflow {
@@ -89,6 +102,10 @@ function WorkflowDetailPage() {
 
   const [starting, setStarting] = useState<boolean>(false);
   const [sendingReminder, setSendingReminder] = useState<string>('');
+  const [manualSend, setManualSend] = useState<Record<string, ManualSendDetails>>({});
+  const [openManualSend, setOpenManualSend] = useState<string>('');
+  const [loadingManualSend, setLoadingManualSend] = useState<string>('');
+  const [copied, setCopied] = useState<string>('');
   const [showReminderPanel, setShowReminderPanel] = useState<boolean>(false);
   const [reminderIntervals, setReminderIntervals] = useState<Record<string, number>>({});
   const [savingReminders, setSavingReminders] = useState<boolean>(false);
@@ -142,6 +159,9 @@ function WorkflowDetailPage() {
             order: r.order ?? r.signing_order,
             last_reminder_sent: r.last_reminder_sent,
             reminder_interval_hours: r.reminder_interval_hours,
+            notified_at: r.notified_at ?? null,
+            notify_error: r.notify_error ?? null,
+            opened_at: r.opened_at ?? null,
           })),
           signature_fields: (raw.signature_fields || raw.fields || []).map((f: any, i: number) => {
             // Find recipient_index from recipient_id
@@ -330,6 +350,47 @@ function WorkflowDetailPage() {
     }
   };
 
+  /**
+   * Fetch a signer's link and draft message, for the rare case where the
+   * automated email is being filtered somewhere the signer never looks (a
+   * Microsoft 365 tenant quarantine is invisible from their Junk folder).
+   * Deliberately behind a quiet toggle: sending is automatic, and this must not
+   * read as a step the creator is expected to perform.
+   */
+  const loadManualSend = async (signerId: string): Promise<void> => {
+    if (manualSend[signerId]) {
+      setOpenManualSend(openManualSend === signerId ? '' : signerId);
+      return;
+    }
+    setLoadingManualSend(signerId);
+    setError('');
+    try {
+      const response = await ApiService.get<ManualSendDetails>(
+        `/workflows/${id}/recipients/${signerId}/manual-send`
+      );
+      if (response.success && response.data) {
+        setManualSend((prev) => ({ ...prev, [signerId]: response.data as ManualSendDetails }));
+        setOpenManualSend(signerId);
+      } else {
+        setError(response.error || 'Could not build a signing link for this signer');
+      }
+    } catch {
+      setError('Could not build a signing link for this signer');
+    } finally {
+      setLoadingManualSend('');
+    }
+  };
+
+  const copyToClipboard = async (text: string, what: string, signerId: string): Promise<void> => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(`${signerId}:${what}`);
+      setTimeout(() => setCopied(''), 2000);
+    } catch {
+      setError('Could not copy to the clipboard — select the text and copy manually.');
+    }
+  };
+
   const handleSaveReminders = async (): Promise<void> => {
     setSavingReminders(true);
     setError('');
@@ -506,12 +567,52 @@ function WorkflowDetailPage() {
     );
   }, [signFields, workflow, mySignerIndex, handleFieldClick]);
 
-  const signerStatusColor = (status: string): string => {
-    switch (status) {
-      case 'signed': return 'text-green-700 bg-green-50 border-green-200';
-      case 'declined': return 'text-red-700 bg-red-50 border-red-200';
-      default: return 'text-yellow-700 bg-yellow-50 border-yellow-200';
+  /**
+   * What to show on a signer's chip.
+   *
+   * "pending" on its own is ambiguous — it reads as though nothing happened,
+   * when in almost every case the request was emailed the moment the workflow
+   * started. Surfacing the delivery step separately keeps the automatic send
+   * visible, and reserves an alarming colour for the one case that genuinely
+   * needs the creator: the email never got out.
+   */
+  const deliveryBadge = (signer: Signer): { label: string; className: string; detail: string } => {
+    if (signer.status === 'signed') {
+      return {
+        label: 'signed',
+        className: 'text-green-700 bg-green-50 border-green-200',
+        detail: signer.signed_at ? `Signed ${new Date(signer.signed_at).toLocaleString()}` : '',
+      };
     }
+    if (signer.status === 'declined') {
+      return { label: 'declined', className: 'text-red-700 bg-red-50 border-red-200', detail: '' };
+    }
+    if (signer.notify_error) {
+      return {
+        label: 'not sent',
+        className: 'text-red-700 bg-red-50 border-red-200',
+        detail: `Email failed: ${signer.notify_error}`,
+      };
+    }
+    if (signer.opened_at) {
+      return {
+        label: 'opened',
+        className: 'text-indigo-700 bg-indigo-50 border-indigo-200',
+        detail: `Opened ${new Date(signer.opened_at).toLocaleString()}`,
+      };
+    }
+    if (signer.notified_at) {
+      return {
+        label: 'email sent',
+        className: 'text-blue-700 bg-blue-50 border-blue-200',
+        detail: `Sent ${new Date(signer.notified_at).toLocaleString()} — awaiting signature`,
+      };
+    }
+    return {
+      label: 'not sent yet',
+      className: 'text-yellow-700 bg-yellow-50 border-yellow-200',
+      detail: 'Start the workflow to email this signer',
+    };
   };
 
   const signerStatusIcon = (status: string): JSX.Element => {
@@ -1168,57 +1269,148 @@ function WorkflowDetailPage() {
         <div className="divide-y divide-gray-100">
           {workflow.signers
             .sort((a, b) => a.order - b.order)
-            .map((signer) => (
-              <div key={signer.id} className="p-4 flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-gray-600 font-semibold text-sm">
-                    {signer.order}
-                  </div>
-                  {signerStatusIcon(signer.status)}
-                  <div>
-                    <p className="font-medium text-gray-900">
-                      {signer.name || signer.email}
-                      {signer.email === user?.email && (
-                        <span className="ml-2 text-xs text-indigo-600 font-normal">(you)</span>
+            .map((signer) => {
+              const badge = deliveryBadge(signer);
+              const details = manualSend[signer.id];
+              const canSendManually =
+                workflow.status === 'active' &&
+                signer.status === 'pending' &&
+                signer.email !== user?.email;
+
+              return (
+                <div key={signer.id} className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-gray-600 font-semibold text-sm">
+                        {signer.order}
+                      </div>
+                      {signerStatusIcon(signer.status)}
+                      <div>
+                        <p className="font-medium text-gray-900">
+                          {signer.name || signer.email}
+                          {signer.email === user?.email && (
+                            <span className="ml-2 text-xs text-indigo-600 font-normal">(you)</span>
+                          )}
+                        </p>
+                        <p className="text-sm text-gray-500">{signer.email}</p>
+                        {badge.detail && (
+                          <p className={`text-xs mt-0.5 ${signer.notify_error ? 'text-red-500' : 'text-gray-400'}`}>
+                            {badge.detail}
+                          </p>
+                        )}
+                        {signer.last_reminder_sent && (
+                          <p className="text-xs text-gray-400">
+                            Last reminder: {new Date(signer.last_reminder_sent).toLocaleString()}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium border ${badge.className}`}>
+                        {badge.label}
+                      </span>
+                      {workflow.status === 'active' && signer.status === 'pending' && signer.email === user?.email && (
+                        <button
+                          onClick={() => setShowSigningView(true)}
+                          className="bg-green-600 text-white px-3 py-1 rounded-lg text-xs font-medium hover:bg-green-700 transition-colors"
+                        >
+                          Sign Now
+                        </button>
                       )}
-                    </p>
-                    <p className="text-sm text-gray-500">{signer.email}</p>
-                    {signer.signed_at && (
-                      <p className="text-xs text-gray-400 mt-0.5">
-                        Signed {new Date(signer.signed_at).toLocaleString()}
-                      </p>
-                    )}
-                    {signer.last_reminder_sent && (
-                      <p className="text-xs text-gray-400">
-                        Last reminder: {new Date(signer.last_reminder_sent).toLocaleString()}
-                      </p>
-                    )}
+                      {canSendManually && (
+                        <button
+                          onClick={() => handleSendReminder(signer.id)}
+                          disabled={sendingReminder === signer.id}
+                          className="text-yellow-600 hover:text-yellow-700 text-xs font-medium"
+                        >
+                          {sendingReminder === signer.id ? 'Sending...' : 'Remind'}
+                        </button>
+                      )}
+                      {canSendManually && (
+                        <button
+                          onClick={() => loadManualSend(signer.id)}
+                          disabled={loadingManualSend === signer.id}
+                          title="Didn't receive the email? Get a link to send yourself"
+                          aria-label="Send this request manually"
+                          className="text-gray-400 hover:text-gray-600 disabled:opacity-50 transition-colors"
+                        >
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M13.828 10.172a4 4 0 010 5.656l-3 3a4 4 0 01-5.656-5.656l1.5-1.5m6.328-6.328l1.5-1.5a4 4 0 015.656 5.656l-3 3a4 4 0 01-5.656 0"
+                            />
+                          </svg>
+                        </button>
+                      )}
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium border ${signerStatusColor(signer.status)}`}>
-                    {signer.status}
-                  </span>
-                  {workflow.status === 'active' && signer.status === 'pending' && signer.email === user?.email && (
-                    <button
-                      onClick={() => setShowSigningView(true)}
-                      className="bg-green-600 text-white px-3 py-1 rounded-lg text-xs font-medium hover:bg-green-700 transition-colors"
-                    >
-                      Sign Now
-                    </button>
+
+                  {/* Manual send fallback — only rendered once explicitly opened */}
+                  {openManualSend === signer.id && details && (
+                    <div className="mt-3 ml-16 bg-gray-50 border border-gray-200 rounded-lg p-4">
+                      <div className="flex items-start justify-between gap-4 mb-3">
+                        <p className="text-xs text-gray-500">
+                          The signing request was emailed automatically. Use this only if{' '}
+                          {signer.name || signer.email} can't find it — some corporate mail systems
+                          quarantine messages where the recipient can't see them.
+                        </p>
+                        <button
+                          onClick={() => setOpenManualSend('')}
+                          className="text-gray-400 hover:text-gray-600 text-xs shrink-0"
+                        >
+                          Close
+                        </button>
+                      </div>
+
+                      <label className="block text-xs font-medium text-gray-700 mb-1">
+                        Signing link (unique to this signer)
+                      </label>
+                      <div className="flex gap-2 mb-3">
+                        <input
+                          readOnly
+                          value={details.signing_url}
+                          onFocus={(e) => e.currentTarget.select()}
+                          className="flex-1 px-3 py-1.5 border border-gray-300 rounded-lg text-xs bg-white text-gray-600 font-mono"
+                        />
+                        <button
+                          onClick={() => copyToClipboard(details.signing_url, 'link', signer.id)}
+                          className="bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-gray-100 transition-colors shrink-0"
+                        >
+                          {copied === `${signer.id}:link` ? 'Copied' : 'Copy link'}
+                        </button>
+                      </div>
+
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="block text-xs font-medium text-gray-700">
+                          Ready-to-send message
+                        </label>
+                        <button
+                          onClick={() =>
+                            copyToClipboard(
+                              `Subject: ${details.subject}\n\n${details.message}`,
+                              'message',
+                              signer.id
+                            )
+                          }
+                          className="bg-white border border-gray-300 text-gray-700 px-3 py-1 rounded-lg text-xs font-medium hover:bg-gray-100 transition-colors"
+                        >
+                          {copied === `${signer.id}:message` ? 'Copied' : 'Copy message'}
+                        </button>
+                      </div>
+                      <pre className="bg-white border border-gray-200 rounded-lg p-3 text-xs text-gray-600 whitespace-pre-wrap font-sans max-h-40 overflow-y-auto">
+                        {`Subject: ${details.subject}\n\n${details.message}`}
+                      </pre>
+                      <p className="text-xs text-gray-400 mt-2">
+                        Link expires {new Date(details.expires_at).toLocaleString()}. Anyone holding
+                        it can sign as {details.recipient_email}, so send it only to them.
+                      </p>
+                    </div>
                   )}
-                  {workflow.status === 'active' && signer.status === 'pending' && signer.email !== user?.email && (
-                    <button
-                      onClick={() => handleSendReminder(signer.id)}
-                      disabled={sendingReminder === signer.id}
-                      className="text-yellow-600 hover:text-yellow-700 text-xs font-medium"
-                    >
-                      {sendingReminder === signer.id ? 'Sending...' : 'Remind'}
-                    </button>
-                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
         </div>
       </div>
 

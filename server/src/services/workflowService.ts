@@ -672,6 +672,139 @@ export class WorkflowService {
   }
 
   /**
+   * Return everything the creator needs to deliver a signing request by hand.
+   *
+   * Automated mail can be filtered somewhere the recipient never looks — a
+   * Microsoft 365 tenant quarantine is invisible from their Junk folder — which
+   * leaves a signature blocked with no way to tell. This hands the creator the
+   * signing URL plus a ready-to-send subject and body so they can forward it
+   * from a mailbox the recipient already trusts.
+   *
+   * Only the workflow's creator can call this, and every disclosure is written
+   * to the workflow history: whoever holds this URL can sign as that recipient,
+   * so it must never become a quiet side channel.
+   */
+  static async getManualSendDetails(
+    workflowId: string,
+    creatorId: string,
+    recipientId: string,
+    actorEmail: string,
+    actorIp?: string,
+    userAgent?: string
+  ): Promise<{
+    recipient_email: string;
+    recipient_name: string | null;
+    signing_url: string;
+    expires_at: string;
+    subject: string;
+    message: string;
+  }> {
+    const workflow = await DataService.queryOne<SigningWorkflow>(
+      'SELECT * FROM signing_workflows WHERE id = $1 AND creator_id = $2',
+      [workflowId, creatorId]
+    );
+    if (!workflow) {
+      throw new Error('Workflow not found or not authorized');
+    }
+    if (workflow.status !== 'active') {
+      throw new Error('Signing links are only available for active workflows');
+    }
+
+    const recipient = await DataService.queryOne<WorkflowRecipient>(
+      'SELECT * FROM workflow_recipients WHERE workflow_id = $1 AND id = $2',
+      [workflowId, recipientId]
+    );
+    if (!recipient) {
+      throw new Error('Recipient not found');
+    }
+    if (recipient.status !== 'pending') {
+      throw new Error(`${recipient.signer_email} has already ${recipient.status} this document`);
+    }
+
+    // Sequential workflows hand out one link at a time; surfacing a later
+    // recipient's URL would let them sign out of turn, which signAsRecipient
+    // would then reject anyway.
+    if (workflow.workflow_type === 'sequential') {
+      const earlierPending = await DataService.queryOne<{ signer_email: string }>(
+        `SELECT signer_email FROM workflow_recipients
+         WHERE workflow_id = $1 AND signing_order < $2 AND status = 'pending'
+         ORDER BY signing_order ASC LIMIT 1`,
+        [workflowId, recipient.signing_order]
+      );
+      if (earlierPending) {
+        throw new Error(
+          `It is not ${recipient.signer_email}'s turn yet — waiting on ${earlierPending.signer_email}`
+        );
+      }
+    }
+
+    const signingToken = await SigningTokenService.getTokenByRecipient(workflowId, recipient.id);
+    if (!signingToken) {
+      throw new Error(
+        'No valid signing link exists for this recipient — the token has expired or been used. Send a reminder to issue a fresh one.'
+      );
+    }
+
+    const [document, sender, fieldCount] = await Promise.all([
+      DataService.queryOne<{ original_name: string }>(
+        'SELECT original_name FROM documents WHERE id = $1',
+        [workflow.document_id]
+      ),
+      DataService.queryOne<{ name: string; email: string }>(
+        'SELECT name, email FROM users WHERE id = $1',
+        [workflow.creator_id]
+      ),
+      DataService.queryOne<{ count: string }>(
+        'SELECT COUNT(*) as count FROM signature_fields WHERE workflow_id = $1 AND recipient_id = $2',
+        [workflowId, recipient.id]
+      ),
+    ]);
+
+    const documentName = document?.original_name || 'Document';
+    const senderName = sender?.name || sender?.email || 'Someone';
+    const fieldsToSign = parseInt(fieldCount?.count || '0', 10);
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const signingUrl = `${frontendUrl}/sign-document/${signingToken.token}`;
+    const expiresAt =
+      signingToken.expires_at instanceof Date
+        ? signingToken.expires_at.toISOString()
+        : String(signingToken.expires_at);
+
+    // Plain text, because this gets pasted into whatever the creator uses to
+    // write mail. Keep the link on its own line so clients auto-link it.
+    const greeting = recipient.signer_name ? `Hi ${recipient.signer_name},` : 'Hi,';
+    const fieldLabel = fieldsToSign === 1 ? '1 field' : `${fieldsToSign} fields`;
+    const message = [
+      greeting,
+      '',
+      `Please sign "${documentName}" using the secure link below.`,
+      '',
+      signingUrl,
+      '',
+      `There ${fieldsToSign === 1 ? 'is' : 'are'} ${fieldLabel} to complete, and the link expires on ${new Date(expiresAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}.`,
+      'The link is unique to you — please do not forward it.',
+      '',
+      'Thanks,',
+      senderName,
+    ].join('\n');
+
+    await WorkflowService.logHistory(workflowId, 'signing_link_revealed', actorEmail, actorIp || '', {
+      user_agent: userAgent,
+      recipient_email: recipient.signer_email,
+      recipient_id: recipient.id,
+    });
+
+    return {
+      recipient_email: recipient.signer_email,
+      recipient_name: recipient.signer_name || null,
+      signing_url: signingUrl,
+      expires_at: expiresAt,
+      subject: `${senderName} has requested your signature on "${documentName}"`,
+      message,
+    };
+  }
+
+  /**
    * Configure reminder intervals for workflow recipients.
    */
   static async configureReminders(
@@ -882,12 +1015,49 @@ export class WorkflowService {
       // Present the initiator as the sender ("Srimanta Jana via eDocSign") and
       // route replies to them, while the From address stays on the
       // authenticated domain so DMARC alignment holds.
-      await EmailService.send(recipient.signer_email, subject, htmlBody, {
+      const result = await EmailService.send(recipient.signer_email, subject, htmlBody, {
         fromName: `${senderName} via eDocSign`,
         replyTo: senderEmail ? { email: senderEmail, name: senderName } : undefined,
       });
+
+      // Record the outcome so the workflow can show "sent" rather than a bare
+      // "pending" that says nothing about whether we ever reached them.
+      await WorkflowService.recordNotifyResult(recipient.id, result.success, result.error);
     } catch (error) {
-      console.error('Failed to send signing email:', error instanceof Error ? error.message : error);
+      const message = error instanceof Error ? error.message : String(error);
+      console.error('Failed to send signing email:', message);
+      await WorkflowService.recordNotifyResult(recipient.id, false, message);
+    }
+  }
+
+  /**
+   * Persist whether a signing request actually reached the mail provider.
+   *
+   * Never throws: a bookkeeping failure must not turn a delivered email into a
+   * failed send from the caller's point of view.
+   */
+  private static async recordNotifyResult(
+    recipientId: string,
+    success: boolean,
+    error?: string
+  ): Promise<void> {
+    try {
+      if (success) {
+        await DataService.query(
+          'UPDATE workflow_recipients SET notified_at = NOW(), notify_error = NULL WHERE id = $1',
+          [recipientId]
+        );
+      } else {
+        await DataService.query(
+          'UPDATE workflow_recipients SET notify_error = $2 WHERE id = $1',
+          [recipientId, (error || 'Unknown email error').slice(0, 500)]
+        );
+      }
+    } catch (bookkeepingError) {
+      console.error(
+        'Failed to record notification result:',
+        bookkeepingError instanceof Error ? bookkeepingError.message : bookkeepingError
+      );
     }
   }
 
@@ -1397,13 +1567,19 @@ export class WorkflowService {
   }
 
   private static formatRecipient(r: WorkflowRecipient): WorkflowRecipientResponse {
+    const asIso = (v: Date | string | null | undefined): string | null =>
+      v instanceof Date ? v.toISOString() : v ? String(v) : null;
+
     return {
       id: r.id,
       signer_email: r.signer_email,
       signer_name: r.signer_name,
       signing_order: r.signing_order,
       status: r.status,
-      signed_at: r.signed_at instanceof Date ? r.signed_at.toISOString() : r.signed_at ? String(r.signed_at) : null,
+      signed_at: asIso(r.signed_at),
+      notified_at: asIso(r.notified_at),
+      notify_error: r.notify_error || null,
+      opened_at: asIso(r.opened_at),
     };
   }
 

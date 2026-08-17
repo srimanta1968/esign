@@ -648,6 +648,11 @@ export class MigrationService {
       ['signature_fields', 'signed_at', 'TIMESTAMP WITH TIME ZONE DEFAULT NULL'],
       ['workflow_recipients', 'opened_at', 'TIMESTAMP WITH TIME ZONE DEFAULT NULL'],
       ['workflow_recipients', 'opened_ip', 'VARCHAR(45) DEFAULT NULL'],
+      // Whether the signing request actually left the building, kept separate
+      // from signing status: "pending" alone cannot distinguish "we emailed
+      // them and they haven't signed" from "we never managed to email them".
+      ['workflow_recipients', 'notified_at', 'TIMESTAMP WITH TIME ZONE DEFAULT NULL'],
+      ['workflow_recipients', 'notify_error', 'TEXT DEFAULT NULL'],
       ['signature_fields', 'label', 'VARCHAR(100) DEFAULT NULL'],
       // Manual (comp) plan overrides applied from the admin portal, kept
       // distinguishable from a Stripe-backed subscription.

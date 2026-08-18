@@ -1,0 +1,63 @@
+{
+  "name": "POST /api/sign/:token/interacted - Confirm a human is working the document",
+  "endpoint": "/api/sign/:token/interacted",
+  "method": "POST",
+  "requiresAuth": false,
+  "expectedStatus": 401,
+  "priority": 70,
+  "description": "Records that a person actually operated the signing page (focused or filled a field), which is what sets workflow_recipients.opened_confirmed_at and writes the 'engaged' history entry. A page load alone never confirms an open, because mail-security scanners fetch and render signing links exactly as a recipient would. Edge cases: the endpoint is idempotent — the first call confirms the open and logs one history entry, later calls succeed and change nothing; an unrecognised or missing 'kind' falls back to 'field_focus' rather than erroring; an unrecognised 'via' is recorded as null rather than passed through; a token that is expired or already used is rejected, so the endpoint stops working once the recipient has signed.",
+  "errorCases": [
+    {
+      "status": 401,
+      "code": "INVALID_TOKEN",
+      "message": "Invalid, expired, or already used signing token",
+      "when": "token is unknown, past expires_at, or already marked used"
+    },
+    {
+      "status": 404,
+      "code": "RECIPIENT_NOT_FOUND",
+      "message": "Recipient not found",
+      "when": "the token references a recipient row that no longer exists"
+    },
+    {
+      "status": 500,
+      "code": "INTERNAL_ERROR",
+      "message": "Internal server error",
+      "when": "the confirmation update or history write fails"
+    }
+  ],
+  "fieldEnums": {
+    "kind": [
+      "field_focus",
+      "field_filled"
+    ],
+    "via": [
+      "email",
+      "manual"
+    ]
+  },
+  "testCases": [
+    {
+      "name": "Invalid token → 401",
+      "expectedStatus": 401,
+      "payload": {
+        "kind": "field_focus"
+      },
+      "pathParams": {
+        "token": "{{static:invalid-token}}"
+      }
+    },
+    {
+      "name": "Unknown interaction kind still accepted, token still rejected → 401",
+      "expectedStatus": 401,
+      "payload": {
+        "kind": "{{static:not-a-kind}}",
+        "via": "{{static:not-a-source}}"
+      },
+      "pathParams": {
+        "token": "{{static:invalid-token}}"
+      }
+    }
+  ],
+  "dependsOn": []
+}

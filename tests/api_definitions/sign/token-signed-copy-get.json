@@ -1,0 +1,26 @@
+{
+  "name": "GET /api/sign/:token/signed-copy - Download the document as signed",
+  "endpoint": "/api/sign/:token/signed-copy",
+  "method": "GET",
+  "requiresAuth": false,
+  "expectedStatus": 404,
+  "priority": 70,
+  "description": "Serves a signer their own copy of the document with the signatures captured so far, as the PDF attachment linked from the confirmation email they receive after signing. Deliberately accepts a used or expired token — signing marks the token used — but is gated on that recipient's status being 'signed', so a spent token can download and can never sign again. Edge cases: while the workflow is still active the PDF is rendered on demand and nothing is persisted, so the final signed copy is still generated from the complete set of signatures; once the workflow is complete the stored canonical copy is served instead; a recipient who has not signed is refused; an unknown token is a 404 rather than a 401 because there is no session to reject.",
+  "errorCases": [
+    { "status": 404, "code": "UNKNOWN_LINK", "message": "Unknown signing link", "when": "no signing_tokens row matches the token" },
+    { "status": 404, "code": "RECIPIENT_NOT_FOUND", "message": "Recipient not found", "when": "the token references a recipient row that no longer exists" },
+    { "status": 404, "code": "WORKFLOW_NOT_FOUND", "message": "Workflow not found", "when": "the token references a workflow row that no longer exists" },
+    { "status": 403, "code": "NOT_SIGNED_YET", "message": "A signed copy becomes available once you have signed this document", "when": "the recipient's status is pending or declined" },
+    { "status": 500, "code": "RENDER_FAILED", "message": "Could not produce the signed copy", "when": "the stored file is unreadable or the PDF render fails" }
+  ],
+  "testCases": [
+    {
+      "name": "Unknown token → 404",
+      "expectedStatus": 404,
+      "pathParams": {
+        "token": "{{static:invalid-token}}"
+      }
+    }
+  ],
+  "dependsOn": []
+}

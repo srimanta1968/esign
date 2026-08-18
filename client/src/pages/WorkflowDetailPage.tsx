@@ -22,10 +22,14 @@ interface Signer {
   reminder_interval_hours?: number;
   /** Delivery state, separate from signing state — see deliveryBadge below. */
   notified_at?: string | null;
+  /** 'email' if we sent it, 'manual_link' if the sender carried the link over.
+   *  Wording only — the two routes are identical in every other respect. */
+  notified_via?: 'email' | 'manual_link' | null;
   notify_error?: string | null;
   /** Any fetch of the signing page — often a mail-security scanner. */
   opened_at?: string | null;
-  /** Opens attributable to a person; only this drives the "opened" badge. */
+  /** When someone actually worked the page (touched a field); only this drives
+   *  the "opened" badge, because only this rules out an automated fetch. */
   opened_confirmed_at?: string | null;
 }
 
@@ -78,6 +82,14 @@ function formatMetadata(metadata: Record<string, any>): string | undefined {
   if (metadata.signing_method) parts.push(`Method: ${metadata.signing_method}`);
   if (metadata.recipient_count) parts.push(`Recipients: ${metadata.recipient_count}`);
   if (metadata.notified_count) parts.push(`Notified: ${metadata.notified_count}`);
+  if (metadata.visit_number) parts.push(`Visit #${metadata.visit_number}`);
+  // Only worth saying when true: an open the send-time heuristic distrusts.
+  if (metadata.likely_scanner) parts.push('Likely an automated link check');
+  if (metadata.interaction) parts.push(`Activity: ${metadata.interaction.replace(/_/g, ' ')}`);
+  if (metadata.delivery === 'manual_link') parts.push('Delivery: link shared by sender');
+  // Which message the link came from, when the link carried a marker.
+  if (metadata.arrived_via === 'email') parts.push('Via: eDocSign email');
+  if (metadata.arrived_via === 'manual') parts.push('Via: link shared by sender');
   return parts.length > 0 ? parts.join(' | ') : undefined;
 }
 
@@ -163,6 +175,7 @@ function WorkflowDetailPage() {
             last_reminder_sent: r.last_reminder_sent,
             reminder_interval_hours: r.reminder_interval_hours,
             notified_at: r.notified_at ?? null,
+            notified_via: r.notified_via ?? null,
             notify_error: r.notify_error ?? null,
             opened_at: r.opened_at ?? null,
             opened_confirmed_at: r.opened_confirmed_at ?? null,
@@ -602,19 +615,22 @@ function WorkflowDetailPage() {
       return {
         label: 'opened',
         className: 'text-indigo-700 bg-indigo-50 border-indigo-200',
-        detail: `Opened ${new Date(signer.opened_confirmed_at).toLocaleString()}`,
+        detail: `Opened ${new Date(signer.opened_confirmed_at).toLocaleString()} — started filling the document`,
       };
     }
     if (signer.notified_at) {
-      // An unconfirmed open is a mail-security scanner following the link, not
-      // the recipient reading it. Saying so is still useful — it is proof the
-      // message reached their mail system — but it must not read as "opened".
+      // A fetch of the link with no activity behind it could be a scanner or a
+      // person who read the document and left. Both are the same news for the
+      // sender — nobody has started signing — and claiming either specifically
+      // would be guessing, so the badge says what is actually known.
+      const sentAt = new Date(signer.notified_at).toLocaleString();
+      const sharedManually = signer.notified_via === 'manual_link';
       return {
-        label: 'email sent',
+        label: sharedManually ? 'link shared' : 'email sent',
         className: 'text-blue-700 bg-blue-50 border-blue-200',
         detail: signer.opened_at
-          ? `Sent ${new Date(signer.notified_at).toLocaleString()} — reached their mail system (link checked by a security scanner, not yet opened by them)`
-          : `Sent ${new Date(signer.notified_at).toLocaleString()} — awaiting signature`,
+          ? `${sharedManually ? 'Link shared' : 'Sent'} ${sentAt} — the link has been fetched, but no signing activity yet (security scanners fetch links too)`
+          : `${sharedManually ? 'Link shared' : 'Sent'} ${sentAt} — awaiting signature`,
       };
     }
     return {
@@ -650,6 +666,8 @@ function WorkflowDetailPage() {
   const eventActionIcon = (action: string): string => {
     if (action.includes('created')) return 'bg-blue-500';
     if (action.includes('started')) return 'bg-indigo-500';
+    if (action.includes('engaged')) return 'bg-violet-500';
+    if (action.includes('opened')) return 'bg-slate-400';
     if (action.includes('signed')) return 'bg-green-500';
     if (action.includes('declined')) return 'bg-red-500';
     if (action.includes('reminder')) return 'bg-yellow-500';

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { DataService } from '../services/DataService';
 import { StorageService } from '../services/storageService';
 import { SigningTokenService, SigningToken } from '../services/signingTokenService';
+import { PdfSigningService } from '../services/pdfSigningService';
 import { WorkflowService } from '../services/workflowService';
 import { NotificationService } from '../services/notificationService';
 import { AuthenticatedRequest } from '../middleware/auth';
@@ -12,15 +13,53 @@ import {
 } from '../types/workflow';
 
 /**
- * How long after sending a signing request an "open" is assumed to be a mail
- * security scanner rather than the recipient.
+ * How long after sending a signing request an "open" is *labelled* as a likely
+ * mail security scanner in the audit trail.
  *
  * Observed in production: Microsoft Defender Safe Links detonated signing links
  * 25 and 33 seconds after delivery, from Microsoft-owned addresses, executing
- * the page well enough to call /started. Two minutes clears that comfortably
- * while still crediting a recipient who opens the mail a few minutes later.
+ * the page well enough to call /started.
+ *
+ * This is a hint on the history entry only. It deliberately no longer decides
+ * whether an open counts, because the window cannot: the same tenant re-scanned
+ * a link 1h53m after delivery — long past any plausible grace period — and that
+ * scan would have been credited to the recipient. Confirmation now requires an
+ * interaction, which no scanner performs. See markSigningInteraction.
  */
 const SCANNER_GRACE_MS = 2 * 60 * 1000;
+
+/**
+ * How long page loads from the same client collapse into one recorded visit.
+ *
+ * A refresh, a restored mobile tab, or the viewer remounting all call /started
+ * again. Every genuine visit belongs in the history — a sender needs to see the
+ * recipient came back three times — but a burst from one sitting is noise.
+ */
+const VISIT_DEDUPE_MS = 10 * 60 * 1000;
+
+/**
+ * Page interactions that count as proof a person is working the document.
+ * Both require a pointer or keyboard event against a specific field.
+ */
+const INTERACTION_KINDS = ['field_focus', 'field_filled'] as const;
+type InteractionKind = (typeof INTERACTION_KINDS)[number];
+
+/**
+ * Which message carried the link the visitor followed.
+ *
+ * Both routes hand out the identical token URL, so nothing in a request can
+ * reveal which message it came from. The link itself therefore says: the
+ * automated mail appends ?via=email, a manually shared link ?via=manual, and
+ * the page passes it back here. Best effort by nature — a forwarded mail keeps
+ * the original marker — so it is recorded as provenance, never acted on.
+ */
+const ARRIVAL_SOURCES = ['email', 'manual'] as const;
+type ArrivalSource = (typeof ARRIVAL_SOURCES)[number];
+
+function readArrivalSource(body: unknown): ArrivalSource | null {
+  const via = (body as { via?: string } | undefined)?.via;
+  return ARRIVAL_SOURCES.includes(via as ArrivalSource) ? (via as ArrivalSource) : null;
+}
 
 interface SignatureSubmission {
   fieldId: string;
@@ -281,8 +320,15 @@ export class SigningController {
 
   /**
    * POST /api/sign/:token/started
-   * Mark that the recipient has opened the signing page.
-   * Idempotent: only the first call records opened_at and logs history.
+   * Record a fetch of the signing page.
+   *
+   * Every visit is logged, not just the first. The sender's question is "has
+   * anything happened since I sent this", and a single first-touch entry cannot
+   * answer it: a recipient who came back twice and downloaded the document
+   * looked identical to one who never returned. Repeat loads from the same
+   * client inside VISIT_DEDUPE_MS collapse into the visit already recorded.
+   *
+   * This endpoint never confirms an open — see markSigningInteraction.
    */
   static async markSigningStarted(req: Request, res: Response): Promise<void> {
     try {
@@ -307,16 +353,11 @@ export class SigningController {
       const userAgent = req.headers['user-agent'] || 'unknown';
       const alreadyOpened = !!recipient.opened_at;
 
-      // Mail-security products fetch every link they deliver. Microsoft
-      // Defender Safe Links renders the page in a real headless browser, so it
-      // reaches this endpoint just like a person would — seconds after the mail
-      // was sent, from cloud infrastructure. Treating that as "the recipient
-      // read your document" is worse than reporting nothing, because it stops
-      // the sender chasing a signature that never reached a human.
-      //
-      // Anything arriving inside the scan window is recorded but not confirmed.
-      // The window under-reports — a genuinely fast recipient is not credited
-      // until they return — which is the safe direction to be wrong in.
+      // Mail-security products fetch every link they deliver, and Defender Safe
+      // Links renders the page in a real headless browser, so it reaches this
+      // endpoint exactly as a person would. Proximity to the send is recorded as
+      // a hint, but nothing here is treated as the recipient reading the
+      // document — that decision moved to the interaction endpoint.
       const openedWithin = recipient.notified_at
         ? Date.now() - new Date(recipient.notified_at).getTime()
         : Number.MAX_SAFE_INTEGER;
@@ -329,22 +370,41 @@ export class SigningController {
         );
       }
 
-      // Confirmation is independent of first-touch: the scanner opens first,
-      // then the recipient opens later and that later visit is what counts.
-      const alreadyConfirmed = !!recipient.opened_confirmed_at;
-      if (!looksAutomated && !alreadyConfirmed) {
-        await DataService.query(
-          'UPDATE workflow_recipients SET opened_confirmed_at = NOW() WHERE id = $1 AND opened_confirmed_at IS NULL',
-          [signingToken.recipient_id]
-        );
-      }
+      // One round trip for both halves of the dedupe decision: how many visits
+      // are already on record, and who made the most recent one.
+      const priorVisits = await DataService.queryOne<{
+        visit_count: number;
+        last_visit: Date | null;
+        last_ip: string | null;
+        last_user_agent: string | null;
+      }>(
+        `SELECT COUNT(*)::int AS visit_count,
+                MAX(created_at) AS last_visit,
+                (ARRAY_AGG(actor_ip ORDER BY created_at DESC))[1] AS last_ip,
+                (ARRAY_AGG(metadata->>'user_agent' ORDER BY created_at DESC))[1] AS last_user_agent
+           FROM workflow_history
+          WHERE workflow_id = $1
+            AND action = 'opened'
+            AND metadata->>'recipient_id' = $2`,
+        [signingToken.workflow_id, signingToken.recipient_id]
+      );
 
-      if (!alreadyOpened || (!looksAutomated && !alreadyConfirmed)) {
+      const visitCount = priorVisits?.visit_count || 0;
+      const sinceLastVisit = priorVisits?.last_visit
+        ? Date.now() - new Date(priorVisits.last_visit).getTime()
+        : Number.MAX_SAFE_INTEGER;
+      const sameClient =
+        priorVisits?.last_ip === actorIp && priorVisits?.last_user_agent === userAgent;
+      const isSameSitting = sameClient && sinceLastVisit < VISIT_DEDUPE_MS;
+
+      if (!isSameSitting) {
         await WorkflowService.logHistory(signingToken.workflow_id, 'opened', recipient.signer_email, actorIp, {
           user_agent: userAgent,
           recipient_id: recipient.id,
           signing_order: recipient.signing_order,
           timestamp: new Date().toISOString(),
+          visit_number: visitCount + 1,
+          arrived_via: readArrivalSource(req.body),
           // Kept on the history entry so an audit can tell a scan from a read.
           likely_scanner: looksAutomated,
           seconds_after_send: recipient.notified_at ? Math.round(openedWithin / 1000) : null,
@@ -357,12 +417,158 @@ export class SigningController {
           recipient_id: recipient.id,
           first_opened: !alreadyOpened,
           opened_at: alreadyOpened ? recipient.opened_at : new Date().toISOString(),
-          confirmed: !looksAutomated || alreadyConfirmed,
+          visit_number: isSameSitting ? visitCount : visitCount + 1,
+          confirmed: !!recipient.opened_confirmed_at,
         },
       });
     } catch (error: any) {
       console.error('Mark signing started error:', error);
       res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+  }
+
+  /**
+   * POST /api/sign/:token/interacted
+   * Record that a person is actually working the document.
+   *
+   * Loading a page proves only that something followed the link. Focusing or
+   * filling a field requires a pointer or keyboard event aimed at one specific
+   * field — mail-security scanners fetch and render, they do not do that. So
+   * this, not the page load, is what sets opened_confirmed_at and what the UI
+   * reports as "opened".
+   *
+   * Idempotent: the first interaction confirms the open and writes one history
+   * entry; later ones are accepted and ignored, so the client can fire freely.
+   */
+  static async markSigningInteraction(req: Request, res: Response): Promise<void> {
+    try {
+      const { token } = req.params;
+      const requested = (req.body as { kind?: string } | undefined)?.kind;
+      const kind: InteractionKind = INTERACTION_KINDS.includes(requested as InteractionKind)
+        ? (requested as InteractionKind)
+        : 'field_focus';
+
+      const signingToken = await SigningTokenService.validateToken(token);
+      if (!signingToken) {
+        res.status(401).json({ success: false, error: 'Invalid, expired, or already used signing token' });
+        return;
+      }
+
+      const recipient = await DataService.queryOne<WorkflowRecipient & { opened_at: Date | null }>(
+        'SELECT * FROM workflow_recipients WHERE id = $1',
+        [signingToken.recipient_id]
+      );
+      if (!recipient) {
+        res.status(404).json({ success: false, error: 'Recipient not found' });
+        return;
+      }
+
+      const actorIp = req.ip || req.socket?.remoteAddress || 'unknown';
+      const userAgent = req.headers['user-agent'] || 'unknown';
+      const alreadyConfirmed = !!recipient.opened_confirmed_at;
+
+      if (!alreadyConfirmed) {
+        await DataService.query(
+          `UPDATE workflow_recipients
+              SET opened_confirmed_at = NOW(),
+                  opened_at = COALESCE(opened_at, NOW())
+            WHERE id = $1 AND opened_confirmed_at IS NULL`,
+          [signingToken.recipient_id]
+        );
+
+        await WorkflowService.logHistory(signingToken.workflow_id, 'engaged', recipient.signer_email, actorIp, {
+          user_agent: userAgent,
+          recipient_id: recipient.id,
+          signing_order: recipient.signing_order,
+          interaction: kind,
+          arrived_via: readArrivalSource(req.body),
+          timestamp: new Date().toISOString(),
+        });
+      }
+
+      res.status(200).json({
+        success: true,
+        data: {
+          recipient_id: recipient.id,
+          first_interaction: !alreadyConfirmed,
+          confirmed_at: alreadyConfirmed
+            ? recipient.opened_confirmed_at
+            : new Date().toISOString(),
+        },
+      });
+    } catch (error: any) {
+      console.error('Mark signing interaction error:', error);
+      res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+  }
+
+  /**
+   * GET /api/sign/:token/signed-copy
+   * Serve the signer their own copy of the document as signed.
+   *
+   * Deliberately accepts a used or expired token: signing marks the token used,
+   * and this is the link the signer is emailed once they have signed. It stays
+   * read-only and is gated on that recipient having signed, so a used token can
+   * fetch a copy but can never sign again. Without this an external signer had
+   * no way to obtain the document at all — the downloads portal needs an
+   * account and a completed workflow.
+   */
+  static async getSignedCopy(req: Request, res: Response): Promise<void> {
+    try {
+      const { token } = req.params;
+
+      const { signingToken } = await SigningTokenService.lookupToken(token);
+      if (!signingToken) {
+        res.status(404).json({ success: false, error: 'Unknown signing link' });
+        return;
+      }
+
+      const recipient = await DataService.queryOne<WorkflowRecipient>(
+        'SELECT * FROM workflow_recipients WHERE id = $1',
+        [signingToken.recipient_id]
+      );
+      if (!recipient) {
+        res.status(404).json({ success: false, error: 'Recipient not found' });
+        return;
+      }
+      if (recipient.status !== 'signed') {
+        res.status(403).json({
+          success: false,
+          error: 'A signed copy becomes available once you have signed this document',
+        });
+        return;
+      }
+
+      const workflow = await DataService.queryOne<SigningWorkflow>(
+        'SELECT * FROM signing_workflows WHERE id = $1',
+        [signingToken.workflow_id]
+      );
+      if (!workflow) {
+        res.status(404).json({ success: false, error: 'Workflow not found' });
+        return;
+      }
+
+      const document = await DataService.queryOne<{ original_name: string }>(
+        'SELECT original_name FROM documents WHERE id = $1',
+        [workflow.document_id]
+      );
+      const baseName = (document?.original_name || 'document').replace(/\.pdf$/i, '');
+
+      // Once everyone has signed, the stored copy is the canonical one the
+      // certificate attests to. Before that there is nothing stored — rendering
+      // on demand is what makes an early signer's link work at all, and it
+      // deliberately writes nothing, so the final copy is still generated from
+      // the complete set of signatures. See buildSignedPdfBytes.
+      const fileBuffer = workflow.signed_pdf_path
+        ? await StorageService.getFile(workflow.signed_pdf_path)
+        : Buffer.from(await PdfSigningService.buildSignedPdfBytes(workflow.id));
+
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="${baseName}-signed.pdf"`);
+      res.send(fileBuffer);
+    } catch (error: any) {
+      console.error('Get signed copy error:', error);
+      res.status(500).json({ success: false, error: 'Could not produce the signed copy' });
     }
   }
 

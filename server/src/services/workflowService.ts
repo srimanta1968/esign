@@ -764,7 +764,11 @@ export class WorkflowService {
     const senderName = sender?.name || sender?.email || 'Someone';
     const fieldsToSign = parseInt(fieldCount?.count || '0', 10);
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-    const signingUrl = `${frontendUrl}/sign-document/${signingToken.token}`;
+    // ?via marks which message carried the link. The two routes are otherwise
+    // identical — same token, same page, same endpoints — so without a marker in
+    // the link itself nothing downstream could ever say which one a signer
+    // followed. It is provenance only; no behaviour reads it.
+    const signingUrl = `${frontendUrl}/sign-document/${signingToken.token}?via=manual`;
     const expiresAt =
       signingToken.expires_at instanceof Date
         ? signingToken.expires_at.toISOString()
@@ -788,10 +792,25 @@ export class WorkflowService {
       senderName,
     ].join('\n');
 
+    // Handing the link over is a delivery, even though the creator carries it
+    // the last mile themselves. Without this the recipient would sit at "not
+    // sent yet" forever, and everything keyed off notified_at — the delivery
+    // badge, reminder wording, the age of an open — would read differently for
+    // a manually sent signer than for an emailed one. Only the wording should
+    // differ, which is what notified_via carries. An existing timestamp is left
+    // alone so re-copying a link never rewrites the original send time.
+    await DataService.query(
+      `UPDATE workflow_recipients
+          SET notified_at = NOW(), notified_via = 'manual_link', notify_error = NULL
+        WHERE id = $1 AND notified_at IS NULL`,
+      [recipient.id]
+    );
+
     await WorkflowService.logHistory(workflowId, 'signing_link_revealed', actorEmail, actorIp || '', {
       user_agent: userAgent,
       recipient_email: recipient.signer_email,
       recipient_id: recipient.id,
+      delivery: 'manual_link',
     });
 
     return {
@@ -995,7 +1014,7 @@ export class WorkflowService {
       const senderEmail = sender?.email || '';
       const fieldsToSign = parseInt(fieldCount?.count || '0', 10);
       const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-      const signingUrl = `${frontendUrl}/sign-document/${signingToken.token}`;
+      const signingUrl = `${frontendUrl}/sign-document/${signingToken.token}?via=email`;
 
       const subject = isReminder
         ? `Reminder: ${senderName} needs your signature on "${documentName}"`
@@ -1044,7 +1063,7 @@ export class WorkflowService {
     try {
       if (success) {
         await DataService.query(
-          'UPDATE workflow_recipients SET notified_at = NOW(), notify_error = NULL WHERE id = $1',
+          "UPDATE workflow_recipients SET notified_at = NOW(), notified_via = 'email', notify_error = NULL WHERE id = $1",
           [recipientId]
         );
       } else {
@@ -1177,11 +1196,56 @@ export class WorkflowService {
     const allSigned = allRecipients.every(r => r.status === 'signed');
     const signedCount = allRecipients.filter(r => r.status === 'signed').length;
     const totalCount = allRecipients.length;
+    const pending = allRecipients.filter(r => r.status === 'pending').map(r => r.signer_name || r.signer_email);
+    const signer = allRecipients.find(r => r.signer_email === signerEmail) || null;
+
+    const [document, creator] = await Promise.all([
+      DataService.queryOne<{ original_name: string }>(
+        'SELECT original_name FROM documents WHERE id = $1',
+        [workflow.document_id]
+      ),
+      DataService.queryOne<{ email: string; name: string }>(
+        'SELECT email, name FROM users WHERE id = $1',
+        [workflow.creator_id]
+      ),
+    ]);
+    const docName = document?.original_name || 'Document';
+
+    // Both confirmations go out for every signature, before the completion
+    // branch splits. A signature is the same event however the signer got here —
+    // the emailed link, a link the sender pasted into their own mail, or signing
+    // in-app — and this function is the single place all three arrive at, so
+    // putting the receipts here is what keeps them from drifting apart.
+    // The signer has no account, and the downloads portal needs both an account
+    // and a completed workflow — so their own token, now spent for signing, is
+    // what gets them a copy of what they put their name to. The sender receives
+    // the same link: it can only download, never sign again.
+    const signerToken = signer
+      ? await SigningTokenService.getLatestTokenByRecipient(workflow.id, signer.id)
+      : null;
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const downloadUrl = signerToken
+      ? `${frontendUrl}/api/sign/${signerToken.token}/signed-copy`
+      : null;
+
+    await WorkflowService.sendSignatureConfirmations({
+      docName,
+      signerEmail,
+      signerName: signer?.signer_name || null,
+      creatorEmail: creator?.email || null,
+      signedCount,
+      totalCount,
+      pending,
+      allSigned,
+      downloadUrl,
+    });
 
     if (allSigned) {
-      // Mark workflow completed
+      // Mark workflow completed. completed_at as well as updated_at: every
+      // workflow completed through this path had a null completed_at, so the
+      // downloads route was falling back to updated_at to fill the gap.
       await DataService.query(
-        "UPDATE signing_workflows SET status = 'completed', updated_at = NOW() WHERE id = $1",
+        "UPDATE signing_workflows SET status = 'completed', completed_at = NOW(), updated_at = NOW() WHERE id = $1",
         [workflow.id]
       );
 
@@ -1199,33 +1263,12 @@ export class WorkflowService {
       // Generate signed PDF, certificate, email all parties
       await WorkflowService.handleWorkflowCompletion(workflow.id, workflow.creator_id, workflow.document_id, allRecipients);
     } else {
-      // Not all signed yet — notify creator of progress
-      const pending = allRecipients.filter(r => r.status === 'pending').map(r => r.signer_name || r.signer_email);
-      const document = await DataService.queryOne<{ original_name: string }>(
-        'SELECT original_name FROM documents WHERE id = $1',
-        [workflow.document_id]
-      );
-      const docName = document?.original_name || 'Document';
-
       // In-app notification to creator
       await NotificationService.create(
         workflow.creator_id,
         'signature_completed',
         `${signerEmail} has signed "${docName}" (${signedCount}/${totalCount}). Waiting for: ${pending.join(', ')}`
       );
-
-      // Email creator about progress
-      const creator = await DataService.queryOne<{ email: string; name: string }>(
-        'SELECT email, name FROM users WHERE id = $1',
-        [workflow.creator_id]
-      );
-      if (creator?.email && creator.email !== signerEmail) {
-        await EmailService.send(
-          creator.email,
-          `Signing Update: ${signerEmail} signed "${docName}"`,
-          WorkflowService.buildProgressEmailTemplate(docName, signerEmail, signedCount, totalCount, pending)
-        );
-      }
 
       // Sequential: email next signer
       if (workflow.workflow_type === 'sequential') {
@@ -1240,6 +1283,97 @@ export class WorkflowService {
   }
 
   /**
+   * Email the two people a signature concerns: the signer gets a receipt, the
+   * sender gets told it happened.
+   *
+   * Never throws. The signature is already committed by the time this runs, and
+   * a mail failure must not turn a completed signing into a 500 that invites the
+   * signer to try again.
+   */
+  private static async sendSignatureConfirmations(params: {
+    docName: string;
+    signerEmail: string;
+    signerName: string | null;
+    creatorEmail: string | null;
+    signedCount: number;
+    totalCount: number;
+    pending: string[];
+    allSigned: boolean;
+    downloadUrl: string | null;
+  }): Promise<void> {
+    const { docName, signerEmail, signerName, creatorEmail, signedCount, totalCount, pending, allSigned, downloadUrl } = params;
+
+    const deliver = async (to: string, subject: string, html: string, label: string): Promise<void> => {
+      try {
+        const result = await EmailService.send(to, subject, html);
+        if (!result.success) {
+          console.error(`Failed to send ${label} to ${to}: ${result.error || 'unknown error'}`);
+        }
+      } catch (error) {
+        console.error(`Failed to send ${label} to ${to}:`, error instanceof Error ? error.message : error);
+      }
+    };
+
+    await deliver(
+      signerEmail,
+      `You signed "${docName}"`,
+      WorkflowService.buildSignerReceiptTemplate(docName, signerName, signedCount, totalCount, allSigned, downloadUrl),
+      'signature receipt'
+    );
+
+    // Skipped only when the sender signed their own document, where the receipt
+    // above already told them.
+    if (creatorEmail && creatorEmail !== signerEmail) {
+      await deliver(
+        creatorEmail,
+        `Signing Update: ${signerEmail} signed "${docName}"`,
+        WorkflowService.buildProgressEmailTemplate(docName, signerEmail, signedCount, totalCount, pending, downloadUrl),
+        'signing progress notice'
+      );
+    }
+  }
+
+  /**
+   * Build the receipt sent to the person who just signed.
+   *
+   * Counts, not names: the signer is often external, and how many signatures are
+   * outstanding is enough to set their expectations without listing the other
+   * parties to them.
+   */
+  private static buildSignerReceiptTemplate(
+    docName: string,
+    signerName: string | null,
+    signedCount: number,
+    totalCount: number,
+    allSigned: boolean,
+    downloadUrl: string | null
+  ): string {
+    const greeting = signerName ? `Hi ${signerName},` : 'Hi,';
+    const remaining = totalCount - signedCount;
+    const status = allSigned
+      ? 'Everyone has now signed. The completed document and its signing certificate are on their way to you in a separate email.'
+      : `${signedCount} of ${totalCount} signatures are complete. You will receive the fully signed copy once the remaining ${remaining === 1 ? 'signer signs' : `${remaining} signers sign`}.`;
+
+    return `
+    <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px">
+      <h2 style="color:#4f46e5;margin:0 0 16px">eDocSign</h2>
+      <p style="color:#374151;font-size:16px;line-height:1.5">${greeting}</p>
+      <p style="color:#374151;font-size:16px;line-height:1.5">
+        Your signature on <strong>${docName}</strong> has been recorded on ${new Date().toLocaleString('en-US', { dateStyle: 'long', timeStyle: 'short' })}.
+      </p>
+      <div style="background:#f3f4f6;border-radius:8px;padding:16px;margin:16px 0">
+        <p style="margin:0;color:#374151;font-size:14px">${status}</p>
+      </div>
+      ${WorkflowService.buildDownloadButton(downloadUrl, 'Download the signed document')}
+      <p style="color:#6b7280;font-size:13px;line-height:1.5">
+        Keep this email as your record. If you did not sign this document, reply to this message immediately.
+      </p>
+      <p style="color:#9ca3af;font-size:12px;margin-top:24px">This is an automated notification from eDocSign.</p>
+      ${WorkflowService.buildProjexLightFooter()}
+    </div>`;
+  }
+
+  /**
    * Build the shared ProjexLight attribution line shown at the bottom of
    * every outgoing email. Kept as a single helper so wording and styling
    * stay consistent across templates.
@@ -1251,12 +1385,21 @@ export class WorkflowService {
   /**
    * Build progress notification email HTML.
    */
+  private static buildDownloadButton(downloadUrl: string | null, label: string): string {
+    if (!downloadUrl) return '';
+    return `
+      <div style="text-align:center;margin:20px 0">
+        <a href="${downloadUrl}" style="display:inline-block;background:#4f46e5;color:#fff;text-decoration:none;padding:12px 28px;border-radius:6px;font-size:15px;font-weight:bold">${label}</a>
+      </div>`;
+  }
+
   private static buildProgressEmailTemplate(
     docName: string,
     signerEmail: string,
     signedCount: number,
     totalCount: number,
-    pending: string[]
+    pending: string[],
+    downloadUrl: string | null = null
   ): string {
     return `
     <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px">
@@ -1272,9 +1415,10 @@ export class WorkflowService {
           <div style="background:#4f46e5;border-radius:4px;height:8px;width:${Math.round((signedCount / totalCount) * 100)}%"></div>
         </div>
         <p style="margin:8px 0 0;color:#6b7280;font-size:13px">
-          Waiting for: ${pending.join(', ')}
+          Waiting for: ${pending.length > 0 ? pending.join(', ') : 'nobody — all signatures are in'}
         </p>
       </div>
+      ${WorkflowService.buildDownloadButton(downloadUrl, 'Download the document as signed')}
       <p style="color:#9ca3af;font-size:12px;margin-top:24px">This is an automated notification from eDocSign.</p>
       ${WorkflowService.buildProjexLightFooter()}
     </div>`;
@@ -1578,6 +1722,7 @@ export class WorkflowService {
       status: r.status,
       signed_at: asIso(r.signed_at),
       notified_at: asIso(r.notified_at),
+      notified_via: r.notified_via || null,
       notify_error: r.notify_error || null,
       opened_at: asIso(r.opened_at),
       opened_confirmed_at: asIso(r.opened_confirmed_at),

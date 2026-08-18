@@ -2,7 +2,14 @@ export type WorkflowType = 'parallel' | 'sequential';
 export type WorkflowStatus = 'draft' | 'active' | 'completed' | 'cancelled';
 export type RecipientStatus = 'pending' | 'signed' | 'declined';
 export type SignatureFieldType = 'signature' | 'initials' | 'date' | 'text';
-export type WorkflowAction = 'created' | 'started' | 'signed' | 'declined' | 'completed' | 'cancelled' | 'reminder_sent' | 'updated' | 'token_generated' | 'opened' | 'signing_link_revealed';
+export type WorkflowAction = 'created' | 'started' | 'signed' | 'declined' | 'completed' | 'cancelled' | 'reminder_sent' | 'updated' | 'token_generated' | 'opened' | 'engaged' | 'signing_link_revealed';
+
+/**
+ * How a signing request reached the recipient. Both routes hand over the same
+ * token URL and are therefore indistinguishable to everything downstream — this
+ * only records which one was used, so the UI can word it accurately.
+ */
+export type NotifyMethod = 'email' | 'manual_link';
 
 export interface SigningWorkflow {
   id: string;
@@ -27,13 +34,16 @@ export interface WorkflowRecipient {
   signing_order: number;
   status: RecipientStatus;
   signed_at: Date | null;
-  /** When the signing request was handed to the mail provider. */
+  /** When the signing request was handed over, by either delivery route. */
   notified_at?: Date | null;
+  /** Which route delivered it — see NotifyMethod. */
+  notified_via?: NotifyMethod | null;
   /** Why the last send attempt failed, if it did. */
   notify_error?: string | null;
   /** Any fetch of the signing page, including mail-security scanners. */
   opened_at?: Date | null;
-  /** The subset of opens plausibly caused by a human — what the UI reports. */
+  /** When someone actually operated the page (focused or filled a field).
+   *  A page fetch alone never sets this — scanners fetch, they do not fill. */
   opened_confirmed_at?: Date | null;
   opened_user_agent?: string | null;
 }
@@ -147,11 +157,12 @@ export interface WorkflowRecipientResponse {
    * to show "sent" / "opened" / a send failure instead of a bare "pending".
    */
   notified_at: string | null;
+  notified_via: NotifyMethod | null;
   notify_error: string | null;
   /** Raw first touch — may well be a mail-security scanner, so do not present
    *  this as the recipient having read the document. */
   opened_at: string | null;
-  /** First touch attributable to a person; this is what the UI shows. */
+  /** First real interaction with the page; this is what the UI shows. */
   opened_confirmed_at: string | null;
 }
 

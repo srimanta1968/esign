@@ -113,6 +113,26 @@ export class SigningTokenService {
   }
 
   /**
+   * Latest token for a recipient whatever its used/expired state.
+   *
+   * Signing marks the token used, so the download link a signer is emailed
+   * *after* they sign cannot be built from getTokenByRecipient. Read-only
+   * endpoints that gate on the recipient having signed use this instead — the
+   * token stays a bearer secret for their own copy, but can no longer sign.
+   */
+  static async getLatestTokenByRecipient(
+    workflowId: string,
+    recipientId: string
+  ): Promise<SigningToken | null> {
+    return DataService.queryOne<SigningToken>(
+      `SELECT * FROM signing_tokens
+       WHERE workflow_id = $1 AND recipient_id = $2
+       ORDER BY created_at DESC LIMIT 1`,
+      [workflowId, recipientId]
+    );
+  }
+
+  /**
    * Revoke all tokens for a workflow (e.g., on cancellation).
    */
   static async revokeWorkflowTokens(workflowId: string): Promise<void> {

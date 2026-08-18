@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { useParams, useSearchParams } from 'react-router-dom';
 import DocumentViewer from '../components/DocumentViewer';
 import SignatureFieldOverlay from '../components/SignatureFieldOverlay';
 import SignaturePadComponent from '../components/SignaturePadComponent';
@@ -28,6 +28,12 @@ interface SigningContext {
 
 function PublicSignPage() {
   const { token } = useParams<{ token: string }>();
+  const [searchParams] = useSearchParams();
+  // Which message carried this link. The automated mail appends ?via=email and a
+  // manually shared link ?via=manual; anything else is treated as unknown rather
+  // than passed through, so the audit trail cannot be seeded from the URL bar.
+  const viaParam = searchParams.get('via');
+  const arrivedVia = viaParam === 'email' || viaParam === 'manual' ? viaParam : null;
   const [context, setContext] = useState<SigningContext | null>(null);
   const [fields, setFields] = useState<SignatureField[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -43,6 +49,29 @@ function PublicSignPage() {
   // Modal input states
   const [textValue, setTextValue] = useState<string>('');
   const [dateValue, setDateValue] = useState<string>(new Date().toLocaleDateString());
+
+  const interactionReported = useRef<boolean>(false);
+
+  /**
+   * Tell the server a person is actually working this document.
+   *
+   * Loading the page proves nothing — mail-security scanners render signing
+   * links in real browsers and reach /started exactly as a recipient would.
+   * Touching a field does not happen without a pointer or keyboard event, so
+   * that is the signal the sender's "opened" status is built on. Fired once;
+   * the flag is released again if the call fails so the next touch retries.
+   */
+  const reportInteraction = useCallback((kind: 'field_focus' | 'field_filled'): void => {
+    if (interactionReported.current) return;
+    interactionReported.current = true;
+    fetch(`/api/sign/${token}/interacted`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ kind, via: arrivedVia }),
+    }).catch(() => {
+      interactionReported.current = false;
+    });
+  }, [token, arrivedVia]);
 
   useEffect(() => {
     const fetchContext = async () => {
@@ -65,7 +94,11 @@ function PublicSignPage() {
         } else if (data.success && data.data) {
           setContext(data.data);
           // Notify backend that the signing page has been opened (idempotent)
-          fetch(`/api/sign/${token}/started`, { method: 'POST' }).catch(() => {});
+          fetch(`/api/sign/${token}/started`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ via: arrivedVia }),
+          }).catch(() => {});
           // Map server fields to our SignatureField type
           const mapped: SignatureField[] = data.data.fields.map((f: any) => ({
             id: f.id,
@@ -92,9 +125,12 @@ function PublicSignPage() {
       }
     };
     fetchContext();
-  }, [token]);
+  }, [token, arrivedVia]);
 
   const handleFieldClick = useCallback((field: SignatureField) => {
+    // Reported before the early return: clicking a field already filled in is
+    // still a person operating the page.
+    reportInteraction('field_focus');
     if (field.completed) return;
     setActiveField(field);
     if (field.type === 'date') {
@@ -102,30 +138,33 @@ function PublicSignPage() {
     } else if (field.type === 'text') {
       setTextValue(field.value || '');
     }
-  }, []);
+  }, [reportInteraction]);
 
   const handleSignatureCapture = useCallback((dataUrl: string) => {
     if (!activeField) return;
+    reportInteraction('field_filled');
     setFields((prev) =>
       prev.map((f) =>
         f.id === activeField.id ? { ...f, value: dataUrl, completed: true } : f
       )
     );
     setActiveField(null);
-  }, [activeField]);
+  }, [activeField, reportInteraction]);
 
   const handleDateConfirm = useCallback(() => {
     if (!activeField) return;
+    reportInteraction('field_filled');
     setFields((prev) =>
       prev.map((f) =>
         f.id === activeField.id ? { ...f, value: dateValue, completed: true } : f
       )
     );
     setActiveField(null);
-  }, [activeField, dateValue]);
+  }, [activeField, dateValue, reportInteraction]);
 
   const handleTextConfirm = useCallback(() => {
     if (!activeField || !textValue.trim()) return;
+    reportInteraction('field_filled');
     setFields((prev) =>
       prev.map((f) =>
         f.id === activeField.id ? { ...f, value: textValue.trim(), completed: true } : f
@@ -133,7 +172,7 @@ function PublicSignPage() {
     );
     setActiveField(null);
     setTextValue('');
-  }, [activeField, textValue]);
+  }, [activeField, textValue, reportInteraction]);
 
   const handleCompleteSigning = async () => {
     setSubmitting(true);

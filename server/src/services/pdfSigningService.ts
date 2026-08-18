@@ -12,11 +12,45 @@ import { toWinAnsiSafe } from '../utils/pdfText';
  */
 export class PdfSigningService {
   /**
-   * Generate a signed PDF with all signature images embedded.
+   * Generate a signed PDF, store it, and record its path on the workflow.
    * @param workflowId - The workflow ID to generate the signed PDF for.
    * @returns The file path of the signed PDF.
    */
   static async generateSignedPdf(workflowId: string): Promise<string> {
+    const signedPdfBytes = await PdfSigningService.buildSignedPdfBytes(workflowId);
+
+    // Save signed PDF to temp, then upload to S3
+    const tempPath = path.join(os.tmpdir(), `${workflowId}_signed.pdf`);
+    fs.writeFileSync(tempPath, signedPdfBytes);
+
+    const storageResult = await StorageService.store(tempPath, 'signed', {
+      workflowId,
+      filename: `${workflowId}_signed`,
+    });
+
+    // Clean up temp file
+    fs.unlink(tempPath, () => {});
+
+    // Store path in signing_workflows table
+    await DataService.query(
+      'UPDATE signing_workflows SET signed_pdf_path = $1 WHERE id = $2',
+      [storageResult.path, workflowId]
+    );
+
+    return storageResult.path;
+  }
+
+  /**
+   * Render the document with every signature captured *so far* and return the
+   * bytes, touching neither storage nor the workflow row.
+   *
+   * Separate from generateSignedPdf because a mid-workflow copy must not be
+   * mistaken for the final one: generateSignedPdf writes signed_pdf_path, and
+   * handleWorkflowCompletion skips regeneration when that path is already set —
+   * so persisting a partial render would permanently drop the last signer's
+   * marks from the completed document.
+   */
+  static async buildSignedPdfBytes(workflowId: string): Promise<Uint8Array> {
     // 1. Get workflow and document info
     const workflow = await DataService.queryOne<{
       id: string;
@@ -110,26 +144,8 @@ export class PdfSigningService {
       }
     }
 
-    // 5. Save signed PDF to temp, then upload to S3
-    const signedPdfBytes = await pdfDoc.save();
-    const tempPath = path.join(os.tmpdir(), `${workflowId}_signed.pdf`);
-    fs.writeFileSync(tempPath, signedPdfBytes);
-
-    const storageResult = await StorageService.store(tempPath, 'signed', {
-      workflowId,
-      filename: `${workflowId}_signed`,
-    });
-
-    // Clean up temp file
-    fs.unlink(tempPath, () => {});
-
-    // 6. Store path in signing_workflows table
-    await DataService.query(
-      'UPDATE signing_workflows SET signed_pdf_path = $1 WHERE id = $2',
-      [storageResult.path, workflowId]
-    );
-
-    return storageResult.path;
+    // 5. Hand back the rendered bytes; persisting them is the caller's business
+    return await pdfDoc.save();
   }
 
   /**

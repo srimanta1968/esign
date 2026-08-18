@@ -654,10 +654,15 @@ export class MigrationService {
       ['workflow_recipients', 'notified_at', 'TIMESTAMP WITH TIME ZONE DEFAULT NULL'],
       ['workflow_recipients', 'notify_error', 'TEXT DEFAULT NULL'],
       // opened_at records *any* fetch of the signing page, which mail-security
-      // scanners trigger seconds after delivery. opened_confirmed_at is the
-      // subset plausibly caused by a human, and is what the UI reports.
+      // scanners trigger on delivery and again on later re-scans.
+      // opened_confirmed_at records a real interaction with the page and is what
+      // the UI reports.
       ['workflow_recipients', 'opened_confirmed_at', 'TIMESTAMP WITH TIME ZONE DEFAULT NULL'],
       ['workflow_recipients', 'opened_user_agent', 'TEXT DEFAULT NULL'],
+      // Which route delivered the signing request: 'email' (we sent it) or
+      // 'manual_link' (the creator copied the link and sent it themselves).
+      // Only wording depends on this — every other behaviour is identical.
+      ['workflow_recipients', 'notified_via', 'VARCHAR(20) DEFAULT NULL'],
       ['signature_fields', 'label', 'VARCHAR(100) DEFAULT NULL'],
       // Manual (comp) plan overrides applied from the admin portal, kept
       // distinguishable from a Stripe-backed subscription.
@@ -695,6 +700,45 @@ export class MigrationService {
           AND r.notify_error IS NULL
           AND w.status <> 'draft'
           AND w.created_at < TIMESTAMP WITH TIME ZONE '2026-08-17 17:00:00+00'`
+    );
+
+    // Every notified_at that predates notified_via was written by the email
+    // sender, which was the only delivery route recording one.
+    await this.run(
+      'workflow_recipients.notified_via.backfill',
+      `UPDATE workflow_recipients
+          SET notified_via = 'email'
+        WHERE notified_at IS NOT NULL
+          AND notified_via IS NULL`
+    );
+
+    // Retract confirmations that a page load produced.
+    //
+    // opened_confirmed_at used to be set by any fetch outside a two-minute
+    // window after send. That window cannot separate a scanner from a person:
+    // in production a Microsoft tenant re-scanned a signing link 1h53m after
+    // delivery and the scan was credited to the recipient, so the workflow
+    // showed "opened" for someone who had not seen the document. Confirmation
+    // now requires an interaction with a field, so every value written by the
+    // old rule is unproven and is cleared.
+    //
+    // Recipients who went on to sign keep theirs — they demonstrably did open
+    // it. The NOT EXISTS clause is what makes this safe to re-run on every
+    // boot: once the new code has recorded an 'engaged' event for a recipient,
+    // that recipient is never touched again, whatever the cutoff says.
+    await this.run(
+      'workflow_recipients.opened_confirmed_at.retract_page_loads',
+      `UPDATE workflow_recipients r
+          SET opened_confirmed_at = NULL
+        WHERE r.opened_confirmed_at IS NOT NULL
+          AND r.status NOT IN ('signed', 'declined')
+          AND r.opened_confirmed_at < TIMESTAMP WITH TIME ZONE '2026-08-19 00:00:00+00'
+          AND NOT EXISTS (
+            SELECT 1 FROM workflow_history h
+             WHERE h.workflow_id = r.workflow_id
+               AND h.action = 'engaged'
+               AND h.metadata->>'recipient_id' = r.id::text
+          )`
     );
 
     // Widen usage_tracking.month_year so it can also hold team-scoped keys
